@@ -1,4 +1,3 @@
-GIT test
 Version 3.00
 
 <brussell@csail.mit.edu>
