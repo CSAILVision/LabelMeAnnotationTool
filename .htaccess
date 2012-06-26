@@ -1,0 +1,29 @@
+Options +Includes +ExecCGI
+AddHandler cgi-script .cgi .sh .pl
+AddType text/html .shtml
+AddHandler server-parsed .shtml
+XBitHack on
+BrowserMatchNoCase macintosh Mac
+BrowserMatchNoCase MSIE InternetExplorer
+
+<Files "tool.html">
+AddType application/xhtml+xml html
+AddHandler server-parsed .html
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_ACCEPT} !application/xhtml\+xml
+RewriteCond %{HTTP_ACCEPT} (text/html|\*/\*)
+RewriteCond %{REQUEST_FILENAME} .*\.html
+RewriteRule ^.*$ - "[T=text/html,L]"
+</Files>
+
+<Files "tool3D.html">
+AddType application/xhtml+xml html
+AddHandler server-parsed .html
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_ACCEPT} !application/xhtml\+xml
+RewriteCond %{HTTP_ACCEPT} (text/html|\*/\*)
+RewriteCond %{REQUEST_FILENAME} .*\.html
+RewriteRule ^.*$ - "[T=text/html,L]"
+</Files>
