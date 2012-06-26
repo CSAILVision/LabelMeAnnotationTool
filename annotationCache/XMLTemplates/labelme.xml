@@ -1,0 +1,16 @@
+<annotation>
+<filename>
+myfile
+</filename>
+<folder>
+mydir
+</folder>
+<source>
+<sourceImage>
+The MIT-CSAIL database of objects and scenes
+</sourceImage>
+<sourceAnnotation>
+LabelMe Webtool
+</sourceAnnotation>
+</source>
+</annotation>

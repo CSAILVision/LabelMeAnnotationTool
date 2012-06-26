@@ -1,0 +1,273 @@
+<!--
+LabelMe is a WEB-based image annotation tool and a Matlab toolbox that allows researchers to label images and share the annotations with the rest of the community.
+Copyright (C) 2007  MIT, Computer Science and Artificial
+Intelligence Laboratory. Bryan Russell, Antonio Torralba, William T. Freeman
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see
+    <http://www.gnu.org/licenses/>. 
+-->
+
+<!--#if expr="!${InternetExplorer}" -->
+<!DOCTYPE html PUBLIC
+"-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml11/DTD/xhtml11-strict.dtd">
+<!--#endif -->
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:v="urn:schemas-microsoft-com:vml" 
+      xmlns:svg="http://www.w3.org/2000/svg" 
+      xmlns:xlink="http://www.w3.org/1999/xlink">
+
+<head>
+<title>LabelMe: The open annotation tool</title>
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE,NO-STORE,MUST-REVALIDATE" />
+<META HTTP-EQUIV="imagetoolbar" CONTENT="no" />
+<LINK REL="SHORTCUT ICON" HREF="Icons/favicon16.ico" />
+
+<script type="text/javascript">
+// <![CDATA[
+<!--#include virtual="./annotationTools/js/browser.js" -->  
+
+  // Check browser:
+  GetBrowserInfo();
+  if(!(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome())) {
+    window.location="tool.html?badbrowser";
+  }
+
+<!--#if expr="${InternetExplorer}" -->
+<!--#include virtual="./annotationTools/js/graphics_ie.js" -->
+<!--#else -->
+<!--#include virtual="./annotationTools/js/graphics_moz.js" -->
+<!--#endif -->
+
+<!--#include virtual="./annotationTools/js/my_scripts.js" -->  
+<!--#include virtual="./annotationTools/js/bubble-popups.js" -->
+<!--#include virtual="./annotationTools/js/image.js" -->
+<!--#include virtual="./annotationTools/js/file_info.js" -->
+<!--#include virtual="./annotationTools/js/annotation.js" -->
+<!--#include virtual="./annotationTools/js/canvas.js" -->
+<!--#include virtual="./annotationTools/js/select_canvas.js" -->
+<!--#include virtual="./annotationTools/js/draw_canvas.js" -->
+<!--#include virtual="./annotationTools/js/query_canvas.js" -->
+<!--#include virtual="./annotationTools/js/handler.js" -->
+<!--#include virtual="./annotationTools/js/request.js" -->
+
+<!--#endif -->
+
+  var main_handler;
+  var main_canvas;
+  var main_select_canvas;
+  var main_draw_canvas;
+  var main_image;
+  
+  var xhtmlNS = 'http://www.w3.org/1999/xhtml';
+
+function CreateTicket() {
+  var dirname = main_image.GetFileInfo().GetDirName();
+  var imname = main_image.GetFileInfo().GetImName();
+  var ticket_url = 'annotationTools/perl/generate_ticket.cgi?folder=' + dirname + 
+    '&image=' + imname + '&username=' + username;
+
+  // Submit ticket:
+  if (window.XMLHttpRequest) {
+    req_submit = new XMLHttpRequest();
+    req_submit.open("GET", ticket_url, true);
+    req_submit.send('');
+  } 
+  else if (window.ActiveXObject) {
+    req_submit = new ActiveXObject("Microsoft.XMLHTTP");
+    if (req_submit) {
+      req_submit.open("GET", ticket_url, true);
+      req_submit.send('');
+    }
+  }
+}
+
+function GoToVrmlDownloadPage() {
+  var dirname = main_image.GetFileInfo().GetDirName();
+  var imname = main_image.GetFileInfo().GetImName();
+  var url3D = 'view3D.html?folder=' + dirname + '&image=' + imname;
+    window.open(url3D);
+}
+
+function Check3DPageExists() {
+  if(req_submit.readyState==4) {
+    if(req_submit.status != 200) {
+      CreateTicket();
+    }
+    GoToVrmlDownloadPage();
+  }
+}
+
+function Make3D() {
+  WriteLogMsg('*make3d_pressed ' + main_image.GetFileInfo().GetImagePath());
+  var dirname = main_image.GetFileInfo().GetDirName();
+  var imname = main_image.GetFileInfo().GetImName();
+  var url3D = '3D/' + dirname + '/' +
+    imname.substr(0,imname.length-4) + '.wrl';
+
+  if(main_canvas.GetAnnotations().length==0) {
+    alert("In order for the 3D model to be generated, you must provide at least 5 labeled objects.  Please start labeling and try pressing Make 3D again.");
+//    alert("The 3D model has not been created yet.  Note that the model starts to be produced when there are at least 5 labeled objects.  Please continue labeling and try again");
+    return;
+  }
+
+  var numUserAnno = 0;
+  for(ii = 0; ii < (main_canvas.GetAnnotations().length-num_orig_anno); ii++) {
+    if(main_canvas.GetAnnotations()[num_orig_anno+ii].GetDeleted()==0) numUserAnno++;
+  }
+
+  if(numUserAnno) {
+    CreateTicket();
+    GoToVrmlDownloadPage();
+  }
+  else {
+    // Check if VRML file exists:
+    if (window.XMLHttpRequest) {
+      req_submit = new XMLHttpRequest();
+      req_submit.onreadystatechange = Check3DPageExists;
+      req_submit.open("GET", url3D, true);
+      req_submit.send('');
+    }
+    else if (window.ActiveXObject) {
+      req_submit = new ActiveXObject("Microsoft.XMLHTTP");
+      if (req_submit) {
+        req_submit.onreadystatechange = Check3DPageExists;
+        req_submit.open("GET", url3D, true);
+	req_submit.send('');
+      }
+    }
+  }
+}
+
+function CheckXMLExists() {
+  if(req_submit.readyState==4) {
+    if(req_submit.status != 200) {
+      alert("The XML annotation file does not exist yet.  Please label an object and try again");
+    }
+    else {
+      window.open(main_image.GetFileInfo().GetAnnotationPath());
+    }
+  }
+}
+
+function GetXMLFile() {
+  var xml_url = main_image.GetFileInfo().GetAnnotationPath();
+
+  // Check if VRML file exists:
+  if (window.XMLHttpRequest) {
+    req_submit = new XMLHttpRequest();
+    req_submit.onreadystatechange = CheckXMLExists;
+    req_submit.open("GET", xml_url, true);
+    req_submit.send('');
+  } 
+  else if (window.ActiveXObject) {
+    req_submit = new ActiveXObject("Microsoft.XMLHTTP");
+    if (req_submit) {
+      req_submit.onreadystatechange = CheckXMLExists;
+      req_submit.open("GET", xml_url, true);
+      req_submit.send('');
+    }
+  }
+}
+
+function MainInit() {
+  main_handler = new handler();
+  main_canvas = new canvas();
+  main_select_canvas = new SelectCanvas();
+  main_draw_canvas = new DrawCanvas();
+  main_query_canvas = new QueryCanvas();
+  main_image = new image('im');
+
+  function main_image_onload_helper() {
+    main_image.SetImageDimensions();
+    LoadAnnotations(main_image.GetFileInfo().GetFullName());
+    var m = main_image.GetFileInfo().GetMode();
+    if(view_ObjList) LoadAnnotationList();
+    //if((m!='im') && (m!='mt')) LoadAnnotationList();
+
+    // Added for IE compatability.  Without it, there is extra space 
+    // at the top and the points are offset from where you clicked.
+    // Also, myCanvas_bg does not show up if this is not here.
+    //if(IsMicrosoft()) main_image.Zoom('fitted');
+  };
+
+  main_image.GetNewImage(main_image_onload_helper);
+
+  var dirname = main_image.GetFileInfo().GetDirName();
+  var imname = main_image.GetFileInfo().GetImName();
+//  document.getElementById('3d_link').href = 
+//    'view3D.html?folder=' + dirname + '&image=' + imname;
+//  document.getElementById('3d_link').href = 
+//    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
+//    imname.substr(0,imname.length-4) + '.wrl';
+
+//  document.getElementById('xml_url').href = 
+//    main_image.GetFileInfo().GetAnnotationPath();
+
+  if(document.getElementById('img_url')) {
+    document.getElementById('img_url').href = 
+      main_image.GetFileInfo().GetImagePath();
+  }
+
+//  document.getElementById('vrml_embed').src = 
+//    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
+//    imname.substr(0,imname.length-4) + '.wrl';
+
+/*
+  document.getElementById('vrml_expand').href = 
+    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
+    imname.substr(0,imname.length-4) + '.wrl';
+
+  document.getElementById('vrml_dload').href = 
+    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
+    imname.substr(0,imname.length-4) + '.wrl';
+
+  document.getElementById('texture_dload').href = 
+    'http://labelme.csail.mit.edu/3D/' + dirname + '/' + imname;
+*/
+
+  if(document.getElementById('username_main_div')) write_username();
+
+  WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
+}
+
+// ]]>
+</script>
+
+<!-- added body overflow:hidden 7.5.06 to get rid of extra scrollbars -->
+<!-- in IE.  may need to turn this off for debugging //-->
+
+<!--#if expr="${InternetExplorer}" -->
+<style>v\:* { behavior: url(#default#VML); }</style>
+<!--#endif -->
+
+<style>
+@import url("annotationTools/css/styles.css");
+</style>
+
+</head>
+
+<!--#if expr="$QUERY_STRING_UNESCAPED!=badbrowser" -->
+  <!--#include virtual="./annotationTools/html/tool_main_01.html" -->  
+  <!--#if expr="${InternetExplorer}" -->
+    <!--#include virtual="./annotationTools/html/tool_main_02_ie.html" -->  
+  <!--#else -->
+    <!--#include virtual="./annotationTools/html/tool_main_02_moz.html" -->  
+  <!--#endif -->
+  <!--#include virtual="./annotationTools/html/tool_main_03.html" -->  
+<!--#else -->
+  <!--#include virtual="./annotationTools/html/badbrowser.html" -->  
+<!--#endif -->
+
+</html>

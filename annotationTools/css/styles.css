@@ -1,0 +1,102 @@
+body {font-family:Arial;  color:black; overflow:hidden; 
+margin-top:3px; margin-left:8px; margin-right:8px; margin-bottom: 0px;}
+a:link {color: #0000FF; text-decoration: underline;}
+a:visited {color: #0000FF; text-decoration: underline;}
+a:hover {color: #0000FF; text-decoration: underline;}
+
+table, div {border-collapse:collapse;}
+div#header {margin-top:0px; position:relative; width:100%;}
+#top_mid {margin-left:4em; font-size:small;}
+td {padding:0;}
+.top {vertical-align:top;}
+.center {text-align:center;}
+img {border:0; border-top:0;}
+
+#username_form {font-size:small;}
+
+#counter_anchor {position:absolute; 
+top:8px; right:8px; width:16em;}
+#counter_text {font-size:small;}
+
+#show_new_image {position:absolute; right:0px; top:-2em;}
+
+#main_section {position:relative;width:100%; height:auto; z-index:1;}
+#loading {position:absolute; font-size:large; left:1em;
+top:2em;}
+#main_image {position:relative; left:0; top:0; border: 1px solid #979797;}
+
+#framebar{
+height:80px;
+position:relative;
+overflow-x:scroll;
+overflow-y:hidden;
+}
+
+#objectbar{
+position:relative;
+
+}
+
+.box {
+  background-color: #eeeeee;
+  border: 2px solid #dddddd;
+  color: #000000;
+  padding: 0px;
+  position: absolute;
+}
+
+.bar {
+  background-color: #aaaaff;
+  border: 1px solid #8888ff;
+  color: #000000;
+  font-weight: normal;  
+  font-family: arial;
+  position: relative;
+  left:0px;top:0px;
+  padding: 0px 0.2em 2px 0.2em;
+}
+
+.lowerbar {
+  background-color: #aaaaff;
+  border: 1px solid #8888ff;
+  color: #000000;
+  font-weight: normal;  
+  font-family: arial;
+  padding: 0px 0.2em 6px 0.2em;
+}
+
+.close {
+  background-color: #8888ff;
+  border: 0px;
+  color: #ffffff;
+  font-weight: bold;  
+  font-family: arial;
+  height:16px;
+  width:14px;
+  position: absolute;
+  right:0px;top:0px;
+}
+
+.resize {
+  background-color: #4444ff;
+  border: 0px;
+  color: #ffffff;
+  font-weight: bold;  
+  font-family: arial;
+  padding: 0px 0em 6px 5px;
+  position: absolute;
+  right:0px;bottom:0px;
+}
+
+
+.content {
+  border: 1px solid #ffffff;
+  padding: 0.2em;
+  overflow: auto;
+}
+
+#right_side {position:absolute; top:0px; right:0px; width:16em;
+height:100%; z-index:0;}
+#examples {width:100%; font-size:small;}
+#anno_anchor {position:relative; width:100%; top:-1em;}
+#anno_list {font-size:small;}

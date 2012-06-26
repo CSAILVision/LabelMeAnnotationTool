@@ -1,0 +1,3 @@
+example_folder,img1.jpg
+example_folder,img2.jpg
+example_folder,img3.jpg

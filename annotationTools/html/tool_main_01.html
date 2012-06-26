@@ -1,0 +1,99 @@
+<body id="body" onkeyup="javascript:main_handler.KeyPress(event);" onmousemove="javascript:main_handler.MainPageMouseMove(event);" onmouseup="javascript:main_handler.MainPageMouseUp(event);" style="visibility:hidden;" >
+
+<script type="text/javascript">
+WriteLogMsg('*start_loading');
+</script>
+
+  <div id="mt_submit_form"></div>
+
+  <div id="header" style="font-size:small; font-weight:bold;">
+
+
+  <table cellpadding="0" cellspacing="0">
+    <tr>
+      <td class="top">
+        <a href="index.html" target="_blank" title="Please">
+<!--          <img src="Icons/LabelMeNEWtight198x55.gif" height="55" alt="please" /> -->
+          <img src="Icons/LabelMeNEWtight198x55.gif" style="height:3em;" alt="please" />
+	</a>
+      </td>
+      <td>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </td>
+      <td class="top" align="center">
+        <table cellpadding="0" cellspacing="0">
+	<tr>
+	<td>
+	<a href="javascript:main_handler.ZoomPlus(-0.2);" alt="Zoom out" title="Zoom out"><img src="Icons/LMzoomdown.png" style="width:3em;" /></a>
+	<a href="javascript:main_handler.ZoomPlus(0.2);" alt="Zoom in" title="Zoom in"><img src="Icons/LMzoomup.png" style="width:3em;" /></a>
+	<a href="javascript:main_handler.ZoomFitImage();" title="Fit image" style="text-decoration:none;"><img src="Icons/LMfit.png" style="width:3em;" /></a>
+	</td>
+	</tr>
+	<tr>
+	<td align="center">Zoom</td>
+	</tr>
+	</table>
+      </td>
+      <td>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </td>
+      <td>
+        <a id="png_undo" href="javascript:main_handler.EraseSegmentButton();" alt="Undo last control point" title="Undo last control point" style="text-decoration:none;">
+	<script type="text/javascript">
+	ShowUndoImg();
+	</script>
+	</a><br />
+	Erase
+      </td>
+      <td>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </td>
+      <td class="top" align="center">
+<!--        <a href="guidelines.html" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br /> -->
+<!--        <a href="3Dintroduction.html" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br /> -->
+<!--        <a href="http://people.csail.mit.edu/torralba/labelme/description3D.html" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br />-->
+        <a href="annotationTools/html/labeling_instructions.html" title="Show help page" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br />
+	Help
+      </td>
+      <td>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </td>
+<!--
+      <td class="top" align="center">
+        <a href="LabelMe3D/upload3D.html" target="_blank" title="Want to label your own image? Press this to upload an image."><img src="Icons/LMuploadNew.png" style="height:3em;" /></a><br />
+	Upload image
+      </td>
+      <td>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+      </td>
+-->
+      <td align="center">
+        <a href="javascript:ShowNextImage();" alt="Show me another image" title="Show me another image" style="text-decoration:none;"><img src="Icons/LMarrow.png" style="height:3em;" /></a><br />
+	Show me another image
+<!--	<a href="javascript:ShowNextImage();" alt="Show next image">
+	Show me another image</a> -->
+      </td>
+    </tr>
+  </table>
+
+  </div>
+
+
+<table cellspacing-right="10">
+ <tr>
+  <td colspan="2">
+
+  <div id="main_section">
+    <div id="loading">Loading image...</div>
+    <div id="main_image" class="top" style="visibility:hidden;overflow:auto;">
+      <div id="show_new_image" style="visibility:hidden;">
+        <form name="submitform"
+              id="submitform"
+              action="javascript:loadXMLDoc();"
+              method="post"
+              style="margin-bottom:0px;">
+        </form>
+      </div>
+
+      <img id="im" style="vertical-align:bottom;z-index:-3;" />
+
