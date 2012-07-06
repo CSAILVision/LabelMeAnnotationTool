@@ -33,18 +33,19 @@ QUICK START INSTRUCTIONS:
 
 1. Put LabelMe annotation tool code on web server (see web server
    configuration requirements below).
-2. Create a subfolder inside the "Images" folder and place your images
+2. Run "make".  This will set a global variable that the perl scripts need.
+3. Create a subfolder inside the "Images" folder and place your images
    there.  For example: "Images/example_folder/img1.jpg".  Make sure
    all of your images have a ".jpg" extension and the
    folders/filenames have alphanumeric characters (i.e. no spaces or
    funny characters).
-3. Point your web browser to the following URL: 
+4. Point your web browser to the following URL: 
 
 http://www.yourserver.edu/path/to/LabelMe/tool.html?collection=LabelMe&mode=f&folder=example_folder&image=img1.jpg
 
-4. Label your image.  Press "show me another image" to go to the next
+5. Label your image.  Press "show me another image" to go to the next
    image in the folder.
-5. Voila!  Your annotations will appear inside of the "Annotations" folder.
+6. Voila!  Your annotations will appear inside of the "Annotations" folder.
 
 
 WEB SERVER REQUIREMENTS:
