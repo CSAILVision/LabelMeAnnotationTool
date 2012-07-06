@@ -1,8 +1,9 @@
 #!/usr/bin/perl
+require 'globalvariables.pl';
 
 sub WriteLogfile {
     my($datestr2,$folder,$fname,$tot_before,$tot_after,$addr,$host,$objname,$global_count,$username,$modifiedControlPoints,$tot_del_before,$tot_del_after) = @_;
-    open(FP,">>../../annotationCache/Logs/logfile.txt");
+    open(FP,">>$LM_HOME/annotationCache/Logs/logfile.txt");
 #open(FP2,">>Logs/logfile.xml");
 #if($tot_after > $tot_before) {
 #    print FP2 "<entry><timestamp>$datestr2</timestamp><folder>$folder</folder><filename>$fname</filename>";
@@ -131,7 +132,7 @@ sub InsertImageSize {
 		    $imagesize = "$imagesize$field";
 		}
 		else {
-		    $nrows = `identify -format \"%h\" ../../Images/$folder/$fname.jpg`;
+		    $nrows = `identify -format \"%h\" $LM_HOME/Images/$folder/$fname.jpg`;
 		    $nrows =~ s/\s//g;
 		    $imagesize = "$imagesize<nrows>$nrows</nrows>";
 		}
@@ -142,7 +143,7 @@ sub InsertImageSize {
 		    $imagesize = "$imagesize$field";
 		}
 		else {
-		    $ncols = `identify -format \"%w\" ../../Images/$folder/$fname.jpg`;
+		    $ncols = `identify -format \"%w\" $LM_HOME/Images/$folder/$fname.jpg`;
 		    $ncols =~ s/\s//g;
 		    $imagesize = "$imagesize<ncols>$ncols</ncols>";
 		}
@@ -158,12 +159,12 @@ sub InsertImageSize {
 	}
 	
 	if(!$isrow) {
-	    $nrows = `identify -format \"%h\" ../../Images/$folder/$fname.jpg`;
+	    $nrows = `identify -format \"%h\" $LM_HOME/Images/$folder/$fname.jpg`;
 	    $nrows =~ s/\s//g;
 	    $imagesize = "$imagesize<nrows>$nrows</nrows>";
 	}
 	if(!$iscol) {
-	    $ncols = `identify -format \"%w\" ../../Images/$folder/$fname.jpg`;
+	    $ncols = `identify -format \"%w\" $LM_HOME/Images/$folder/$fname.jpg`;
 	    $ncols =~ s/\s//g;
 	    $imagesize = "$imagesize<ncols>$ncols</ncols>";
 	}
@@ -173,16 +174,16 @@ sub InsertImageSize {
     }
     elsif(m/<\s*imagesize\s*\/\s*>/) {
 	# Replace <imagesize/>
-	$ncols = `identify -format \"%w\" ../../Images/$folder/$fname.jpg`;
-	$nrows = `identify -format \"%h\" ../../Images/$folder/$fname.jpg`;
+	$ncols = `identify -format \"%w\" $LM_HOME/Images/$folder/$fname.jpg`;
+	$nrows = `identify -format \"%h\" $LM_HOME/Images/$folder/$fname.jpg`;
 	$nrows =~ s/\s//g;
 	$ncols =~ s/\s//g;
 	$stdin =~ s/<\s*imagesize\s*\/\s*>/<imagesize><nrows>$nrows<\/nrows><ncols>$ncols<\/ncols><\/imagesize>/g;
     }
     else {
 	# Missing: insert <imagesize>
-	$ncols = `identify -format \"%w\" ../../Images/$folder/$fname.jpg`;
-	$nrows = `identify -format \"%h\" ../../Images/$folder/$fname.jpg`;
+	$ncols = `identify -format \"%w\" $LM_HOME/Images/$folder/$fname.jpg`;
+	$nrows = `identify -format \"%h\" $LM_HOME/Images/$folder/$fname.jpg`;
 	$nrows =~ s/\s//g;
 	$ncols =~ s/\s//g;
 	$stdin =~ s/<\s*\/\s*annotation\s*>/<imagesize><nrows>$nrows<\/nrows><ncols>$ncols<\/ncols><\/imagesize><\/annotation>/g;
