@@ -1,0 +1,4 @@
+#!/usr/bin/perl
+
+$LM_HOME = "SET_LM_HOME";
+#$LM_HOME = "/Users/brussell/Sites/LabelMe/";
