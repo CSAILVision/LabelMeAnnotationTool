@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+require 'globalvariables.pl';
 require './logfile_helper.pl';
 
 use strict;
@@ -11,18 +12,18 @@ my $username = $query->param("username");
 
 ##############################
 # Write ticket:
-if(-e "../../annotationCache/Logs/tickets/FOL__$folder\_\_IMG__$fname") {
+if(-e "$LM_HOME/annotationCache/Logs/tickets/FOL__$folder\_\_IMG__$fname") {
     # do nothing
 }
 else {
-    open(FP,">../../annotationCache/Logs/tickets/FOL__$folder\_\_IMG__$fname");
+    open(FP,">$LM_HOME/annotationCache/Logs/tickets/FOL__$folder\_\_IMG__$fname");
     close(FP);
 }
 
 # Write to logfile
 my $datestr2 = &GetTimeStamp;
 my $addr = $ENV{'REMOTE_ADDR'};
-open(FP,">>../../annotationCache/Logs/logfile.txt");
+open(FP,">>$LM_HOME/annotationCache/Logs/logfile.txt");
 print FP "\n$datestr2 $folder $fname $addr *make3d_ticket_created $username";
 close(FP);
 

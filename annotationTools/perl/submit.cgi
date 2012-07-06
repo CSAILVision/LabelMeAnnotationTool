@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+require 'globalvariables.pl';
 require 'logfile_helper.pl';
 
 ##############################
@@ -39,8 +40,8 @@ $stdin =~ tr/\r//d;
 
 ##############################
 # Determine if Video or Image and assign path:
-$path = "../../Annotations";
-$tmpPath = "../../annotationCache/TmpAnnotations";
+$path = $LM_HOME . "Annotations";
+$tmpPath = $LM_HOME . "annotationCache/TmpAnnotations";
 
 ##############################
 # Get file information:
@@ -67,7 +68,7 @@ $stdin =~ s/<date\/>/<date>$datestr2<\/date>/g;
 ##############################
 # Check to make sure submitted XML is ok:
 if(!&IsSubmittedXmlOk($stdin)) {
-    open(FP,">>../../annotationCache/Logs/logfile.txt");
+    open(FP,">>$LM_HOME/annotationCache/Logs/logfile.txt");
     print FP "\n$datestr2 $folder $fname $addr *XML_ERROR $username";
     close(FP);
     print "Content-type: text/xml\n\n" ;
@@ -101,8 +102,8 @@ $tot_del_after = scalar(@del_split)-1;
 ($stdin) = &InsertImageSize($stdin,$folder,$fname);
 #@imagesize = split("<imagesize>",$stdin);
 #if(scalar(@imagesize)==1) {
-#    $ncols = `identify -format \"%w\" ../../Images/$folder/$fname.jpg`;
-#    $nrows = `identify -format \"%h\" ../../Images/$folder/$fname.jpg`;
+#    $ncols = `identify -format \"%w\" $LM_HOME/Images/$folder/$fname.jpg`;
+#    $nrows = `identify -format \"%h\" $LM_HOME/Images/$folder/$fname.jpg`;
 #    $stdin =~ s/<\/annotation>/<imagesize><nrows>$nrows<\/nrows><ncols>$ncols<\/ncols><\/imagesize><\/annotation>/g;
 ##    $stdin =~ s/<\/annotation>/<imagesize><\/imagesize><\/annotation>/g;
 #}

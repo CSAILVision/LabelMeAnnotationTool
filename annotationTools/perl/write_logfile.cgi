@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+require 'globalvariables.pl';
 require 'logfile_helper.pl';
 
 ##############################
@@ -21,7 +22,7 @@ $addr = $ENV{'REMOTE_ADDR'};
 
 ##############################
 # Write to logfile:
-open(FP,">>../../annotationCache/Logs/logfile.txt");
+open(FP,">>$LM_HOME/annotationCache/Logs/logfile.txt");
 print FP "\n$datestr2 $addr $stdin";
 close(FP);
 

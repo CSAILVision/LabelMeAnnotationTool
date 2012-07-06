@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+require 'globalvariables.pl';
 
 use strict;
 use CGI;
@@ -14,7 +15,7 @@ my $image = $query->param("image");
 my $im_dir;
 my $im_file;
 if($mode eq "i") {
-    my $fname = "../../annotationCache/DirLists/$collection.txt";
+    my $fname = $LM_HOME . "annotationCache/DirLists/$collection.txt";
     
     if(!open(FP,$fname)) {
 	print "Status: 404\n\n";
@@ -39,7 +40,7 @@ if($mode eq "i") {
     close(FP);
 }
 elsif($mode eq "c") {
-    opendir(DIR,"../../Images/users/$username/$collection") || die("Cannot read collections");
+    opendir(DIR,$LM_HOME . "Images/users/$username/$collection") || die("Cannot read collections");
     my @all_images = readdir(DIR);
     closedir(DIR);
 
@@ -58,7 +59,7 @@ elsif($mode eq "c") {
     $im_dir = $folder;
 }
 elsif($mode eq "f") {
-    opendir(DIR,"../../Images/$folder") || die("Cannot read folder");
+    opendir(DIR,$LM_HOME . "Images/$folder") || die("Cannot read folder");
     my @all_images = readdir(DIR);
     closedir(DIR);
 
