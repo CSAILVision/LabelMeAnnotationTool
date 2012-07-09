@@ -27,3 +27,6 @@ RewriteCond %{HTTP_ACCEPT} (text/html|\*/\*)
 RewriteCond %{REQUEST_FILENAME} .*\.html
 RewriteRule ^.*$ - "[T=text/html,L]"
 </Files>
+
+RewriteEngine on
+RewriteRule ^index\.html$ index.php 
