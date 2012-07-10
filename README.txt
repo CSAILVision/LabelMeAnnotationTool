@@ -33,7 +33,9 @@ QUICK START INSTRUCTIONS:
 
 1. Put LabelMe annotation tool code on web server (see web server
    configuration requirements below).
-2. Run "make".  This will set a global variable that the perl scripts need.
+2. Run "make".  This will set a global variable that the perl scripts
+   need.  ***Note*** If you move the location of the code, then you
+   need to re-run "make" to refresh the global variable.
 3. Create a subfolder inside the "Images" folder and place your images
    there.  For example: "Images/example_folder/img1.jpg".  Make sure
    all of your images have a ".jpg" extension and the
