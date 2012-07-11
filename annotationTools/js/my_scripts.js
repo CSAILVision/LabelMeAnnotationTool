@@ -32,11 +32,14 @@ var view_ObjList = true;
 // MT variables:
 // var LMbaseurl = 'http://old-labelme.csail.mit.edu/developers/brussell/LabelMe-video/tool.html';
 // var MThelpPage = 'http://old-labelme.csail.mit.edu/developers/brussell/LabelMe-video/mt_instructions.html';
-var LMbaseurl = 'http://labelme.csail.mit.edu/tool.html';
-var MThelpPage = 'http://labelme.csail.mit.edu/mt_instructions.html';
+// var LMbaseurl = 'http://labelme.csail.mit.edu/tool.html';
+var LMbaseurl = 'http://' + window.location.host + window.location.pathname;
+// var MThelpPage = 'http://labelme.csail.mit.edu/mt_instructions.html';
+var MThelpPage = 'annotationTools/html/mt_instructions.html';
 var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
 var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
 var mt_N = 'inf';
+
 
 // Get the x position of the mouse event.
 function GetEventPosX(event) {
