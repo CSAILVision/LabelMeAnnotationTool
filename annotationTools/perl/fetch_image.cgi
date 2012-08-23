@@ -1,9 +1,11 @@
 #!/usr/bin/perl
-require 'globalvariables.pl';
 
 use strict;
 use CGI;
 use CGI::Carp qw ( fatalsToBrowser );
+
+require 'globalvariables.pl';
+use vars qw($LM_HOME);
 
 my $query = new CGI;
 my $mode = $query->param("mode");
@@ -59,7 +61,7 @@ elsif($mode eq "c") {
     $im_dir = $folder;
 }
 elsif($mode eq "f") {
-    opendir(DIR,$LM_HOME . "Images/$folder") || die("Cannot read folder");
+    opendir(DIR,$LM_HOME . "Images/$folder") || die("Cannot read folder $LM_HOME/Images/$folder");
     my @all_images = readdir(DIR);
     closedir(DIR);
 
