@@ -194,11 +194,12 @@ function annotation(anno_id) {
 
   // Closes the polygon.  Returns 1 if close was successful, 0 otherwise.
   this.ClosePolygon = function () {
-    if(this.pts_x.length<=2) {
-      alert("The current polygon must have at least 3 points.");
-      this.CloseErrorFlag = 1;
-      return 0;
-    }
+    // Allow users to annotate lines, i.e. length=2 polygons
+//     if(this.pts_x.length<=2) {
+//       alert("The current polygon must have at least 3 points.");
+//       this.CloseErrorFlag = 1;
+//       return 0;
+//     }
     this.lastx = -1;
     this.lasty = -1;
     return 1;
@@ -306,7 +307,8 @@ function annotation(anno_id) {
   // bigger to indicate it should be clicked on.  Do this if two or more 
   // lines have been drawn.
   this.MouseOverFirstPoint = function () {
-    if(this.pts_x.length>=3) {
+//     if(this.pts_x.length>=3) {
+    if(this.pts_x.length>=2) { // Allow users to annotate lines
       var im_ratio = main_image.GetImRatio();
       this.RemoveFirstPoint();
       this.first_point = new graphics(this.div_attach,'first_point');
