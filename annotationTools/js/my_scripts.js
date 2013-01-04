@@ -518,13 +518,7 @@ function XMLGet(fname) {
 }
 
 function LoadAnnotations(anno_file) {
-  // support video mode 12.12.06 jmejia
-  if(main_handler.IsMovieMode()){
-    anno_file = 'Video/Annotations/' + anno_file + '.xml';
-  }
-  else if(main_handler.IsPictureMode()){
-    anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml';
-  }
+  anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml';
   var objXml = XMLGet(anno_file);
 
   if(objXml.status==200) {
