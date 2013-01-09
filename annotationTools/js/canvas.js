@@ -159,16 +159,6 @@ function canvas() {
       elt_ver.appendChild(txt_ver);
       elt_id.appendChild(txt_id);
       
-      //only insert frame number tag if is movie mode.
-      //12.12.06 jmejia
-      if(main_handler.IsMovieMode()){		
-	frm_number = main_video.getIndex()+1;
-	var elt_framenumber = tmp_xml.createElement("framenumber");
-	var txt_framenumber = tmp_xml.createTextNode(frm_number);
-	elt_pol.appendChild(elt_framenumber);
-	elt_framenumber.appendChild(txt_framenumber);
-      }
-      
       var elt_user = tmp_xml.createElement("username");
       var txt_user = tmp_xml.createTextNode(username);
       elt_pol.appendChild(elt_user);
