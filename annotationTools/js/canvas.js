@@ -142,6 +142,8 @@ function canvas() {
       var elt_ver = tmp_xml.createElement("verified");
       var txt_ver = tmp_xml.createTextNode('0');
       var elt_dat = tmp_xml.createElement("date");
+      var ts = main_canvas.GetAnnotations()[num_orig_anno+ii].GetTimeStamp();
+      if(ts.length>0) elt_dat.appendChild(tmp_xml.createTextNode(ts));
       var elt_id = tmp_xml.createElement("id");
       var txt_id = tmp_xml.createTextNode(""+(num_orig_anno+ii));
       main_canvas.GetAnnotations()[num_orig_anno+ii].SetID(""+(num_orig_anno+ii));
