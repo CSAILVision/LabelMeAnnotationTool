@@ -15,6 +15,8 @@ function annotation(anno_id) {
   this.username = 'anonymous';
   this.deleted = 0;
   this.verified = 0;
+  this.date = '';
+  this.automatic = 0;
   this.pts_x = new Array();
   this.pts_y = new Array();
   this.is_selected;
@@ -55,8 +57,20 @@ function annotation(anno_id) {
     return this.username;
   };
 
+  this.GetTimeStamp = function () {
+    return this.date;
+  };
+
+  this.SetTimeStamp = function () {
+    this.date = GetTimeStamp();
+  };
+
   this.SetUsername = function(u) {
     this.username = u;
+  };
+
+  this.SetAutomatic = function(a) {
+    this.automatic = a;
   };
 
   this.GetDeleted = function () {
@@ -215,9 +229,14 @@ function annotation(anno_id) {
     if(!this.graphics) {
       this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
     }
-    this.graphics.DrawPolygon(this.pts_x,this.pts_y,
-			      this.getObjectColor(this.anno_id),im_ratio,this.obj_name);
-
+    if(this.automatic==1) {
+      this.graphics.DrawDashedPolygon(this.pts_x,this.pts_y,
+				      this.getObjectColor(this.anno_id),im_ratio,this.obj_name);
+    }
+    else {
+      this.graphics.DrawPolygon(this.pts_x,this.pts_y,
+				this.getObjectColor(this.anno_id),im_ratio,this.obj_name);
+    }
   };
   
   // Draw a poly-line given this annotation's control points (i.e. 
