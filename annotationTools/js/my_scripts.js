@@ -541,6 +541,9 @@ function LoadAnnotations(anno_file) {
       else
 	main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
 
+      if((obj_elts[pp].getElementsByTagName("automatic").length>0) && obj_elts[pp].getElementsByTagName("automatic")[0].firstChild)
+	main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
+
       if(id && (id.length>0) && id[0].firstChild)
 	main_canvas.GetAnnotations()[pp].SetID(id[0].firstChild.nodeValue);
       else
@@ -648,4 +651,24 @@ function PermissionError() {
 
 function CheckIsSureToDelete() {
   return 1;
+}
+
+function GetTimeStamp() {
+  var url = 'annotationTools/perl/get_timestamp.cgi';
+  // branch for native XMLHttpRequest object
+  if (window.XMLHttpRequest) {
+    req_anno = new XMLHttpRequest();
+    req_anno.open("POST", url, false);
+    req_anno.send();
+  } 
+  else if (window.ActiveXObject) {
+    req_anno = new ActiveXObject("Microsoft.XMLHTTP");
+    if (req_anno) {
+      req_anno.open("POST", url, false);
+      req_anno.send();
+    }
+  }
+
+  if(req_anno.status==200) return req_anno.responseText;
+  return '';
 }
