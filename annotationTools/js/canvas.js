@@ -105,7 +105,11 @@ function canvas() {
 	elts_obj[ii].getElementsByTagName("name")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetObjName();
       }
       elts_obj[ii].getElementsByTagName("deleted")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetDeleted();
-      
+
+      if((elts_obj[ii].getElementsByTagName("automatic").length>0) && elts_obj[ii].getElementsByTagName("automatic")[0].firstChild) {
+	elts_obj[ii].getElementsByTagName("automatic")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetAutomatic();
+      }
+
       var id = elts_obj[ii].getElementsByTagName("id");
       if(id!=null && id.length>0 && id[0].firstChild!=null) {
 	id[0].firstChild.nodeValue = ""+ii;
