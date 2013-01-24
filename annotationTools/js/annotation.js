@@ -73,6 +73,10 @@ function annotation(anno_id) {
     this.automatic = a;
   };
 
+  this.GetAutomatic = function() {
+    return this.automatic;
+  };
+
   this.GetDeleted = function () {
     return this.deleted;
   };
