@@ -331,11 +331,18 @@ function GetPopupForm(ud) {
       ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" /><br />';
   }
   else {
-    html_str += '<select name="objEnter" id="objEnter" title="Enter the object\'s name here." onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();">';
+    html_str += '<input name="objEnter" id="objEnter" type="text" tabindex="0" value="" title="Enter the object\'s name here." list="datalist1" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" /><datalist id="datalist1">';
     for(var i = 0; i < object_choices.length; i++) {
       html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
     }
-    html_str += '</select><br />';
+    html_str += '</datalist><br />';
+
+
+//     html_str += '<select name="objEnter" id="objEnter" title="Enter the object\'s name here." onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();">';
+//     for(var i = 0; i < object_choices.length; i++) {
+//       html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
+//     }
+//     html_str += '</select><br />';
   }
   
 
@@ -394,7 +401,7 @@ function GetEditPopupForm(ud,obj_name) {
 	' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();" /><br />';
     }
     else {
-      html_str += '<select name="objEnter" id="objEnter" title="Enter the object\'s name here." onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();">';
+      html_str += '<input name="objEnter" id="objEnter" type="text" tabindex="0" value="' + obj_name + '" title="Enter the object\'s name here." list="datalist1" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();" /><datalist id="datalist1">';
       for(var i = 0; i < object_choices.length; i++) {
 	if(object_choices[i]==obj_name) {
 	  html_str += '<option selected="selected" value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
@@ -403,7 +410,19 @@ function GetEditPopupForm(ud,obj_name) {
 	  html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
 	}
       }
-      html_str += '</select><br />';
+      html_str += '</datalist><br />';
+
+
+//       html_str += '<select name="objEnter" id="objEnter" title="Enter the object\'s name here." onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();">';
+//       for(var i = 0; i < object_choices.length; i++) {
+// 	if(object_choices[i]==obj_name) {
+// 	  html_str += '<option selected="selected" value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
+// 	}
+// 	else {
+// 	  html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
+// 	}
+//       }
+//       html_str += '</select><br />';
     }
   }
 
