@@ -256,6 +256,15 @@ function handler() {
     }
     this.active_canvas = SELECTED_CANVAS;
     edit_popup_open = 1;
+
+    // Turn off automatic flag and write to XML file:
+    if(main_canvas.GetAnnotations()[anno_id].GetAutomatic()) {
+      main_canvas.GetAnnotations()[anno_id].SetAutomatic(0);
+      old_name = main_canvas.GetAnnotations()[anno_id].GetObjName();
+      new_name = old_name;
+      main_canvas.SubmitAnnotations(false);
+    }
+
     main_select_canvas.MoveToFront();
     var anno = main_canvas.DetachAnnotation(anno_id);
 //     var m = main_image.GetFileInfo().GetMode();
