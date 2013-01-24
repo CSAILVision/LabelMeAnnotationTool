@@ -181,6 +181,11 @@ function handler() {
 
   // Handles when we wish to change from "draw" to "query".
   this.DrawToQuery = function () {
+    if((object_choices!='...') && (object_choices.length==1)) {
+      this.SubmitQuery();
+      this.DrawToRest();
+      return;
+    }
     this.active_canvas = QUERY_CANVAS;
     main_draw_canvas.MoveToBack();
     var anno = main_draw_canvas.DetachAnnotation();
@@ -198,7 +203,19 @@ function handler() {
   // Submits the object label in response to the "What is this object?" 
   // popup bubble.
   this.SubmitQuery = function () { 
-    var nn = RemoveSpecialChars(document.getElementById('objEnter').value);
+    var nn;
+    var anno;
+    if((object_choices!='...') && (object_choices.length==1)) {
+      nn = RemoveSpecialChars(object_choices[0]);
+      this.active_canvas = REST_CANVAS;
+      main_draw_canvas.MoveToBack();
+      var anno = main_draw_canvas.DetachAnnotation();
+    }
+    else {
+      nn = RemoveSpecialChars(document.getElementById('objEnter').value);
+      anno = this.QueryToRest();
+    }
+
     var re = /[a-zA-Z0-9]/;
     if(!re.test(nn)) {
       alert('Please enter an object name');
@@ -213,7 +230,7 @@ function handler() {
 //     new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
     old_name = new_name;
 
-    var anno = this.QueryToRest();
+//     var anno = this.QueryToRest();
     anno.SetObjName(new_name);
     anno.SetUsername(username);
 
