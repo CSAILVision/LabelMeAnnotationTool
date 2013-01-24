@@ -48,6 +48,32 @@ function graphics(div_attach,name) {
 //     document.getElementById(this.div_attach).appendChild(this.drawn_obj);
   };
 
+  // Draw a dashed polygon given an array of control points X and Y.
+  // Returns the polygon element
+  this.DrawDashedPolygon = function(X,Y,color,scale,obj_name) {
+    var poly_points = "";
+    
+    for(i = 0; i < X.length; i++) {
+      poly_points = poly_points + (scale*X[i]) + "," + 
+	(scale*Y[i]) + " ";
+    }
+    
+    var anchor_obj = document.createElementNS(this.svgNS,"a");
+    anchor_obj.setAttributeNS(this.xlinkNS,"title",obj_name);
+    document.getElementById(this.div_attach).appendChild(anchor_obj);
+
+    this.drawn_obj = document.createElementNS(this.svgNS,"polygon");
+    this.drawn_obj.setAttributeNS(null,"id",this.name);
+//     this.drawn_obj.setAttributeNS(null,"title",obj_name);
+    this.drawn_obj.setAttributeNS(null,"points",poly_points);	
+    this.drawn_obj.setAttributeNS(null,"fill","none");
+    this.drawn_obj.setAttributeNS(null,"stroke",color);
+    this.drawn_obj.setAttributeNS(null,"stroke-dasharray","9, 5");
+    this.drawn_obj.setAttributeNS(null,"stroke-width","4");
+    anchor_obj.appendChild(this.drawn_obj);
+//     document.getElementById(this.div_attach).appendChild(this.drawn_obj);
+  };
+
   // Fill the drawn object.
   this.FillPolygon = function () {
     this.drawn_obj.setAttributeNS(null,"fill","red");
