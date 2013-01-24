@@ -146,6 +146,11 @@ function file_info() {
 	  this.mt_instructions = par_value;
 	  this.mt_instructions = this.mt_instructions.replace(/_/g,' ');
 	}
+	if(par_field=='objects') {
+	  // Set drop-down list of object to label:
+	  object_choices = par_value.replace('_',' ');
+	  object_choices = object_choices.split(/,/);
+	}
         par_str = par_str.substring(idx+1,par_str.length);
       } while(idx != -1);
       if((!this.dir_name) || (!this.im_name)) return this.SetURL(labelme_url);

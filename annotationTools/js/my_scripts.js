@@ -40,6 +40,8 @@ var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
 var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
 var mt_N = 'inf';
 
+var object_choices = '...';
+
 
 // Get the x position of the mouse event.
 function GetEventPosX(event) {
