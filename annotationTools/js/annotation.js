@@ -225,6 +225,7 @@ function annotation(anno_id) {
 
   // Set attribute of drawn polygon.
   this.SetAttribute = function(field,value) {
+//     if(this.pts_x.length>1) this.graphics.SetAttribute(field,value);
     this.graphics.SetAttribute(field,value);
   };
 
@@ -233,7 +234,18 @@ function annotation(anno_id) {
     if(!this.graphics) {
       this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
     }
-    if(this.automatic==1) {
+    if(this.pts_x.length==1) {
+      this.graphics.DrawFlag(Math.round(this.pts_x[0]*im_ratio),
+			     Math.round(this.pts_y[0]*im_ratio));
+//       // Draw flag for single point:
+//       var left = this.pts_x[0];
+//       var top = this.pts_y[0];
+//       html_str = '<div id="point" style="position: absolute; z-index: 5000; left: '+ left +'px; top: '+ top +'px; " oncontextmenu="return false">';
+//       html_str += '<img style="border: 0pt none ; position:absolute; left: 0px; top: 0px; z-index: 0; -moz-user-select: none;width: 36px; height: 43px;" src="annotationTools/GoogleIcons/flag.png" height="43" width="36" /></div>';
+//       InsertAfterDiv(html_str,'main_section');
+
+    }
+    else if(this.automatic==1) {
       this.graphics.DrawDashedPolygon(this.pts_x,this.pts_y,
 				      this.getObjectColor(this.anno_id),im_ratio,this.obj_name);
     }

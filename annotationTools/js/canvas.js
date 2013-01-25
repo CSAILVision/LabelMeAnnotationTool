@@ -220,8 +220,14 @@ function canvas() {
 	  this.annotations[pp].SetAttribute('oncontextmenu',function() {return false;});
 	}
 	else {
-	  this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
-	  this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
+	  if(this.annotations[pp].pts_x.length==1) {
+	    this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',event); return false;');
+	    this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(event,'+ pp +'); return false;');
+	  }
+	  else {
+	    this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
+	    this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
+	  }
 // 	  this.annotations[pp].SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + pp + '); return false;');
 // 	  this.annotations[pp].SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
 	  this.annotations[pp].SetAttribute('oncontextmenu','return false');
@@ -324,8 +330,14 @@ function canvas() {
       anno.SetAttribute('oncontextmenu',function() {return false;});
     }
     else {
-      anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
-      anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,' + anno_id + ');');
+      if(anno.pts_x.length==1) {
+	anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',event); return false;');
+	anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(event,' + anno_id + ');');
+      }
+      else {
+	anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
+	anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,' + anno_id + ');');
+      }
 //       anno.SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + anno_id + '); return false;');
 //       anno.SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,' + anno_id + ');');
       anno.SetAttribute('oncontextmenu','return false');

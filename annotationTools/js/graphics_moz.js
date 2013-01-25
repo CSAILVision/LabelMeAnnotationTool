@@ -112,6 +112,29 @@ function graphics(div_attach,name) {
     document.getElementById(this.div_attach).appendChild(this.drawn_obj);
   };
 		
+  // Draw a point given coordinates.  Returns the point element
+  this.DrawFlag = function(x,y) {
+//     color = '#00ff00';
+//     width = 6;
+//     this.drawn_obj = document.createElementNS(this.svgNS,"circle");
+//     this.drawn_obj.setAttributeNS(null,"id",this.name);
+//     this.drawn_obj.setAttributeNS(null,"cx",x);
+//     this.drawn_obj.setAttributeNS(null,"cy",y);
+//     this.drawn_obj.setAttributeNS(null,"r",width);
+//     this.drawn_obj.setAttributeNS(null,"fill",color);
+//     this.drawn_obj.setAttributeNS(null,"stroke","#ffffff");
+//     this.drawn_obj.setAttributeNS(null,"stroke-width",width/2);
+//     document.getElementById(this.div_attach).appendChild(this.drawn_obj);
+
+    this.drawn_obj = document.createElementNS(xhtmlNS,'img');
+    this.drawn_obj.setAttributeNS(null,"src","Icons/flag.png");
+    x -= 12;
+    y -= 38;
+    this.drawn_obj.setAttributeNS(null,"style",'position:absolute;z-index:5000;top:' + y + 'px;left:' + x + 'px;');
+    document.getElementById('main_section').appendChild(this.drawn_obj);
+
+  };
+		
   // Clear all drawings related to this object.
   this.ClearDrawing = function () {
     var q = document.getElementById(this.name);
@@ -121,6 +144,8 @@ function graphics(div_attach,name) {
   
   // Sets an attribute for the drawn object.
   this.SetAttribute = function(field,value) {
+    var v = this.drawn_obj.getAttributeNS(null,field);
+    if(v != null) value = value + v;
     this.drawn_obj.setAttributeNS(null,field,value);
   };
 
