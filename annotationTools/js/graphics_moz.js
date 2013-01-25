@@ -126,15 +126,16 @@ function graphics(div_attach,name) {
 //     this.drawn_obj.setAttributeNS(null,"stroke-width",width/2);
 //     document.getElementById(this.div_attach).appendChild(this.drawn_obj);
 
-    this.drawn_obj = document.createElementNS(xhtmlNS,'img');
-    this.drawn_obj.setAttributeNS(null,"id",this.name);
-    this.drawn_obj.setAttributeNS(null,"src","Icons/flag.png");
     x -= 12;
     y -= 38;
-    this.drawn_obj.setAttributeNS(null,"style",'position:absolute;z-index:5000;top:' + y + 'px;left:' + x + 'px;');
+    this.drawn_obj = document.createElementNS(this.svgNS,'image');
+    this.drawn_obj.setAttributeNS(null,"id",this.name);
+    this.drawn_obj.setAttributeNS(null,"width",36);
+    this.drawn_obj.setAttributeNS(null,"height",43);
+    this.drawn_obj.setAttributeNS(null,"x",x);
+    this.drawn_obj.setAttributeNS(null,"y",y);
+    this.drawn_obj.setAttributeNS('http://www.w3.org/1999/xlink',"href","Icons/flag.png");
     document.getElementById(this.div_attach).appendChild(this.drawn_obj);
-//     document.getElementById('main_section').appendChild(this.drawn_obj);
-
   };
 		
   // Clear all drawings related to this object.

@@ -232,13 +232,7 @@ function annotation(anno_id) {
   // Draw a polygon given this annotation's control points.
   this.DrawPolygon = function (im_ratio) {
     if(!this.graphics) {
-      if(this.pts_x.length==1) {
-	this.div_attach = 'main_section';
-	this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
-      }
-      else {
-	this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
-      }
+      this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
     }
     if(this.pts_x.length==1) {
       this.graphics.DrawFlag(Math.round(this.pts_x[0]*im_ratio),
