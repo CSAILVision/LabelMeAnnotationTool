@@ -478,6 +478,12 @@ function annotation(anno_id) {
     var mdpts_y = new Array();
     var lengths = new Array();
 
+    if(length==1) {
+      this.center_x = x[0];
+      this.center_y = y[0];
+      return;
+    }
+
     for(i=1; i < length; i++) {
       mdpts_x[i-1] = Math.round((x[i-1] + x[i])/2);
       mdpts_y[i-1] = Math.round((y[i-1] + y[i])/2);
@@ -515,8 +521,11 @@ function annotation(anno_id) {
     if(!this.center_point) {
       this.center_point = new graphics(this.div_attach,'center_point');
     }
+    var MarkerSize = 8;
+    if(this.pts_x.length==1) MarkerSize = 6;
+
     this.center_point.DrawPoint(Math.round(this.center_x*im_ratio),
-				Math.round(this.center_y*im_ratio),'red',8);
+				Math.round(this.center_y*im_ratio),'red',MarkerSize);
   };
   
   // This function removes the middle grab point for a polygon
