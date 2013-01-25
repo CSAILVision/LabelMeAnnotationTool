@@ -222,9 +222,6 @@ function handler() {
       return;
     }
 
-    //if it's the first polygon then show the xml link when it's submitted
-    if(main_canvas.GetAnnotations().length==0) show('xml_link');
-
     submission_edited = 0;
     new_name = nn;
 //     new_name = RemoveSpecialChars(document.getElementById('objEnter').value);

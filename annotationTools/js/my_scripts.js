@@ -57,44 +57,6 @@ function GetEventPosY(event) {
   return event.offsetY;
 }
 
-//added 6.26.06:
-function show(thing) {
-  return;
-  document.getElementById(thing).style.display='inline';
-}
-function hide(thing) {
-  return;
-  document.getElementById(thing).style.display='none';
-}
-
-//added 6.27.06:
-//(for the xml link thingie)
-function ShowOrHideXML() {
-  var url = document.getElementById("xml_url");  
-  var requester;
-
-  if(IsMicrosoft()) { //make with the activeX thing
-    requester = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  else { //make with the request object thing
-    requester = new XMLHttpRequest();
-  }
-    requester.open("GET",url);
-    requester.send(null);
-    requester.onreadystatechange = stateHandler;
-
-  function stateHandler() {
-    if (requester.readyState == 4) {
-      if (requester.status == 200) {
-	show('xml_link');
-      }
-      else {
-      hide('xml_link');
-      }
-    }
-  }
-}
-
 // If IE, then makes the HTML to show the 'next' icon with the appropriate 
 // transparencies; if firefox, then just make an img src to show the image
 function ShowUndoImg() {
@@ -649,10 +611,6 @@ function PermissionError() {
   else {
     alert('This polygon was entered by another user.  You can only modify polygons that you have entered.  Do not forget to sign in if you want to be able to edit your annotations');
   }
-}
-
-function CheckIsSureToDelete() {
-  return 1;
 }
 
 function GetTimeStamp() {

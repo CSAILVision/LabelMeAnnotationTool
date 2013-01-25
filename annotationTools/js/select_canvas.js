@@ -100,8 +100,6 @@ function SelectCanvas() {
       return;
     }
 
-    if(!CheckIsSureToDelete()) return;
-
     this.annotation.SetDeleted(1);
 
     if(idx>=num_orig_anno) {

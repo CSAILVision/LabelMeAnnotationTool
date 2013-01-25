@@ -284,8 +284,6 @@ function canvas() {
       return;
     }
     
-    if(!CheckIsSureToDelete()) return;
-
     this.annotations[idx].SetDeleted(1);
     
     if(idx>=num_orig_anno) {
