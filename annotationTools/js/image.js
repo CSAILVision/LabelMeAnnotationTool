@@ -152,14 +152,15 @@ function image(id) {
       amt = this.im_ratio+amt;
     }
 
-    // If it is Safari and if a polygon is open, then disallow zooming.
-    if(IsSafari() && main_draw_canvas.GetAnnotation()) {
-      alert('Please close or remove the current polygon before zooming.');
-    }
+//     // If it is Safari and if a polygon is open, then disallow zooming.
+//     if(IsSafari() && main_draw_canvas.GetAnnotation()) {
+//       alert('Please close or remove the current polygon before zooming.');
+//     }
 
     if(amt < this.browser_im_ratio) return;
     if(wait_for_input) return WaitForInput();
-    if(edit_popup_open && main_select_canvas.GetAnnotation().GetVerified()) main_handler.SelectedToRest();
+    if(edit_popup_open) main_handler.SelectedToRest();
+//     if(edit_popup_open && main_select_canvas.GetAnnotation().GetVerified()) main_handler.SelectedToRest();
 
     // New width and height of the rescaled picture
     this.im_ratio = amt;
