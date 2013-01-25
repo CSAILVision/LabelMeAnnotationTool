@@ -127,11 +127,13 @@ function graphics(div_attach,name) {
 //     document.getElementById(this.div_attach).appendChild(this.drawn_obj);
 
     this.drawn_obj = document.createElementNS(xhtmlNS,'img');
+    this.drawn_obj.setAttributeNS(null,"id",this.name);
     this.drawn_obj.setAttributeNS(null,"src","Icons/flag.png");
     x -= 12;
     y -= 38;
     this.drawn_obj.setAttributeNS(null,"style",'position:absolute;z-index:5000;top:' + y + 'px;left:' + x + 'px;');
-    document.getElementById('main_section').appendChild(this.drawn_obj);
+    document.getElementById(this.div_attach).appendChild(this.drawn_obj);
+//     document.getElementById('main_section').appendChild(this.drawn_obj);
 
   };
 		
