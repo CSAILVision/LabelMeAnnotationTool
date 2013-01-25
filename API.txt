@@ -71,6 +71,3 @@ browser types.
 
 + bubble-popups.js
 This code draws the popup bubbles.
-
-+ request.js
-This code may be obsolete.
