@@ -18,13 +18,10 @@ Intelligence Laboratory. Bryan Russell, Antonio Torralba, William T. Freeman
     <http://www.gnu.org/licenses/>. 
 -->
 
-<!--#if expr="!${InternetExplorer}" -->
 <!DOCTYPE html PUBLIC
 "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11-strict.dtd">
-<!--#endif -->
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:v="urn:schemas-microsoft-com:vml" 
       xmlns:svg="http://www.w3.org/2000/svg" 
       xmlns:xlink="http://www.w3.org/1999/xlink">
 
@@ -44,11 +41,7 @@ Intelligence Laboratory. Bryan Russell, Antonio Torralba, William T. Freeman
     window.location="tool.html?badbrowser";
   }
 
-<!--#if expr="${InternetExplorer}" -->
-<!--#include virtual="./annotationTools/js/graphics_ie.js" -->
-<!--#else -->
 <!--#include virtual="./annotationTools/js/graphics_moz.js" -->
-<!--#endif -->
 
 <!--#include virtual="./annotationTools/js/my_scripts.js" -->  
 <!--#include virtual="./annotationTools/js/bubble-popups.js" -->
@@ -244,13 +237,6 @@ function MainInit() {
 // ]]>
 </script>
 
-<!-- added body overflow:hidden 7.5.06 to get rid of extra scrollbars -->
-<!-- in IE.  may need to turn this off for debugging //-->
-
-<!--#if expr="${InternetExplorer}" -->
-<style>v\:* { behavior: url(#default#VML); }</style>
-<!--#endif -->
-
 <style>
 @import url("annotationTools/css/styles.css");
 </style>
@@ -361,39 +347,9 @@ WriteLogMsg('*start_loading');
 
       <img id="im" style="vertical-align:bottom;z-index:-3;" />
 
-  <!--#if expr="${InternetExplorer}" -->
-      <div id="myCanvas_bg"
-       style="position:absolute;left:0px;top:0px;width:100%;height:100%;cursor:crosshair;z-index:0;background-color:transparent;background-image:url(doesnotexist.png);"
-       onmousedown="main_handler.RestToDraw(event);return false;"
-       onmouseover="javascript:main_canvas.unselectObjects();"
-       oncontextmenu="return false;"
-      ></div>
-
-      <div id="select_canvas"
-       style="position:absolute;left:0px;top:0px;width:100%;height:100%;cursor:default;z-index:-2;background-color:transparent;background-image:url(doesnotexist.png);"
-       oncontextmenu="return false;"
-       onmousedown="main_handler.SelectedCanvasMouseDown(event);return false;"
-       onmousemove="main_handler.SelectedCanvasMouseMove(event);return false;"
-       onmouseup="main_handler.SelectedCanvasMouseUp(event);return false;"
-      ></div>
-
-      <div id="draw_canvas"
-       style="position:absolute;left:0px;top:0px;width:100%;height:100%;cursor:crosshair;z-index:-2;background-color:transparent;background-image:url(doesnotexist.png);"
-       onmousedown="main_handler.DrawCanvasMouseDown(event);return false;"
-       oncontextmenu="return false;"
-      ></div>
-
-      <div id="query_canvas"
-       style="position:absolute;left:0px;top:0px;width:100%;height:100%;cursor:crosshair;z-index:-2;background-color:transparent;background-image:url(doesnotexist.png);"
-       onmousedown="WaitForInput();return false;"
-       oncontextmenu="return false;"
-      ></div>
-
-  <!--#else -->
-
       <div
               id="myCanvas_bg_div"
-	      style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;"
+	      style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      onmousedown="javascript:main_handler.RestToDraw(event);return false;"
 	      oncontextmenu="javascript:return false;"
 	      onmouseover="javascript:main_canvas.unselectObjects();">
@@ -406,7 +362,7 @@ WriteLogMsg('*start_loading');
 
       <div
               id="select_canvas_div"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;"
+	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      oncontextmenu="javascript:return false;" 
 	      onmousedown="main_handler.SelectedCanvasMouseDown(event);return false;"
 	      onmousemove="main_handler.SelectedCanvasMouseMove(event);return false;"
@@ -420,7 +376,7 @@ WriteLogMsg('*start_loading');
 
       <div
               id="draw_canvas_div"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;"
+	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      onmousedown="javascript:main_handler.DrawCanvasMouseDown(event);return false;"
 	      oncontextmenu="javascript:return false;">
       <svg:svg 
@@ -432,7 +388,7 @@ WriteLogMsg('*start_loading');
 
       <div
               id="query_canvas_div"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;"
+	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      onmousedown="javascript:event.preventDefault();WaitForInput();return false;"
 	      onmouseup="javascript:event.preventDefault();"
 	      oncontextmenu="javascript:return false;">
@@ -442,7 +398,6 @@ WriteLogMsg('*start_loading');
 	      height="100%"
 	      style="position:absolute;left:0px;top:0px;z-index:-2;" />
       </div>
-  <!--#endif -->
 
     </div>
   </div>
@@ -451,13 +406,8 @@ WriteLogMsg('*start_loading');
   <div id="right_side">
 
   <script type="text/javascript">
-    if(IsMicrosoft()) {
-       document.getElementById('right_side').style.overflowY='auto';
-       document.getElementById('right_side').style.overflowX='visible';
-      }
-    else {
-      document.getElementById('right_side').style.overflow='auto';
-      }
+//    alert('hi');
+    document.getElementById('right_side').style.overflow='auto';
   </script>
 <!-- changed the scroll property above from just overflow:auto. 6.19.06 for IE and Firefox //-->  
 

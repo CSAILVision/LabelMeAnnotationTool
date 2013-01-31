@@ -155,16 +155,10 @@ function annotation(anno_id) {
     this.first_point.DrawPoint(Math.round(x*im_ratio),
 			       Math.round(y*im_ratio),'#00ff00',6);
 
-    if(IsMicrosoft()) {
-      this.first_point.SetAttribute('onmousedown',function() {var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);});
-      this.first_point.SetAttribute('onmouseover',function() {main_handler.MousedOverFirstControlPoint();});
-    }
-    else {
-      this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-      this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
+    this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+    this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
 //       this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
 //       this.first_point.SetAttribute('onmouseover','parent.main_handler.MousedOverFirstControlPoint();');
-    }
 
     this.lastx = x;
     this.lasty = y;
@@ -199,10 +193,6 @@ function annotation(anno_id) {
 					     main_image.GetImRatio(),color);
     this.all_lines[line_idx].SetAttribute('style','cursor:crosshair;');
 
-    if(IsMicrosoft()) {
-      this.all_lines[line_idx].SetAttribute('onmousedown',function() {main_handler.DrawCanvasMouseDown(window.event); return false;});
-    }
-    
     // Move the first control point to be on top of any drawn lines.
     this.first_point.MoveToTop();
 
@@ -266,9 +256,6 @@ function annotation(anno_id) {
       this.all_lines[i].DrawLineSegment(this.pts_x[i],this.pts_y[i],
 					  this.pts_x[i+1],this.pts_y[i+1],
 					  im_ratio,color);
-      if(IsMicrosoft()) {
-	this.all_lines[i].SetAttribute('onmousedown',function() {main_handler.DrawCanvasMouseDown(window.event); return false;});
-      }
       this.all_lines[i].SetAttribute('style','cursor:crosshair;');
     }
 
@@ -279,16 +266,10 @@ function annotation(anno_id) {
     this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),
 			       Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
 
-    if(IsMicrosoft()) {
-      this.first_point.SetAttribute('onmousedown',function() {var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);});
-      this.first_point.SetAttribute('onmouseover',function() {main_handler.MousedOverFirstControlPoint();});
-    }
-    else {
-      this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-      this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
+    this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+    this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
 //       this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
 //       this.first_point.SetAttribute('onmouseover','parent.main_handler.MousedOverFirstControlPoint();');
-    }
   };
 
   // Deletes the annotation's polygon from the screen.
@@ -342,16 +323,10 @@ function annotation(anno_id) {
       this.first_point = new graphics(this.div_attach,'first_point');
       this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),
 				 Math.round(this.pts_y[0]*im_ratio),'#00ff00',8);
-      if(IsMicrosoft()) {
-	this.first_point.SetAttribute('onmousedown',function() {var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);});
-	this.first_point.SetAttribute('onmouseout',function() {main_handler.MousedOutFirstControlPoint();});
-      }
-      else {
-	this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-	this.first_point.SetAttribute('onmouseout','main_handler.MousedOutFirstControlPoint();');
+      this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      this.first_point.SetAttribute('onmouseout','main_handler.MousedOutFirstControlPoint();');
 // 	this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
 // 	this.first_point.SetAttribute('onmouseout','parent.main_handler.MousedOutFirstControlPoint();');
-      }
       this.first_point.SetAttribute('style','cursor:pointer;');
     }
   };
@@ -365,16 +340,10 @@ function annotation(anno_id) {
     this.first_point = new graphics(this.div_attach,'first_point');
     this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),
 			       Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
-    if(IsMicrosoft()) {
-      this.first_point.SetAttribute('onmousedown',function() {var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);});
-      this.first_point.SetAttribute('onmouseover',function() {main_handler.MousedOverFirstControlPoint();});
-    }
-    else {
-      this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-      this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
+    this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+    this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
 //       this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
 //       this.first_point.SetAttribute('onmouseover','parent.main_handler.MousedOverFirstControlPoint();');
-    }
   };
 
   // This function shows all control points for an annotation it takes in 

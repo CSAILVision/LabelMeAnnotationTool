@@ -91,22 +91,21 @@ function image(id) {
     this.im.width = this.width_curr;
     this.im.height = this.height_curr;
 
-    if(!IsMicrosoft()) {
-      document.getElementById('myCanvas_bg').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('myCanvas_bg').setAttributeNS(null,"height",this.height_curr);
-      document.getElementById('select_canvas').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('select_canvas').setAttributeNS(null,"height",this.height_curr);
-      document.getElementById('draw_canvas').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('draw_canvas').setAttributeNS(null,"height",this.height_curr);
-      document.getElementById('query_canvas').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('query_canvas').setAttributeNS(null,"height",this.height_curr);
-    }
+    document.getElementById('myCanvas_bg').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('myCanvas_bg').setAttributeNS(null,"height",this.height_curr);
+    document.getElementById('select_canvas').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('select_canvas').setAttributeNS(null,"height",this.height_curr);
+    document.getElementById('draw_canvas').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('draw_canvas').setAttributeNS(null,"height",this.height_curr);
+    document.getElementById('query_canvas').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('query_canvas').setAttributeNS(null,"height",this.height_curr);
 
     this.curr_frame_width = this.width_curr;
     this.curr_frame_height = this.height_curr;
 
     document.getElementById('loading').style.visibility = 'hidden';
     document.getElementById('main_image').style.visibility = 'visible';
+
     if(IsMicrosoft()) {
       this.im.style.visibility = '';
       document.getElementById('main_image').style.overflow = 'visible';
@@ -184,26 +183,14 @@ function image(id) {
     this.im.width = this.width_curr;
     this.im.height = this.height_curr;
 
-    if(IsMicrosoft()) {
-      document.getElementById('myCanvas_bg').style.width = this.width_curr;
-      document.getElementById('myCanvas_bg').style.height = this.height_curr;
-      document.getElementById('select_canvas').style.width = this.width_curr;
-      document.getElementById('select_canvas').style.height = this.height_curr;
-      document.getElementById('draw_canvas').style.width = this.width_curr;
-      document.getElementById('draw_canvas').style.height = this.height_curr;
-      document.getElementById('query_canvas').style.width = this.width_curr;
-      document.getElementById('query_canvas').style.height = this.height_curr;
-    }
-    else {
-      document.getElementById('myCanvas_bg').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('myCanvas_bg').setAttributeNS(null,"height",this.height_curr);
-      document.getElementById('select_canvas').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('select_canvas').setAttributeNS(null,"height",this.height_curr);
-      document.getElementById('draw_canvas').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('draw_canvas').setAttributeNS(null,"height",this.height_curr);
-      document.getElementById('query_canvas').setAttributeNS(null,"width",this.width_curr);
-      document.getElementById('query_canvas').setAttributeNS(null,"height",this.height_curr);
-    }
+    document.getElementById('myCanvas_bg').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('myCanvas_bg').setAttributeNS(null,"height",this.height_curr);
+    document.getElementById('select_canvas').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('select_canvas').setAttributeNS(null,"height",this.height_curr);
+    document.getElementById('draw_canvas').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('draw_canvas').setAttributeNS(null,"height",this.height_curr);
+    document.getElementById('query_canvas').setAttributeNS(null,"width",this.width_curr);
+    document.getElementById('query_canvas').setAttributeNS(null,"height",this.height_curr);
 
     // Redraw polygons.
     main_canvas.DrawAllPolygons();
@@ -277,23 +264,7 @@ function image(id) {
     if(m=='mt') {
       top_height += 64;
     }
-
-    if(IsNetscape() || IsSafari()){
-      if(main_handler.IsMovieMode()){
-	return window.innerHeight - (bot_height+top_height) +4;      
-      }
-      else if(main_handler.IsPictureMode()){
-	return window.innerHeight - top_height - 8;
-      }
-    }
-    else if(IsMicrosoft()){
-      if(main_handler.IsMovieMode()){
-	return document.body.offsetHeight - (bot_height+top_height) - 8;
-      }
-      else if(main_handler.IsPictureMode()){
-	return document.body.offsetHeight - top_height - 8;
-      }
-    }
+    return window.innerHeight - top_height - 8;
   };
 
   // Returns true if the image is zoomed to the original (fitted) resolution.

@@ -46,31 +46,23 @@ var object_choices = '...';
 // Get the x position of the mouse event.
 function GetEventPosX(event) {
   if(IsNetscape()) return event.layerX;
-  if(IsMicrosoft()) return event.x+document.getElementById('main_image').scrollLeft;//offsetX;
   return event.offsetX;
 }
 
 // Get the y position of the mouse event.
 function GetEventPosY(event) {
   if(IsNetscape()) return event.layerY;
-  if(IsMicrosoft()) return event.y+document.getElementById('main_image').scrollTop;//offsetY;
   return event.offsetY;
 }
 
 // If IE, then makes the HTML to show the 'next' icon with the appropriate 
 // transparencies; if firefox, then just make an img src to show the image
 function ShowUndoImg() {
-  if(!IsMicrosoft()) {
-    var oo = document.createElementNS(xhtmlNS,'img');
-    oo.setAttributeNS(null,"id","undo_image_png");
-    oo.setAttributeNS(null,"src","Icons/undo.png");
-    oo.setAttributeNS(null,"style","cursor:hand; width:3em;");
-    document.getElementById('png_undo').appendChild(oo);
-  }
-  else {
-    var htmlStr = "<span style=\"width:3em; height:3em; filter:progid:DXImageTransform.Microsoft.AlphaImageLoader(src='Icons/undo.png',sizingMethod='scale'); cursor:hand;\"></span>";
-    document.write(htmlStr);
-  }
+  var oo = document.createElementNS(xhtmlNS,'img');
+  oo.setAttributeNS(null,"id","undo_image_png");
+  oo.setAttributeNS(null,"src","Icons/undo.png");
+  oo.setAttributeNS(null,"style","cursor:hand; width:3em;");
+  document.getElementById('png_undo').appendChild(oo);
 }
 
 function RemoveSpecialChars(str) {
@@ -151,19 +143,26 @@ function ShowNextImage() {
 
 // Insert HTML code after a div element:
 function InsertAfterDiv(html_str,tag_id) {
-  var elt = document.getElementById(tag_id);
-  if(IsMicrosoft()) elt.insertAdjacentHTML("BeforeEnd",html_str);
-  else {
-    var x = document.createRange();
-    try {
-      x.setStartAfter(elt);
-    }
-    catch(err) {
-      alert(tag_id);
-    }
-    x = x.createContextualFragment(html_str);
-    elt.appendChild(x);
+  if((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
+    Range.prototype.createContextualFragment = function(html) {
+      var frag = document.createDocumentFragment(), 
+      div = document.createElement("div");
+      frag.appendChild(div);
+      div.outerHTML = html;
+      return frag;
+    };
   }
+
+  var elt = document.getElementById(tag_id);
+  var x = document.createRange();
+  try {
+    x.setStartAfter(elt);
+  }
+  catch(err) {
+    alert(tag_id);
+  }
+  x = x.createContextualFragment(html_str);
+  elt.appendChild(x);
 }
 
 function ChangeLinkColorBG(idx) {
@@ -254,44 +253,37 @@ function setCookie(c_name,value,expiredays) {
 }
 
 function PlaceSignInHTML() {
-  if(IsMicrosoft()) {
-    var html_str = '<div id="you_are_div"><a href="javascript:get_username_form()">' +
-      '<font size="3"><b>Sign in</b></font></a> (<a href="annotationTools/html/why_signin.html" target="_blank">why?</a>)</div>';
-    InsertAfterDiv(html_str,'username_main_div');
-  }
-  else {
-    var el_div = document.createElementNS(xhtmlNS,'div');
-    el_div.setAttributeNS(null,"id","you_are_div");
-    document.getElementById('username_main_div').appendChild(el_div);
-
-    var el_a1 = document.createElementNS(xhtmlNS,'a');
-    el_a1.setAttributeNS(null,"href","javascript:get_username_form();");
-    el_div.appendChild(el_a1);
-
-    var el_font = document.createElementNS(xhtmlNS,'font');
-    el_font.setAttributeNS(null,"size","3");
-    el_a1.appendChild(el_font);
-
-    var el_b = document.createElementNS(xhtmlNS,'b');
-    el_font.appendChild(el_b);
-
-    var el_txt1 = document.createTextNode('Sign in');
-    el_b.appendChild(el_txt1);
-
-    var el_txt2 = document.createTextNode(' (');
-    el_div.appendChild(el_txt2);
-
-    var el_a2 = document.createElementNS(xhtmlNS,'a');
-    el_a2.setAttributeNS(null,"href","annotationTools/html/why_signin.html");
-    el_a2.setAttributeNS(null,"target","_blank");
-    el_div.appendChild(el_a2);
-
-    var el_txt3 = document.createTextNode('why?');
-    el_a2.appendChild(el_txt3);
-
-    var el_txt4 = document.createTextNode(')');
-    el_div.appendChild(el_txt4);
-  }
+  var el_div = document.createElementNS(xhtmlNS,'div');
+  el_div.setAttributeNS(null,"id","you_are_div");
+  document.getElementById('username_main_div').appendChild(el_div);
+  
+  var el_a1 = document.createElementNS(xhtmlNS,'a');
+  el_a1.setAttributeNS(null,"href","javascript:get_username_form();");
+  el_div.appendChild(el_a1);
+  
+  var el_font = document.createElementNS(xhtmlNS,'font');
+  el_font.setAttributeNS(null,"size","3");
+  el_a1.appendChild(el_font);
+  
+  var el_b = document.createElementNS(xhtmlNS,'b');
+  el_font.appendChild(el_b);
+  
+  var el_txt1 = document.createTextNode('Sign in');
+  el_b.appendChild(el_txt1);
+  
+  var el_txt2 = document.createTextNode(' (');
+  el_div.appendChild(el_txt2);
+  
+  var el_a2 = document.createElementNS(xhtmlNS,'a');
+  el_a2.setAttributeNS(null,"href","annotationTools/html/why_signin.html");
+  el_a2.setAttributeNS(null,"target","_blank");
+  el_div.appendChild(el_a2);
+  
+  var el_txt3 = document.createTextNode('why?');
+  el_a2.appendChild(el_txt3);
+  
+  var el_txt4 = document.createTextNode(')');
+  el_div.appendChild(el_txt4);
 }
 
 function sign_out() {
@@ -370,66 +362,50 @@ function write_username() {
 // }
 
 function create_username_form() {
-  if(IsMicrosoft()) {
-    var html_str = '<div id="enter_username_div">' +
-      '<form action="javascript:submit_username();" style="margin-bottom:0px;">' +
-      '<table style="font-size:small;"><tr><td nowrap>' +
-      '<br />Username: '+
-      '<input type="text" id="username" name="username" size="20em" '+
-      'style="font-family:Arial;font-size:small;" /><br />' +
-      '<input id="username_submit" name="username_submit" '+
-      'value="Submit" type="submit" ' +
-      'style="font-family:Arial;font-size:small;" />' +
-      '</td></tr></table></form></div>';
+  var el_div = document.createElementNS(xhtmlNS,'div');
+  el_div.setAttributeNS(null,"id","enter_username_div");
+  document.getElementById('username_main_div').appendChild(el_div);
   
-    InsertAfterDiv(html_str,'username_main_div');
-  }
-  else {
-    var el_div = document.createElementNS(xhtmlNS,'div');
-    el_div.setAttributeNS(null,"id","enter_username_div");
-    document.getElementById('username_main_div').appendChild(el_div);
-
-    var el_form = document.createElementNS(xhtmlNS,'form');
-    el_form.setAttributeNS(null,"action","javascript:submit_username();");
-    el_form.setAttributeNS(null,"style","margin-bottom:0px;");
-    el_div.appendChild(el_form);
-
-    var el_table = document.createElementNS(xhtmlNS,'table');
-    el_table.setAttributeNS(null,"style","font-size:small;");
-    el_form.appendChild(el_table);
-
-    var el_tr = document.createElementNS(xhtmlNS,'tr');
-    el_table.appendChild(el_tr);
-
-    var el_td = document.createElementNS(xhtmlNS,'td');
-    el_td.setAttributeNS(null,"style","text-decoration:nowrap;");
-    el_tr.appendChild(el_td);
-
-    var el_br1 = document.createElementNS(xhtmlNS,'br');
-    el_td.appendChild(el_br1);
-
-    var el_txt1 = document.createTextNode('Username: ');
-    el_td.appendChild(el_txt1);
-
-    var el_input1 = document.createElementNS(xhtmlNS,'input');
-    el_input1.setAttributeNS(null,"type","text");
-    el_input1.setAttributeNS(null,"id","username");
-    el_input1.setAttributeNS(null,"name","username");
-    el_input1.setAttributeNS(null,"size","20em");
-    el_input1.setAttributeNS(null,"style","font-family:Arial;font-size:small;");
-    el_td.appendChild(el_input1);
-
-    var el_br2 = document.createElementNS(xhtmlNS,'br');
-    el_td.appendChild(el_br2);
-
-    var el_input2 = document.createElementNS(xhtmlNS,'input');
-    el_input2.setAttributeNS(null,"type","submit");
-    el_input2.setAttributeNS(null,"id","username_submit");
-    el_input2.setAttributeNS(null,"name","username_submit");
-    el_input2.setAttributeNS(null,"value","Submit");
-    el_input2.setAttributeNS(null,"style","font-family:Arial;font-size:small;");
-    el_td.appendChild(el_input2);
-  }
+  var el_form = document.createElementNS(xhtmlNS,'form');
+  el_form.setAttributeNS(null,"action","javascript:submit_username();");
+  el_form.setAttributeNS(null,"style","margin-bottom:0px;");
+  el_div.appendChild(el_form);
+  
+  var el_table = document.createElementNS(xhtmlNS,'table');
+  el_table.setAttributeNS(null,"style","font-size:small;");
+  el_form.appendChild(el_table);
+  
+  var el_tr = document.createElementNS(xhtmlNS,'tr');
+  el_table.appendChild(el_tr);
+  
+  var el_td = document.createElementNS(xhtmlNS,'td');
+  el_td.setAttributeNS(null,"style","text-decoration:nowrap;");
+  el_tr.appendChild(el_td);
+  
+  var el_br1 = document.createElementNS(xhtmlNS,'br');
+  el_td.appendChild(el_br1);
+  
+  var el_txt1 = document.createTextNode('Username: ');
+  el_td.appendChild(el_txt1);
+  
+  var el_input1 = document.createElementNS(xhtmlNS,'input');
+  el_input1.setAttributeNS(null,"type","text");
+  el_input1.setAttributeNS(null,"id","username");
+  el_input1.setAttributeNS(null,"name","username");
+  el_input1.setAttributeNS(null,"size","20em");
+  el_input1.setAttributeNS(null,"style","font-family:Arial;font-size:small;");
+  el_td.appendChild(el_input1);
+  
+  var el_br2 = document.createElementNS(xhtmlNS,'br');
+  el_td.appendChild(el_br2);
+  
+  var el_input2 = document.createElementNS(xhtmlNS,'input');
+  el_input2.setAttributeNS(null,"type","submit");
+  el_input2.setAttributeNS(null,"id","username_submit");
+  el_input2.setAttributeNS(null,"name","username_submit");
+  el_input2.setAttributeNS(null,"value","Submit");
+  el_input2.setAttributeNS(null,"style","font-family:Arial;font-size:small;");
+  el_td.appendChild(el_input2);
 }
 
 function submit_username() {

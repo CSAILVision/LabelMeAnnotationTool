@@ -214,19 +214,12 @@ function canvas() {
 	this.annotations[pp].DrawPolygon(im_ratio);
 
 	// *****************************************
-	if(IsMicrosoft()) {
-	  this.annotations[pp].SetAttribute('onmousedown',new Function('main_handler.RestToSelected(' + pp + ',null); return false;'));
-	  this.annotations[pp].SetAttribute('onmousemove',new Function('main_handler.CanvasMouseMove(event,' + pp + '); return false;'));
-	  this.annotations[pp].SetAttribute('oncontextmenu',function() {return false;});
-	}
-	else {
-	  this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
-	  this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
-
+	this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
+	this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
+	
 // 	  this.annotations[pp].SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + pp + '); return false;');
 // 	  this.annotations[pp].SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
-	  this.annotations[pp].SetAttribute('oncontextmenu','return false');
-	}
+	this.annotations[pp].SetAttribute('oncontextmenu','return false');
 	this.annotations[pp].SetAttribute('style','cursor:pointer;');
 	// *****************************************
       }
@@ -317,19 +310,12 @@ function canvas() {
 
     // *****************************************
     var anno_id = anno.GetAnnoID();
-    if(IsMicrosoft()) {
-      anno.SetAttribute('onmousedown',new Function('main_handler.RestToSelected(' + anno_id + ',null); return false;'));
-      anno.SetAttribute('onmousemove',new Function('main_handler.CanvasMouseMove(event,' + anno_id + '); return false;'));
-      anno.SetAttribute('oncontextmenu',function() {return false;});
-    }
-    else {
-      anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
-      anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,' + anno_id + ');');
+    anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
+    anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,' + anno_id + ');');
       
 //       anno.SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + anno_id + '); return false;');
 //       anno.SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,' + anno_id + ');');
-      anno.SetAttribute('oncontextmenu','return false');
-    }
+    anno.SetAttribute('oncontextmenu','return false');
     anno.SetAttribute('style','cursor:pointer;');
     // *****************************************
   };

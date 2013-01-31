@@ -96,18 +96,10 @@ function GetMainDiv(left,top) {
 }
 
 function GetNWImg() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none; width: 25px; height: 25px; '+
+  return '<img style="border: 0pt none; width: 25px; height: 25px; '+
     'position: absolute; left: 0px; top: 0px; z-index: 0; '+
     '-moz-user-select: none;" src="annotationTools/GoogleIcons/iw_nw.png" height="25"'+
     ' width="25" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none; width: 25px; height: 25px; '+
-    'position: absolute; left: 0px; top: 0px; z-index: 0; '+
-    '-moz-user-select: none;" src="annotationTools/GoogleIcons/iw_nw.gif" height="25"'+
-    ' width="25" />';
-  }
 }
 
 function GetNImg() {
@@ -117,18 +109,10 @@ function GetNImg() {
 }
 
 function GetNEImg() {
-  if(IsNetscape() || IsSafari()) {
-     return '<img style="border: 0pt none ; width: 25px;'+
+  return '<img style="border: 0pt none ; width: 25px;'+
     'height: 25px; position: absolute; top: 0px; z-index: 0;'+
     '-moz-user-select: none; left: 237px;"'+
     ' src="annotationTools/GoogleIcons/iw_ne.png" height="25" width="25" />';
-  }
-  else if(IsMicrosoft()) {
-     return '<img style="border: 0pt none ; width: 25px;'+
-    'height: 25px; position: absolute; top: 0px; z-index: 0;'+
-    '-moz-user-select: none; left: 237px;"'+
-    ' src="annotationTools/GoogleIcons/iw_ne.gif" height="25" width="25" />';
-  }
 }
 
 function GetWImg() {
@@ -165,81 +149,39 @@ function GetSLeftImg() {
 }
 
 function GetSTapImg() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none ; width: 98px; height: 96px;'+
+  return '<img style="border: 0pt none ; width: 98px; height: 96px;'+
     'position: absolute; z-index: 0; -moz-user-select: none; left: 0px;'+
     'top: 117px;" src="annotationTools/GoogleIcons/iw_tap.png" height="96" width="98" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none ; width: 98px; height: 96px;'+
-    'position: absolute; z-index: 0; -moz-user-select: none; left: 0px;'+
-    'top: 117px;" src="annotationTools/GoogleIcons/iw_tap.gif" height="96" width="98" />';
-  }
 }
 
 function GetSRightImg() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none ; height: 96px;'+
+  return '<img style="border: 0pt none ; height: 96px;'+
     'position: absolute; z-index: 0; -moz-user-select: none; left: 98px;'+
     'width: 139px; top: 117px;" src="annotationTools/GoogleIcons/iw_s.png" height="96" width="640" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none ; height: 96px;'+
-    'position: absolute; z-index: 0; -moz-user-select: none; left: 98px;'+
-    'width: 139px; top: 117px;" src="annotationTools/GoogleIcons/iw_s.gif" height="96" width="640" />';
-  }
 }
 
 function GetSEImg() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none ; width: 25px; height: 96px;'+
+  return '<img style="border: 0pt none ; width: 25px; height: 96px;'+
     'position: absolute; z-index: 0; -moz-user-select: none; left: 237px;'+
     'top: 117px;" src="annotationTools/GoogleIcons/iw_se.png" height="96" width="25" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none ; width: 25px; height: 96px;'+
-    'position: absolute; z-index: 0; -moz-user-select: none; left: 237px;'+
-    'top: 117px;" src="annotationTools/GoogleIcons/iw_se.gif" height="96" width="25" />';
-  }
 }
 
 function GetTapImgUD() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none ; width: 98px; height: 96px;'+
+  return '<img style="border: 0pt none ; width: 98px; height: 96px;'+
     'position: absolute; z-index: 0; -moz-user-select: none; left: 0px;'+
     'top: 0px;" src="annotationTools/GoogleIcons/iw_tap_ud.png" height="96" width="98" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none ; width: 98px; height: 96px;'+
-    'position: absolute; z-index: 0; -moz-user-select: none; left: 0px;'+
-    'top: 0px;" src="annotationTools/GoogleIcons/iw_tap_ud.gif" height="96" width="98" />';
-  }
 }
 
 function GetNImgUD() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none ; height: 96px;'+
+  return '<img style="border: 0pt none ; height: 96px;'+
     'position: absolute; z-index: 0; -moz-user-select: none; left: 98px;'+
     'width: 139px; top: 0px;" src="annotationTools/GoogleIcons/iw_n_ud.png" height="96" width="640" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none ; height: 96px;'+
-    'position: absolute; z-index: 0; -moz-user-select: none; left: 98px;'+
-    'width: 139px; top: 0px;" src="annotationTools/GoogleIcons/iw_n_ud.gif" height="96" width="640" />';
-  }
 }
 
 function GetNEImgUD() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none ; width: 25px; height: 96px;'+
+  return '<img style="border: 0pt none ; width: 25px; height: 96px;'+
     'position: absolute; z-index: 0; -moz-user-select: none; left: 237px;'+
     'top: 0px;" src="annotationTools/GoogleIcons/iw_ne_ud.png" height="96" width="25" />';
-  }
-  else if(IsMicrosoft()) { 
-    return '<img style="border: 0pt none ; width: 25px; height: 96px;'+
-    'position: absolute; z-index: 0; -moz-user-select: none; left: 237px;'+
-    'top: 0px;" src="annotationTools/GoogleIcons/iw_ne_ud.gif" height="96" width="25" />';
-  }
 }
 
 function GetWImgUD() {
@@ -262,18 +204,10 @@ function GetEImgUD() {
 }
 
 function GetSWImgUD() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none; width: 25px; height: 25px; '+
+  return '<img style="border: 0pt none; width: 25px; height: 25px; '+
     'position: absolute; left: 0px; top: 188px; z-index: 0; '+
     '-moz-user-select: none;" src="annotationTools/GoogleIcons/iw_sw_ud.png" height="25"'+
     ' width="25" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none; width: 25px; height: 25px; '+
-    'position: absolute; left: 0px; top: 188px; z-index: 0; '+
-    '-moz-user-select: none;" src="annotationTools/GoogleIcons/iw_sw_ud.gif" height="25"'+
-    'width="25" />';
-  }
 }
 
 function GetSImgUD() {
@@ -283,18 +217,10 @@ function GetSImgUD() {
 }
 
 function GetSEImgUD() {
-  if(IsNetscape() || IsSafari()) {
-    return '<img style="border: 0pt none ; width: 25px;'+
+  return '<img style="border: 0pt none ; width: 25px;'+
     'height: 25px; position: absolute; top: 188px; z-index: 0;'+
     '-moz-user-select: none; left: 237px;"'+
     ' src="annotationTools/GoogleIcons/iw_se_ud.png" height="25" width="25" />';
-  }
-  else if(IsMicrosoft()) {
-    return '<img style="border: 0pt none ; width: 25px;'+
-    'height: 25px; position: absolute; top: 188px; z-index: 0;'+
-    '-moz-user-select: none; left: 237px;"'+
-    ' src="annotationTools/GoogleIcons/iw_se_ud.gif" height="25" width="25" />';
-  }
 }
 
 function GetPopupForm(ud) {
@@ -331,11 +257,11 @@ function GetPopupForm(ud) {
       ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" /><br />';
   }
   else {
-    html_str += '<input name="objEnter" id="objEnter" type="text" tabindex="0" value="" title="Enter the object\'s name here." list="datalist1" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" /><datalist id="datalist1">';
+    html_str += '<input name="objEnter" id="objEnter" type="text" tabindex="0" value="" title="Enter the object\'s name here." list="datalist1" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" /><datalist id="datalist1"><select style="display:none">';
     for(var i = 0; i < object_choices.length; i++) {
       html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
     }
-    html_str += '</datalist><br />';
+    html_str += '</select></datalist><br />';
 
 
 //     html_str += '<select name="objEnter" id="objEnter" title="Enter the object\'s name here." onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();">';
@@ -401,7 +327,7 @@ function GetEditPopupForm(ud,obj_name) {
 	' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();" /><br />';
     }
     else {
-      html_str += '<input name="objEnter" id="objEnter" type="text" tabindex="0" value="' + obj_name + '" title="Enter the object\'s name here." list="datalist1" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();" /><datalist id="datalist1">';
+      html_str += '<input name="objEnter" id="objEnter" type="text" tabindex="0" value="' + obj_name + '" title="Enter the object\'s name here." list="datalist1" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();" /><datalist id="datalist1"><select style="display:none">';
       for(var i = 0; i < object_choices.length; i++) {
 	if(object_choices[i]==obj_name) {
 	  html_str += '<option selected="selected" value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
@@ -410,7 +336,7 @@ function GetEditPopupForm(ud,obj_name) {
 	  html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
 	}
       }
-      html_str += '</datalist><br />';
+      html_str += '</select></datalist><br />';
 
 
 //       html_str += '<select name="objEnter" id="objEnter" title="Enter the object\'s name here." onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();">';

@@ -50,13 +50,13 @@ function QueryCanvas() {
   // Move this canvas to the front.
   this.MoveToFront = function () {
     document.getElementById('query_canvas').style.zIndex = 0;
-    if(!IsMicrosoft()) document.getElementById('query_canvas_div').style.zIndex = 0;
+    document.getElementById('query_canvas_div').style.zIndex = 0;
   };
 
   // Move this canvas to the back.
   this.MoveToBack = function () {
     document.getElementById('query_canvas').style.zIndex = -2;
-    if(!IsMicrosoft()) document.getElementById('query_canvas_div').style.zIndex = -2;
+    document.getElementById('query_canvas_div').style.zIndex = -2;
   };
 
   // *******************************************
