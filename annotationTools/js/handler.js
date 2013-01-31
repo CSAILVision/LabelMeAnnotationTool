@@ -87,16 +87,6 @@ function handler() {
     main_select_canvas.AllowAdjustPolygon();
   };
 
-  this.IsMovieMode = function() {
-    if(main_image.GetFileInfo().GetMode() == 'v') return true;
-    else return false;
-  };
-  
-  this.IsPictureMode = function(){
-    var m = main_image.GetFileInfo().GetMode();
-    return ((m=='i') || (m=='c') || (m=='f') || (m=='im') || (m='mt'));
-  };
-
   // Handles when the user presses the zoom "plus" (in) button.  Zooms in on 
   // the image by amt percent.
   this.ZoomPlus = function (amt) {

@@ -498,32 +498,12 @@ function LoadAnnotations(anno_file) {
 
       var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
       
-      if(main_handler.IsMovieMode()){
-	var frm_num = parseInt(obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("framenumber")[0].firstChild.nodeValue);
-	//frm_number = main_video.getIndex()+1;
-	frm_number = main_image.GetFileInfo().GetImName();
-	frm_number_split = frm_number.split("frame_");
-	frm_number_split = frm_number_split[1].split(".jpg");
-	frm_number = parseInt(frm_number_split[0], 10);
-	
-	if(frm_num == frm_number){
-	  var numpts = pt_elts.length;
-	  main_canvas.GetAnnotations()[pp].CreatePtsX(numpts);
-	  main_canvas.GetAnnotations()[pp].CreatePtsY(numpts);
-	  for(ii=0; ii < numpts; ii++) {
-	    main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
-	    main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
-	  }
-	}
-      }
-      else{
-	var numpts = pt_elts.length;
-	main_canvas.GetAnnotations()[pp].CreatePtsX(numpts);
-	main_canvas.GetAnnotations()[pp].CreatePtsY(numpts);
-	for(ii=0; ii < numpts; ii++) {
-	  main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
-	  main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
-	}
+      var numpts = pt_elts.length;
+      main_canvas.GetAnnotations()[pp].CreatePtsX(numpts);
+      main_canvas.GetAnnotations()[pp].CreatePtsY(numpts);
+      for(ii=0; ii < numpts; ii++) {
+	main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
+	main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
       }
     }
 
