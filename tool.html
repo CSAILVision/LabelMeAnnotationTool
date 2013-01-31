@@ -1,21 +1,13 @@
 <!--
 LabelMe is a WEB-based image annotation tool and a Matlab toolbox that allows researchers to label images and share the annotations with the rest of the community.
-Copyright (C) 2007  MIT, Computer Science and Artificial
-Intelligence Laboratory. Bryan Russell, Antonio Torralba, William T. Freeman
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+Copyright (C) 2013  MIT, Computer Science and Artificial Intelligence Laboratory. Bryan Russell, Antonio Torralba, William T. Freeman
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see
-    <http://www.gnu.org/licenses/>. 
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 -->
 
 <!DOCTYPE html PUBLIC
@@ -42,7 +34,6 @@ Intelligence Laboratory. Bryan Russell, Antonio Torralba, William T. Freeman
   }
 
 <!--#include virtual="./annotationTools/js/graphics_moz.js" -->
-
 <!--#include virtual="./annotationTools/js/my_scripts.js" -->  
 <!--#include virtual="./annotationTools/js/bubble-popups.js" -->
 <!--#include virtual="./annotationTools/js/image.js" -->
@@ -63,84 +54,6 @@ Intelligence Laboratory. Bryan Russell, Antonio Torralba, William T. Freeman
   var main_image;
   
   var xhtmlNS = 'http://www.w3.org/1999/xhtml';
-
-function CreateTicket() {
-  var dirname = main_image.GetFileInfo().GetDirName();
-  var imname = main_image.GetFileInfo().GetImName();
-  var ticket_url = 'annotationTools/perl/generate_ticket.cgi?folder=' + dirname + 
-    '&image=' + imname + '&username=' + username;
-
-  // Submit ticket:
-  if (window.XMLHttpRequest) {
-    req_submit = new XMLHttpRequest();
-    req_submit.open("GET", ticket_url, true);
-    req_submit.send('');
-  } 
-  else if (window.ActiveXObject) {
-    req_submit = new ActiveXObject("Microsoft.XMLHTTP");
-    if (req_submit) {
-      req_submit.open("GET", ticket_url, true);
-      req_submit.send('');
-    }
-  }
-}
-
-function GoToVrmlDownloadPage() {
-  var dirname = main_image.GetFileInfo().GetDirName();
-  var imname = main_image.GetFileInfo().GetImName();
-  var url3D = 'view3D.html?folder=' + dirname + '&image=' + imname;
-    window.open(url3D);
-}
-
-function Check3DPageExists() {
-  if(req_submit.readyState==4) {
-    if(req_submit.status != 200) {
-      CreateTicket();
-    }
-    GoToVrmlDownloadPage();
-  }
-}
-
-function Make3D() {
-  WriteLogMsg('*make3d_pressed ' + main_image.GetFileInfo().GetImagePath());
-  var dirname = main_image.GetFileInfo().GetDirName();
-  var imname = main_image.GetFileInfo().GetImName();
-  var url3D = '3D/' + dirname + '/' +
-    imname.substr(0,imname.length-4) + '.wrl';
-
-  if(main_canvas.GetAnnotations().length==0) {
-    alert("In order for the 3D model to be generated, you must provide at least 5 labeled objects.  Please start labeling and try pressing Make 3D again.");
-//    alert("The 3D model has not been created yet.  Note that the model starts to be produced when there are at least 5 labeled objects.  Please continue labeling and try again");
-    return;
-  }
-
-  var numUserAnno = 0;
-  for(ii = 0; ii < (main_canvas.GetAnnotations().length-num_orig_anno); ii++) {
-    if(main_canvas.GetAnnotations()[num_orig_anno+ii].GetDeleted()==0) numUserAnno++;
-  }
-
-  if(numUserAnno) {
-    CreateTicket();
-    GoToVrmlDownloadPage();
-  }
-  else {
-    // Check if VRML file exists:
-    if (window.XMLHttpRequest) {
-      req_submit = new XMLHttpRequest();
-      req_submit.onreadystatechange = Check3DPageExists;
-      req_submit.open("GET", url3D, true);
-      req_submit.send('');
-    }
-    else if (window.ActiveXObject) {
-      req_submit = new ActiveXObject("Microsoft.XMLHTTP");
-      if (req_submit) {
-        req_submit.onreadystatechange = Check3DPageExists;
-        req_submit.open("GET", url3D, true);
-	req_submit.send('');
-      }
-    }
-  }
-}
 
 function CheckXMLExists() {
   if(req_submit.readyState==4) {
@@ -198,36 +111,11 @@ function MainInit() {
 
   var dirname = main_image.GetFileInfo().GetDirName();
   var imname = main_image.GetFileInfo().GetImName();
-//  document.getElementById('3d_link').href = 
-//    'view3D.html?folder=' + dirname + '&image=' + imname;
-//  document.getElementById('3d_link').href = 
-//    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
-//    imname.substr(0,imname.length-4) + '.wrl';
-
-//  document.getElementById('xml_url').href = 
-//    main_image.GetFileInfo().GetAnnotationPath();
 
   if(document.getElementById('img_url')) {
     document.getElementById('img_url').href = 
       main_image.GetFileInfo().GetImagePath();
   }
-
-//  document.getElementById('vrml_embed').src = 
-//    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
-//    imname.substr(0,imname.length-4) + '.wrl';
-
-/*
-  document.getElementById('vrml_expand').href = 
-    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
-    imname.substr(0,imname.length-4) + '.wrl';
-
-  document.getElementById('vrml_dload').href = 
-    'http://labelme.csail.mit.edu/3D/' + dirname + '/' +
-    imname.substr(0,imname.length-4) + '.wrl';
-
-  document.getElementById('texture_dload').href = 
-    'http://labelme.csail.mit.edu/3D/' + dirname + '/' + imname;
-*/
 
   if(document.getElementById('username_main_div')) write_username();
 
@@ -259,13 +147,11 @@ WriteLogMsg('*start_loading');
     <tr>
       <td class="top">
         <a href="index.html" target="_blank" title="Please">
-<!--          <img src="Icons/LabelMeNEWtight198x55.gif" height="55" alt="please" /> -->
           <img src="Icons/LabelMeNEWtight198x55.gif" style="height:3em;" alt="please" />
 	</a>
       </td>
       <td>
         &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-<!--        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
       </td>
       <td class="top" align="center">
         <table cellpadding="0" cellspacing="0">
@@ -283,7 +169,6 @@ WriteLogMsg('*start_loading');
       </td>
       <td>
         &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-        <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
       </td>
       <td>
         <a id="png_undo" href="javascript:main_handler.EraseSegmentButton();" alt="Undo last control point" title="Undo last control point" style="text-decoration:none;">
@@ -295,33 +180,17 @@ WriteLogMsg('*start_loading');
       </td>
       <td>
         &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-        <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
       </td>
       <td class="top" align="center">
-<!--        <a href="guidelines.html" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br /> -->
-<!--        <a href="3Dintroduction.html" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br /> -->
-<!--        <a href="http://people.csail.mit.edu/torralba/labelme/description3D.html" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br />-->
         <a href="annotationTools/html/labeling_instructions.html" title="Show help page" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br />
 	Help
       </td>
       <td>
         &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-        <!-- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
       </td>
-<!--
-      <td class="top" align="center">
-        <a href="LabelMe3D/upload3D.html" target="_blank" title="Want to label your own image? Press this to upload an image."><img src="Icons/LMuploadNew.png" style="height:3em;" /></a><br />
-	Upload image
-      </td>
-      <td>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-      </td>
--->
       <td align="center">
         <a href="javascript:ShowNextImage();" alt="Show me another image" title="Show me another image" style="text-decoration:none;"><img src="Icons/LMarrow.png" style="height:3em;" /></a><br />
 	Show me another image
-<!--	<a href="javascript:ShowNextImage();" alt="Show next image">
-	Show me another image</a> -->
       </td>
     </tr>
   </table>
@@ -406,7 +275,6 @@ WriteLogMsg('*start_loading');
   <div id="right_side">
 
   <script type="text/javascript">
-//    alert('hi');
     document.getElementById('right_side').style.overflow='auto';
   </script>
 <!-- changed the scroll property above from just overflow:auto. 6.19.06 for IE and Firefox //-->  
@@ -416,13 +284,9 @@ WriteLogMsg('*start_loading');
 
             <div id="username_main_div" style="font-size:small; padding-top:0.5em; padding-bottom:0.5em; padding-left:0.5em; padding-right:0.5em; background-color:#eeeeff;">
 	    </div>
-            <script type="text/javascript">
-//              write_username();
-            </script>
 
       <div id="counter_div" style="font-size:small;">
         <p>There are <font size="3"><b><span id="anno_count"></span></b>&#160;</font>labelled objects</p>
-        <!-- <p>There are <font size="3"><b><span id="anno_count"></span></b>&nbsp;</font>labelled objects</p> -->
       </div>
 
     </div>
@@ -441,11 +305,6 @@ WriteLogMsg('*start_loading');
     </div>
 
   </div>
-
-<!-- Copyright code...to be included later???
-<div id="bottom_text" style="position:absolute;right:0;bottom:0;background-color:yellow;">
-<font size=-3>&copy;2005 Trustees of MIT</font></div>
--->
 
 <div id="mt_feedback" />
 
