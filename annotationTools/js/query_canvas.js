@@ -21,12 +21,23 @@ function QueryCanvas() {
     this.annotation.SetDivAttach('query_canvas');
     this.DrawPolygon();
 
+    // If line has been labeled, then make autocomplete have "line"
+    // and "horizon line" be options:
+    var isLine = 0;
+    if((this.annotation.GetPtsX().length==2) && (object_choices=='...')) {
+      object_choices = 'line,horizon line';
+      object_choices = object_choices.split(/,/);
+      isLine = 1;
+    }
+    
     // Make query popup appear.
     var pt = this.annotation.GetPopupPoint();
     pt = main_image.SlideWindow(pt[0],pt[1]);
     main_image.ScrollbarsOff();
     WriteLogMsg('*What_is_this_object_query');
     mkPopup(pt[0],pt[1]);
+
+    if(isLine) object_choices = '...';
   };
 
   // Draw the polygon.

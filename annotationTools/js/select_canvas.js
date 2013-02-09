@@ -183,6 +183,15 @@ function SelectCanvas() {
     this.annotation.DrawPolygon(im_ratio);
     this.annotation.FillPolygon();
 
+    // If line has been labeled, then make autocomplete have "line"
+    // and "horizon line" be options:
+    var isLine = 0;
+    if((this.annotation.GetPtsX().length==2) && (object_choices=='...')) {
+      object_choices = 'line,horizon line';
+      object_choices = object_choices.split(/,/);
+      isLine = 1;
+    }
+
     var m = main_image.GetFileInfo().GetMode();
 //     if((m=='im') || (m=='mt')) {
       // Popup edit bubble:
@@ -196,6 +205,8 @@ function SelectCanvas() {
 //       this.annotation.ShowControlPoints();
 //       this.annotation.ShowCenterOfMass(im_ratio);
 //     }
+
+    if(isLine) object_choices = '...';
   };
 
 }
