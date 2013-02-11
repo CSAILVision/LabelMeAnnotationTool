@@ -224,9 +224,20 @@ function annotation(anno_id) {
     if(!this.graphics) {
       this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
     }
+
+    // Determine if an angle has been labeled:
+    var strtok = this.obj_name.split(/ /);
+    var isAngle = 0;
+    for(var i = 0; i < strtok.length; i++) {
+      if(strtok[i]=='angle') isAngle = 1;
+    }
+
     if(this.pts_x.length==1) {
       this.graphics.DrawFlag(Math.round(this.pts_x[0]*im_ratio),
 			     Math.round(this.pts_y[0]*im_ratio));
+    }
+    else if((this.pts_x.length==3) && isAngle) {
+      this.graphics.DrawPolyLine(this.pts_x,this.pts_y,this.getObjectColor(this.anno_id),im_ratio);
     }
     else if(this.automatic==1) {
       this.graphics.DrawDashedPolygon(this.pts_x,this.pts_y,
