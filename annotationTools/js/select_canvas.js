@@ -183,6 +183,15 @@ function SelectCanvas() {
     this.annotation.DrawPolygon(im_ratio);
     this.annotation.FillPolygon();
 
+    // If point has been labeled, then make autocomplete have "point"
+    // be option:
+    var isPoint = 0;
+    if((this.annotation.GetPtsX().length==1) && (object_choices=='...')) {
+      object_choices = 'point';
+      object_choices = object_choices.split(/,/);
+      isPoint = 1;
+    }
+
     // If line has been labeled, then make autocomplete have "line"
     // and "horizon line" be options:
     var isLine = 0;
@@ -206,7 +215,7 @@ function SelectCanvas() {
 //       this.annotation.ShowCenterOfMass(im_ratio);
 //     }
 
-    if(isLine) object_choices = '...';
+    if(isPoint || isLine) object_choices = '...';
   };
 
 }
