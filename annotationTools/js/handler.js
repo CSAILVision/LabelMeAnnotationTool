@@ -115,6 +115,22 @@ function handler() {
     mkImageAttributePopup(main_image.width_curr / 2, main_image.height_curr / 2, 'image_attribute');
   }
 
+  //mg
+  this.ImageAttributeDeleteClick = function(idx) {
+    main_canvas.DeleteImageAttribute(idx);
+
+    old_name = '';
+    new_name = '';
+
+    if(view_ObjList) {
+      RemoveAnnotationList();
+      LoadAnnotationList();
+    }
+
+    main_canvas.SubmitAnnotations(0);
+  }
+
+
   // Handles when the user presses the delete button in response to
   // the edit popup bubble.
   this.EditBubbleDeleteButton = function () {

@@ -38,6 +38,11 @@ function canvas() {
     this.imageAttributes = Array(num);
   };
 
+  //mg
+  this.DeleteImageAttribute = function(idx) {
+    this.imageAttributes.splice(idx, 1);
+  }
+
   this.selectObject = function (idx) {
     if((this.is_poly_selected) && (this.selected_poly==idx)) return;
     this.unselectObjects();
@@ -66,6 +71,9 @@ function canvas() {
     if(modifiedControlPoints) modifiedControlPoints = "cpts_modified";
     else modifiedControlPoints = "cpts_not_modified";
 
+    // Question: Is the intent here to remove all tags with "private"?
+    // If there is more than one, then this code doesn't appear correct
+    // because the value of old_pri.length will change after each remove.
     var old_pri = tmp_xml.getElementsByTagName("private");
     for(ii=0;ii<old_pri.length;ii++) {
       old_pri[ii].parentNode.removeChild(old_pri[ii]);
@@ -106,8 +114,10 @@ function canvas() {
 
     // remove all existing image attributes as we will re-add them all
      var elts_imageAttr = tmp_xml.getElementsByTagName("imageAttribute");
-     for (var i = 0; i < elts_imageAttr.length; ++i) {
-        elts_imageAttr[i].parentNode.removeChild(elts_imageAttr[i]);
+     var num_imageAttr = elts_imageAttr.length;
+
+     for (var i = 0; i < num_imageAttr; ++i) {
+        elts_imageAttr[0].parentNode.removeChild(elts_imageAttr[0]);
      }
 
      // add image attributes to the xml
@@ -129,10 +139,10 @@ function canvas() {
     var elts_obj = tmp_xml.getElementsByTagName("object");
     for(ii=0; ii < num_orig_anno; ii++) {
       if(!elts_obj[ii].getElementsByTagName("name")[0].firstChild) {
-  if(main_canvas.GetAnnotations()[ii].GetObjName().length > 0) {
-    var txt_nam = tmp_xml.createTextNode(main_canvas.GetAnnotations()[ii].GetObjName());
-    elts_obj[ii].getElementsByTagName("name")[0].appendChild(txt_nam);
-	}
+        if(main_canvas.GetAnnotations()[ii].GetObjName().length > 0) {
+          var txt_nam = tmp_xml.createTextNode(main_canvas.GetAnnotations()[ii].GetObjName());
+          elts_obj[ii].getElementsByTagName("name")[0].appendChild(txt_nam);
+        }
       }
       else {
         elts_obj[ii].getElementsByTagName("name")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetObjName();
@@ -226,9 +236,9 @@ function canvas() {
     else if (window.ActiveXObject) {
       req_submit = new ActiveXObject("Microsoft.XMLHTTP");
       if (req_submit) {
-	req_submit.onreadystatechange = this.processReqChange;
-	req_submit.open("POST", url, true);
-	req_submit.send(tmp_xml);
+        req_submit.onreadystatechange = this.processReqChange;
+        req_submit.open("POST", url, true);
+        req_submit.send(tmp_xml);
       }
     }
   };
@@ -374,13 +384,13 @@ function canvas() {
     // only if req shows "loaded"
     if(req_submit.readyState == 4) {
       if(req_submit.status == 200) {
-	if(req_submit.responseText) {
-	  alert(req_submit.responseText);
-	}
+    if(req_submit.responseText) {
+      alert(req_submit.responseText);
+    }
       }
       if(req_submit.status != 200) {
-	alert("There was a problem retrieving the XML data:\n" +
-	      req_submit.statusText);
+        alert("There was a problem retrieving the XML data:\n" +
+              req_submit.statusText);
       }
     }
   };

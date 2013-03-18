@@ -215,7 +215,9 @@ function LoadImageAttributeList() {
 
   var html_str = '<div id="imageAttrib_list">';
   for (var i = 0; i < main_canvas.GetImageAttributes().length; ++i) {
-    html_str += '<p>' + main_canvas.GetImageAttributes()[i].GetAttributeName() + '</p>';
+    html_str += '<p>' + main_canvas.GetImageAttributes()[i].GetAttributeName() +
+                 '<a onclick="javascript:main_handler.ImageAttributeDeleteClick(' + i + ');" >' +
+                 '<img src="annotationTools/GoogleIcons/close.gif"/></a></p>';
   }
   html_str += '</div>';
   InsertAfterDiv(html_str, 'attrib_anchor');
