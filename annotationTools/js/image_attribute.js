@@ -12,6 +12,7 @@ function imageAttribute(attribute_id) {
 
   this.id;
   this.attribute_name = '';
+  this.attribute_value = '';
   this.username = 'anonymous';
   this.deleted = 0;
   this.verified = 0;
@@ -28,11 +29,19 @@ function imageAttribute(attribute_id) {
   };
 
   this.GetAttributeName = function () {
-    return this.obj_name;
+    return this.attribute_name;
   };
 
   this.SetAttributeName = function(name) {
-    this.obj_name = name;
+    this.attribute_name = name;
+  };
+
+  this.GetAttributeValue = function () {
+    return this.attribute_value;
+  };
+
+  this.SetAttributeValue = function(name) {
+    this.attribute_value = name;
   };
 
   this.GetUsername = function () {
