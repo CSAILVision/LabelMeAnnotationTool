@@ -504,9 +504,11 @@ function LoadAnnotations(anno_file) {
 
       var name = (imageAttrib_elts[i].getElementsByTagName("name")[0]).firstChild.nodeValue;
       var value = imageAttrib_elts[i].getElementsByTagName("value")[0];
-      var username = (imageAttrib_elts[i].getElementsByTagName("username")[0]).firstChild.nodeValue;
+      var username = imageAttrib_elts[i].getElementsByTagName("username")[0];
 
-      value = value.firstChild && value.firstChild.nodeValue || ''; // not guaranteed to exist
+      // not guaranteed to exist
+      value = value.firstChild && value.firstChild.nodeValue || '';
+      username = username.firstChild && username.firstChild.nodeValue || 'anonymous';
 
       main_canvas.GetImageAttributes()[i].SetAttributeName(name);
       main_canvas.GetImageAttributes()[i].SetAttributeValue(value);
