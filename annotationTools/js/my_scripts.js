@@ -214,12 +214,19 @@ function LoadImageAttributeList() {
   }
 
   var html_str = '<div id="imageAttrib_list">';
+
   for (var i = 0; i < main_canvas.GetImageAttributes().length; ++i) {
+
+    console.log(main_canvas.GetImageAttributes()[i].GetUsername());
+
+    var canDelete = IsUserAdmin() || main_canvas.GetImageAttributes()[i].GetUsername() == username;
+    var deleteHtml = (canDelete) ? '<a onclick="javascript:main_handler.ImageAttributeDeleteClick(' + i + ');" >' +
+                                   '<img src="annotationTools/GoogleIcons/close.gif"/></a>' : '';
+
     html_str += '<p>' + main_canvas.GetImageAttributes()[i].GetAttributeName() + ' : ' +
-                 main_canvas.GetImageAttributes()[i].GetAttributeValue() + ' ' +
-                 '<a onclick="javascript:main_handler.ImageAttributeDeleteClick(' + i + ');" >' +
-                 '<img src="annotationTools/GoogleIcons/close.gif"/></a></p>';
+                 main_canvas.GetImageAttributes()[i].GetAttributeValue() + ' ' + deleteHtml + '</p>';
   }
+
   html_str += '</div>';
   InsertAfterDiv(html_str, 'attrib_anchor');
 }
@@ -499,10 +506,13 @@ function LoadAnnotations(anno_file) {
 
       var name = (imageAttrib_elts[i].getElementsByTagName("name")[0]).firstChild.nodeValue;
       var value = imageAttrib_elts[i].getElementsByTagName("value")[0];
-      value = value.firstChild && value.firstChild.nodeValue || '';
+      var username = (imageAttrib_elts[i].getElementsByTagName("username")[0]).firstChild.nodeValue;
+
+      value = value.firstChild && value.firstChild.nodeValue || ''; // not guaranteed to exist
 
       main_canvas.GetImageAttributes()[i].SetAttributeName(name);
       main_canvas.GetImageAttributes()[i].SetAttributeValue(value);
+      main_canvas.GetImageAttributes()[i].SetUsername(username);
     }
 
     num_orig_anno = num_obj;

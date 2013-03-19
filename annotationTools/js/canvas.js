@@ -126,12 +126,15 @@ function canvas() {
         var imgAttrElement = tmp_xml.createElement("imageAttribute");
         var nameElement = tmp_xml.createElement("name");
         var valueElement = tmp_xml.createElement("value");
+        var usernameElement = tmp_xml.createElement("username");
 
         nameElement.appendChild(tmp_xml.createTextNode(imgAttribs[i].GetAttributeName()));
         valueElement.appendChild(tmp_xml.createTextNode(imgAttribs[i].GetAttributeValue()));
+        usernameElement.appendChild(tmp_xml.createTextNode(imgAttribs[i].GetUsername()));
 
         imgAttrElement.appendChild(nameElement);
         imgAttrElement.appendChild(valueElement);
+        imgAttrElement.appendChild(usernameElement);
 
         tmp_xml.documentElement.appendChild(imgAttrElement);
      }
