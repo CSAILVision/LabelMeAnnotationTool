@@ -75,23 +75,17 @@ function handler() {
   };
 
   //mg
-  this.SubmitImageAttribute = function() {
-
-    var nn = RemoveSpecialChars(document.getElementById('imageAttribEnter').value);
-    var re = /[a-zA-Z0-9]/;
-    if(!re.test(nn)) {
-      alert('Please enter an object name');
-      return;
-    }
+  this.SubmitImageAttribute = function(attib_name, attrib_value) {
 
     submission_edited = 0;
-    new_name = nn;
+    new_name = attib_name;
     old_name = new_name;
 
     CloseImageAttributePopup();
 
     var newAttrib = new imageAttribute(0);
     newAttrib.SetAttributeName(new_name);
+    newAttrib.SetAttributeValue(attrib_value);
     newAttrib.SetUsername(username);
 
     main_canvas.AddImageAttribute(newAttrib);
@@ -111,8 +105,21 @@ function handler() {
   }
 
   //mg
+  // Perform form validation here
   this.ImageAttributeAddClick = function onAddImageAttribute() {
-    mkImageAttributePopup(main_image.width_curr / 2, main_image.height_curr / 2, 'image_attribute');
+
+    var attrib_name = document.getElementById('image_attribute_name').value;
+    var attrib_value = document.getElementById('image_attribute_value').value;
+
+    // Allow anything but empty strings?
+    if (attrib_name != '') {
+      this.SubmitImageAttribute(attrib_name, attrib_value);
+      document.getElementById('image_attrib_form').reset();
+    } else {
+      alert("A valid name is required to add an attribute.");
+    }
+
+    //mkImageAttributePopup(main_image.width_curr / 2, main_image.height_curr / 2, 'image_attribute');
   }
 
   //mg

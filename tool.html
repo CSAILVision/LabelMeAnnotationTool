@@ -288,7 +288,13 @@ WriteLogMsg('*start_loading');
 	    </div>
 
       <p><font size="3"><b>Image Attributes</b></font></p>
-      <button type="button" onclick="main_handler.ImageAttributeAddClick()">Add</button>
+      <fieldset style="display:inline-block">
+        <form action="" id="image_attrib_form">
+          Name:<input type="text" id="image_attribute_name" />
+          Value:<input type="text" id="image_attribute_value" />
+        </form>
+        <button type="button" onclick="main_handler.ImageAttributeAddClick()">Add</button>
+      </fieldset>
       <div id="attrib_anchor">
 
       </div>

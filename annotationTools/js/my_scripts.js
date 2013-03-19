@@ -215,7 +215,8 @@ function LoadImageAttributeList() {
 
   var html_str = '<div id="imageAttrib_list">';
   for (var i = 0; i < main_canvas.GetImageAttributes().length; ++i) {
-    html_str += '<p>' + main_canvas.GetImageAttributes()[i].GetAttributeName() +
+    html_str += '<p>' + main_canvas.GetImageAttributes()[i].GetAttributeName() + ' : ' +
+                 main_canvas.GetImageAttributes()[i].GetAttributeValue() + ' ' +
                  '<a onclick="javascript:main_handler.ImageAttributeDeleteClick(' + i + ');" >' +
                  '<img src="annotationTools/GoogleIcons/close.gif"/></a></p>';
   }
@@ -498,7 +499,7 @@ function LoadAnnotations(anno_file) {
 
       var name = (imageAttrib_elts[i].getElementsByTagName("name")[0]).firstChild.nodeValue;
       var value = imageAttrib_elts[i].getElementsByTagName("value")[0];
-      value = value.firstChild && value.firstChild.nodeValue;
+      value = value.firstChild && value.firstChild.nodeValue || '';
 
       main_canvas.GetImageAttributes()[i].SetAttributeName(name);
       main_canvas.GetImageAttributes()[i].SetAttributeValue(value);
