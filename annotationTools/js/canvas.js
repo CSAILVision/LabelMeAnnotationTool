@@ -10,6 +10,7 @@ function canvas() {
   // *******************************************
 
   this.annotations; // includes name, deleted, verified info
+  this.imageAttributes; //mg
   this.is_poly_selected; // Indicates whether a polygon is selected
   this.selected_poly; // Indicates which polygon is selected
 
@@ -27,7 +28,22 @@ function canvas() {
     this.annotations = Array(num);
   };
 
-  this.selectObject = function (idx) { 
+  //mg
+  this.GetImageAttributes = function () {
+    return this.imageAttributes;
+  }
+
+  //mg
+  this.CreateNewImageAttributes = function (num) {
+    this.imageAttributes = Array(num);
+  };
+
+  //mg
+  this.DeleteImageAttribute = function(idx) {
+    this.imageAttributes.splice(idx, 1);
+  }
+
+  this.selectObject = function (idx) {
     if((this.is_poly_selected) && (this.selected_poly==idx)) return;
     this.unselectObjects();
     this.is_poly_selected = 1;
@@ -39,7 +55,7 @@ function canvas() {
 
   };
 
-  this.unselectObjects = function () { 
+  this.unselectObjects = function () {
     if(!this.is_poly_selected) return;
     var m = main_image.GetFileInfo().GetMode();
     if(view_ObjList) ChangeLinkColorBG(this.selected_poly);
@@ -55,11 +71,14 @@ function canvas() {
     if(modifiedControlPoints) modifiedControlPoints = "cpts_modified";
     else modifiedControlPoints = "cpts_not_modified";
 
+    // Question: Is the intent here to remove all tags with "private"?
+    // If there is more than one, then this code doesn't appear correct
+    // because the value of old_pri.length will change after each remove.
     var old_pri = tmp_xml.getElementsByTagName("private");
     for(ii=0;ii<old_pri.length;ii++) {
       old_pri[ii].parentNode.removeChild(old_pri[ii]);
     }
-    
+
     // Add information to go into the log:
     var elt_pri = tmp_xml.createElement("private");
     var elt_gct = tmp_xml.createElement("global_count");
@@ -68,7 +87,7 @@ function canvas() {
     var elt_onm = tmp_xml.createElement("old_name");
     var elt_nnm = tmp_xml.createElement("new_name");
     var elt_mcp = tmp_xml.createElement("modified_cpts");
-    
+
     var txt_gct = tmp_xml.createTextNode(global_count);
     var txt_user = tmp_xml.createTextNode(username);
     var txt_edt = tmp_xml.createTextNode(submission_edited);
@@ -76,7 +95,7 @@ function canvas() {
     var txt_nnm = tmp_xml.createTextNode(new_name);
     var txt_mcp = tmp_xml.createTextNode(modifiedControlPoints);
     var txt_pri = tmp_xml.createTextNode(ref);
-    
+
     tmp_xml.documentElement.appendChild(elt_pri);
     elt_pri.appendChild(elt_gct);
     elt_pri.appendChild(elt_user);
@@ -85,57 +104,84 @@ function canvas() {
     elt_pri.appendChild(elt_nnm);
     elt_pri.appendChild(elt_mcp);
     elt_pri.appendChild(txt_pri);
-    
+
     elt_gct.appendChild(txt_gct);
     elt_user.appendChild(txt_user);
     elt_edt.appendChild(txt_edt);
     elt_onm.appendChild(txt_onm);
     elt_nnm.appendChild(txt_nnm);
     elt_mcp.appendChild(txt_mcp);
-    
+
+    // remove all existing image attributes as we will re-add them all
+     var elts_imageAttr = tmp_xml.getElementsByTagName("imageAttribute");
+     var num_imageAttr = elts_imageAttr.length;
+
+     // not sure the best way to do this but this works on chrome and IE
+     while (elts_imageAttr.length > 0) {
+        elts_imageAttr[0].parentNode.removeChild(elts_imageAttr[0]);
+        elts_imageAttr = tmp_xml.getElementsByTagName("imageAttribute");
+     }
+
+     // add image attributes to the xml
+     var imgAttribs = main_canvas.GetImageAttributes();
+     for (var i = 0; i < imgAttribs.length; ++i) {
+        var imgAttrElement = tmp_xml.createElement("imageAttribute");
+        var nameElement = tmp_xml.createElement("name");
+        var valueElement = tmp_xml.createElement("value");
+        var usernameElement = tmp_xml.createElement("username");
+
+        nameElement.appendChild(tmp_xml.createTextNode(imgAttribs[i].GetAttributeName()));
+        valueElement.appendChild(tmp_xml.createTextNode(imgAttribs[i].GetAttributeValue()));
+        usernameElement.appendChild(tmp_xml.createTextNode(imgAttribs[i].GetUsername()));
+
+        imgAttrElement.appendChild(nameElement);
+        imgAttrElement.appendChild(valueElement);
+        imgAttrElement.appendChild(usernameElement);
+
+        tmp_xml.documentElement.appendChild(imgAttrElement);
+     }
+
     var elts_obj = tmp_xml.getElementsByTagName("object");
     for(ii=0; ii < num_orig_anno; ii++) {
       if(!elts_obj[ii].getElementsByTagName("name")[0].firstChild) {
-	if(main_canvas.GetAnnotations()[ii].GetObjName().length > 0) {
-	  var txt_nam = tmp_xml.createTextNode(main_canvas.GetAnnotations()[ii].GetObjName());
-	  elts_obj[ii].getElementsByTagName("name")[0].appendChild(txt_nam);
-	}
+        if(main_canvas.GetAnnotations()[ii].GetObjName().length > 0) {
+          var txt_nam = tmp_xml.createTextNode(main_canvas.GetAnnotations()[ii].GetObjName());
+          elts_obj[ii].getElementsByTagName("name")[0].appendChild(txt_nam);
+        }
       }
       else {
-	elts_obj[ii].getElementsByTagName("name")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetObjName();
+        elts_obj[ii].getElementsByTagName("name")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetObjName();
       }
       elts_obj[ii].getElementsByTagName("deleted")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetDeleted();
 
       if((elts_obj[ii].getElementsByTagName("automatic").length>0) && elts_obj[ii].getElementsByTagName("automatic")[0].firstChild) {
-	elts_obj[ii].getElementsByTagName("automatic")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetAutomatic();
+        elts_obj[ii].getElementsByTagName("automatic")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetAutomatic();
       }
 
       var id = elts_obj[ii].getElementsByTagName("id");
       if(id!=null && id.length>0 && id[0].firstChild!=null) {
-	id[0].firstChild.nodeValue = ""+ii;
-	main_canvas.GetAnnotations()[ii].SetID(""+ii);
+        id[0].firstChild.nodeValue = ""+ii;
+        main_canvas.GetAnnotations()[ii].SetID(""+ii);
       }
       else {
-	var elt_id = tmp_xml.createElement("id");
-	var txt_id = tmp_xml.createTextNode(""+ii);
-	main_canvas.GetAnnotations()[ii].SetID(""+ii);
-	elt_id.appendChild(txt_id);
-	elts_obj[ii].appendChild(elt_id);
+        var elt_id = tmp_xml.createElement("id");
+        var txt_id = tmp_xml.createTextNode(""+ii);
+        main_canvas.GetAnnotations()[ii].SetID(""+ii);
+        elt_id.appendChild(txt_id);
+        elts_obj[ii].appendChild(elt_id);
       }
 
       for(jj=0; jj < main_canvas.GetAnnotations()[ii].GetPtsX().length; jj++) {
-	elts_obj[ii].getElementsByTagName("polygon")[0].getElementsByTagName("pt")[jj].getElementsByTagName("x")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetPtsX()[jj];
-	elts_obj[ii].getElementsByTagName("polygon")[0].getElementsByTagName("pt")[jj].getElementsByTagName("y")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetPtsY()[jj];
+        elts_obj[ii].getElementsByTagName("polygon")[0].getElementsByTagName("pt")[jj].getElementsByTagName("x")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetPtsX()[jj];
+        elts_obj[ii].getElementsByTagName("polygon")[0].getElementsByTagName("pt")[jj].getElementsByTagName("y")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetPtsY()[jj];
       }
     }
-    
+
     while(elts_obj.length>num_orig_anno) {
       elts_obj[num_orig_anno].parentNode.removeChild(elts_obj[num_orig_anno]);
       elts_obj = tmp_xml.getElementsByTagName("object");
     }
-    
-    
-      
+
     for(ii=0; ii < (main_canvas.GetAnnotations().length-num_orig_anno); ii++) {
       if(main_canvas.GetAnnotations()[num_orig_anno+ii].GetDeleted()==1) continue;
       var elt_obj = tmp_xml.createElement("object");
@@ -152,7 +198,7 @@ function canvas() {
       var txt_id = tmp_xml.createTextNode(""+(num_orig_anno+ii));
       main_canvas.GetAnnotations()[num_orig_anno+ii].SetID(""+(num_orig_anno+ii));
       var elt_pol = tmp_xml.createElement("polygon");
-      
+
       tmp_xml.documentElement.appendChild(elt_obj);
       elt_obj.appendChild(elt_nam);
       elt_obj.appendChild(elt_del);
@@ -164,39 +210,40 @@ function canvas() {
       elt_del.appendChild(txt_del);
       elt_ver.appendChild(txt_ver);
       elt_id.appendChild(txt_id);
-      
+
       var elt_user = tmp_xml.createElement("username");
       var txt_user = tmp_xml.createTextNode(username);
       elt_pol.appendChild(elt_user);
       elt_user.appendChild(txt_user);
-      
+
       for(jj=0; jj < main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsX().length; jj++) {
-	var elt_pt = tmp_xml.createElement("pt");
-	var elt_x = tmp_xml.createElement("x");
-	var elt_y = tmp_xml.createElement("y");
-	var txt_x = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsX()[jj]);
-	var txt_y = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsY()[jj]);
-	
-	elt_pol.appendChild(elt_pt);
-	elt_pt.appendChild(elt_x);
-	elt_pt.appendChild(elt_y);
-	elt_x.appendChild(txt_x);
-	elt_y.appendChild(txt_y);
+        var elt_pt = tmp_xml.createElement("pt");
+        var elt_x = tmp_xml.createElement("x");
+        var elt_y = tmp_xml.createElement("y");
+        var txt_x = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsX()[jj]);
+        var txt_y = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsY()[jj]);
+
+        elt_pol.appendChild(elt_pt);
+        elt_pt.appendChild(elt_x);
+        elt_pt.appendChild(elt_y);
+        elt_x.appendChild(txt_x);
+        elt_y.appendChild(txt_y);
       }
     }
+
     // branch for native XMLHttpRequest object
     if (window.XMLHttpRequest) {
       req_submit = new XMLHttpRequest();
       req_submit.onreadystatechange = this.processReqChange;
       req_submit.open("POST", url, true);
       req_submit.send(tmp_xml);
-    } 
+    }
     else if (window.ActiveXObject) {
       req_submit = new ActiveXObject("Microsoft.XMLHTTP");
       if (req_submit) {
-	req_submit.onreadystatechange = this.processReqChange;
-	req_submit.open("POST", url, true);
-	req_submit.send(tmp_xml);
+        req_submit.onreadystatechange = this.processReqChange;
+        req_submit.open("POST", url, true);
+        req_submit.send(tmp_xml);
       }
     }
   };
@@ -216,7 +263,7 @@ function canvas() {
 	// *****************************************
 	this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
 	this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
-	
+
 // 	  this.annotations[pp].SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + pp + '); return false;');
 // 	  this.annotations[pp].SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
 	this.annotations[pp].SetAttribute('oncontextmenu','return false');
@@ -226,23 +273,23 @@ function canvas() {
     }
   };
 
-  // Detects if the point (x,y) is close to a polygon.  If so, return 
+  // Detects if the point (x,y) is close to a polygon.  If so, return
   // the index of the closest polygon.  Else, return -1.
   this.IsNearPolygon = function (x,y,p) {
     var sx = x / main_image.GetImRatio();
     var sy = y / main_image.GetImRatio();
-    
+
     var pt = this.annotations[p].ClosestPoint(sx,sy);
     var minDist = pt[2];
 
-    // this is the sensitivity area around the outlines of the polygon.  
+    // this is the sensitivity area around the outlines of the polygon.
     // 7.31.2006 - changed from dividing by im_ratio to multiplying by it
     // so that the sensitivity area is not huge when you're zoomed in.
     // also changed from 10 to 5.
-    // also - changed it so that when you move the mouse over the sensitivity 
+    // also - changed it so that when you move the mouse over the sensitivity
     // area, the area gets bigger so you won't move off of it on accident.
     var buffer = 5; //7.31.06
-    if(main_canvas.is_poly_selected) { 
+    if(main_canvas.is_poly_selected) {
       buffer = 13;
     }
 
@@ -257,29 +304,29 @@ function canvas() {
   };
 
   // Deletes the currently selected polygon from the canvas.
-  this.DeleteSelectedPolygon = function () {  
+  this.DeleteSelectedPolygon = function () {
     if(!this.is_poly_selected) return;
     var idx = this.selected_poly;
-    
+
     if((IsUserAnonymous() || (!IsCreator(this.annotations[idx].GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
       alert('You do not have permission to delete this polygon');
 //       PermissionError();
       return;
     }
-    
+
     if(this.annotations[idx].GetVerified()) {
       main_handler.RestToSelected(idx,null);
       return;
     }
-    
+
     this.annotations[idx].SetDeleted(1);
-    
+
     if(idx>=num_orig_anno) {
       anno_count--;
       setCookie('counter',anno_count);
       UpdateCounterHTML();
     }
-    
+
     this.unselectObjects();
     if(view_ObjList) {
       RemoveAnnotationList();
@@ -301,6 +348,11 @@ function canvas() {
     this.AttachAnnotation(anno);
   };
 
+  //mg
+  this.AddImageAttribute = function (attrib) {
+    this.imageAttributes.push(attrib);
+  };
+
   // Attach the annotation to the canvas.
   this.AttachAnnotation = function (anno) {
     if(anno.GetDeleted()&&(!view_Deleted)) return;
@@ -312,7 +364,7 @@ function canvas() {
     var anno_id = anno.GetAnnoID();
     anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
     anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,' + anno_id + ');');
-      
+
 //       anno.SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + anno_id + '); return false;');
 //       anno.SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,' + anno_id + ');');
     anno.SetAttribute('oncontextmenu','return false');
@@ -331,19 +383,19 @@ function canvas() {
   // Private methods:
   // *******************************************
 
-  // Handles after we return from sending an XML message to the 
+  // Handles after we return from sending an XML message to the
   // server.
   this.processReqChange = function () {
     // only if req shows "loaded"
     if(req_submit.readyState == 4) {
       if(req_submit.status == 200) {
-	if(req_submit.responseText) {
-	  alert(req_submit.responseText);
-	}
+    if(req_submit.responseText) {
+      alert(req_submit.responseText);
+    }
       }
       if(req_submit.status != 200) {
-	alert("There was a problem retrieving the XML data:\n" +
-	      req_submit.statusText);
+        alert("There was a problem retrieving the XML data:\n" +
+              req_submit.statusText);
       }
     }
   };

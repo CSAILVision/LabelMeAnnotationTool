@@ -1,7 +1,7 @@
 // my_scripts.js
 // Modified: 03/05/2007
 // This file contains global variables and functions.  This file
-// should be minimized and abstracted whenever possible.  It is 
+// should be minimized and abstracted whenever possible.  It is
 // best to refrain from adding new variables/functions to this
 // file.
 
@@ -55,7 +55,7 @@ function GetEventPosY(event) {
   return event.offsetY;
 }
 
-// If IE, then makes the HTML to show the 'next' icon with the appropriate 
+// If IE, then makes the HTML to show the 'next' icon with the appropriate
 // transparencies; if firefox, then just make an img src to show the image
 function ShowUndoImg() {
   var oo = document.createElementNS(xhtmlNS,'img');
@@ -97,8 +97,8 @@ function IsCreator(u) {
 
 function RemoveAnnotationList() {
   var p = document.getElementById('anno_list');
-  if(p) {  
-    p.parentNode.removeChild(p); 
+  if(p) {
+    p.parentNode.removeChild(p);
   }
 }
 
@@ -110,7 +110,7 @@ function WriteLogMsg(msg) {
     req_submit = new XMLHttpRequest();
     req_submit.open("POST", url, true);
     req_submit.send(msg);
-  } 
+  }
   else if (window.ActiveXObject) {
     req_submit = new ActiveXObject("Microsoft.XMLHTTP");
     if (req_submit) {
@@ -145,7 +145,7 @@ function ShowNextImage() {
 function InsertAfterDiv(html_str,tag_id) {
   if((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
     Range.prototype.createContextualFragment = function(html) {
-      var frag = document.createDocumentFragment(), 
+      var frag = document.createDocumentFragment(),
       div = document.createElement("div");
       frag.appendChild(div);
       div.outerHTML = html;
@@ -184,14 +184,14 @@ function LoadAnnotationList() {
     var isDeleted = main_canvas.GetAnnotations()[ii].GetDeleted();
     if(((ii<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || ((ii>=num_orig_anno)&&(!isDeleted||(isDeleted&&view_Deleted)))) {
       html_str += '<div id="LinkAnchor' + ii + '">';
-      html_str += '<a id="Link' + ii + 
-	'" href="javascript:main_handler.AnnotationLinkClick('+ii+');" '+
-	'onmouseover="javascript:main_handler.AnnotationLinkMouseOver('+ii+');" ' +
-	'onmouseout="javascript:main_handler.AnnotationLinkMouseOut();"';
+      html_str += '<a id="Link' + ii +
+                  '" href="javascript:main_handler.AnnotationLinkClick('+ii+');" '+
+                  'onmouseover="javascript:main_handler.AnnotationLinkMouseOver('+ii+');" ' +
+                  'onmouseout="javascript:main_handler.AnnotationLinkMouseOut();"';
       if(isDeleted) html_str += ' style="color:#888888"><b>';
       else html_str += '>';
-      if(main_canvas.GetAnnotations()[ii].GetObjName().length==0 && 
-	 !main_draw_canvas.GetAnnotation()) 
+      if(main_canvas.GetAnnotations()[ii].GetObjName().length==0 &&
+	 !main_draw_canvas.GetAnnotation())
 	html_str += '<i>[ Please enter name ]</i>';
       else html_str += main_canvas.GetAnnotations()[ii].GetObjName();
       if(isDeleted) html_str += '</b>';
@@ -201,7 +201,32 @@ function LoadAnnotationList() {
   html_str += '</div>';
   InsertAfterDiv(html_str,'anno_anchor');
 
-	
+  //mg call it here for convenience
+  LoadImageAttributeList();
+}
+
+//mg
+function LoadImageAttributeList() {
+
+  var anchor = document.getElementById('attrib_anchor');
+  while(anchor.firstChild) {
+    anchor.removeChild(anchor.firstChild);
+  }
+
+  var html_str = '<div id="imageAttrib_list">';
+
+  for (var i = 0; i < main_canvas.GetImageAttributes().length; ++i) {
+
+    var canDelete = IsUserAdmin() || main_canvas.GetImageAttributes()[i].GetUsername() == username;
+    var deleteHtml = (canDelete) ? '<a onclick="javascript:main_handler.ImageAttributeDeleteClick(' + i + ');" >' +
+                                   '<img src="annotationTools/GoogleIcons/close.gif"/></a>' : '';
+
+    html_str += '<p>' + main_canvas.GetImageAttributes()[i].GetAttributeName() + ' : ' +
+                 main_canvas.GetImageAttributes()[i].GetAttributeValue() + ' ' + deleteHtml + '</p>';
+  }
+
+  html_str += '</div>';
+  InsertAfterDiv(html_str, 'attrib_anchor');
 }
 
 function UpdateCounterHTML() {
@@ -233,14 +258,14 @@ function LoadCounterText() {
 }
 
 function getCookie(c_name) {
-  if (document.cookie.length>0) { 
+  if (document.cookie.length>0) {
     c_start=document.cookie.indexOf(c_name + "=");
-    if (c_start!=-1) { 
+    if (c_start!=-1) {
       c_start=c_start + c_name.length+1;
       c_end=document.cookie.indexOf(";",c_start);
       if (c_end==-1) c_end=document.cookie.length;
       return unescape(document.cookie.substring(c_start,c_end));
-    } 
+    }
   }
   return null
 }
@@ -256,32 +281,32 @@ function PlaceSignInHTML() {
   var el_div = document.createElementNS(xhtmlNS,'div');
   el_div.setAttributeNS(null,"id","you_are_div");
   document.getElementById('username_main_div').appendChild(el_div);
-  
+
   var el_a1 = document.createElementNS(xhtmlNS,'a');
   el_a1.setAttributeNS(null,"href","javascript:get_username_form();");
   el_div.appendChild(el_a1);
-  
+
   var el_font = document.createElementNS(xhtmlNS,'font');
   el_font.setAttributeNS(null,"size","3");
   el_a1.appendChild(el_font);
-  
+
   var el_b = document.createElementNS(xhtmlNS,'b');
   el_font.appendChild(el_b);
-  
+
   var el_txt1 = document.createTextNode('Sign in');
   el_b.appendChild(el_txt1);
-  
+
   var el_txt2 = document.createTextNode(' (');
   el_div.appendChild(el_txt2);
-  
+
   var el_a2 = document.createElementNS(xhtmlNS,'a');
   el_a2.setAttributeNS(null,"href","annotationTools/html/why_signin.html");
   el_a2.setAttributeNS(null,"target","_blank");
   el_div.appendChild(el_a2);
-  
+
   var el_txt3 = document.createTextNode('why?');
   el_a2.appendChild(el_txt3);
-  
+
   var el_txt4 = document.createTextNode(')');
   el_div.appendChild(el_txt4);
 }
@@ -315,7 +340,7 @@ function IsExistingUser() {
       im_req.send('');
     }
   }
-  
+
   if(im_req.status==200) {
     return parseInt(im_req.responseXML.getElementsByTagName("user_exist")[0].firstChild.nodeValue);
   }
@@ -329,7 +354,7 @@ function write_username() {
   if(getCookie('username')) username = getCookie('username');
   if(username=="anonymous") PlaceSignInHTML();
   else {
-    html_str = '<div id="you_are_div"><br />You are: <b>' + username + 
+    html_str = '<div id="you_are_div"><br />You are: <b>' + username +
       '</b> <br />(' +
       '<a href="javascript:sign_out()">sign out</a>)</div>';
     InsertAfterDiv(html_str,'username_main_div');
@@ -342,19 +367,19 @@ function write_username() {
 //   if((main_image.GetFileInfo().GetMode()!='c') && getCookie('username')) username = getCookie('username');
 //   if(username=="anonymous") PlaceSignInHTML();
 //   else if(main_image.GetFileInfo().GetMode()=='c') {
-//     html_str = '<div id="you_are_div"><br />You are: <b>' + username + 
+//     html_str = '<div id="you_are_div"><br />You are: <b>' + username +
 //       '</b> <br />(' +
 //       '<a href="view_collection.cgi?username=' + username + '&amp;collection=' + main_image.GetFileInfo().GetCollection() + '">View collection</a>, <a href="signin.cgi?username=' + username + '">All collections</a>)</div>';
 //     InsertAfterDiv(html_str,'username_main_div');
 //   }
 //   else if(IsExistingUser()) {
-//     html_str = '<div id="you_are_div"><br />You are: <b>' + username + 
+//     html_str = '<div id="you_are_div"><br />You are: <b>' + username +
 //       '</b> <br />(' +
 //       '<a href="signin.cgi?username=' + username + '">Your collections</a>, <a href="javascript:sign_out()">Sign out</a>)</div>';
 //     InsertAfterDiv(html_str,'username_main_div');
 //   }
 //   else {
-//     html_str = '<div id="you_are_div"><br />You are: <b>' + username + 
+//     html_str = '<div id="you_are_div"><br />You are: <b>' + username +
 //       '</b> <br />(' +
 //       '<a href="javascript:sign_out()">sign out</a>)</div>';
 //     InsertAfterDiv(html_str,'username_main_div');
@@ -365,29 +390,29 @@ function create_username_form() {
   var el_div = document.createElementNS(xhtmlNS,'div');
   el_div.setAttributeNS(null,"id","enter_username_div");
   document.getElementById('username_main_div').appendChild(el_div);
-  
+
   var el_form = document.createElementNS(xhtmlNS,'form');
   el_form.setAttributeNS(null,"action","javascript:submit_username();");
   el_form.setAttributeNS(null,"style","margin-bottom:0px;");
   el_div.appendChild(el_form);
-  
+
   var el_table = document.createElementNS(xhtmlNS,'table');
   el_table.setAttributeNS(null,"style","font-size:small;");
   el_form.appendChild(el_table);
-  
+
   var el_tr = document.createElementNS(xhtmlNS,'tr');
   el_table.appendChild(el_tr);
-  
+
   var el_td = document.createElementNS(xhtmlNS,'td');
   el_td.setAttributeNS(null,"style","text-decoration:nowrap;");
   el_tr.appendChild(el_td);
-  
+
   var el_br1 = document.createElementNS(xhtmlNS,'br');
   el_td.appendChild(el_br1);
-  
+
   var el_txt1 = document.createTextNode('Username: ');
   el_td.appendChild(el_txt1);
-  
+
   var el_input1 = document.createElementNS(xhtmlNS,'input');
   el_input1.setAttributeNS(null,"type","text");
   el_input1.setAttributeNS(null,"id","username");
@@ -395,10 +420,10 @@ function create_username_form() {
   el_input1.setAttributeNS(null,"size","20em");
   el_input1.setAttributeNS(null,"style","font-family:Arial;font-size:small;");
   el_td.appendChild(el_input1);
-  
+
   var el_br2 = document.createElementNS(xhtmlNS,'br');
   el_td.appendChild(el_br2);
-  
+
   var el_input2 = document.createElementNS(xhtmlNS,'input');
   el_input2.setAttributeNS(null,"type","submit");
   el_input2.setAttributeNS(null,"id","username_submit");
@@ -421,8 +446,8 @@ function submit_username() {
   for(i=num_orig_anno; i < all_annos.length; i++) {
     all_annos[i].SetUsername(username);
   }
-  // In the future, include SubmitAnnotations().  However, need to update 
-  // private information sent to server logs to indicate that username 
+  // In the future, include SubmitAnnotations().  However, need to update
+  // private information sent to server logs to indicate that username
   // change has taken place.
 //   main_canvas.SubmitAnnotations();
 }
@@ -446,7 +471,7 @@ function XMLGet(fname) {
     req_anno = new XMLHttpRequest();
     req_anno.open("POST", url, false);
     req_anno.send(fname);
-  } 
+  }
   else if (window.ActiveXObject) {
     req_anno = new ActiveXObject("Microsoft.XMLHTTP");
     if (req_anno) {
@@ -465,29 +490,52 @@ function LoadAnnotations(anno_file) {
     anno_xml = objXml.responseXML;
     var obj_elts = anno_xml.getElementsByTagName("object");
     var num_obj = obj_elts.length;
-  
+
     main_canvas.CreateNewAnnotations(num_obj);
+
+    //mg todo use the number found in the file
+    var imageAttrib_elts = anno_xml.getElementsByTagName("imageAttribute");
+    var num_imageAttribs = imageAttrib_elts.length;
+
+    main_canvas.CreateNewImageAttributes(num_imageAttribs);
+
+    for (var i = 0; i < num_imageAttribs; ++i) {
+      main_canvas.GetImageAttributes()[i] = new imageAttribute(i);
+
+      var name = (imageAttrib_elts[i].getElementsByTagName("name")[0]).firstChild.nodeValue;
+      var value = imageAttrib_elts[i].getElementsByTagName("value")[0];
+      var username = imageAttrib_elts[i].getElementsByTagName("username")[0];
+
+      // not guaranteed to exist
+      value = value.firstChild && value.firstChild.nodeValue || '';
+      username = username.firstChild && username.firstChild.nodeValue || 'anonymous';
+
+      main_canvas.GetImageAttributes()[i].SetAttributeName(name);
+      main_canvas.GetImageAttributes()[i].SetAttributeValue(value);
+      main_canvas.GetImageAttributes()[i].SetUsername(username);
+    }
+
     num_orig_anno = num_obj;
 
     for(pp=0; pp < num_obj; pp++) {
       var id = obj_elts[pp].getElementsByTagName("id");
-      
+
       main_canvas.GetAnnotations()[pp] = new annotation(pp);
       main_canvas.GetAnnotations()[pp].SetDeleted(parseInt(obj_elts[pp].getElementsByTagName("deleted")[0].firstChild.nodeValue));
       main_canvas.GetAnnotations()[pp].SetVerified(parseInt(obj_elts[pp].getElementsByTagName("verified")[0].firstChild.nodeValue));
 
       if((obj_elts[pp].getElementsByTagName("username").length>0) && obj_elts[pp].getElementsByTagName("username")[0].firstChild)
-	main_canvas.GetAnnotations()[pp].SetUsername(obj_elts[pp].getElementsByTagName("username")[0].firstChild.nodeValue);
+        main_canvas.GetAnnotations()[pp].SetUsername(obj_elts[pp].getElementsByTagName("username")[0].firstChild.nodeValue);
       else
-	main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
+        main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
 
       if((obj_elts[pp].getElementsByTagName("automatic").length>0) && obj_elts[pp].getElementsByTagName("automatic")[0].firstChild)
-	main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
+        main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
 
       if(id && (id.length>0) && id[0].firstChild)
-	main_canvas.GetAnnotations()[pp].SetID(id[0].firstChild.nodeValue);
+        main_canvas.GetAnnotations()[pp].SetID(id[0].firstChild.nodeValue);
       else
-	main_canvas.GetAnnotations()[pp].SetID(""+pp);
+        main_canvas.GetAnnotations()[pp].SetID(""+pp);
 
       if(!obj_elts[pp].getElementsByTagName("name")[0].firstChild)
         main_canvas.GetAnnotations()[pp].SetObjName('');
@@ -497,13 +545,13 @@ function LoadAnnotations(anno_file) {
 //        main_canvas.GetAnnotations()[pp] = new annotation(obj_elts[pp].getElementsByTagName("name")[0].firstChild.nodeValue);
 
       var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
-      
+
       var numpts = pt_elts.length;
       main_canvas.GetAnnotations()[pp].CreatePtsX(numpts);
       main_canvas.GetAnnotations()[pp].CreatePtsY(numpts);
       for(ii=0; ii < numpts; ii++) {
-	main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
-	main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
+        main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
+        main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
       }
     }
 
@@ -529,8 +577,8 @@ function LoadAnnotations(anno_file) {
   }
 }
 
-// This function creates a form (replaces popup) on right hand side to 
-// replace the annotation link for the polygon that is selected, either 
+// This function creates a form (replaces popup) on right hand side to
+// replace the annotation link for the polygon that is selected, either
 // by selecting the link or clicking on the polygon in the picture
 function CreateEditAnnotationForm(idx) {
   var html_str = '<div id="edit_polygon_div">' +
@@ -538,12 +586,12 @@ function CreateEditAnnotationForm(idx) {
     '<table style="font-size:small;">' +
     '<tr>' +
     '<td style="text-decoration:nowrap;">' +
-    '<br />' + 
+    '<br />' +
     'Name: ' +
     '<input type="text" id="objEnter" name="objEnter" value="' + main_canvas.GetAnnotations()[idx].GetObjName() + '" size="20em" style="font-family:Arial;font-size:small;" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();" />' +
     '<br />' +
     '<table width="100%"><tr><td><input type="button" id="polygon_submit" name="polygon_submit" onclick="main_handler.SubmitEditLabel();" value="Save" style="font-family:Arial;font-size:small;" /></td>' +
-    '     ' + 
+    '     ' +
     '<td align="right"><font size="-2"><a id="polygon_delete" name="polygon_delete" href="javascript:main_handler.EditBubbleDeleteButton();" style="font-family:Arial;"><b>Delete</b></a></font></td></tr></table>' +
 //     '<input type="button" id="polygon_delete" name="polygon_delete" value="Delete" onclick="main_handler.EditBubbleDeleteButton();" style="font-family:Arial;font-size:small;" />' +
     '</td>' +
@@ -551,7 +599,7 @@ function CreateEditAnnotationForm(idx) {
     '</table>' +
     '</form>' +
     '</div>';
-  
+
   InsertAfterDiv(html_str,'LinkAnchor' + idx);
   var p = document.getElementById('Link'+idx);
   p.parentNode.removeChild(p);
@@ -576,7 +624,7 @@ function GetTimeStamp() {
     req_anno = new XMLHttpRequest();
     req_anno.open("POST", url, false);
     req_anno.send();
-  } 
+  }
   else if (window.ActiveXObject) {
     req_anno = new ActiveXObject("Microsoft.XMLHTTP");
     if (req_anno) {

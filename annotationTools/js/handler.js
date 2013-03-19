@@ -2,7 +2,7 @@
 // Updated: 10/19/2006
 
 // handler
-// Handles all of the user's actions and delegates tasks to other classes.  
+// Handles all of the user's actions and delegates tasks to other classes.
 // Also keeps track of global information.
 var REST_CANVAS = 1;
 var DRAW_CANVAS = 2;
@@ -20,7 +20,7 @@ function handler() {
   // Public methods:
   // *******************************************
 
-  // Handles when the user presses the delete button in response to 
+  // Handles when the user presses the delete button in response to
   // the "What is this object?" popup bubble.
   this.WhatIsThisObjectDeleteButton = function () {
     WriteLogMsg('*Deleting_object');
@@ -31,7 +31,7 @@ function handler() {
     this.QueryToRest();
   };
 
-  // Handles when the user presses the undo close button in response to 
+  // Handles when the user presses the undo close button in response to
   // the "What is this object?" popup bubble.
   this.WhatIsThisObjectUndoCloseButton = function () {
     this.active_canvas = DRAW_CANVAS;
@@ -73,8 +73,63 @@ function handler() {
     }
     main_canvas.SubmitAnnotations(editedControlPoints);
   };
-  
-  // Handles when the user presses the delete button in response to 
+
+  //mg
+  this.SubmitImageAttribute = function(attib_name, attrib_value) {
+
+    submission_edited = 0;
+    new_name = attib_name;
+    old_name = new_name;
+
+    var newAttrib = new imageAttribute(0);
+    newAttrib.SetAttributeName(new_name);
+    newAttrib.SetAttributeValue(attrib_value);
+    newAttrib.SetUsername(username);
+
+    main_canvas.AddImageAttribute(newAttrib);
+
+    if(view_ObjList) {
+      RemoveAnnotationList();
+      LoadAnnotationList();
+    }
+
+    //attrib_count++;
+    main_canvas.SubmitAnnotations(0);
+  }
+
+  //mg
+  // Perform form validation here
+  this.ImageAttributeAddClick = function onAddImageAttribute() {
+
+    var attrib_name = document.getElementById('image_attribute_name').value;
+    var attrib_value = document.getElementById('image_attribute_value').value;
+
+    // Allow anything but empty strings?
+    if (attrib_name != '') {
+      this.SubmitImageAttribute(attrib_name, attrib_value);
+      document.getElementById('image_attrib_form').reset();
+    } else {
+      alert("A valid name is required to add an attribute.");
+    }
+  }
+
+  //mg
+  this.ImageAttributeDeleteClick = function(idx) {
+    main_canvas.DeleteImageAttribute(idx);
+
+    old_name = '';
+    new_name = '';
+
+    if(view_ObjList) {
+      RemoveAnnotationList();
+      LoadAnnotationList();
+    }
+
+    main_canvas.SubmitAnnotations(0);
+  }
+
+
+  // Handles when the user presses the delete button in response to
   // the edit popup bubble.
   this.EditBubbleDeleteButton = function () {
     main_select_canvas.DeleteAnnotation();
@@ -87,19 +142,19 @@ function handler() {
     main_select_canvas.AllowAdjustPolygon();
   };
 
-  // Handles when the user presses the zoom "plus" (in) button.  Zooms in on 
+  // Handles when the user presses the zoom "plus" (in) button.  Zooms in on
   // the image by amt percent.
   this.ZoomPlus = function (amt) {
     main_image.Zoom(amt);
   };
 
-  // Handles when the user presses the zoom "minux" (out) button.  Zooms out 
+  // Handles when the user presses the zoom "minux" (out) button.  Zooms out
   // on the image by amt percent.
   this.ZoomMinus = function (amt) {
     main_image.Zoom(amt);
   };
 
-  // Handles when the user presses on the "Fit Image" link.  The result is 
+  // Handles when the user presses on the "Fit Image" link.  The result is
   // that the displayed image fits nicely onto the page (no scrollbars).
   this.ZoomFitImage = function () {
     main_image.Zoom('fitted');
@@ -124,7 +179,7 @@ function handler() {
     if(this.active_canvas!=SELECTED_CANVAS) main_canvas.unselectObjects();
   };
 
-  // Handles when the user moves the mouse over a polygon on the drawing 
+  // Handles when the user moves the mouse over a polygon on the drawing
   // canvas.
   this.CanvasMouseMove = function (event,pp) {
     var x = GetEventPosX(event);
@@ -153,7 +208,7 @@ function handler() {
     main_draw_canvas.AddAnnotation(x,y,main_canvas.GetAnnotations().length);
   };
 
-  // Handles when the user presses the mouse button down on the drawing 
+  // Handles when the user presses the mouse button down on the drawing
   // canvas.
   this.DrawCanvasMouseDown = function (event) {
     if(this.active_canvas!=DRAW_CANVAS) return;
@@ -190,9 +245,9 @@ function handler() {
     main_draw_canvas.DetachAnnotation();
   };
 
-  // Submits the object label in response to the "What is this object?" 
+  // Submits the object label in response to the "What is this object?"
   // popup bubble.
-  this.SubmitQuery = function () { 
+  this.SubmitQuery = function () {
     var nn;
     var anno;
     if((object_choices!='...') && (object_choices.length==1)) {
@@ -286,7 +341,7 @@ function handler() {
     anno.FillPolygon();
   };
 
-  // Handles when the user presses the mouse button down on the selected 
+  // Handles when the user presses the mouse button down on the selected
   // canvas.
   this.SelectedCanvasMouseDown = function (event) {
     if(main_select_canvas.isEditingControlPoint || main_select_canvas.isMovingCenterOfMass) {
@@ -300,7 +355,7 @@ function handler() {
     main_select_canvas.MouseDown(x,y,button);
   };
 
-  // Handles when the user moves the mouse button over the selected 
+  // Handles when the user moves the mouse button over the selected
   // canvas.
   this.SelectedCanvasMouseMove = function (event) {
     if(this.active_canvas==SELECTED_CANVAS) {
@@ -312,7 +367,7 @@ function handler() {
     }
   };
 
-  // Handles when the user releases the mouse button on the selected 
+  // Handles when the user releases the mouse button on the selected
   // canvas.
   this.SelectedCanvasMouseUp = function (event) {
     var x = GetEventPosX(event);
