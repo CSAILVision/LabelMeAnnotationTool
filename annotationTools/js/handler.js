@@ -81,8 +81,6 @@ function handler() {
     new_name = attib_name;
     old_name = new_name;
 
-    CloseImageAttributePopup();
-
     var newAttrib = new imageAttribute(0);
     newAttrib.SetAttributeName(new_name);
     newAttrib.SetAttributeValue(attrib_value);
@@ -100,11 +98,6 @@ function handler() {
   }
 
   //mg
-  this.AddImageAttributeDeleteButton = function () {
-    CloseImageAttributePopup();
-  }
-
-  //mg
   // Perform form validation here
   this.ImageAttributeAddClick = function onAddImageAttribute() {
 
@@ -118,8 +111,6 @@ function handler() {
     } else {
       alert("A valid name is required to add an attribute.");
     }
-
-    //mkImageAttributePopup(main_image.width_curr / 2, main_image.height_curr / 2, 'image_attribute');
   }
 
   //mg

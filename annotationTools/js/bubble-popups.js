@@ -76,9 +76,6 @@ function mkBubbleHTML(left,top,bubble_type,obj_name) {
   case 'verified':
     html_str += GetCloseImg(ud) + GetVerifiedPopupForm(ud);
     break;
-  case 'image_attribute':
-    html_str += /*GetCloseImg(ud) + */GetImageAttributePopupForm(ud, obj_name);
-    break;
   default:
     alert('Invalid bubble_type');
   }
