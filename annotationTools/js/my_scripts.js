@@ -217,8 +217,6 @@ function LoadImageAttributeList() {
 
   for (var i = 0; i < main_canvas.GetImageAttributes().length; ++i) {
 
-    console.log(main_canvas.GetImageAttributes()[i].GetUsername());
-
     var canDelete = IsUserAdmin() || main_canvas.GetImageAttributes()[i].GetUsername() == username;
     var deleteHtml = (canDelete) ? '<a onclick="javascript:main_handler.ImageAttributeDeleteClick(' + i + ');" >' +
                                    '<img src="annotationTools/GoogleIcons/close.gif"/></a>' : '';

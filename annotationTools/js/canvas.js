@@ -116,8 +116,10 @@ function canvas() {
      var elts_imageAttr = tmp_xml.getElementsByTagName("imageAttribute");
      var num_imageAttr = elts_imageAttr.length;
 
-     for (var i = 0; i < num_imageAttr; ++i) {
+     // not sure the best way to do this but this works on chrome and IE
+     while (elts_imageAttr.length > 0) {
         elts_imageAttr[0].parentNode.removeChild(elts_imageAttr[0]);
+        elts_imageAttr = tmp_xml.getElementsByTagName("imageAttribute");
      }
 
      // add image attributes to the xml
