@@ -35,6 +35,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <!--#include virtual="./annotationTools/js/jquery-1.9.1.js" -->
 <!--#include virtual="./annotationTools/js/globals.js" -->
+<!--#include virtual="./annotationTools/js/io.js" -->
 <!--#include virtual="./annotationTools/js/graphics_moz.js" -->
 <!--#include virtual="./annotationTools/js/my_scripts.js" -->  
 <!--#include virtual="./annotationTools/js/bubble-popups.js" -->
@@ -99,15 +100,9 @@ function MainInit() {
 
   function main_image_onload_helper() {
     main_image.SetImageDimensions();
-    LoadAnnotations(main_image.GetFileInfo().GetFullName());
-    var m = main_image.GetFileInfo().GetMode();
-    if(view_ObjList) LoadAnnotationList();
-    //if((m!='im') && (m!='mt')) LoadAnnotationList();
-
-    // Added for IE compatability.  Without it, there is extra space 
-    // at the top and the points are offset from where you clicked.
-    // Also, myCanvas_bg does not show up if this is not here.
-    //if(IsMicrosoft()) main_image.Zoom('fitted');
+    var anno_file = main_image.GetFileInfo().GetFullName();
+    anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml';
+    ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
   };
 
   main_image.GetNewImage(main_image_onload_helper);
