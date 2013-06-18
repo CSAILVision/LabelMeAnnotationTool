@@ -50,7 +50,6 @@ function canvas() {
 
   // Send annotation information to server CGI script for recording.
   this.SubmitAnnotations = function (modifiedControlPoints) {
-    var url = 'annotationTools/perl/submit.cgi';
     var tmp_xml = LM_xml;
     if(modifiedControlPoints) modifiedControlPoints = "cpts_modified";
     else modifiedControlPoints = "cpts_not_modified";
@@ -184,21 +183,10 @@ function canvas() {
 	elt_y.appendChild(txt_y);
       }
     }
-    // branch for native XMLHttpRequest object
-    if (window.XMLHttpRequest) {
-      req_submit = new XMLHttpRequest();
-      req_submit.onreadystatechange = this.processReqChange;
-      req_submit.open("POST", url, true);
-      req_submit.send(tmp_xml);
-    } 
-    else if (window.ActiveXObject) {
-      req_submit = new ActiveXObject("Microsoft.XMLHTTP");
-      if (req_submit) {
-	req_submit.onreadystatechange = this.processReqChange;
-	req_submit.open("POST", url, true);
-	req_submit.send(tmp_xml);
-      }
-    }
+
+    // Write XML to server:
+    var url = 'annotationTools/perl/submit.cgi';
+    WriteXML(url,tmp_xml,function(){return;});
   };
 
   // Loop through all of the annotations and draw the polygons.
@@ -330,22 +318,5 @@ function canvas() {
   // *******************************************
   // Private methods:
   // *******************************************
-
-  // Handles after we return from sending an XML message to the 
-  // server.
-  this.processReqChange = function () {
-    // only if req shows "loaded"
-    if(req_submit.readyState == 4) {
-      if(req_submit.status == 200) {
-	if(req_submit.responseText) {
-	  alert(req_submit.responseText);
-	}
-      }
-      if(req_submit.status != 200) {
-	alert("There was a problem retrieving the XML data:\n" +
-	      req_submit.statusText);
-      }
-    }
-  };
 
 }
