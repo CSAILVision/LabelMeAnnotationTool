@@ -51,7 +51,7 @@ function canvas() {
   // Send annotation information to server CGI script for recording.
   this.SubmitAnnotations = function (modifiedControlPoints) {
     var url = 'annotationTools/perl/submit.cgi';
-    var tmp_xml = anno_xml;//anno_xml.cloneNode(true);
+    var tmp_xml = LM_xml;
     if(modifiedControlPoints) modifiedControlPoints = "cpts_modified";
     else modifiedControlPoints = "cpts_not_modified";
 
