@@ -247,107 +247,84 @@ function XMLGet(fname) {
   return req_anno;
 }
 
-function LoadAnnotations(anno_file) {
-  anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml';
-  var objXml = XMLGet(anno_file);
+function LoadAnnotationSuccess(xml) {
+  // Set global variable:
+  LM_xml = xml;
 
-  if(objXml.status==200) {
-    LM_xml = objXml.responseXML;
-    var obj_elts = LM_xml.getElementsByTagName("object");
-    var num_obj = obj_elts.length;
+  var obj_elts = LM_xml.getElementsByTagName("object");
+  var num_obj = obj_elts.length;
   
-    main_canvas.CreateNewAnnotations(num_obj);
-    num_orig_anno = num_obj;
+  main_canvas.CreateNewAnnotations(num_obj);
+  num_orig_anno = num_obj;
+  
+  for(pp=0; pp < num_obj; pp++) {
+    var id = obj_elts[pp].getElementsByTagName("id");
+    
+    main_canvas.GetAnnotations()[pp] = new annotation(pp);
+    main_canvas.GetAnnotations()[pp].SetDeleted(parseInt(obj_elts[pp].getElementsByTagName("deleted")[0].firstChild.nodeValue));
+    main_canvas.GetAnnotations()[pp].SetVerified(parseInt(obj_elts[pp].getElementsByTagName("verified")[0].firstChild.nodeValue));
+    
+    if((obj_elts[pp].getElementsByTagName("username").length>0) && obj_elts[pp].getElementsByTagName("username")[0].firstChild)
+      main_canvas.GetAnnotations()[pp].SetUsername(obj_elts[pp].getElementsByTagName("username")[0].firstChild.nodeValue);
+    else
+      main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
+    
+    if((obj_elts[pp].getElementsByTagName("automatic").length>0) && obj_elts[pp].getElementsByTagName("automatic")[0].firstChild)
+      main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
+    
+    if(id && (id.length>0) && id[0].firstChild)
+      main_canvas.GetAnnotations()[pp].SetID(id[0].firstChild.nodeValue);
+    else
+      main_canvas.GetAnnotations()[pp].SetID(""+pp);
+    
+    if(!obj_elts[pp].getElementsByTagName("name")[0].firstChild)
+      main_canvas.GetAnnotations()[pp].SetObjName('');
+    else
+      main_canvas.GetAnnotations()[pp].SetObjName(obj_elts[pp].getElementsByTagName("name")[0].firstChild.nodeValue);
 
-    for(pp=0; pp < num_obj; pp++) {
-      var id = obj_elts[pp].getElementsByTagName("id");
-      
-      main_canvas.GetAnnotations()[pp] = new annotation(pp);
-      main_canvas.GetAnnotations()[pp].SetDeleted(parseInt(obj_elts[pp].getElementsByTagName("deleted")[0].firstChild.nodeValue));
-      main_canvas.GetAnnotations()[pp].SetVerified(parseInt(obj_elts[pp].getElementsByTagName("verified")[0].firstChild.nodeValue));
-
-      if((obj_elts[pp].getElementsByTagName("username").length>0) && obj_elts[pp].getElementsByTagName("username")[0].firstChild)
-	main_canvas.GetAnnotations()[pp].SetUsername(obj_elts[pp].getElementsByTagName("username")[0].firstChild.nodeValue);
-      else
-	main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
-
-      if((obj_elts[pp].getElementsByTagName("automatic").length>0) && obj_elts[pp].getElementsByTagName("automatic")[0].firstChild)
-	main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
-
-      if(id && (id.length>0) && id[0].firstChild)
-	main_canvas.GetAnnotations()[pp].SetID(id[0].firstChild.nodeValue);
-      else
-	main_canvas.GetAnnotations()[pp].SetID(""+pp);
-
-      if(!obj_elts[pp].getElementsByTagName("name")[0].firstChild)
-        main_canvas.GetAnnotations()[pp].SetObjName('');
-//        main_canvas.GetAnnotations()[pp] = new annotation('');
-      else
-        main_canvas.GetAnnotations()[pp].SetObjName(obj_elts[pp].getElementsByTagName("name")[0].firstChild.nodeValue);
-//        main_canvas.GetAnnotations()[pp] = new annotation(obj_elts[pp].getElementsByTagName("name")[0].firstChild.nodeValue);
-
-      var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
-      
-      var numpts = pt_elts.length;
-      main_canvas.GetAnnotations()[pp].CreatePtsX(numpts);
-      main_canvas.GetAnnotations()[pp].CreatePtsY(numpts);
-      for(ii=0; ii < numpts; ii++) {
-	main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
-	main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
-      }
+    var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
+    
+    var numpts = pt_elts.length;
+    main_canvas.GetAnnotations()[pp].CreatePtsX(numpts);
+    main_canvas.GetAnnotations()[pp].CreatePtsY(numpts);
+    for(ii=0; ii < numpts; ii++) {
+      main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
+      main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
     }
-
-    main_canvas.DrawAllPolygons();
   }
-  else if(objXml.status==404) {
-    var objXml = XMLGet(main_image.GetFileInfo().GetTemplatePath());
-    if(objXml.status==404) {
-      objXml = XMLGet('annotationCache/XMLTemplates/labelme.xml');
-    }
-//    var objXml = new XMLHttpRequest();
-//    objXml.open("GET",'anno_template.xml',false);
-//    objXml.send(null);
-    LM_xml = objXml.responseXML;
-    LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
-    LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
-
-    main_canvas.CreateNewAnnotations(0);
-    num_orig_anno = 0;
-  }
-  else {
-    alert('Unknown objXml.status');
-  }
+  
+  main_canvas.DrawAllPolygons();
+  if(view_ObjList) LoadAnnotationList();
 }
 
-// This function creates a form (replaces popup) on right hand side to 
-// replace the annotation link for the polygon that is selected, either 
-// by selecting the link or clicking on the polygon in the picture
-function CreateEditAnnotationForm(idx) {
-  var html_str = '<div id="edit_polygon_div">' +
-    '<form action="javascript:return false;" style="margin-bottom:0px;background-color: rgb(238,238,255); ">' +
-    '<table style="font-size:small;">' +
-    '<tr>' +
-    '<td style="text-decoration:nowrap;">' +
-    '<br />' + 
-    'Name: ' +
-    '<input type="text" id="objEnter" name="objEnter" value="' + main_canvas.GetAnnotations()[idx].GetObjName() + '" size="20em" style="font-family:Arial;font-size:small;" onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)main_handler.SubmitEditLabel();" />' +
-    '<br />' +
-    '<table width="100%"><tr><td><input type="button" id="polygon_submit" name="polygon_submit" onclick="main_handler.SubmitEditLabel();" value="Save" style="font-family:Arial;font-size:small;" /></td>' +
-    '     ' + 
-    '<td align="right"><font size="-2"><a id="polygon_delete" name="polygon_delete" href="javascript:main_handler.EditBubbleDeleteButton();" style="font-family:Arial;"><b>Delete</b></a></font></td></tr></table>' +
-//     '<input type="button" id="polygon_delete" name="polygon_delete" value="Delete" onclick="main_handler.EditBubbleDeleteButton();" style="font-family:Arial;font-size:small;" />' +
-    '</td>' +
-    '</tr>' +
-    '</table>' +
-    '</form>' +
-    '</div>';
-  
-  InsertAfterDiv(html_str,'LinkAnchor' + idx);
-  var p = document.getElementById('Link'+idx);
-  p.parentNode.removeChild(p);
-  document.getElementById('objEnter').focus();
-  document.getElementById('objEnter').select();
-};
+// Annotation file does not exist, so load template:
+function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
+  if(jqXHR.status==404) 
+    ReadXML(main_image.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
+  else
+    alert(jqXHR.status);
+}
+
+// Annotation template does not exist for this folder, so load default 
+// LabelMe template:
+function LoadTemplate404(jqXHR,textStatus,errorThrown) {
+  if(jqXHR.status==404)
+    ReadXML('annotationCache/XMLTemplates/labelme.xml',LoadTemplateSuccess,function(jqXHR) {
+	alert(jqXHR.status);
+      });
+  else
+    alert(jqXHR.status);
+}
+
+// Actions after template load success:
+function LoadTemplateSuccess(xml) {
+  LM_xml = xml;
+  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
+  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
+  main_canvas.CreateNewAnnotations(0);
+  num_orig_anno = 0;
+  if(view_ObjList) LoadAnnotationList();
+}
 
 function PermissionError() {
   var m = main_image.GetFileInfo().GetMode();
