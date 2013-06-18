@@ -271,8 +271,6 @@ function handler() {
 
     main_select_canvas.MoveToFront();
     var anno = main_canvas.DetachAnnotation(anno_id);
-//     var m = main_image.GetFileInfo().GetMode();
-//     if(!anno.GetVerified() && (m!='im') && (m!='mt')) CreateEditAnnotationForm(anno_id);
     main_select_canvas.AttachAnnotation(anno);
   };
 
