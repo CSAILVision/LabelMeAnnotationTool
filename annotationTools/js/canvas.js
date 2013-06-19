@@ -50,48 +50,14 @@ function canvas() {
 
   // Send annotation information to server CGI script for recording.
   this.SubmitAnnotations = function (modifiedControlPoints) {
-    var tmp_xml = LM_xml;
     if(modifiedControlPoints) modifiedControlPoints = "cpts_modified";
     else modifiedControlPoints = "cpts_not_modified";
 
-    var old_pri = tmp_xml.getElementsByTagName("private");
-    for(ii=0;ii<old_pri.length;ii++) {
-      old_pri[ii].parentNode.removeChild(old_pri[ii]);
-    }
-    
-    // Add information to go into the log:
-    var elt_pri = tmp_xml.createElement("private");
-    var elt_gct = tmp_xml.createElement("global_count");
-    var elt_user = tmp_xml.createElement("pri_username");
-    var elt_edt = tmp_xml.createElement("edited");
-    var elt_onm = tmp_xml.createElement("old_name");
-    var elt_nnm = tmp_xml.createElement("new_name");
-    var elt_mcp = tmp_xml.createElement("modified_cpts");
-    
-    var txt_gct = tmp_xml.createTextNode(global_count);
-    var txt_user = tmp_xml.createTextNode(username);
-    var txt_edt = tmp_xml.createTextNode(submission_edited);
-    var txt_onm = tmp_xml.createTextNode(old_name);
-    var txt_nnm = tmp_xml.createTextNode(new_name);
-    var txt_mcp = tmp_xml.createTextNode(modifiedControlPoints);
-    var txt_pri = tmp_xml.createTextNode(ref);
-    
-    tmp_xml.documentElement.appendChild(elt_pri);
-    elt_pri.appendChild(elt_gct);
-    elt_pri.appendChild(elt_user);
-    elt_pri.appendChild(elt_edt);
-    elt_pri.appendChild(elt_onm);
-    elt_pri.appendChild(elt_nnm);
-    elt_pri.appendChild(elt_mcp);
-    elt_pri.appendChild(txt_pri);
-    
-    elt_gct.appendChild(txt_gct);
-    elt_user.appendChild(txt_user);
-    elt_edt.appendChild(txt_edt);
-    elt_onm.appendChild(txt_onm);
-    elt_nnm.appendChild(txt_nnm);
-    elt_mcp.appendChild(txt_mcp);
-    
+    // Insert data for server logfile:
+    InsertServerLogData(modifiedControlPoints);
+
+    var tmp_xml = LM_xml;
+
     var elts_obj = tmp_xml.getElementsByTagName("object");
     for(ii=0; ii < num_orig_anno; ii++) {
       if(!elts_obj[ii].getElementsByTagName("name")[0].firstChild) {
