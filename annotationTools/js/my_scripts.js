@@ -258,8 +258,6 @@ function LoadAnnotationSuccess(xml) {
   num_orig_anno = num_obj;
   
   for(pp=0; pp < num_obj; pp++) {
-    var id = obj_elts[pp].getElementsByTagName("id");
-    
     main_canvas.GetAnnotations()[pp] = new annotation(pp);
     main_canvas.GetAnnotations()[pp].SetDeleted(parseInt(obj_elts[pp].getElementsByTagName("deleted")[0].firstChild.nodeValue));
     main_canvas.GetAnnotations()[pp].SetVerified(parseInt(obj_elts[pp].getElementsByTagName("verified")[0].firstChild.nodeValue));
@@ -272,6 +270,7 @@ function LoadAnnotationSuccess(xml) {
     if((obj_elts[pp].getElementsByTagName("automatic").length>0) && obj_elts[pp].getElementsByTagName("automatic")[0].firstChild)
       main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
     
+    var id = obj_elts[pp].getElementsByTagName("id");
     if(id && (id.length>0) && id[0].firstChild)
       main_canvas.GetAnnotations()[pp].SetID(id[0].firstChild.nodeValue);
     else
@@ -324,6 +323,47 @@ function LoadTemplateSuccess(xml) {
   main_canvas.CreateNewAnnotations(0);
   num_orig_anno = 0;
   if(view_ObjList) LoadAnnotationList();
+}
+
+
+function InsertServerLogData(modifiedControlPoints) {
+  var old_pri = LM_xml.getElementsByTagName("private");
+  for(ii=0;ii<old_pri.length;ii++) {
+    old_pri[ii].parentNode.removeChild(old_pri[ii]);
+  }
+  
+  // Add information to go into the log:
+  var elt_pri = LM_xml.createElement("private");
+  var elt_gct = LM_xml.createElement("global_count");
+  var elt_user = LM_xml.createElement("pri_username");
+  var elt_edt = LM_xml.createElement("edited");
+  var elt_onm = LM_xml.createElement("old_name");
+  var elt_nnm = LM_xml.createElement("new_name");
+  var elt_mcp = LM_xml.createElement("modified_cpts");
+  
+  var txt_gct = LM_xml.createTextNode(global_count);
+  var txt_user = LM_xml.createTextNode(username);
+  var txt_edt = LM_xml.createTextNode(submission_edited);
+  var txt_onm = LM_xml.createTextNode(old_name);
+  var txt_nnm = LM_xml.createTextNode(new_name);
+  var txt_mcp = LM_xml.createTextNode(modifiedControlPoints);
+  var txt_pri = LM_xml.createTextNode(ref);
+  
+  LM_xml.documentElement.appendChild(elt_pri);
+  elt_pri.appendChild(elt_gct);
+  elt_pri.appendChild(elt_user);
+  elt_pri.appendChild(elt_edt);
+  elt_pri.appendChild(elt_onm);
+  elt_pri.appendChild(elt_nnm);
+  elt_pri.appendChild(elt_mcp);
+  elt_pri.appendChild(txt_pri);
+  
+  elt_gct.appendChild(txt_gct);
+  elt_user.appendChild(txt_user);
+  elt_edt.appendChild(txt_edt);
+  elt_onm.appendChild(txt_onm);
+  elt_nnm.appendChild(txt_nnm);
+  elt_mcp.appendChild(txt_mcp);
 }
 
 function PermissionError() {
