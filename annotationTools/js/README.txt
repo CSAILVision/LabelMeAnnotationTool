@@ -10,3 +10,5 @@ browser.js - Generic browser functions.
 
 sign_in.js - Sign in form for user to enter their LabelMe username.
 
+bubble.js - Displays bubble popup when labeling or editing a polygon.
+
