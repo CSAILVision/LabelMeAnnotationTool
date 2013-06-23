@@ -27,7 +27,7 @@ function handler() {
     submission_edited = 0;
     old_name = '';
     new_name = '';
-    main_canvas.SubmitAnnotations(0);
+    SubmitAnnotations(0);
     this.QueryToRest();
   };
 
@@ -46,7 +46,7 @@ function handler() {
     submission_edited = 0;
     old_name = '';
     new_name = '';
-    main_canvas.SubmitAnnotations(0);
+    SubmitAnnotations(0);
     this.DrawToRest();
   };
 
@@ -71,7 +71,7 @@ function handler() {
       LoadAnnotationList();
       ChangeLinkColorFG(anno.GetAnnoID());
     }
-    main_canvas.SubmitAnnotations(editedControlPoints);
+    SubmitAnnotations(editedControlPoints);
   };
   
   // Handles when the user presses the delete button in response to 
@@ -229,7 +229,7 @@ function handler() {
 
     anno_count++;
     global_count++;
-    main_canvas.SubmitAnnotations(0);
+    SubmitAnnotations(0);
     setCookie('counter',anno_count);
     UpdateCounterHTML();
 
@@ -266,7 +266,7 @@ function handler() {
       main_canvas.GetAnnotations()[anno_id].SetAutomatic(0);
       old_name = main_canvas.GetAnnotations()[anno_id].GetObjName();
       new_name = old_name;
-      main_canvas.SubmitAnnotations(false);
+      SubmitAnnotations(false);
     }
 
     main_select_canvas.MoveToFront();
