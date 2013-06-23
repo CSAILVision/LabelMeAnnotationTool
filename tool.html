@@ -101,7 +101,7 @@ function MainInit() {
   function main_image_onload_helper() {
     main_image.SetImageDimensions();
     var anno_file = main_image.GetFileInfo().GetFullName();
-    anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml';
+    anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
     ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
   };
 
