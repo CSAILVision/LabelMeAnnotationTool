@@ -48,113 +48,6 @@ function canvas() {
     this.is_poly_selected = 0;
   };
 
-  // Send annotation information to server CGI script for recording.
-  this.SubmitAnnotations = function (modifiedControlPoints) {
-    if(modifiedControlPoints) modifiedControlPoints = "cpts_modified";
-    else modifiedControlPoints = "cpts_not_modified";
-
-    // Insert data for server logfile:
-    InsertServerLogData(modifiedControlPoints);
-
-    var tmp_xml = LM_xml;
-
-    var elts_obj = tmp_xml.getElementsByTagName("object");
-    for(ii=0; ii < num_orig_anno; ii++) {
-      if(!elts_obj[ii].getElementsByTagName("name")[0].firstChild) {
-	if(main_canvas.GetAnnotations()[ii].GetObjName().length > 0) {
-	  var txt_nam = tmp_xml.createTextNode(main_canvas.GetAnnotations()[ii].GetObjName());
-	  elts_obj[ii].getElementsByTagName("name")[0].appendChild(txt_nam);
-	}
-      }
-      else {
-	elts_obj[ii].getElementsByTagName("name")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetObjName();
-      }
-      elts_obj[ii].getElementsByTagName("deleted")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetDeleted();
-
-      if((elts_obj[ii].getElementsByTagName("automatic").length>0) && elts_obj[ii].getElementsByTagName("automatic")[0].firstChild) {
-	elts_obj[ii].getElementsByTagName("automatic")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetAutomatic();
-      }
-
-      var id = elts_obj[ii].getElementsByTagName("id");
-      if(id!=null && id.length>0 && id[0].firstChild!=null) {
-	id[0].firstChild.nodeValue = ""+ii;
-	main_canvas.GetAnnotations()[ii].SetID(""+ii);
-      }
-      else {
-	var elt_id = tmp_xml.createElement("id");
-	var txt_id = tmp_xml.createTextNode(""+ii);
-	main_canvas.GetAnnotations()[ii].SetID(""+ii);
-	elt_id.appendChild(txt_id);
-	elts_obj[ii].appendChild(elt_id);
-      }
-
-      for(jj=0; jj < main_canvas.GetAnnotations()[ii].GetPtsX().length; jj++) {
-	elts_obj[ii].getElementsByTagName("polygon")[0].getElementsByTagName("pt")[jj].getElementsByTagName("x")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetPtsX()[jj];
-	elts_obj[ii].getElementsByTagName("polygon")[0].getElementsByTagName("pt")[jj].getElementsByTagName("y")[0].firstChild.nodeValue = main_canvas.GetAnnotations()[ii].GetPtsY()[jj];
-      }
-    }
-    
-    while(elts_obj.length>num_orig_anno) {
-      elts_obj[num_orig_anno].parentNode.removeChild(elts_obj[num_orig_anno]);
-      elts_obj = tmp_xml.getElementsByTagName("object");
-    }
-    
-    
-      
-    for(ii=0; ii < (main_canvas.GetAnnotations().length-num_orig_anno); ii++) {
-      if(main_canvas.GetAnnotations()[num_orig_anno+ii].GetDeleted()==1) continue;
-      var elt_obj = tmp_xml.createElement("object");
-      var elt_nam = tmp_xml.createElement("name");
-      var txt_nam = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetObjName());
-      var elt_del = tmp_xml.createElement("deleted");
-      var txt_del = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetDeleted());
-      var elt_ver = tmp_xml.createElement("verified");
-      var txt_ver = tmp_xml.createTextNode('0');
-      var elt_dat = tmp_xml.createElement("date");
-      var ts = main_canvas.GetAnnotations()[num_orig_anno+ii].GetTimeStamp();
-      if(ts.length==20) elt_dat.appendChild(tmp_xml.createTextNode(ts));
-      var elt_id = tmp_xml.createElement("id");
-      var txt_id = tmp_xml.createTextNode(""+(num_orig_anno+ii));
-      main_canvas.GetAnnotations()[num_orig_anno+ii].SetID(""+(num_orig_anno+ii));
-      var elt_pol = tmp_xml.createElement("polygon");
-      
-      tmp_xml.documentElement.appendChild(elt_obj);
-      elt_obj.appendChild(elt_nam);
-      elt_obj.appendChild(elt_del);
-      elt_obj.appendChild(elt_ver);
-      elt_obj.appendChild(elt_dat);
-      elt_obj.appendChild(elt_id);
-      elt_obj.appendChild(elt_pol);
-      elt_nam.appendChild(txt_nam);
-      elt_del.appendChild(txt_del);
-      elt_ver.appendChild(txt_ver);
-      elt_id.appendChild(txt_id);
-      
-      var elt_user = tmp_xml.createElement("username");
-      var txt_user = tmp_xml.createTextNode(username);
-      elt_pol.appendChild(elt_user);
-      elt_user.appendChild(txt_user);
-      
-      for(jj=0; jj < main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsX().length; jj++) {
-	var elt_pt = tmp_xml.createElement("pt");
-	var elt_x = tmp_xml.createElement("x");
-	var elt_y = tmp_xml.createElement("y");
-	var txt_x = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsX()[jj]);
-	var txt_y = tmp_xml.createTextNode(main_canvas.GetAnnotations()[num_orig_anno+ii].GetPtsY()[jj]);
-	
-	elt_pol.appendChild(elt_pt);
-	elt_pt.appendChild(elt_x);
-	elt_pt.appendChild(elt_y);
-	elt_x.appendChild(txt_x);
-	elt_y.appendChild(txt_y);
-      }
-    }
-
-    // Write XML to server:
-    var url = 'annotationTools/perl/submit.cgi';
-    WriteXML(url,tmp_xml,function(){return;});
-  };
-
   // Loop through all of the annotations and draw the polygons.
   this.DrawAllPolygons = function () {
     var nn = this.annotations.length;
@@ -245,7 +138,7 @@ function canvas() {
     new_name = this.annotations[idx].GetObjName();
     WriteLogMsg('*Deleting_object');
 
-    this.SubmitAnnotations(0);
+    SubmitAnnotations(0);
     this.annotations[idx].DeletePolygon();
   };
 
