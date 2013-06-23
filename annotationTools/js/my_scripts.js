@@ -257,7 +257,7 @@ function LoadAnnotationSuccess(xml) {
   main_canvas.CreateNewAnnotations(num_obj);
   num_orig_anno = num_obj;
   
-  for(pp=0; pp < num_obj; pp++) {
+  for(var pp = 0; pp < num_obj; pp++) {
     main_canvas.GetAnnotations()[pp] = new annotation(pp);
     main_canvas.GetAnnotations()[pp].SetDeleted(parseInt(obj_elts[pp].getElementsByTagName("deleted")[0].firstChild.nodeValue));
     main_canvas.GetAnnotations()[pp].SetVerified(parseInt(obj_elts[pp].getElementsByTagName("verified")[0].firstChild.nodeValue));
@@ -270,11 +270,16 @@ function LoadAnnotationSuccess(xml) {
     if((obj_elts[pp].getElementsByTagName("automatic").length>0) && obj_elts[pp].getElementsByTagName("automatic")[0].firstChild)
       main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
     
-    var id = obj_elts[pp].getElementsByTagName("id");
-    if(id && (id.length>0) && id[0].firstChild)
-      main_canvas.GetAnnotations()[pp].SetID(id[0].firstChild.nodeValue);
-    else
-      main_canvas.GetAnnotations()[pp].SetID(""+pp);
+    // Set object IDs:
+    var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
+    if(curr_obj.children("id").length > 0) {
+      curr_obj.children("id").text(""+pp);
+    }
+    else {
+      curr_obj.append($("<id>" + pp + "</id>"));
+    }
+    main_canvas.GetAnnotations()[pp].SetID(""+pp);
+
     
     if(!obj_elts[pp].getElementsByTagName("name")[0].firstChild)
       main_canvas.GetAnnotations()[pp].SetObjName('');
@@ -395,3 +400,76 @@ function GetTimeStamp() {
   if(req_anno.status==200) return req_anno.responseText;
   return '';
 }
+
+
+function UpdateXmlExistingAnnotation(ii) {
+  var curr_obj = $(LM_xml).children("annotation").children("object").eq(ii);
+  
+  curr_obj.children("name").text(main_canvas.GetAnnotations()[ii].GetObjName());
+  curr_obj.children("deleted").text(main_canvas.GetAnnotations()[ii].GetDeleted());
+  if(curr_obj.children("automatic").length > 0) {
+    curr_obj.children("automatic").text(main_canvas.GetAnnotations()[ii].GetAutomatic());
+  }
+  
+  for(var jj=0; jj < main_canvas.GetAnnotations()[ii].GetPtsX().length; jj++) {
+    curr_obj.children("polygon").children("pt").eq(jj).children("x").text(main_canvas.GetAnnotations()[ii].GetPtsX()[jj]);
+    curr_obj.children("polygon").children("pt").eq(jj).children("y").text(main_canvas.GetAnnotations()[ii].GetPtsY()[jj]);
+  }
+}
+
+
+function AppendXmlNewAnnotation(ii) {
+  // Create new object inside XML:
+  var html_str = '<object>';
+  html_str += '<name>' + main_canvas.GetAnnotations()[ii].GetObjName() + '</name>';
+  html_str += '<deleted>' + main_canvas.GetAnnotations()[ii].GetDeleted() + '</deleted>';
+  html_str += '<verified>0</verified>';
+  var ts = main_canvas.GetAnnotations()[ii].GetTimeStamp();
+  if(ts.length==20) html_str += '<date>' + ts + '</date>';
+  html_str += '<id>' + ii + '</id>';
+  html_str += '<polygon>';
+  html_str += '<username>' + username + '</username>';
+  for(var jj=0; jj < main_canvas.GetAnnotations()[ii].GetPtsX().length; jj++) {
+    html_str += '<pt>';
+    html_str += '<x>' + main_canvas.GetAnnotations()[ii].GetPtsX()[jj] + '</x>';
+    html_str += '<y>' + main_canvas.GetAnnotations()[ii].GetPtsY()[jj] + '</y>';
+    html_str += '</pt>';
+  }
+  html_str += '</polygon>';
+  html_str += '</object>';
+  
+  $(LM_xml).children("annotation").append($(html_str));
+}
+
+// Send annotation information to server CGI script for recording.
+function SubmitAnnotations(modifiedControlPoints) {
+  if(modifiedControlPoints) modifiedControlPoints = "cpts_modified";
+  else modifiedControlPoints = "cpts_not_modified";
+  
+  // Insert data for server logfile:
+  InsertServerLogData(modifiedControlPoints);
+  
+  // Insert annotations that existed before this labeling session to XML:
+  for(var ii=0; ii < num_orig_anno; ii++) {
+    UpdateXmlExistingAnnotation(ii);
+  }
+
+  // Remove all new objects created during current LabelMe session:
+  var elts_obj = LM_xml.getElementsByTagName("object");
+  while(elts_obj.length>num_orig_anno) {
+    elts_obj[num_orig_anno].parentNode.removeChild(elts_obj[num_orig_anno]);
+    elts_obj = LM_xml.getElementsByTagName("object");
+  }
+  
+  // Insert annotations created during this labeling session to XML:
+  for(var ii = 0; ii < (main_canvas.GetAnnotations().length-num_orig_anno); ii++) {
+    if(main_canvas.GetAnnotations()[num_orig_anno+ii].GetDeleted()==1) continue;
+
+    AppendXmlNewAnnotation(num_orig_anno+ii);
+  }  
+
+  // Write XML to server:
+  var url = 'annotationTools/perl/submit.cgi';
+  WriteXML(url,LM_xml,function(){return;});
+}
+
