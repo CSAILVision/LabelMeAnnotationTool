@@ -119,7 +119,7 @@ function SelectCanvas() {
     new_name = this.annotation.GetObjName();
     WriteLogMsg('*Deleting_object');
 
-    main_canvas.SubmitAnnotations(0);
+    SubmitAnnotations(0);
     main_canvas.unselectObjects(); // Perhaps this should go elsewhere...
     main_handler.SelectedToRest();
   };
