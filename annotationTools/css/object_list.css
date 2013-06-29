@@ -1,0 +1,38 @@
+
+
+/* THE OBJECT LIST ----------------------------------------------- */
+
+.object_list {
+    position:absolute;
+    top:30px;
+    right:20px;
+	padding:5px;
+	margin:0em 0 0em;
+	background-color: #fff;
+	border: 0px solid #000;
+	-webkit-border-radius:20px;
+	-moz-border-radius:20px;
+	border-radius:5px 5px 5px 5px;
+	/* -webkit-box-shadow: 2px 2px 4px #888;
+	-moz-box-shadow: 2px 2px 4px #888;
+	box-shadow: 2px 2px 4px #888; */
+    
+	font-family:'Cabin', Helvetica, Arial, sans-serif;
+    font-size: 0.9em;
+    line-height:1.4em;
+    font-weight:400;
+}
+
+
+/* format for the list */
+.object_list ol {
+    list-style-type:square; 
+    margin-left:10px; 
+    margin-top:2px; 
+    margin-bottom:5px; 
+    margin-right:10px;
+    padding-left:10px;
+}
+
+
+
