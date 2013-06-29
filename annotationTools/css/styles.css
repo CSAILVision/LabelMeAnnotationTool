@@ -1,5 +1,5 @@
 body {font-family:Arial;  color:black; overflow:hidden; 
-margin-top:3px; margin-left:8px; margin-right:8px; margin-bottom: 0px;}
+margin-top:0px; margin-left:0px; margin-right:0px; margin-bottom: 0px;}
 a:link {color: #0000FF; text-decoration: underline;}
 a:visited {color: #0000FF; text-decoration: underline;}
 a:hover {color: #0000FF; text-decoration: underline;}
@@ -20,7 +20,6 @@ top:8px; right:8px; width:16em;}
 
 #show_new_image {position:absolute; right:0px; top:-2em;}
 
-#main_section {position:relative;width:100%; height:auto; z-index:1;}
 #loading {position:absolute; font-size:large; left:1em;
 top:2em;}
 #main_image {position:relative; left:0; top:0; border: 1px solid #979797;}
@@ -95,7 +94,7 @@ position:relative;
   overflow: auto;
 }
 
-#right_side {position:absolute; top:0px; right:0px; width:16em;
+#right_side {position:absolute; top:0px; right:0px; width:20em;
 height:100%; z-index:0;}
 #examples {width:100%; font-size:small;}
 #anno_anchor {position:relative; width:100%; top:-1em;}
