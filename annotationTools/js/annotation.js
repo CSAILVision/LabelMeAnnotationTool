@@ -15,6 +15,8 @@ function annotation(anno_id) {
   this.username = 'anonymous';
   this.deleted = 0;
   this.verified = 0;
+  this.occluded = '';
+  this.attributes = '';
   this.date = '';
   this.automatic = 0;
   this.pts_x = new Array();
@@ -92,6 +94,24 @@ function annotation(anno_id) {
   this.SetVerified = function (v) {
     this.verified = v;
   };
+    
+  this.GetOccluded = function() {
+        return this.occluded;
+  };
+
+  this.SetOccluded = function(a) {
+      this.occluded = a;
+  };
+    
+    
+  this.GetAttributes = function() {
+      return this.attributes;
+  };
+
+  this.SetAttributes = function(a) {
+      this.attributes = a;
+  };
+
 
   this.SetDivAttach = function(da) {
     this.div_attach = da;
