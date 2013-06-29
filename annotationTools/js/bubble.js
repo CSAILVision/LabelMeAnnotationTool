@@ -1,3 +1,16 @@
+// THIS CODE TAKES CARE OF THE BUBBLE THAT APPEARS ON THE ANNOTATION TOOL
+// WHEN EDITING OBJECT PROPERTIES
+
+// THINGS THAT WILL BE GOOD TO SIMPLIFY:
+//  1- why are there two functions -almost-identical- to close the bubble?
+//  2- why is different the way the data is submitted in edit and query? I think with LM_xml data handling this will be simplified.
+//  3- I want functions
+//        LM_xml.store(obj_index, fieldname, value)
+//        LM_xml.getvalue(obj_index, fieldname)
+//        LM_xml.sendtoserver
+//
+
+
 // *******************************************
 // Public methods:
 // *******************************************
@@ -7,20 +20,20 @@ function mkPopup(left,top) {
     mkBubbleHTML(left,top,'query');
 }
 
-function CloseQueryPopup() {
-    wait_for_input = 0;
-    var p = document.getElementById('myPopup');
-    p.parentNode.removeChild(p);
-}
-
-function mkEditPopup(left,top,obj_name) {
+function mkEditPopup(left,top,anno) {
     edit_popup_open = 1;
-    mkBubbleHTML(left,top,'edit',obj_name);
+    mkBubbleHTML(left,top,'edit',anno);
 }
 
 function mkVerifiedPopup(left,top) {
     edit_popup_open = 1;
     mkBubbleHTML(left,top,'verified');
+}
+
+function CloseQueryPopup() {
+    wait_for_input = 0;
+    var p = document.getElementById('myPopup');
+    p.parentNode.removeChild(p);
 }
 
 function CloseEditPopup() {
@@ -33,27 +46,27 @@ function CloseEditPopup() {
 // Private methods:
 // *******************************************
 
-function mkBubbleHTML(left,top,bubble_type,obj_name) {
+function mkBubbleHTML(left,top,bubble_type,anno) {
     var html_str;
-    
-    // adjust location to account for the displacement of the arrow:
+
+    // Adjust location to account for the displacement of the arrow:
     left = left - 22;
     if (left<5){left=5;}
     
-    // select the vertical position of the arrow
+    // Select the vertical position of the bubble decoration arrow
     if (top>214){
         html_str  = '<div class= "bubble" id="myPopup" style="position:absolute; left:'+left+'px; top:'+top+'px;">';
     }else{
         html_str  = '<div class= "bubble top" id="myPopup" style="position:absolute; left:'+left+'px; top:'+top+'px;">';
     }
     
-    // select the type of bubble (adding new object, editing existing object, ...) 
+    // Select the type of bubble (adding new object, editing existing object, ...) 
     switch(bubble_type) {
         case 'query':
             html_str += GetPopupForm("");
             break;
         case 'edit':
-            html_str += GetCloseImg() + GetPopupForm(obj_name);
+            html_str += GetCloseImg() + GetPopupForm(anno);
             break;
         case 'verified':
             html_str += GetCloseImg() + GetVerifiedPopupForm();
@@ -63,10 +76,11 @@ function mkBubbleHTML(left,top,bubble_type,obj_name) {
     }
     html_str += '</div>';
 
-    // Insert in page created HTML and place it in the right location taking into account the rendered size 
+    // Insert bubble in page created HTML
     InsertAfterDiv(html_str,'main_section');
     
-    if (top>214){
+    // Place bubble in the right location taking into account the rendered size and the location of the arrow
+    if (top>214){  
         h = $("#myPopup").height();
         document.getElementById('myPopup').style.top = (top -h -80) + 'px';
     }else{
@@ -83,28 +97,37 @@ function mkBubbleHTML(left,top,bubble_type,obj_name) {
 // ****************************
 
 // Forms to enter a new object
-function GetPopupForm(obj_name) {
-    var html_str = "";
+function GetPopupForm(anno) {
+    // get object name and attributes from 'anno'
+    obj_name = "";
+    attributes = "";
+    occluded = "";
+    if (anno) {
+        obj_name = anno.GetObjName();
+        if (obj_name=="") {obj_name = "?";} // if the object field is empty, but the annotation exists, then it means we are in edit mode.
+        attributes = anno.GetAttributes();
+        occluded = anno.GetOccluded();
+    }
     
     html_str = "<b>Enter object name</b><br />";
     html_str += HTMLobjectBox(obj_name);
 
-    /*** INSERT THIS BACK IN:
-    html_str += HTMLoccludedBox();
+    if (use_attributes) {
+        html_str += HTMLoccludedBox(occluded);
 
-    html_str += "<b>Enter attributes</b><br />";
-    html_str += HTMLattributesBox("");
-    ***/
+        html_str += "<b>Enter attributes</b><br />";
+        html_str += HTMLattributesBox(attributes);
+    }
     
     // Buttons
     html_str += "<br />";
-    if (obj_name==''){
+    if (obj_name==""){
         html_str += HTMLdoneButton() + HTMLundocloseButton() + HTMLdeleteButton();
     }else{
         // treat the special case of edditing a polygon:
         html_str += HTMLdoneeditButton() + HTMLadjustpolygonButton() + HTMLdeleteeditButton();
     }
-        
+
     return html_str;
 }
 
@@ -153,11 +176,50 @@ function HTMLobjectBox(obj_name) {
     return html_str;
 }
 
+// ****************************
+// ATTRIBUTES:
+// ****************************
+// ?attributes=object:car;brand:seat/ford;color:...;comments:...
+
+// is the object occluded?
+function HTMLoccludedBox(occluded) {
+    var html_str="";
+    
+    // by default, the value of occluded is "no"
+    if (!(occluded=="no" || occluded=="yes")) {occluded="no";}
+    
+    // the value of the selection is inside a hidden field:
+    html_str += 'Is occluded? <input type="hidden" name="occluded" id="occluded" value="'+occluded+'"/>';
+    
+    // generate radio button
+    if (occluded=='yes')
+    {
+        html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="yes" checked="yes" onclick="document.getElementById(\'occluded\').value=\'yes\';" />yes';
+        html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="no"  onclick="document.getElementById(\'occluded\').value=\'no\';" />no';
+    }
+    else
+    {
+        html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="yes"  onclick="document.getElementById(\'occluded\').value=\'yes\';" />yes';
+        html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="no" checked="yes"  onclick="document.getElementById(\'occluded\').value=\'no\';" />no';
+    }
+    html_str += '<br />';
+    
+    return html_str;
+}
+
+// Boxes to enter attributes
+function HTMLattributesBox(attList) {    
+    html_str = '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
+    
+    return html_str;
+}
 
 
 
 
+// ****************************
 // show basic buttons
+// ****************************
 function HTMLdoneButton() {
     return '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" /> ';
 }
@@ -188,36 +250,6 @@ function GetCloseImg() {
     'top: 8px;" src="Icons/close.png" height="14" width="14" onclick="main_handler.SelectedToRest()" />';
 }
 
-
-
-// ****************************
-// ATTRIBUTES:
-// ****************************
-// ?attributes=object:car;brand:seat/ford;color:...;comments:...
-
-// is the object occluded?
-function HTMLoccludedBox() {
-    var html_str="";
-    
-    html_str += "Is occluded? <input type='radio' name='occluded' value='yes' />yes";
-    html_str += "<input type='radio' name='occluded' value='no' />no";
-    //html_str += "<input type='radio' name='option' value='Option 3' />n.a.";
-    html_str += "<br />";
-        
-    return html_str;
-}
-
-// Boxes to enter attributes
-function HTMLattributesBox(attList) {
-    var html_str="";
-    
-    //for(var i = 0; i < attributesList.length; i++) {
-    //}
-    
-    html_str += '<textarea name="attEnter" id="attEnter" type="text" style="width:220px; height:3em;" tabindex="0" value="'+attList+'" title="Enter a comma separated list of attributes, adjectives or other object properties" />';
-    
-    return html_str;
-}
 
 
 
