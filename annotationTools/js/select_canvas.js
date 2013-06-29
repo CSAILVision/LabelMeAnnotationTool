@@ -208,7 +208,8 @@ function SelectCanvas() {
       pt = main_image.SlideWindow(pt[0],pt[1]);
       main_image.ScrollbarsOff();
       WriteLogMsg('*Opened_Edit_Popup');
-      mkEditPopup(pt[0],pt[1],this.annotation.GetObjName());
+      mkEditPopup(pt[0],pt[1],this.annotation);
+     // mkEditPopup(pt[0],pt[1],this.annotation.GetObjName());
 //     }
 //     else {
 //       this.annotation.ShowControlPoints();
