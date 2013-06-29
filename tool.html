@@ -21,7 +21,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <title>LabelMe: The open annotation tool</title>
 <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE,NO-STORE,MUST-REVALIDATE" />
 <META HTTP-EQUIV="imagetoolbar" CONTENT="no" />
-<LINK REL="SHORTCUT ICON" HREF="Icons/favicon16.ico" />
+<link rel="shortcut icon" href="Icons/favicon16.ico" />
 
 <script type="text/javascript">
 // <![CDATA[
@@ -37,7 +37,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!--#include virtual="./annotationTools/js/globals.js" -->
 <!--#include virtual="./annotationTools/js/io.js" -->
 <!--#include virtual="./annotationTools/js/graphics_moz.js" -->
-<!--#include virtual="./annotationTools/js/my_scripts.js" -->  
+<!--#include virtual="./annotationTools/js/my_scripts.js" -->
+<!--#include virtual="./annotationTools/js/object_list.js" -->
 <!--#include virtual="./annotationTools/js/bubble.js" -->
 <!--#include virtual="./annotationTools/js/image.js" -->
 <!--#include virtual="./annotationTools/js/file_info.js" -->
@@ -52,6 +53,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!--#endif -->
 
   var main_handler;
+    main_handler = new handler();
   var main_canvas;
   var main_select_canvas;
   var main_draw_canvas;
@@ -98,7 +100,7 @@ function MainInit() {
   main_query_canvas = new QueryCanvas();
   main_image = new image('im');
 
-  function main_image_onload_helper() {
+function main_image_onload_helper() {
     main_image.SetImageDimensions();
     var anno_file = main_image.GetFileInfo().GetFullName();
     anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
@@ -125,7 +127,9 @@ function MainInit() {
 
 <style>
 @import url("annotationTools/css/styles.css");
+@import url("annotationTools/css/header.css");
 @import url("annotationTools/css/bubble.css");
+@import url("annotationTools/css/object_list.css");
 </style>
 
 </head>
@@ -135,73 +139,51 @@ function MainInit() {
 
 <script type="text/javascript">
 WriteLogMsg('*start_loading');
+    
 </script>
 
   <div id="mt_submit_form"></div>
 
-  <div id="header" style="font-size:small; font-weight:bold;">
+    
+  <!-- HEADER -->  
+  <div class="header" id="header">
+     <div id="logo">
+         <a href="index.html"><img src="Icons/LabelMe_logo3.png" width="216" height="69" alt="LabelMe logo"></img></a>
+     </div>
+ </div>
+    
+    
+   <div id="tool_buttons">
+       <div id="label_buttons_navigation">
+        <button id="help" class="labelBtn" type="button" title="Show help page" onclick="location.href='annotationTools/html/labeling_instructions.html'" >
+            <img src="Icons/help_new.png"  height="30" />
+        </button>
+        
+        <button id="fit" class="labelBtn" type="button" title="Next Image" onclick="ShowNextImage()" >
+            <img src="Icons/next_2.png" height="30" />
+        </button>
+       </div>
 
-
-  <table cellpadding="0" cellspacing="0">
-    <tr>
-      <td class="top">
-        <a href="index.html" target="_blank" title="Please">
-          <img src="Icons/LabelMeNEWtight198x55.gif" style="height:3em;" alt="please" />
-	</a>
-      </td>
-      <td>
-        &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;
-      </td>
-      <td class="top" align="center">
-        <table cellpadding="0" cellspacing="0">
-	<tr>
-	<td>
-	<a href="javascript:main_handler.ZoomPlus(-0.2);" alt="Zoom out" title="Zoom out"><img src="Icons/LMzoomdown.png" style="width:3em;" /></a>
-	<a href="javascript:main_handler.ZoomPlus(0.2);" alt="Zoom in" title="Zoom in"><img src="Icons/LMzoomup.png" style="width:3em;" /></a>
-	<a href="javascript:main_handler.ZoomFitImage();" title="Fit image" style="text-decoration:none;"><img src="Icons/LMfit.png" style="width:3em;" /></a>
-	</td>
-	</tr>
-	<tr>
-	<td align="center">Zoom</td>
-	</tr>
-	</table>
-      </td>
-      <td>
-        &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-      </td>
-      <td>
-        <a id="png_undo" href="javascript:main_handler.EraseSegmentButton();" alt="Undo last control point" title="Undo last control point" style="text-decoration:none;">
-	<script type="text/javascript">
-	ShowUndoImg();
-	</script>
-	</a><br />
-	Erase
-      </td>
-      <td>
-        &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-      </td>
-      <td class="top" align="center">
-        <a href="annotationTools/html/labeling_instructions.html" title="Show help page" target="_blank"><img src="Icons/LMhelp.png" style="height:3em;" /></a><br />
-	Help
-      </td>
-      <td>
-        &#160;&#160;&#160;&#160;&#160;&#160;&#160;
-      </td>
-      <td align="center">
-        <a href="javascript:ShowNextImage();" alt="Show me another image" title="Show me another image" style="text-decoration:none;"><img src="Icons/LMarrow.png" style="height:3em;" /></a><br />
-	Show me another image
-      </td>
-    </tr>
-  </table>
-
+ 
+       <div id="label_buttons_drawing">
+          <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In" onclick="main_handler.ZoomPlus(0.2)" >
+              <img src="Icons/zoomin.png" width="30" height="38" />
+          </button>
+           <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out" onclick="main_handler.ZoomPlus(-0.2)" >
+               <img src="Icons/zoomout.png" width="30" height="38" />
+           </button>
+          <button id="fit" class="labelBtnDraw" type="button" title="Fit Image" onclick="main_handler.ZoomFitImage()" >
+              <img src="Icons/fitscreen.png" width="30" height="38" />
+          </button>
+          
+          <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegmentButton()" >
+              <img src="Icons/erase.png"  width="30" height="38" />
+          </button>
+       </div>
   </div>
 
 
-<table cellspacing-right="10">
- <tr>
-  <td colspan="2">
-
-  <div id="main_section">
+  <div class="image_canvas" id="main_section">
     <div id="loading">Loading image...</div>
     <div id="main_image" class="top" style="visibility:hidden;overflow:auto;">
       <div id="show_new_image" style="visibility:hidden;">
@@ -215,53 +197,52 @@ WriteLogMsg('*start_loading');
 
       <img id="im" style="vertical-align:bottom;z-index:-3;" />
 
-      <div
-              id="myCanvas_bg_div"
+      <div id="myCanvas_bg_div"
 	      style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      onmousedown="javascript:main_handler.RestToDraw(event);return false;"
 	      oncontextmenu="javascript:return false;"
 	      onmouseover="javascript:main_canvas.unselectObjects();">
       <svg:svg 
-              id="myCanvas_bg"
+          id="myCanvas_bg"
 	      width="100%"
 	      height="100%" 
 	      style="position:absolute;left:0px;top:0px;z-index:0;" />
       </div>
 
       <div
-              id="select_canvas_div"
+          id="select_canvas_div"
 	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      oncontextmenu="javascript:return false;" 
 	      onmousedown="main_handler.SelectedCanvasMouseDown(event);return false;"
 	      onmousemove="main_handler.SelectedCanvasMouseMove(event);return false;"
 	      onmouseup="main_handler.SelectedCanvasMouseUp(event);return false;">
       <svg:svg 
-              id="select_canvas"
+          id="select_canvas"
 	      width="100%"
 	      height="100%"
 	      style="position:absolute;left:0px;top:0px;z-index:-2;" />
       </div>	      
 
       <div
-              id="draw_canvas_div"
+          id="draw_canvas_div"
 	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      onmousedown="javascript:main_handler.DrawCanvasMouseDown(event);return false;"
 	      oncontextmenu="javascript:return false;">
       <svg:svg 
-              id="draw_canvas"
+          id="draw_canvas"
 	      width="100%"
 	      height="100%"
 	      style="position:absolute;left:0px;top:0px;z-index:-2;" />
       </div>
 
       <div
-              id="query_canvas_div"
+          id="query_canvas_div"
 	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
 	      onmousedown="javascript:event.preventDefault();WaitForInput();return false;"
 	      onmouseup="javascript:event.preventDefault();"
 	      oncontextmenu="javascript:return false;">
       <svg:svg 
-              id="query_canvas"
+          id="query_canvas"
 	      width="100%"
 	      height="100%"
 	      style="position:absolute;left:0px;top:0px;z-index:-2;" />
@@ -269,7 +250,9 @@ WriteLogMsg('*start_loading');
 
     </div>
   </div>
-</td></tr></table>
+    
+
+<!-- </td></tr></table> -->
 
   <div id="right_side">
 
@@ -281,17 +264,17 @@ WriteLogMsg('*start_loading');
 
     <div style="font-size:small;">
 
-            <div id="username_main_div" style="font-size:small; padding-top:0.5em; padding-bottom:0.5em; padding-left:0.5em; padding-right:0.5em; background-color:#eeeeff;">
+        <div id="username_main_div" style="font-size:small; padding-top:5px; padding-bottom:5px; padding-left:5px; padding-right:5px; width:150px;">
 	    </div>
 
-      <div id="counter_div" style="font-size:small;">
+      <div id="counter_div" style="font-size:small; display:none;">
         <p>There are <font size="3"><b><span id="anno_count"></span></b>&#160;</font>labelled objects</p>
       </div>
 
     </div>
 
+    <!--
     <p>
-    <font size="3"><b>Polygons in this image</b></font>
     <div id="img_xml_download_div">
     <font size="-2">
     (<b><a id="img_url" target="_blank" title="Download this image.">IMG</a></b>,
@@ -299,16 +282,19 @@ WriteLogMsg('*start_loading');
     </font>
     </div>
     </p>
+     -->
+        
+
+  </div>
 
     <div id="anno_anchor">
     </div>
 
-  </div>
 
 <div id="mt_feedback" />
 
 <script type="text/javascript">
-  MainInit();
+    MainInit();
 
   // Collect statistics:
   var ref = document.referrer;
