@@ -53,24 +53,53 @@ function handler() {
   // Submits the object label in response to the edit/delete popup bubble.
   this.SubmitEditLabel = function () {
     var editedControlPoints = main_select_canvas.didEditControlPoints();
+      
     submission_edited = 1;
     anno = main_select_canvas.GetAnnotation();
+      
+    // object name
     old_name = anno.GetObjName();
-    if(document.getElementById('objEnter')) new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
-    else new_name = RemoveSpecialChars(this.objEnter);
+    if(document.getElementById('objEnter'))
+        {new_name = RemoveSpecialChars(document.getElementById('objEnter').value);}
+    else
+        {new_name = RemoveSpecialChars(this.objEnter);}
+      
     var re = /[a-zA-Z0-9]/;
     if(!re.test(new_name)) {
       alert('Please enter an object name');
       return;
     }
     anno.SetObjName(new_name);
+    
+    if (use_attributes) {
+        // occlusion field
+        if (document.getElementById('occluded')) {
+            new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+        }
+        else {
+            new_occluded = RemoveSpecialChars(this.occluded);
+        }
+        anno.SetOccluded(new_occluded);
+      
+        // attributes field
+        if(document.getElementById('attributes')) {
+            new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+        }
+        else {
+            new_attributes = RemoveSpecialChars(this.attributes);
+        }
+        anno.SetAttributes(new_attributes);
+    }
+      
     main_handler.SelectedToRest();
+      
     var m = main_image.GetFileInfo().GetMode();
     if(view_ObjList) {
       RemoveAnnotationList();
       LoadAnnotationList();
       ChangeLinkColorFG(anno.GetAnnoID());
     }
+      
     SubmitAnnotations(editedControlPoints);
   };
   
@@ -80,8 +109,13 @@ function handler() {
     main_select_canvas.DeleteAnnotation();
   };
 
+  // ADJUST POLYGON, 
   this.EditBubbleAdjustPolygon = function () {
-    this.objEnter = document.getElementById('objEnter').value;
+      // we need to capture the data before closing the bubble (THIS IS AN UGLY HACK)
+      this.objEnter = document.getElementById('objEnter').value;
+      this.attributes = document.getElementById('attributes').value;
+      this.occluded = document.getElementById('occluded').value;
+      
     CloseEditPopup();
     main_image.ScrollbarsOn();
     main_select_canvas.AllowAdjustPolygon();
@@ -191,10 +225,28 @@ function handler() {
   };
 
   // Submits the object label in response to the "What is this object?" 
-  // popup bubble.
+  // popup bubble. THIS FUNCTION IS A MESS!!!!
   this.SubmitQuery = function () { 
     var nn;
     var anno;
+      
+      // If the attributes are active, read the fields.
+      if (use_attributes) {
+          // get attributes (is the field exists)
+          if(document.getElementById('attributes')) {
+              new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+          }else{
+              new_attributes = "";
+          }
+          
+          // get occlusion field (is the field exists)
+          if (document.getElementById('occluded')) {
+              new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+          }else{
+              new_occluded = "";
+          }
+      }
+     
     if((object_choices!='...') && (object_choices.length==1)) {
       nn = RemoveSpecialChars(object_choices[0]);
       this.active_canvas = REST_CANVAS;
@@ -213,14 +265,23 @@ function handler() {
     }
 
     submission_edited = 0;
-    new_name = nn;
+    new_name = nn; // WHY DO YOU USE nn AS AN INTERMEDIATE NAME?
 //     new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
-    old_name = new_name;
+    old_name = new_name;  // WHY????????
 
 //     var anno = this.QueryToRest();
     anno.SetObjName(new_name);
     anno.SetUsername(username);
+    
+    if (use_attributes) {
+        // submit attributes (is the field exists)
+        anno.SetAttributes(new_attributes);
+            
+        // submit occlusion field (is the field exists)
+        anno.SetOccluded(new_occluded);
+    }
 
+      
     main_canvas.AddAnnotation(anno);
     if(view_ObjList) {
       RemoveAnnotationList();
@@ -241,6 +302,7 @@ function handler() {
       if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
     }
   };
+    
 
   // Handles when we wish to change from "query" to "rest".
   this.QueryToRest = function () {
