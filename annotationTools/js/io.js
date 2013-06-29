@@ -9,10 +9,17 @@ function ReadXML(xml_file,SuccessFunction,ErrorFunction) {
 }
 
 function WriteXML(url,xml_data,SuccessFunction,ErrorFunction) {
-  $.ajax({
+    oXmlSerializer =  new XMLSerializer();
+    sXmlString = oXmlSerializer.serializeToString(xml_data);
+        
+    // use regular expressions to replace all occurrences of
+    sXmlString = sXmlString.replace(/ xmlns=\"http:\/\/www.w3.org\/1999\/xhtml\"/g, "");
+                                    
+
+    $.ajax({
     type: "POST",
     url: url,
-    data: (new XMLSerializer()).serializeToString(xml_data).replace(' xmlns="http://www.w3.org/1999/xhtml"',''),
+    data: sXmlString,
     contentType: "text/xml",
     dataType: "text",
     success: SuccessFunction,
