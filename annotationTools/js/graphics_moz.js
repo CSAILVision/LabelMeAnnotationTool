@@ -76,7 +76,9 @@ function graphics(div_attach,name) {
 
   // Fill the drawn object.
   this.FillPolygon = function () {
-    this.drawn_obj.setAttributeNS(null,"fill","red");
+      color = this.drawn_obj.getAttributeNS(null, "stroke");
+      this.drawn_obj.setAttributeNS(null,"fill",color);
+      // this.drawn_obj.setAttributeNS(null,"fill","yellow");
     this.drawn_obj.setAttributeNS(null,"fill-opacity","0.5");
   };
 
