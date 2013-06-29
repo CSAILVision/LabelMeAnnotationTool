@@ -1,3 +1,8 @@
+// This code is very complex for what it is doing.
+// Needs optimization
+//
+// PlaceSignInHTML() is complex. Needs to make more explicit all the elements.
+
 function PlaceSignInHTML() {
   var el_div = document.createElementNS(xhtmlNS,'div');
   el_div.setAttributeNS(null,"id","you_are_div");
@@ -8,7 +13,7 @@ function PlaceSignInHTML() {
   el_div.appendChild(el_a1);
   
   var el_font = document.createElementNS(xhtmlNS,'font');
-  el_font.setAttributeNS(null,"size","3");
+  el_font.setAttributeNS(null,"size","2");
   el_a1.appendChild(el_font);
   
   var el_b = document.createElementNS(xhtmlNS,'b');
@@ -53,7 +58,7 @@ function write_username() {
   else {
     html_str = '<div id="you_are_div"><br />You are: <b>' + username + 
       '</b> <br />(' +
-      '<a href="javascript:sign_out()">sign out</a>)</div>';
+      '<a href="javascript:sign_out()">change username</a>)</div>';
     InsertAfterDiv(html_str,'username_main_div');
   }
 }
@@ -79,8 +84,8 @@ function create_username_form() {
   el_td.setAttributeNS(null,"style","text-decoration:nowrap;");
   el_tr.appendChild(el_td);
   
-  var el_br1 = document.createElementNS(xhtmlNS,'br');
-  el_td.appendChild(el_br1);
+  //var el_br1 = document.createElementNS(xhtmlNS,'br');
+  //el_td.appendChild(el_br1);
   
   var el_txt1 = document.createTextNode('Username: ');
   el_td.appendChild(el_txt1);
@@ -93,8 +98,8 @@ function create_username_form() {
   el_input1.setAttributeNS(null,"style","font-family:Arial;font-size:small;");
   el_td.appendChild(el_input1);
   
-  var el_br2 = document.createElementNS(xhtmlNS,'br');
-  el_td.appendChild(el_br2);
+  //var el_br2 = document.createElementNS(xhtmlNS,'br');
+  //el_td.appendChild(el_br2);
   
   var el_input2 = document.createElementNS(xhtmlNS,'input');
   el_input2.setAttributeNS(null,"type","submit");
