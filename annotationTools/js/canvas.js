@@ -136,9 +136,19 @@ function canvas() {
     submission_edited = 0;
     old_name = this.annotations[idx].GetObjName();
     new_name = this.annotations[idx].GetObjName();
-    WriteLogMsg('*Deleting_object');
 
-    SubmitAnnotations(0);
+    // Write to logfile:
+    WriteLogMsg('*Deleting_object');
+    InsertServerLogData('cpts_not_modified');
+
+    // Set <deleted> in LM_xml:
+    $(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text('1');
+
+    // Write XML to server:
+    WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+
+//     SubmitAnnotations(0);
+
     this.annotations[idx].DeletePolygon();
   };
 
