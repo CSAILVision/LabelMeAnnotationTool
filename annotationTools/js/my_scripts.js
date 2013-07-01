@@ -228,7 +228,6 @@ function LoadAnnotationSuccess(xml) {
   // loop over annotated objects
   for(var pp = 0; pp < num_obj; pp++) {
     main_canvas.GetAnnotations()[pp] = new annotation(pp);
-    main_canvas.GetAnnotations()[pp].SetVerified(parseInt(obj_elts[pp].getElementsByTagName("verified")[0].firstChild.nodeValue));
     
     // insert username field. Set it to "anonymous" if it is empty
     if((obj_elts[pp].getElementsByTagName("username").length>0) && obj_elts[pp].getElementsByTagName("username")[0].firstChild)
