@@ -91,39 +91,6 @@ function SelectCanvas() {
       document.getElementById('select_canvas_div').style.zIndex = -2;
   };
 
-  // Handles when the annotation gets deleted.
-  this.DeleteAnnotation = function () {
-    var idx = this.annotation.GetAnnoID();
-//     if(IsUserAnonymous() && (idx<num_orig_anno)) {
-    if((IsUserAnonymous() || (!IsCreator(this.annotation.GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
-      alert('You do not have permission to delete this polygon');
-      return;
-    }
-
-    this.annotation.SetDeleted(1);
-
-    if(idx>=num_orig_anno) {
-      anno_count--;
-      global_count--;
-      setCookie('counter',anno_count);
-      UpdateCounterHTML();
-    }
-
-    if(view_ObjList) {
-      RemoveAnnotationList();
-      LoadAnnotationList();
-    }
-
-    submission_edited = 0;
-    old_name = this.annotation.GetObjName();
-    new_name = this.annotation.GetObjName();
-    WriteLogMsg('*Deleting_object');
-
-    SubmitAnnotations(0);
-    main_canvas.unselectObjects(); // Perhaps this should go elsewhere...
-    main_handler.SelectedToRest();
-  };
-
   this.MouseDown = function (x,y,button) {
     if(button>1) return;
     if(!this.isEditingControlPoint && this.annotation.StartMoveControlPoint(x,y,main_image.GetImRatio())) {
