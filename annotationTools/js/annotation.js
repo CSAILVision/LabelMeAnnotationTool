@@ -13,8 +13,6 @@ function annotation(anno_id) {
   this.id;
   this.obj_name = '';
   this.username = 'anonymous';
-  this.occluded = '';
-  this.attributes = '';
   this.date = '';
   this.automatic = 0;
   this.pts_x = new Array();
@@ -86,22 +84,12 @@ function annotation(anno_id) {
   };
 
   this.GetOccluded = function() {
-        return this.occluded;
+    return $(LM_xml).children("annotation").children("object").eq(this.anno_id).children("occluded").text();
   };
 
-  this.SetOccluded = function(a) {
-      this.occluded = a;
-  };
-    
-    
   this.GetAttributes = function() {
-      return this.attributes;
+    return $(LM_xml).children("annotation").children("object").eq(this.anno_id).children("attributes").text();
   };
-
-  this.SetAttributes = function(a) {
-      this.attributes = a;
-  };
-
 
   this.SetDivAttach = function(da) {
     this.div_attach = da;
