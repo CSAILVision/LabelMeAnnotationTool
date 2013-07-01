@@ -147,7 +147,45 @@ function handler() {
   // Handles when the user presses the delete button in response to 
   // the edit popup bubble.
   this.EditBubbleDeleteButton = function () {
-    main_select_canvas.DeleteAnnotation();
+    var idx = main_select_canvas.GetAnnotation().GetAnnoID();
+//     if(IsUserAnonymous() && (idx<num_orig_anno)) {
+    if((IsUserAnonymous() || (!IsCreator(main_select_canvas.GetAnnotation().GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
+      alert('You do not have permission to delete this polygon');
+      return;
+    }
+
+    main_select_canvas.GetAnnotation().SetDeleted(1);
+
+    if(idx>=num_orig_anno) {
+      anno_count--;
+      global_count--;
+      setCookie('counter',anno_count);
+      UpdateCounterHTML();
+    }
+
+    if(view_ObjList) {
+      RemoveAnnotationList();
+      LoadAnnotationList();
+    }
+
+    submission_edited = 0;
+
+    // Insert data for server logfile:
+    old_name = main_select_canvas.GetAnnotation().GetObjName();
+    new_name = main_select_canvas.GetAnnotation().GetObjName();
+    WriteLogMsg('*Deleting_object');
+    InsertServerLogData('cpts_not_modified');
+
+    // Set <deleted> in LM_xml:
+    $(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text('1');
+    
+    // Write XML to server:
+    WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+
+//     SubmitAnnotations(0);
+
+    main_canvas.unselectObjects(); // Perhaps this should go elsewhere...
+    main_handler.SelectedToRest();
   };
 
   // ADJUST POLYGON, 
@@ -402,9 +440,19 @@ function handler() {
     // Turn off automatic flag and write to XML file:
     if(main_canvas.GetAnnotations()[anno_id].GetAutomatic()) {
       main_canvas.GetAnnotations()[anno_id].SetAutomatic(0);
+
+      // Insert data for server logfile:
       old_name = main_canvas.GetAnnotations()[anno_id].GetObjName();
       new_name = old_name;
-      SubmitAnnotations(false);
+      InsertServerLogData('cpts_not_modified');
+
+      // Set <automatic> in XML:
+      $(LM_xml).children("annotation").children("object").eq(anno_id).children("automatic").text('0');
+
+      // Write XML to server:
+      WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+
+//       SubmitAnnotations(false);
     }
 
     main_select_canvas.MoveToFront();
