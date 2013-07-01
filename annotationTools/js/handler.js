@@ -23,11 +23,15 @@ function handler() {
   // Handles when the user presses the delete button in response to 
   // the "What is this object?" popup bubble.
   this.WhatIsThisObjectDeleteButton = function () {
-    WriteLogMsg('*Deleting_object');
+    // Write to logfile:
+    WriteLogMsg('*Deleted_object_during_labeling');
+
     submission_edited = 0;
-    old_name = '';
-    new_name = '';
-    SubmitAnnotations(0);
+
+//     old_name = '';
+//     new_name = '';
+//     SubmitAnnotations(0);
+
     this.QueryToRest();
   };
 
@@ -41,19 +45,8 @@ function handler() {
     main_draw_canvas.AttachAnnotation(anno);
   };
 
-  this.DrawCanvasDeleteEvent = function () {
-    WriteLogMsg('*Deleting_object');
-    submission_edited = 0;
-    old_name = '';
-    new_name = '';
-    SubmitAnnotations(0);
-    this.DrawToRest();
-  };
-
   // Submits the object label in response to the edit/delete popup bubble.
   this.SubmitEditLabel = function () {
-    var editedControlPoints = main_select_canvas.didEditControlPoints();
-      
     submission_edited = 1;
     anno = main_select_canvas.GetAnnotation();
       
@@ -99,8 +92,56 @@ function handler() {
       LoadAnnotationList();
       ChangeLinkColorFG(anno.GetAnnoID());
     }
+
+    
+    // Insert data to write to logfile:
+    if(main_select_canvas.didEditControlPoints()) {
+      InsertServerLogData('cpts_modified');
+    }
+    else {
+      InsertServerLogData('cpts_not_modified');
+    }
+
+    // Object index:
+    var obj_ndx = anno.anno_id;
+
+    // Pointer to object:
+    var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
+
+    // Set fields:
+    curr_obj.children("name").text(new_name);
+    if(curr_obj.children("automatic").length > 0) {
+      curr_obj.children("automatic").text("0");
+    }
+    
+    // Insert attributes (and create field if it is not there):
+    if(curr_obj.children("attributes").length>0) {
+      curr_obj.children("attributes").text(new_attributes);
+    }
+    else {
+      curr_obj.append("<attributes>" + new_attributes + "</attributes>");
+    }
+
+    if(curr_obj.children("occluded").length>0) {
+      curr_obj.children("occluded").text(new_occluded);
+    }
+    else {
+      curr_obj.append("<occluded>" + new_occluded + "</occluded>");
+    }
+    
+    if(main_select_canvas.didEditControlPoints()) {
+      for(var jj=0; jj < main_canvas.GetAnnotations()[obj_ndx].GetPtsX().length; jj++) {
+	curr_obj.children("polygon").children("pt").eq(jj).children("x").text(main_canvas.GetAnnotations()[obj_ndx].GetPtsX()[jj]);
+	curr_obj.children("polygon").children("pt").eq(jj).children("y").text(main_canvas.GetAnnotations()[obj_ndx].GetPtsY()[jj]);
+      }
+    }
+    
+    // Write XML to server:
+    WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+    
       
-    SubmitAnnotations(editedControlPoints);
+//     var editedControlPoints = main_select_canvas.didEditControlPoints();
+//     SubmitAnnotations(editedControlPoints);
   };
   
   // Handles when the user presses the delete button in response to 
@@ -290,7 +331,42 @@ function handler() {
 
     anno_count++;
     global_count++;
-    SubmitAnnotations(0);
+
+    // Insert data for server logfile:
+    InsertServerLogData('cpts_not_modified');
+
+    // Get object index:
+    var obj_ndx = anno.anno_id;
+
+    // Insert data into XML:
+    var html_str = '<object>';
+    html_str += '<name>' + new_name + '</name>';
+    html_str += '<deleted>0</deleted>';
+    html_str += '<verified>0</verified>';
+    if(use_attributes) {
+      html_str += '<occluded>' + new_occluded + '</occluded>';
+      html_str += '<attributes>' + new_attributes + '</attributes>';
+    }
+    var ts = anno.GetTimeStamp();
+    if(ts.length==20) html_str += '<date>' + ts + '</date>';
+    html_str += '<id>' + obj_ndx + '</id>';
+    html_str += '<polygon>';
+    html_str += '<username>' + username + '</username>';
+    for(var jj=0; jj < anno.GetPtsX().length; jj++) {
+      html_str += '<pt>';
+      html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
+      html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
+      html_str += '</pt>';
+    }
+    html_str += '</polygon>';
+    html_str += '</object>';
+    $(LM_xml).children("annotation").append($(html_str));
+
+    // Write XML to server:
+    WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+
+//     SubmitAnnotations(0);
+
     setCookie('counter',anno_count);
     UpdateCounterHTML();
 
@@ -427,7 +503,17 @@ function handler() {
   // Handles when the user erases a segment.
   this.EraseSegment = function () {
     var anno = main_draw_canvas.GetAnnotation();
-    if(anno && !anno.DeleteLastControlPoint()) this.DrawCanvasDeleteEvent();
+    if(anno && !anno.DeleteLastControlPoint()) {
+      // Write to logfile:
+      WriteLogMsg('*Deleted_object_during_labeling');
+
+      submission_edited = 0;
+//       old_name = '';
+//       new_name = '';
+//       SubmitAnnotations(0);
+
+      this.DrawToRest();
+    }
     return anno;
   };
 
