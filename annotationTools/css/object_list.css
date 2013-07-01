@@ -1,15 +1,25 @@
 
 
 /* THE OBJECT LIST ----------------------------------------------- */
+#anno_anchor {
+    position:absolute;
+    top:0px;
+    right:0px;
+    height:100%;
+    min-width:150px;
+}
 
 .object_list {
     position:absolute;
-    top:30px;
-    right:20px;
+    top:60px;
+    right:5px;
+    bottom:5px;
+    min-width:180px;
+    
 	padding:5px;
 	margin:0em 0 0em;
 	background-color: #fff;
-	border: 0px solid #000;
+	border: 1px solid #000;
 	-webkit-border-radius:20px;
 	-moz-border-radius:20px;
 	border-radius:5px 5px 5px 5px;
@@ -21,6 +31,8 @@
     font-size: 0.9em;
     line-height:1.4em;
     font-weight:400;
+    
+    overflow-y:auto;
 }
 
 
