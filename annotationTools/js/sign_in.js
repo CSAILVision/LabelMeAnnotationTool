@@ -3,6 +3,47 @@
 //
 // PlaceSignInHTML() is complex. Needs to make more explicit all the elements.
 
+
+function initUserName() {
+    // The first time we get the username will give preference to the username passed
+    //   in the URL as it might come from the LabelMe browser.
+    username = getQueryVariable("username");
+
+    if (username.length==0) {
+        username = "anonymous";
+    }
+    
+    setCookie("username",username);
+    $("#usernametxt").text(username);
+}
+
+function show_enterUserNameDIV() {
+    // This function simply swaps the divs to show the "changeAndDisplayUserName" div
+    $("#display_user").hide();
+    $("#enterUserName").show();
+    return false;
+}
+
+function changeAndDisplayUserName(c) {
+
+    if (c==13){
+        username = $("#userEnter").val();
+    
+        if (username.length==0) {
+            username = getCookie("username");
+        }   
+    
+        setCookie("username",username);
+        $("#usernametxt").text(username);
+    }
+
+    $("#display_user").show();
+    $("#enterUserName").hide();
+}
+
+
+/*
+
 function PlaceSignInHTML() {
   var el_div = document.createElementNS(xhtmlNS,'div');
   el_div.setAttributeNS(null,"id","you_are_div");
@@ -141,3 +182,4 @@ function get_username_form() {
   document.getElementById('username').select();
 }
 
+*/
