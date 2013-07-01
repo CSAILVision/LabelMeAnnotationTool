@@ -13,7 +13,6 @@ function annotation(anno_id) {
   this.id;
   this.obj_name = '';
   this.username = 'anonymous';
-  this.deleted = 0;
   this.verified = 0;
   this.occluded = '';
   this.attributes = '';
@@ -80,11 +79,7 @@ function annotation(anno_id) {
   };
 
   this.GetDeleted = function () {
-    return this.deleted;
-  };
-
-  this.SetDeleted = function(d) {
-    this.deleted = d;
+    return parseInt($(LM_xml).children("annotation").children("object").eq(this.anno_id).children("deleted").text());
   };
 
   this.GetVerified = function () {
@@ -626,7 +621,7 @@ function annotation(anno_id) {
   this.getObjectColor = function (p) {
     //if the polygon is still open, then its color should be blue.  (7.27.06)
     if(this.is_selected && (this.lastx!=-1)) return "#0000ff";
-    if(this.deleted) return "#888888";
+    if(this.GetDeleted()) return "#888888";
 
     //otherwise:
     var objectColors = new Array(14);
