@@ -61,6 +61,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   
   var xhtmlNS = 'http://www.w3.org/1999/xhtml';
 
+    
+// UTILITIES    
 function CheckXMLExists() {
   if(req_submit.readyState==4) {
     if(req_submit.status != 200) {
@@ -117,7 +119,7 @@ function main_image_onload_helper() {
       main_image.GetFileInfo().GetImagePath();
   }
 
-  if(document.getElementById('username_main_div')) write_username();
+  // if(document.getElementById('username_main_div')) write_username();
 
   WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
 }
@@ -145,15 +147,43 @@ WriteLogMsg('*start_loading');
   <div id="mt_submit_form"></div>
 
     
-  <!-- HEADER -->  
+  <!-- HEADER AND LOGO -->  
   <div class="header" id="header">
+      <!-- LOGO-->
      <div id="logo">
          <a href="index.html"><img src="Icons/LabelMe_logo3.png" width="216" height="69" alt="LabelMe logo"></img></a>
      </div>
+      
+      <!-- USERNAME FORM-->
+      <div id="username_main_div">
+          <div id="display_user" style="display:block;">
+              You are:
+              <b><span id="usernametxt" type="text" style="max-width:120px; height:1.2em;" tabindex="0" title="This username will get associated to each new polygon inside the XML.">anonymous
+              </span></b>
+              <font size="-2">(<a href="#" title="Click to change the username" onclick="show_enterUserNameDIV(); return false;">change user</a>)</font>
+          </div>
+          <div id="enterUserName" style="display:none;">
+              Enter name:
+              <input id="userEnter" type="text" style="width:120px;" tabindex="0" value="" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using." onkeyup="var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);" />
+          </div>
+              
+      </div>
  </div>
+ 
     
+
     
+    <!-- BUTTONS -->
    <div id="tool_buttons">
+       <!-- NAVIGATION BUTTONS -->
+           <div id="img_xml_download_div">
+               <font size="-2">
+                   (<b><a id="img_url" target="_blank" title="Download this image.">IMG</a></b>,
+                   <b><a id="xml_url" href="javascript:GetXMLFile();" title="Download annotations for this image.">XML</a></b>)
+               </font>
+           </div>
+
+       
        <div id="label_buttons_navigation">
         <button id="help" class="labelBtn" type="button" title="Show help page" onclick="location.href='annotationTools/html/labeling_instructions.html'" >
             <img src="Icons/help_new.png"  height="30" />
@@ -164,7 +194,7 @@ WriteLogMsg('*start_loading');
         </button>
        </div>
 
- 
+       <!-- DRAWING BUTTONS -->
        <div id="label_buttons_drawing">
           <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In" onclick="main_handler.ZoomPlus(0.2)" >
               <img src="Icons/zoomin.png" width="30" height="38" />
@@ -182,7 +212,7 @@ WriteLogMsg('*start_loading');
        </div>
   </div>
 
-
+  <!-- IMAGE CANVAS -->
   <div class="image_canvas" id="main_section">
     <div id="loading">Loading image...</div>
     <div id="main_image" class="top" style="visibility:hidden;overflow:auto;">
@@ -254,18 +284,17 @@ WriteLogMsg('*start_loading');
 
 <!-- </td></tr></table> -->
 
-  <div id="right_side">
-
-  <script type="text/javascript">
-    document.getElementById('right_side').style.overflow='auto';
-  </script>
-<!-- changed the scroll property above from just overflow:auto. 6.19.06 for IE and Firefox //-->  
+<div id="right_side">
+   <!--  <script type="text/javascript">
+        document.getElementById('right_side').style.overflow='auto';
+    </script> -->
+    <!-- changed the scroll property above from just overflow:auto. 6.19.06 for IE and Firefox //-->  
 
 
     <div style="font-size:small;">
 
-        <div id="username_main_div" style="font-size:small; padding-top:5px; padding-bottom:5px; padding-left:5px; padding-right:5px; width:150px;">
-	    </div>
+       <!-- <div id="username_main_div" style="font-size:small; padding-top:5px; padding-bottom:5px; padding-left:5px; padding-right:5px; width:150px;">
+	    </div> -->
 
       <div id="counter_div" style="font-size:small; display:none;">
         <p>There are <font size="3"><b><span id="anno_count"></span></b>&#160;</font>labelled objects</p>
@@ -274,32 +303,30 @@ WriteLogMsg('*start_loading');
     </div>
 
     <!--
-    <p>
-    <div id="img_xml_download_div">
-    <font size="-2">
-    (<b><a id="img_url" target="_blank" title="Download this image.">IMG</a></b>,
-    <b><a id="xml_url" href="javascript:GetXMLFile();" title="Download annotations for this image.">XML</a></b>)
-    </font>
-    </div>
-    </p>
      -->
-        
+</div>
 
-  </div>
-
-    <div id="anno_anchor">
-    </div>
+    
+<!-- DIV that will contain the object list -->
+<div id="anno_anchor">
+</div>
 
 
 <div id="mt_feedback" />
 
+<!-- INITIALIZATION TOOL -->
 <script type="text/javascript">
+    // Initializing some variables
     MainInit();
+    
+    initUserName();
 
-  // Collect statistics:
-  var ref = document.referrer;
+    // Collect statistics:
+    var ref = document.referrer;
 </script>
+    
 </body>
+    
 <!--#else -->
 <body>
 <p><img src="Icons/LabelMe.gif" /></p><br />
