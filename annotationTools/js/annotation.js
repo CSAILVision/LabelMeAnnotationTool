@@ -13,7 +13,6 @@ function annotation(anno_id) {
   this.id;
   this.obj_name = '';
   this.username = 'anonymous';
-  this.verified = 0;
   this.occluded = '';
   this.attributes = '';
   this.date = '';
@@ -83,13 +82,9 @@ function annotation(anno_id) {
   };
 
   this.GetVerified = function () {
-    return this.verified;
+    return parseInt($(LM_xml).children("annotation").children("object").eq(this.anno_id).children("verified").text());
   };
 
-  this.SetVerified = function (v) {
-    this.verified = v;
-  };
-    
   this.GetOccluded = function() {
         return this.occluded;
   };
