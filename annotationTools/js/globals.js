@@ -3,6 +3,9 @@
 // Parsed LabelMe XML file. Manipulate this variable with jquery.
 var LM_xml;
 
+// URL of CGI script to submit XML annotation:
+var SubmitXmlUrl = 'annotationTools/perl/submit.cgi';
+
 // LabelMe username:
 var username = 'anonymous';
 
