@@ -154,18 +154,13 @@ function handler() {
       return;
     }
 
-    main_select_canvas.GetAnnotation().SetDeleted(1);
+//     main_select_canvas.GetAnnotation().SetDeleted(1);
 
     if(idx>=num_orig_anno) {
       anno_count--;
       global_count--;
       setCookie('counter',anno_count);
       UpdateCounterHTML();
-    }
-
-    if(view_ObjList) {
-      RemoveAnnotationList();
-      LoadAnnotationList();
     }
 
     submission_edited = 0;
@@ -183,6 +178,11 @@ function handler() {
     WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
 
 //     SubmitAnnotations(0);
+
+    if(view_ObjList) {
+      RemoveAnnotationList();
+      LoadAnnotationList();
+    }
 
     main_canvas.unselectObjects(); // Perhaps this should go elsewhere...
     main_handler.SelectedToRest();
