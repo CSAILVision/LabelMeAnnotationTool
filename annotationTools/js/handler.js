@@ -65,34 +65,24 @@ function handler() {
     anno.SetObjName(new_name);
     
     if (use_attributes) {
-        // occlusion field
-        if (document.getElementById('occluded')) {
-            new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
-        }
-        else {
-            new_occluded = RemoveSpecialChars(this.occluded);
-        }
-        anno.SetOccluded(new_occluded);
+      // occlusion field
+      if (document.getElementById('occluded')) {
+	new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+      }
+      else {
+	new_occluded = RemoveSpecialChars(this.occluded);
+      }
       
-        // attributes field
-        if(document.getElementById('attributes')) {
-            new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-        }
-        else {
-            new_attributes = RemoveSpecialChars(this.attributes);
-        }
-        anno.SetAttributes(new_attributes);
+      // attributes field
+      if(document.getElementById('attributes')) {
+	new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+      }
+      else {
+	new_attributes = RemoveSpecialChars(this.attributes);
+      }
     }
       
     main_handler.SelectedToRest();
-      
-    var m = main_image.GetFileInfo().GetMode();
-    if(view_ObjList) {
-      RemoveAnnotationList();
-      LoadAnnotationList();
-      ChangeLinkColorFG(anno.GetAnnoID());
-    }
-
     
     // Insert data to write to logfile:
     if(main_select_canvas.didEditControlPoints()) {
@@ -142,6 +132,12 @@ function handler() {
       
 //     var editedControlPoints = main_select_canvas.didEditControlPoints();
 //     SubmitAnnotations(editedControlPoints);
+
+    if(view_ObjList) {
+      RemoveAnnotationList();
+      LoadAnnotationList();
+      ChangeLinkColorFG(anno.GetAnnoID());
+    }
   };
   
   // Handles when the user presses the delete button in response to 
@@ -351,21 +347,8 @@ function handler() {
 //     var anno = this.QueryToRest();
     anno.SetObjName(new_name);
     anno.SetUsername(username);
-    
-    if (use_attributes) {
-        // submit attributes (is the field exists)
-        anno.SetAttributes(new_attributes);
-            
-        // submit occlusion field (is the field exists)
-        anno.SetOccluded(new_occluded);
-    }
-
-      
+          
     main_canvas.AddAnnotation(anno);
-    if(view_ObjList) {
-      RemoveAnnotationList();
-      LoadAnnotationList();
-    }
 
     anno_count++;
     global_count++;
@@ -404,6 +387,11 @@ function handler() {
     WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
 
 //     SubmitAnnotations(0);
+
+    if(view_ObjList) {
+      RemoveAnnotationList();
+      LoadAnnotationList();
+    }
 
     setCookie('counter',anno_count);
     UpdateCounterHTML();
