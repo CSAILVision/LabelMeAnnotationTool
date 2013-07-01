@@ -255,18 +255,6 @@ function LoadAnnotationSuccess(xml) {
     else
       main_canvas.GetAnnotations()[pp].SetObjName(obj_elts[pp].getElementsByTagName("name")[0].firstChild.nodeValue);
 
-    // insert occluded field if it exists.
-    if((obj_elts[pp].getElementsByTagName("occluded").length>0) && obj_elts[pp].getElementsByTagName("occluded")[0].firstChild)
-    {
-        main_canvas.GetAnnotations()[pp].SetOccluded(obj_elts[pp].getElementsByTagName("occluded")[0].firstChild.nodeValue);
-    }
-      
-    // insert attributes field if it exists.
-    if((obj_elts[pp].getElementsByTagName("attributes").length>0) && obj_elts[pp].getElementsByTagName("attributes")[0].firstChild)
-    {
-        main_canvas.GetAnnotations()[pp].SetAttributes(obj_elts[pp].getElementsByTagName("attributes")[0].firstChild.nodeValue);
-    }
-
     // insert polygon
     var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
     var numpts = pt_elts.length;
