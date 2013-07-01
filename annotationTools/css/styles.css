@@ -97,5 +97,4 @@ position:relative;
 #right_side {position:absolute; top:0px; right:0px; width:20em;
 height:100%; z-index:0;}
 #examples {width:100%; font-size:small;}
-#anno_anchor {position:relative; width:100%; top:-1em;}
 #anno_list {font-size:small;}
