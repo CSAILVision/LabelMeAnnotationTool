@@ -119,7 +119,7 @@ function canvas() {
       return;
     }
     
-    this.annotations[idx].SetDeleted(1);
+//     this.annotations[idx].SetDeleted(1);
     
     if(idx>=num_orig_anno) {
       anno_count--;
