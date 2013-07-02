@@ -14,9 +14,9 @@ function annotation(anno_id) {
   this.obj_name = '';
   this.username = 'anonymous';
   this.date = '';
-  this.automatic = 0;
   this.pts_x = new Array();
   this.pts_y = new Array();
+
   this.is_selected;
   this.graphics = null;
   this.all_lines = null;
@@ -67,12 +67,11 @@ function annotation(anno_id) {
     this.username = u;
   };
 
-  this.SetAutomatic = function(a) {
-    this.automatic = a;
-  };
-
   this.GetAutomatic = function() {
-    return this.automatic;
+    if($(LM_xml).children("annotation").children("object").eq(this.anno_id).children("automatic").length > 0) {
+      return parseInt($(LM_xml).children("annotation").children("object").eq(this.anno_id).children("automatic").text());
+    }
+    return 0;
   };
 
   this.GetDeleted = function () {
@@ -237,7 +236,7 @@ function annotation(anno_id) {
     else if((this.pts_x.length==3) && isAngle) {
       this.graphics.DrawPolyLine(this.pts_x,this.pts_y,this.getObjectColor(this.anno_id),im_ratio);
     }
-    else if(this.automatic==1) {
+    else if(this.GetAutomatic()==1) {
       this.graphics.DrawDashedPolygon(this.pts_x,this.pts_y,
 				      this.getObjectColor(this.anno_id),im_ratio,this.obj_name);
     }
