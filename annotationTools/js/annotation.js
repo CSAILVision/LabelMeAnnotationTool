@@ -10,7 +10,6 @@ function annotation(anno_id) {
   // Private variables:
   // *******************************************
 
-  this.username = 'anonymous';
   this.pts_x = new Array();
   this.pts_y = new Array();
 
@@ -41,11 +40,7 @@ function annotation(anno_id) {
   };
 
   this.GetUsername = function () {
-    return this.username;
-  };
-
-  this.SetUsername = function(u) {
-    this.username = u;
+    return $(LM_xml).children("annotation").children("object").eq(this.anno_id).children("polygon").children("username").text();
   };
 
   this.GetAutomatic = function() {
