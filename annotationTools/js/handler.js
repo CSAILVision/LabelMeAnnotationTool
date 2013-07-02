@@ -62,7 +62,6 @@ function handler() {
       alert('Please enter an object name');
       return;
     }
-    anno.SetObjName(new_name);
     
     if (use_attributes) {
       // occlusion field
@@ -345,7 +344,6 @@ function handler() {
     old_name = new_name;  // WHY????????
 
 //     var anno = this.QueryToRest();
-    anno.SetObjName(new_name);
     anno.SetUsername(username);
           
     main_canvas.AddAnnotation(anno);
