@@ -368,7 +368,7 @@ function handler() {
       html_str += '<occluded>' + new_occluded + '</occluded>';
       html_str += '<attributes>' + new_attributes + '</attributes>';
     }
-    var ts = anno.GetTimeStamp();
+    var ts = GetTimeStamp();
     if(ts.length==20) html_str += '<date>' + ts + '</date>';
     html_str += '<id>' + obj_ndx + '</id>';
     html_str += '<polygon>';
