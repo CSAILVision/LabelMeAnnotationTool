@@ -246,9 +246,6 @@ function LoadAnnotationSuccess(xml) {
     else
       main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
     
-    // Set object IDs:
-    main_canvas.GetAnnotations()[pp].SetID(""+pp);
-
     // insert object name
     if(!obj_elts[pp].getElementsByTagName("name")[0].firstChild)
       main_canvas.GetAnnotations()[pp].SetObjName(''); // if it does not exist set it to be empty
