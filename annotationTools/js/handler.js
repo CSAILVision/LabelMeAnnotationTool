@@ -427,8 +427,6 @@ function handler() {
 
     // Turn off automatic flag and write to XML file:
     if(main_canvas.GetAnnotations()[anno_id].GetAutomatic()) {
-      main_canvas.GetAnnotations()[anno_id].SetAutomatic(0);
-
       // Insert data for server logfile:
       old_name = main_canvas.GetAnnotations()[anno_id].GetObjName();
       new_name = old_name;

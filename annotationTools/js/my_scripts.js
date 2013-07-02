@@ -225,6 +225,17 @@ function LoadAnnotationSuccess(xml) {
   main_canvas.CreateNewAnnotations(num_obj);
   num_orig_anno = num_obj;
   
+  // Set object IDs:
+  for(var pp = 0; pp < num_obj; pp++) {
+    var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
+    if(curr_obj.children("id").length > 0) {
+      curr_obj.children("id").text(""+pp);
+    }
+    else {
+      curr_obj.append($("<id>" + pp + "</id>"));
+    }
+  }
+
   // loop over annotated objects
   for(var pp = 0; pp < num_obj; pp++) {
     main_canvas.GetAnnotations()[pp] = new annotation(pp);
@@ -235,18 +246,7 @@ function LoadAnnotationSuccess(xml) {
     else
       main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
     
-    // insert field "automatic" if it exists.
-    if((obj_elts[pp].getElementsByTagName("automatic").length>0) && obj_elts[pp].getElementsByTagName("automatic")[0].firstChild)
-      main_canvas.GetAnnotations()[pp].SetAutomatic(obj_elts[pp].getElementsByTagName("automatic")[0].firstChild.nodeValue);
-    
     // Set object IDs:
-    var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
-    if(curr_obj.children("id").length > 0) {
-      curr_obj.children("id").text(""+pp);
-    }
-    else {
-      curr_obj.append($("<id>" + pp + "</id>"));
-    }
     main_canvas.GetAnnotations()[pp].SetID(""+pp);
 
     // insert object name
