@@ -344,7 +344,6 @@ function handler() {
     old_name = new_name;  // WHY????????
 
 //     var anno = this.QueryToRest();
-    anno.SetUsername(username);
           
     main_canvas.AddAnnotation(anno);
 

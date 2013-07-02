@@ -224,35 +224,33 @@ function LoadAnnotationSuccess(xml) {
   
   main_canvas.CreateNewAnnotations(num_obj);
   num_orig_anno = num_obj;
-  
-  // Initialize object name if empty in the XML file:
+
+  // Initialize any empty tags in the XML file:
   for(var pp = 0; pp < num_obj; pp++) {
     var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
+
+    // Initialize object name if empty in the XML file:
     if(curr_obj.children("name").length == 0) {
       curr_obj.append($("<name></name>"));
     }
-  }
 
-  // Set object IDs:
-  for(var pp = 0; pp < num_obj; pp++) {
-    var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
+    // Set object IDs:
     if(curr_obj.children("id").length > 0) {
       curr_obj.children("id").text(""+pp);
     }
     else {
       curr_obj.append($("<id>" + pp + "</id>"));
     }
+
+    // Initialize username if empty in the XML file:
+    if(curr_obj.children("polygon").children("username").length == 0) {
+      curr_obj.children("polygon").append($("<username>anonymous</username>"));
+    }
   }
 
   // loop over annotated objects
   for(var pp = 0; pp < num_obj; pp++) {
     main_canvas.GetAnnotations()[pp] = new annotation(pp);
-    
-    // insert username field. Set it to "anonymous" if it is empty
-    if((obj_elts[pp].getElementsByTagName("username").length>0) && obj_elts[pp].getElementsByTagName("username")[0].firstChild)
-      main_canvas.GetAnnotations()[pp].SetUsername(obj_elts[pp].getElementsByTagName("username")[0].firstChild.nodeValue);
-    else
-      main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
     
     // insert polygon
     var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
