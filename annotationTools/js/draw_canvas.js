@@ -26,7 +26,6 @@ function DrawCanvas() {
     this.annotation.SetDivAttach('draw_canvas');
     this.annotation.SelectPoly();
     this.annotation.AddFirstControlPoint(x,y);
-    this.annotation.SetTimeStamp();
     WriteLogMsg('*start_polygon');
   };
 
