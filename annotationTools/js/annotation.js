@@ -12,7 +12,6 @@ function annotation(anno_id) {
 
   this.obj_name = '';
   this.username = 'anonymous';
-  this.date = '';
   this.pts_x = new Array();
   this.pts_y = new Array();
 
@@ -48,14 +47,6 @@ function annotation(anno_id) {
   
   this.GetUsername = function () {
     return this.username;
-  };
-
-  this.GetTimeStamp = function () {
-    return this.date;
-  };
-
-  this.SetTimeStamp = function () {
-    this.date = GetTimeStamp();
   };
 
   this.SetUsername = function(u) {
