@@ -225,6 +225,14 @@ function LoadAnnotationSuccess(xml) {
   main_canvas.CreateNewAnnotations(num_obj);
   num_orig_anno = num_obj;
   
+  // Initialize object name if empty in the XML file:
+  for(var pp = 0; pp < num_obj; pp++) {
+    var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
+    if(curr_obj.children("name").length == 0) {
+      curr_obj.append($("<name></name>"));
+    }
+  }
+
   // Set object IDs:
   for(var pp = 0; pp < num_obj; pp++) {
     var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
@@ -246,12 +254,6 @@ function LoadAnnotationSuccess(xml) {
     else
       main_canvas.GetAnnotations()[pp].SetUsername("anonymous");
     
-    // insert object name
-    if(!obj_elts[pp].getElementsByTagName("name")[0].firstChild)
-      main_canvas.GetAnnotations()[pp].SetObjName(''); // if it does not exist set it to be empty
-    else
-      main_canvas.GetAnnotations()[pp].SetObjName(obj_elts[pp].getElementsByTagName("name")[0].firstChild.nodeValue);
-
     // insert polygon
     var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
     var numpts = pt_elts.length;
