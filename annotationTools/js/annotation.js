@@ -10,7 +10,6 @@ function annotation(anno_id) {
   // Private variables:
   // *******************************************
 
-  this.id;
   this.obj_name = '';
   this.username = 'anonymous';
   this.date = '';
@@ -38,10 +37,6 @@ function annotation(anno_id) {
   // *******************************************
   // Public methods:
   // *******************************************
-
-  this.SetID = function(id) {
-    this.id = id;
-  };
 
   this.GetObjName = function () {
     return this.obj_name;
