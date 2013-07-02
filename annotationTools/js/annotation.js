@@ -10,7 +10,6 @@ function annotation(anno_id) {
   // Private variables:
   // *******************************************
 
-  this.obj_name = '';
   this.username = 'anonymous';
   this.pts_x = new Array();
   this.pts_y = new Array();
@@ -38,13 +37,9 @@ function annotation(anno_id) {
   // *******************************************
 
   this.GetObjName = function () {
-    return this.obj_name;
+    return $(LM_xml).children("annotation").children("object").eq(this.anno_id).children("name").text();
   };
 
-  this.SetObjName = function(name) {
-    this.obj_name = name;
-  };
-  
   this.GetUsername = function () {
     return this.username;
   };
@@ -209,7 +204,7 @@ function annotation(anno_id) {
     }
 
     // Determine if an angle has been labeled:
-    var strtok = this.obj_name.split(/ /);
+    var strtok = this.GetObjName().split(/ /);
     var isAngle = 0;
     for(var i = 0; i < strtok.length; i++) {
       if(strtok[i]=='angle') isAngle = 1;
@@ -224,11 +219,11 @@ function annotation(anno_id) {
     }
     else if(this.GetAutomatic()==1) {
       this.graphics.DrawDashedPolygon(this.pts_x,this.pts_y,
-				      this.getObjectColor(this.anno_id),im_ratio,this.obj_name);
+				      this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
     }
     else {
       this.graphics.DrawPolygon(this.pts_x,this.pts_y,
-				this.getObjectColor(this.anno_id),im_ratio,this.obj_name);
+				this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
     }
   };
   
@@ -609,7 +604,7 @@ function annotation(anno_id) {
     objectColors[13] = "999900"; // bad
 
     // case insensative hashing:
-    var name = this.obj_name.toUpperCase(); 
+    var name = this.GetObjName().toUpperCase(); 
     var hash = 0;
     for(var i=0;i<name.length;i++) { //hash code based on name
       hash += this.charCodeAt(name,i);
