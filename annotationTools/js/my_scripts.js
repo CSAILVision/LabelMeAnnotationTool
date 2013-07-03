@@ -170,9 +170,10 @@ function ChangeLinkColorFG(idx) {
 
 
 function UpdateCounterHTML() {
-  var m = main_image.GetFileInfo().GetMode();
-  if((m=='im') || (m=='mt')) return;
-  document.getElementById('anno_count').innerHTML = anno_count;
+    return;
+  //var m = main_image.GetFileInfo().GetMode();
+  //if((m=='im') || (m=='mt')) return;
+  //document.getElementById('anno_count').innerHTML = anno_count;
 }
 
 function LoadCounterText() {
