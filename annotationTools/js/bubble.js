@@ -10,6 +10,7 @@
 //        LM_xml.sendtoserver
 //
 
+// Rewritten: Antonio: 07/01/2013
 
 // *******************************************
 // Public methods:
