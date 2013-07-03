@@ -145,10 +145,10 @@ function image(id) {
   this.Zoom = function(amt) { 
     switch(amt) {
       case 'fitted':
-      amt = this.browser_im_ratio;
-      break;
+            amt = this.browser_im_ratio;
+            break;
       default:
-      amt = this.im_ratio+amt;
+            amt = this.im_ratio+amt;
     }
 
 //     // If it is Safari and if a polygon is open, then disallow zooming.
@@ -178,26 +178,35 @@ function image(id) {
     else mainImage.style.overflow = 'auto';
 
     main_canvas.ClearAllAnnotations();
-    var anno = main_draw_canvas.ClearAnnotation();
-    var anno_select = main_select_canvas.ClearAnnotation();
+    main_draw_canvas.ClearAnnotation();
+    main_select_canvas.ClearAnnotation();
+    //var anno = main_draw_canvas.ClearAnnotation();
+    //var anno_select = main_select_canvas.ClearAnnotation();
     this.im.width = this.width_curr;
     this.im.height = this.height_curr;
 
-    document.getElementById('myCanvas_bg').setAttributeNS(null,"width",this.width_curr);
-    document.getElementById('myCanvas_bg').setAttributeNS(null,"height",this.height_curr);
-    document.getElementById('select_canvas').setAttributeNS(null,"width",this.width_curr);
-    document.getElementById('select_canvas').setAttributeNS(null,"height",this.height_curr);
-    document.getElementById('draw_canvas').setAttributeNS(null,"width",this.width_curr);
-    document.getElementById('draw_canvas').setAttributeNS(null,"height",this.height_curr);
-    document.getElementById('query_canvas').setAttributeNS(null,"width",this.width_curr);
-    document.getElementById('query_canvas').setAttributeNS(null,"height",this.height_curr);
-
+      
+      /*$("#myCanvas_bg_div").width(this.width_curr).height(this.height_curr);
+      $("#select_canvas_div").width(this.width_curr).height(this.height_curr);
+      $("#draw_canvas_div").width(this.width_curr).height(this.height_curr);
+      $("#query_canvas_div").width(this.width_curr).height(this.height_curr);*/
+      $("#myCanvas_bg").width(this.width_curr).height(this.height_curr);
+      $("#select_canvas").width(this.width_curr).height(this.height_curr);
+      $("#draw_canvas").width(this.width_curr).height(this.height_curr);
+      $("#query_canvas").width(this.width_curr).height(this.height_curr);
+      
     // Redraw polygons.
     main_canvas.DrawAllPolygons();
     main_draw_canvas.RedrawAnnotation();
     main_select_canvas.RedrawAnnotation();
+
+      $("#myCanvas_bg_div").css({top: 0, left: 0, position:'absolute'});
+      $("#select_canvas_div").css({top: 0, left: 0, position:'absolute'});
+      $("#query_canvas_div").css({top: 0, left: 0, position:'absolute'});
+      $("#draw_canvas_div").css({top: 0, left: 0, position:'absolute'});
   };
 
+    
   
   // *******************************************
   // Private methods:
@@ -206,20 +215,15 @@ function image(id) {
   //tells the picture to take up the available 
   //space in the browser, if it needs it. 6.29.06 
   this.ScaleFrame = function() {
-    var mainImage = document.getElementById('main_image');
-    //look at the available browser height and the image height,
-    //and use the smaller of the two for the main_image height.
+    //look at the available browser (height,width) and the image (height,width),
+    //and use the smaller of the two for the main_image (height,width).
     var avail_height = this.GetAvailHeight();
-    if(this.height_curr > avail_height) this.curr_frame_height = avail_height;
-    else this.curr_frame_height = this.height_curr;	 
-    //likewise for width
+    this.curr_frame_height = Math.min(avail_height, this.height_curr);
+      
     var avail_width = this.GetAvailWidth();
-    if(this.width_curr > avail_width) this.curr_frame_width = avail_width;
-    else this.curr_frame_width = this.width_curr;
-    
-    mainImage.style.width = this.curr_frame_width + 'px';
-    mainImage.style.height = this.curr_frame_height + 'px';  
-    
+    this.curr_frame_width = Math.min(avail_width, this.width_curr);
+      
+    $("#main_image").width(this.curr_frame_width).height(this.curr_frame_height);
   };
   
   /*  //6.14.06 - center the zoomed image over a specified point on the image.
