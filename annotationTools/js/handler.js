@@ -195,7 +195,7 @@ function handler() {
     main_select_canvas.AllowAdjustPolygon();
   };
 
-  // Handles when the user presses the zoom "plus" (in) button.  Zooms in on 
+/*  // Handles when the user presses the zoom "plus" (in) button.  Zooms in on
   // the image by amt percent.
   this.ZoomPlus = function (amt) {
     main_image.Zoom(amt);
@@ -211,7 +211,7 @@ function handler() {
   // that the displayed image fits nicely onto the page (no scrollbars).
   this.ZoomFitImage = function () {
     main_image.Zoom('fitted');
-  };
+  }; */
 
   // Handles when the user clicks on the link for an annotation.
   this.AnnotationLinkClick = function (idx) {
