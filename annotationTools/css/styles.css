@@ -22,7 +22,7 @@ top:8px; right:8px; width:16em;}
 
 #loading {position:absolute; font-size:large; left:1em;
 top:2em;}
-#main_image {position:relative; left:0; top:0; border: 1px solid #979797;}
+#main_image {position:absolute; left:0; top:0; border: 1px solid #979797;}
 
 #framebar{
 height:80px;
