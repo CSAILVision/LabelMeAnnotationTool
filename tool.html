@@ -179,7 +179,7 @@ WriteLogMsg('*start_loading');
        <!-- DOWNLOAD BUTTONS -->
 
        
-       <!-- NAVIGATION BUTTONS -->
+       <!-- NAVIGATION BUTTONS  -->
        <div id="label_buttons_navigation">
         <button id="img_url" class="labelBtn" type="button" title="download IMG file" onclick="GetXMLFile();" >
                <img src="Icons/download_img.png"  height="30" />
@@ -193,20 +193,20 @@ WriteLogMsg('*start_loading');
             <img src="Icons/help_new.png"  height="30" />
         </button>
         
-        <button id="fit" class="labelBtn" type="button" title="Next Image" onclick="ShowNextImage()" >
+        <button id="nextImage" class="labelBtn" type="button" title="Next Image" onclick="ShowNextImage()" >
             <img src="Icons/next_2.png" height="30" />
         </button>
        </div>
 
        <!-- DRAWING BUTTONS -->
        <div id="label_buttons_drawing">
-          <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In" onclick="main_handler.ZoomPlus(0.2)" >
+          <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In" onclick="main_image.Zoom(1.15)" >
               <img src="Icons/zoomin.png" width="30" height="38" />
           </button>
-           <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out" onclick="main_handler.ZoomPlus(-0.2)" >
+           <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out" onclick="main_image.Zoom(1.0/1.15)" >
                <img src="Icons/zoomout.png" width="30" height="38" />
            </button>
-          <button id="fit" class="labelBtnDraw" type="button" title="Fit Image" onclick="main_handler.ZoomFitImage()" >
+          <button id="fit" class="labelBtnDraw" type="button" title="Fit Image" onclick="main_image.Zoom('fitted')" >
               <img src="Icons/fitscreen.png" width="30" height="38" />
           </button>
           
@@ -216,77 +216,81 @@ WriteLogMsg('*start_loading');
        </div>
   </div>
 
-  <!-- IMAGE CANVAS -->
-  <div class="image_canvas" id="main_section" style="border:4px solid red;">
+<!-- IMAGE CANVAS -->
+<div class="image_canvas" id="main_section">
+    
     <div id="loading">Loading image...</div>
-    <div id="main_image" class="top" style="visibility:hidden;overflow:auto;">
-      <div id="show_new_image" style="visibility:hidden;">
-        <form name="submitform"
-              id="submitform"
-              action="javascript:loadXMLDoc();"
-              method="post"
-              style="margin-bottom:0px;">
-        </form>
+    
+      
+    <div id="main_image" class="top" style="visibility:hidden; overflow:auto;">
+        
+          <div id="show_new_image" style="visibility:hidden;">
+              <form name="submitform"
+                  id="submitform"
+                  action="javascript:loadXMLDoc();"
+                  method="post"
+                  style="margin-bottom:0px;">
+              </form>
+          </div>
+
+          <img id="im" style="vertical-align:bottom;z-index:-3;" />
+
+          <div id="myCanvas_bg_div"
+              style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
+              onmousedown="javascript:main_handler.RestToDraw(event);return false;"
+              oncontextmenu="javascript:return false;"
+              onmouseover="javascript:main_canvas.unselectObjects();">
+              <svg:svg 
+                id="myCanvas_bg"
+                width="100%"
+                height="100%" 
+                style="position:absolute;left:0px;top:0px;z-index:0;" />
+          </div>
+
+          <div
+              id="select_canvas_div"
+              style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
+              oncontextmenu="javascript:return false;" 
+              onmousedown="main_handler.SelectedCanvasMouseDown(event);return false;"
+              onmousemove="main_handler.SelectedCanvasMouseMove(event);return false;"
+              onmouseup="main_handler.SelectedCanvasMouseUp(event);return false;">
+              <svg:svg 
+                id="select_canvas"
+                width="100%"
+                height="100%"
+                style="position:absolute;left:0px;top:0px;z-index:-2;" />
+          </div>	      
+
+          <div
+              id="draw_canvas_div"
+              style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
+              onmousedown="javascript:main_handler.DrawCanvasMouseDown(event);return false;"
+              oncontextmenu="javascript:return false;">
+              <svg:svg 
+                id="draw_canvas"
+                width="100%"
+                height="100%"
+                style="position:absolute;left:0px;top:0px;z-index:-2;" />
+          </div>
+
+          <div
+              id="query_canvas_div"
+              style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
+              onmousedown="javascript:event.preventDefault();WaitForInput();return false;"
+              onmouseup="javascript:event.preventDefault();"
+              oncontextmenu="javascript:return false;">
+              <svg:svg 
+                id="query_canvas"
+                width="100%"
+                height="100%"
+                style="position:absolute;left:0px;top:0px;z-index:-2;" />
+          </div>
       </div>
 
-      <img id="im" style="vertical-align:bottom;z-index:-3;" />
-
-      <div id="myCanvas_bg_div"
-	      style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
-	      onmousedown="javascript:main_handler.RestToDraw(event);return false;"
-	      oncontextmenu="javascript:return false;"
-	      onmouseover="javascript:main_canvas.unselectObjects();">
-      <svg:svg 
-          id="myCanvas_bg"
-	      width="100%"
-	      height="100%" 
-	      style="position:absolute;left:0px;top:0px;z-index:0;" />
-      </div>
-
-      <div
-          id="select_canvas_div"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
-	      oncontextmenu="javascript:return false;" 
-	      onmousedown="main_handler.SelectedCanvasMouseDown(event);return false;"
-	      onmousemove="main_handler.SelectedCanvasMouseMove(event);return false;"
-	      onmouseup="main_handler.SelectedCanvasMouseUp(event);return false;">
-      <svg:svg 
-          id="select_canvas"
-	      width="100%"
-	      height="100%"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;" />
-      </div>	      
-
-      <div
-          id="draw_canvas_div"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);border:2px solid black;"
-	      onmousedown="javascript:main_handler.DrawCanvasMouseDown(event);return false;"
-	      oncontextmenu="javascript:return false;">
-      <svg:svg 
-          id="draw_canvas"
-	      width="100%"
-	      height="100%"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;" />
-      </div>
-
-      <div
-          id="query_canvas_div"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
-	      onmousedown="javascript:event.preventDefault();WaitForInput();return false;"
-	      onmouseup="javascript:event.preventDefault();"
-	      oncontextmenu="javascript:return false;">
-      <svg:svg 
-          id="query_canvas"
-	      width="100%"
-	      height="100%"
-	      style="position:absolute;left:0px;top:0px;z-index:-2;" />
-      </div>
-
-    </div>
-  </div>
+</div>
     
 
-<!-- </td></tr></table> -->
+<!-- </td></tr></table>  -webkit-transform-origin-x: 0px;-webkit-transform-origin-y: 0px; -->
 
 <div id="right_side">
    <!--  <script type="text/javascript">
@@ -316,7 +320,8 @@ WriteLogMsg('*start_loading');
 </div>
 
 
-<div id="mt_feedback" />
+<div id="mt_feedback" style="position:absolute;bottom:4px;" />
+
 
 <!-- INITIALIZATION TOOL -->
 <script type="text/javascript">
