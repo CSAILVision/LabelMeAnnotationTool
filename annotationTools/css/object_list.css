@@ -11,21 +11,21 @@
 
 .object_list {
     position:absolute;
-    top:60px;
+    top:70px;
     right:5px;
     min-width:180px;
     height:auto;
     /*bottom:5px;
     max-height:50%;*/
 
-    max-height: -moz-calc(98% - 80px);
-    max-height: -webkit-calc(98% - 80px);
-    max-height: calc(98% - 80px);
+    max-height: -moz-calc(98% - 85px);
+    max-height: -webkit-calc(98% - 85px);
+    max-height: calc(98% - 85px);
     
 	padding:5px;
 	margin:0em 0 0em;
 	background-color: #fff;
-	border: 1px solid #000;
+	border: 0px solid #000;
 	-webkit-border-radius:20px;
 	-moz-border-radius:20px;
 	border-radius:5px 5px 5px 5px;
