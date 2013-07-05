@@ -23,8 +23,8 @@ function handler() {
   // Handles when the user presses the delete button in response to 
   // the "What is this object?" popup bubble.
   this.WhatIsThisObjectDeleteButton = function () {
-    // Write to logfile:
-    WriteLogMsg('*Deleted_object_during_labeling');
+//     // Write to logfile:
+//     WriteLogMsg('*Deleted_object_during_labeling');
 
     submission_edited = 0;
 
@@ -535,8 +535,8 @@ function handler() {
   this.EraseSegment = function () {
     var anno = main_draw_canvas.GetAnnotation();
     if(anno && !anno.DeleteLastControlPoint()) {
-      // Write to logfile:
-      WriteLogMsg('*Deleted_object_during_labeling');
+//       // Write to logfile:
+//       WriteLogMsg('*Deleted_object_during_labeling');
 
       submission_edited = 0;
 //       old_name = '';
