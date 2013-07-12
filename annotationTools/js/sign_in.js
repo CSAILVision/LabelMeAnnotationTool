@@ -10,8 +10,13 @@ function initUserName() {
     username = getQueryVariable("username");
 
     if (username.length==0) {
-        username = "anonymous";
+        username = getCookie("username");
+        if (username.length==0) {
+            username = "anonymous";
+        }
     }
+    
+    if (username=="null") {username = "anonymous";}
     
     setCookie("username",username);
     $("#usernametxt").text(username);
@@ -21,11 +26,17 @@ function show_enterUserNameDIV() {
     // This function simply swaps the divs to show the "changeAndDisplayUserName" div
     $("#display_user").hide();
     $("#enterUserName").show();
+    // put the cursor inside the text box
+    document.getElementById('userEnter').focus();
+    document.getElementById('userEnter').select();
+
     return false;
 }
 
 function changeAndDisplayUserName(c) {
-
+    // Shows the entered name.
+    // c is the key that produced getting out of the text box.
+    // only change the username is the user pressed "enter" -> c==13
     if (c==13){
         username = $("#userEnter").val();
     

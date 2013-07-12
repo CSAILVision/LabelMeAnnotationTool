@@ -49,7 +49,7 @@ function image(id) {
     };
     
     // Handles when the user clicks on a frame (video mode)
-    //this.SetNewImage = function(onload_helper){
+    //  this.SetNewImage = function(onload_helper){
     //  this.im.src = this.file_info.GetImagePath();
     //  this.im.onload = onload_helper;
     //  wait_for_input = 0;

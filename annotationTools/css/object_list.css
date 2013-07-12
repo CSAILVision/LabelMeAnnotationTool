@@ -41,6 +41,11 @@
     overflow-y:auto;
 }
 
+.objectListLink {
+    -moz-user-select:none;
+    	-khtml-user-drag: element;
+    cursor: move;
+}
 
 /* format for the list */
 .object_list ol {
@@ -52,5 +57,11 @@
     padding-left:10px;
 }
 
+.children_tree {
+    list-style-type:circle; 
+    list-style-image:url(../../Icons/arrow_tree.png);
+    font-size: 0.8em;
+    line-height:1.2em;
+}
 
 

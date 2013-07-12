@@ -12,6 +12,7 @@
 
 // Rewritten: Antonio: 07/01/2013
 
+
 // *******************************************
 // Public methods:
 // *******************************************
@@ -56,9 +57,9 @@ function mkBubbleHTML(left,top,bubble_type,anno) {
     
     // Select the vertical position of the bubble decoration arrow
     if (top>214){
-        html_str  = '<div class= "bubble" id="myPopup" style="position:absolute; left:'+left+'px; top:'+top+'px;">';
+        html_str  = '<div class= "bubble" id="myPopup" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
     }else{
-        html_str  = '<div class= "bubble top" id="myPopup" style="position:absolute; left:'+left+'px; top:'+top+'px;">';
+        html_str  = '<div class= "bubble top" id="myPopup" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
     }
     
     // Select the type of bubble (adding new object, editing existing object, ...) 
@@ -100,14 +101,16 @@ function mkBubbleHTML(left,top,bubble_type,anno) {
 // Forms to enter a new object
 function GetPopupForm(anno) {
     // get object name and attributes from 'anno'
-    obj_name = "";
-    attributes = "";
-    occluded = "";
+    var obj_name = "";
+    var attributes = "";
+    var occluded = "";
+    var parts = "";
     if (anno) {
         obj_name = anno.GetObjName();
         if (obj_name=="") {obj_name = "?";} // if the object field is empty, but the annotation exists, then it means we are in edit mode.
         attributes = anno.GetAttributes();
         occluded = anno.GetOccluded();
+        parts = anno.GetParts();
     }
     
     html_str = "<b>Enter object name</b><br />";
@@ -118,6 +121,11 @@ function GetPopupForm(anno) {
 
         html_str += "<b>Enter attributes</b><br />";
         html_str += HTMLattributesBox(attributes);
+    }
+    
+    if (use_parts) {
+        //html_str += "<b>Enter parts</b><br />";
+        html_str += HTMLpartsBox(parts);
     }
     
     // Buttons
@@ -210,12 +218,27 @@ function HTMLoccludedBox(occluded) {
 
 // Boxes to enter attributes
 function HTMLattributesBox(attList) {    
-    html_str = '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
-    
-    return html_str;
+    return '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
 }
 
 
+// ****************************
+// PARTS:
+// ****************************
+function HTMLpartsBox(parts) {
+    var html_str="";
+    if (parts.length>0) {
+        if (parts.length==1) {
+            html_str = 'Object has 1 part.';
+        } else {
+            html_str = 'Object has '+parts.length+' parts.';
+        }
+    } else {
+        html_str = 'Object has no parts (you can add parts using the right panel).';
+    }
+    
+    return html_str;
+}
 
 
 // ****************************
