@@ -1,6 +1,18 @@
 // Dealing with object parts
 // The functions here are called from object_list.js
-
+//
+// Antonio Torralba, 12 July 2013
+/////////////////////////////////////////////////////////////////
+// The functions are:
+//   tree = getPartsTree(); // calls getFormatedTree(-1, -1) to start the tree from the root
+//   tree = getFormatedTree(object_id, level); // like the previous one but specifiying starting point
+//   addPart(object_id, part_id);
+//   removePart(object_id, part_id);
+//   childrens = getPartChildrens(object_id)
+//   parts = getParts(object_id);
+//   wholeobjects_ids = getNonParts();
+//
+//   where object_id and part_id and polygon ids.
 
 
 function getPartsTree() {
@@ -90,10 +102,6 @@ function getPartChildrens(object_id) {
 }
 
 
-// *******************************************
-// Private functions:
-// *******************************************
-
 
 function getFormatedTree(object_id, level) {
     //     Recursive function to built the parts tree representation.
@@ -156,14 +164,12 @@ function getNonParts() {
 function getParts(object_id){
     var parts = [];
     
-    //if ($(LM_xml).children("annotation").children("object").eq(object_id).children("deleted").text()!="1"){
     var tmp = $(LM_xml).children("annotation").children("object").eq(object_id).children("parts").children("hasparts").text();
     if (tmp.length>0) {
         // if it is not empty, split and trasnform to numbers
         parts = tmp.split(",");
         for (var j=0; j<parts.length; j++) {parts[j] = parseInt(parts[j], 10);}
     }
-    //}
     return parts;
 }
 
