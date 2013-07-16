@@ -24,7 +24,7 @@ sign_in.js - Sign in form for user to enter their LabelMe username.
 
 bubble.js - Displays bubble popup when labeling or editing a polygon.
 
-
+generic_canvas.js - Generic rendering canvas. Eventually all drawing functionalities will be refactored into this class.
 
 
 A. Here are the steps for getting a new image:

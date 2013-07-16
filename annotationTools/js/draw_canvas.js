@@ -3,80 +3,55 @@
 
 // Select canvas
 // Keeps track of all information related to the select canvas.
-function DrawCanvas() {
+function DrawCanvas(div_attach) {
 
   // *******************************************
   // Private variables:
   // *******************************************
 
   this.annotation = null; // includes name, deleted, verified info
+  this.div_attach = div_attach; // name of DIV element to attach to
+  this.rendering_style = null; // indicates how to render the annotation
 
   // *******************************************
   // Public methods:
   // *******************************************
 
+  // Get the attached annotation:
   this.GetAnnotation = function () {
     return this.annotation;
   };
 
-  // Add a new annotation to the drawing canvas.
-  this.AddAnnotation = function(x,y,anno_id) {
-    if(username_flag) submit_username();
-    this.annotation = new annotation(anno_id);
-    this.annotation.SetDivAttach('draw_canvas');
-    this.annotation.SelectPoly();
-    this.annotation.AddFirstControlPoint(x,y);
-    WriteLogMsg('*start_polygon');
-  };
-
-  // Attach an existing annotation to the canvas.
-  this.AttachAnnotation = function (anno) {
+  // Attach the annotation to the canvas:
+  this.AttachAnnotation = function (anno,rendering_style) {
     this.annotation = anno;
-    this.annotation.SetDivAttach('draw_canvas');
-    this.annotation.SelectPoly();
-    this.RedrawAnnotation();
-    this.annotation.RefreshLastControlPoint();
-//     var im_ratio = main_image.GetImRatio();
-//     this.annotation.DrawPolyLine(im_ratio);
-//     var pt = this.annotation.GetPopupPoint();
-//     this.annotation.AddFirstControlPoint(pt[0],pt[1]);
+    this.rendering_style = rendering_style;
+    this.annotation.SetDivAttach(this.div_attach);
   };
 
-  // Detach the annotation from the canvas.
+  // Detach the annotation from the canvas:
   this.DetachAnnotation = function () {
     var anno = this.annotation;
     this.annotation = null;
-    anno.DeletePolygon();
+    if(anno) anno.DeletePolygon();
     return anno;
   };
 
-  this.ClearAnnotation = function () {
-    if(this.annotation) this.annotation.DeletePolygon();
-    return this.annotation;
-  };
+  // Render all attached annotations:
+  this.RenderAnnotations = function () {
+    if(!this.annotation) return;
 
-  this.RedrawAnnotation = function () {
-    if(this.annotation) this.annotation.DrawPolyLine(main_image.GetImRatio());
-  };
-
-  this.AddControlPoint = function(x,y) {
-    this.annotation.AddControlPoint(x,y);
-  };
-
-  this.ClosePolygon = function () {
-    return this.annotation.ClosePolygon();
-  };
-
-  // Move this canvas to the front.
-  this.MoveToFront = function () {
-      document.getElementById('draw_canvas').style.zIndex = 0;
-      document.getElementById('draw_canvas_div').style.zIndex = 0;
-  };
-
-  // Move this canvas to the back.
-  this.MoveToBack = function () {
-      document.getElementById('draw_canvas').style.zIndex = -2;
-      document.getElementById('draw_canvas_div').style.zIndex = -2;
+    switch(this.rendering_style) {
+    case 'filled_polygon':
+      this.annotation.DrawPolygon(main_image.GetImRatio());
+      this.annotation.FillPolygon();
+      break;
+    case 'polyline':
+      this.annotation.DrawPolyLine();
+      break;
+    default:
+      alert('Invalid rendering_style');
+    }
   };
 
   // *******************************************

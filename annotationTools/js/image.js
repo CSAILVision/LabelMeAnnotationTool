@@ -161,8 +161,7 @@ function image(id) {
         this.ScaleFrame(amt);
         
         main_canvas.ClearAllAnnotations();
-        main_draw_canvas.ClearAnnotation();
-        main_select_canvas.ClearAnnotation();
+        var anno_draw = main_draw_canvas.DetachAnnotation();
         
         // set the size of the image (this.im is the image object)
         this.im.width = this.width_curr;
@@ -175,8 +174,13 @@ function image(id) {
         
         // Redraw polygons.
         main_canvas.DrawAllPolygons();
-        main_draw_canvas.RedrawAnnotation();
-        main_select_canvas.RedrawAnnotation();
+	if(anno_draw) {
+	  // Attach the annotation:
+	  main_draw_canvas.AttachAnnotation(anno_draw,'polyline');
+
+	  // Render the annotation:
+	  main_draw_canvas.RenderAnnotations();
+	}
     };
     
     

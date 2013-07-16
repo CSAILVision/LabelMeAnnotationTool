@@ -45,9 +45,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!--#include virtual="./annotationTools/js/file_info.js" -->
 <!--#include virtual="./annotationTools/js/annotation.js" -->
 <!--#include virtual="./annotationTools/js/canvas.js" -->
-<!--#include virtual="./annotationTools/js/select_canvas.js" -->
-<!--#include virtual="./annotationTools/js/draw_canvas.js" -->
-<!--#include virtual="./annotationTools/js/query_canvas.js" -->
+<!--#include virtual="./annotationTools/js/generic_canvas.js" -->
 <!--#include virtual="./annotationTools/js/handler.js" -->
 <!--#include virtual="./annotationTools/js/sign_in.js" -->
 
@@ -98,9 +96,9 @@ function GetXMLFile() {
 function MainInit() {
     main_handler = new handler();
     main_canvas = new canvas();
-    main_select_canvas = new SelectCanvas();
-    main_draw_canvas = new DrawCanvas();
-    main_query_canvas = new QueryCanvas();
+    main_select_canvas = new GenericCanvas('select_canvas');
+    main_draw_canvas = new GenericCanvas('draw_canvas');
+    main_query_canvas = new GenericCanvas('query_canvas');
     main_image = new image('im');
 
     function main_image_onload_helper() {
@@ -253,8 +251,8 @@ WriteLogMsg('*start_loading');
               style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
               oncontextmenu="javascript:return false;" 
               onmousedown="main_handler.SelectedCanvasMouseDown(event);return false;"
-              onmousemove="main_handler.SelectedCanvasMouseMove(event);return false;"
-              onmouseup="main_handler.SelectedCanvasMouseUp(event);return false;">
+              onmousemove="main_handler.MainPageMouseMove(event);return false;"
+              onmouseup="main_handler.MainPageMouseUp(event);return false;">
               <svg:svg 
                 id="select_canvas"
                 width="100%"

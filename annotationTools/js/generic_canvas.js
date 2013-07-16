@@ -1,9 +1,5 @@
-// Created: 05/05/2007
-// Updated: 05/05/2007
-
-// Select canvas
-// Keeps track of all information related to the select canvas.
-function SelectCanvas(div_attach) {
+// Generic rendering canvas.
+function GenericCanvas(div_attach) {
 
   // *******************************************
   // Private variables:
@@ -12,7 +8,7 @@ function SelectCanvas(div_attach) {
   this.annotation = null; // includes name, deleted, verified info
   this.div_attach = div_attach; // name of DIV element to attach to
   this.rendering_style = null; // indicates how to render the annotation
-  
+
   // *******************************************
   // Public methods:
   // *******************************************
@@ -33,6 +29,7 @@ function SelectCanvas(div_attach) {
   this.DetachAnnotation = function () {
     var anno = this.annotation;
     this.annotation = null;
+    this.rendering_style = null;
     if(anno) anno.DeletePolygon();
     return anno;
   };
@@ -41,6 +38,7 @@ function SelectCanvas(div_attach) {
   this.RenderAnnotations = function () {
     if(!this.annotation) return;
 
+    // Render the annotation depending on its rendering_style:
     switch(this.rendering_style) {
     case 'filled_polygon':
       this.annotation.DrawPolygon(main_image.GetImRatio());
@@ -57,5 +55,4 @@ function SelectCanvas(div_attach) {
   // *******************************************
   // Private methods:
   // *******************************************
-
 }

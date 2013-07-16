@@ -135,17 +135,6 @@ function annotation(anno_id) {
         this.pts_x.push(x);
         this.pts_y.push(y);
         
-        if(!this.first_point) {
-            this.first_point = new graphics(this.div_attach,'first_point');
-        }
-        this.first_point.DrawPoint(Math.round(x*im_ratio),
-                                   Math.round(y*im_ratio),'#00ff00',6);
-        
-        this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-        this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
-        //       this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
-        //       this.first_point.SetAttribute('onmouseover','parent.main_handler.MousedOverFirstControlPoint();');
-        
         this.lastx = x;
         this.lasty = y;
     };
@@ -188,57 +177,53 @@ function annotation(anno_id) {
     
     // Closes the polygon.  Returns 1 if close was successful, 0 otherwise.
     this.ClosePolygon = function () {
-        // Allow users to annotate lines, i.e. length=2 polygons
-        //     if(this.pts_x.length<=2) {
-        //       alert("The current polygon must have at least 3 points.");
-        //       this.CloseErrorFlag = 1;
-        //       return 0;
-        //     }
-        this.lastx = -1;
-        this.lasty = -1;
-        return 1;
+      this.lastx = -1;
+      this.lasty = -1;
+      return 1;
     };
     
     // Set attribute of drawn polygon.
     this.SetAttribute = function(field,value) {
-        //     if(this.pts_x.length>1) this.graphics.SetAttribute(field,value);
-        this.graphics.SetAttribute(field,value);
+      this.graphics.SetAttribute(field,value);
     };
     
     // Draw a polygon given this annotation's control points.
     this.DrawPolygon = function (im_ratio) {
-        if(!this.graphics) {
-            this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
-        }
-        
-        // Determine if an angle has been labeled:
-        var strtok = this.GetObjName().split(/ /);
-        var isAngle = 0;
-        for(var i = 0; i < strtok.length; i++) {
-            if(strtok[i]=='angle') isAngle = 1;
-        }
-        
-        if(this.pts_x.length==1) {
-            this.graphics.DrawFlag(Math.round(this.pts_x[0]*im_ratio),
-                                   Math.round(this.pts_y[0]*im_ratio));
-        }
-        else if((this.pts_x.length==3) && isAngle) {
-            this.graphics.DrawPolyLine(this.pts_x,this.pts_y,this.getObjectColor(this.anno_id),im_ratio);
-        }
-        else if(this.GetAutomatic()==1) {
-            this.graphics.DrawDashedPolygon(this.pts_x,this.pts_y,
-                                            this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
-        }
-        else {
-            this.graphics.DrawPolygon(this.pts_x,this.pts_y,
-                                      this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
-        }
+      if(!this.graphics) {
+	this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
+      }
+      
+      // Determine if an angle has been labeled:
+      var strtok = this.GetObjName().split(/ /);
+      var isAngle = 0;
+      for(var i = 0; i < strtok.length; i++) {
+	if(strtok[i]=='angle') isAngle = 1;
+      }
+      
+      if(this.GetPtsX().length==1) {
+	this.graphics.DrawFlag(Math.round(this.GetPtsX()[0]*im_ratio),
+			       Math.round(this.GetPtsY()[0]*im_ratio));
+      }
+      else if((this.GetPtsX().length==3) && isAngle) {
+	this.graphics.DrawPolyLine(this.GetPtsX(),this.GetPtsY(),this.getObjectColor(this.anno_id),im_ratio);
+      }
+      else if(this.GetAutomatic()==1) {
+	this.graphics.DrawDashedPolygon(this.GetPtsX(),this.GetPtsY(),
+					this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
+      }
+      else {
+	this.graphics.DrawPolygon(this.GetPtsX(),this.GetPtsY(),
+				  this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
+      }
     };
     
     // Draw a poly-line given this annotation's control points (i.e.
     // don't connect the last point to the first point).  This function
     // is used when we zoom.
     this.DrawPolyLine = function (im_ratio) {
+      var im_ratio = main_image.GetImRatio();
+      this.SelectPoly();
+
         var color = '#0000ff'; // blue
         var im_ratio = main_image.GetImRatio();
         if(!this.all_lines) this.all_lines = Array();
@@ -267,6 +252,9 @@ function annotation(anno_id) {
         this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
         //       this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
         //       this.first_point.SetAttribute('onmouseover','parent.main_handler.MousedOverFirstControlPoint();');
+
+	// Refresh last control point:
+	this.RefreshLastControlPoint();
     };
     
     // Deletes the annotation's polygon from the screen.

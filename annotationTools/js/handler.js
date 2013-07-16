@@ -39,10 +39,25 @@ function handler() {
     // the "What is this object?" popup bubble.
     this.WhatIsThisObjectUndoCloseButton = function () {
         this.active_canvas = DRAW_CANVAS;
-        main_query_canvas.MoveToBack();
+
+	// Move query canvas to the back:
+	document.getElementById('query_canvas').style.zIndex = -2;
+	document.getElementById('query_canvas_div').style.zIndex = -2;
+
         var anno = main_query_canvas.DetachAnnotation();
-        main_draw_canvas.MoveToFront();
-        main_draw_canvas.AttachAnnotation(anno);
+
+	CloseQueryPopup();
+	main_image.ScrollbarsOn();
+	
+	// Move select_canvas to front:
+	document.getElementById('select_canvas').style.zIndex = 0;
+	document.getElementById('select_canvas_div').style.zIndex = 0;
+
+	// Attach the annotation:
+        main_draw_canvas.AttachAnnotation(anno,'polyline');
+
+	// Render the annotation:
+	main_draw_canvas.RenderAnnotations();
     };
     
     // Submits the object label in response to the edit/delete popup bubble.
@@ -84,7 +99,7 @@ function handler() {
         main_handler.SelectedToRest();
         
         // Insert data to write to logfile:
-        if(main_select_canvas.didEditControlPoints()) {
+        if(editedControlPoints) {
             InsertServerLogData('cpts_modified');
         }
         else {
@@ -123,7 +138,7 @@ function handler() {
         }
 
         
-        if(main_select_canvas.didEditControlPoints()) {
+        if(editedControlPoints) {
             for(var jj=0; jj < main_canvas.GetAnnotations()[obj_ndx].GetPtsX().length; jj++) {
                 curr_obj.children("polygon").children("pt").eq(jj).children("x").text(main_canvas.GetAnnotations()[obj_ndx].GetPtsX()[jj]);
                 curr_obj.children("polygon").children("pt").eq(jj).children("y").text(main_canvas.GetAnnotations()[obj_ndx].GetPtsY()[jj]);
@@ -134,7 +149,6 @@ function handler() {
         WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
         
         
-        //     var editedControlPoints = main_select_canvas.didEditControlPoints();
         //     SubmitAnnotations(editedControlPoints);
         
         if(view_ObjList) {
@@ -190,14 +204,16 @@ function handler() {
     
     // ADJUST POLYGON,
     this.EditBubbleAdjustPolygon = function () {
-        // we need to capture the data before closing the bubble (THIS IS AN UGLY HACK)
-        this.objEnter = document.getElementById('objEnter').value;
-        this.attributes = document.getElementById('attributes').value;
-        this.occluded = document.getElementById('occluded').value;
-        
-        CloseEditPopup();
-        main_image.ScrollbarsOn();
-        main_select_canvas.AllowAdjustPolygon();
+      // we need to capture the data before closing the bubble (THIS IS AN UGLY HACK)
+      this.objEnter = document.getElementById('objEnter').value;
+      this.attributes = document.getElementById('attributes').value;
+      this.occluded = document.getElementById('occluded').value;
+      
+      CloseEditPopup();
+      main_image.ScrollbarsOn();
+      
+      main_select_canvas.GetAnnotation().ShowControlPoints();
+      main_select_canvas.GetAnnotation().ShowCenterOfMass(main_image.GetImRatio());
     };
     
     /*  // Handles when the user presses the zoom "plus" (in) button.  Zooms in on
@@ -220,11 +236,11 @@ function handler() {
     
     // Handles when the user clicks on the link for an annotation.
     this.AnnotationLinkClick = function (idx) {
-        if(this.active_canvas==REST_CANVAS) main_handler.RestToSelected(idx,null);
-        else if(this.active_canvas==SELECTED_CANVAS) {
-            var anno_id = main_select_canvas.GetAnnoID();
-            if(edit_popup_open && (idx==anno_id)) main_handler.SelectedToRest();
-        }
+      if(this.active_canvas==REST_CANVAS) main_handler.RestToSelected(idx,null);
+      else if(this.active_canvas==SELECTED_CANVAS) {
+	var anno_id = main_select_canvas.GetAnnotation().GetAnnoID();
+	if(edit_popup_open && (idx==anno_id)) main_handler.SelectedToRest();
+      }
     };
     
     // Handles when the user moves the mouse over an annotation link.
@@ -248,22 +264,40 @@ function handler() {
     
     // Handles when we wish to change from "rest" to "draw".
     this.RestToDraw = function (event) {
-        if(!action_CreatePolygon) {
-            //       alert('You do not have permission to add new polygons');
-            return;
-        }
-        if(this.active_canvas != REST_CANVAS) return;
-        this.active_canvas = DRAW_CANVAS;
-        // Get (x,y) mouse click location and button.
-        var x = GetEventPosX(event);
-        var y = GetEventPosY(event);
-        var button = event.button;
-        
-        // If the user does not left click, then ignore mouse-down action.
-        if(button>1) return;
-        
-        main_draw_canvas.MoveToFront();
-        main_draw_canvas.AddAnnotation(x,y,main_canvas.GetAnnotations().length);
+      if(!action_CreatePolygon) {
+	//       alert('You do not have permission to add new polygons');
+	return;
+      }
+      if(this.active_canvas != REST_CANVAS) return;
+      this.active_canvas = DRAW_CANVAS;
+      // Get (x,y) mouse click location and button.
+      var x = GetEventPosX(event);
+      var y = GetEventPosY(event);
+      var button = event.button;
+      
+      // If the user does not left click, then ignore mouse-down action.
+      if(button>1) return;
+      
+      // Move draw canvas to front:
+      document.getElementById('draw_canvas').style.zIndex = 0;
+      document.getElementById('draw_canvas_div').style.zIndex = 0;
+      
+      if(username_flag) submit_username();
+      
+      // Create new annotation structure:
+      var anno = new annotation(main_canvas.GetAnnotations().length);
+
+      // Add first control point:
+      anno.AddFirstControlPoint(x,y);
+
+      // Attach the annotation to the draw canvas:
+      main_draw_canvas.AttachAnnotation(anno,'polyline');
+
+      // Render the annotation:
+      main_draw_canvas.RenderAnnotations();
+      
+      WriteLogMsg('*start_polygon');
+
     };
     
     // Handles when the user presses the mouse button down on the drawing
@@ -278,8 +312,8 @@ function handler() {
         if(username_flag) submit_username();
         
         // If right-clicked and can successfully close the polygon.
-        if((button>1) && main_draw_canvas.ClosePolygon()) this.DrawToQuery();
-        else main_draw_canvas.AddControlPoint(x,y);
+        if((button>1) && main_draw_canvas.GetAnnotation().ClosePolygon()) this.DrawToQuery();
+        else main_draw_canvas.GetAnnotation().AddControlPoint(x,y);
     };
     
     // Handles when we wish to change from "draw" to "query".
@@ -290,16 +324,45 @@ function handler() {
             return;
         }
         this.active_canvas = QUERY_CANVAS;
-        main_draw_canvas.MoveToBack();
+
+	// Move draw canvas to the back:
+	document.getElementById('draw_canvas').style.zIndex = -2;
+	document.getElementById('draw_canvas_div').style.zIndex = -2;
+
         var anno = main_draw_canvas.DetachAnnotation();
-        main_query_canvas.MoveToFront();
-        main_query_canvas.AttachAnnotation(anno);
+
+	// Move query canvas to front:
+	document.getElementById('query_canvas').style.zIndex = 0;
+	document.getElementById('query_canvas_div').style.zIndex = 0;
+
+	// Set object list choices for points and lines:
+	var doReset = SetObjectChoicesPointLine(anno);
+
+	// Make query popup appear.
+	var pt = anno.GetPopupPoint();
+	pt = main_image.SlideWindow(pt[0],pt[1]);
+	main_image.ScrollbarsOff();
+	WriteLogMsg('*What_is_this_object_query');
+	mkPopup(pt[0],pt[1]);
+	
+	// If annotation is point or line, then 
+	if(doReset) object_choices = '...';
+
+	// Attach the annotation to the canvas:
+        main_query_canvas.AttachAnnotation(anno,'filled_polygon');
+
+	// Render the annotation:
+        main_query_canvas.RenderAnnotations();
     };
     
     // Handles when we wish to change from "draw" to "rest".
     this.DrawToRest = function () {
         this.active_canvas = REST_CANVAS;
-        main_draw_canvas.MoveToBack();
+
+	// Move draw canvas to the back:
+	document.getElementById('draw_canvas').style.zIndex = -2;
+	document.getElementById('draw_canvas_div').style.zIndex = -2;
+
         main_draw_canvas.DetachAnnotation();
     };
     
@@ -329,7 +392,11 @@ function handler() {
         if((object_choices!='...') && (object_choices.length==1)) {
             nn = RemoveSpecialChars(object_choices[0]);
             this.active_canvas = REST_CANVAS;
-            main_draw_canvas.MoveToBack();
+
+	    // Move draw canvas to the back:
+	    document.getElementById('draw_canvas').style.zIndex = -2;
+	    document.getElementById('draw_canvas_div').style.zIndex = -2;
+
             var anno = main_draw_canvas.DetachAnnotation();
         }
         else {
@@ -413,111 +480,165 @@ function handler() {
     // Handles when we wish to change from "query" to "rest".
     this.QueryToRest = function () {
         this.active_canvas = REST_CANVAS;
-        main_query_canvas.MoveToBack();
-        return main_query_canvas.DetachAnnotation();
+
+	// Move query canvas to the back:
+	document.getElementById('query_canvas').style.zIndex = -2;
+	document.getElementById('query_canvas_div').style.zIndex = -2;
+
+	var anno = main_query_canvas.DetachAnnotation();
+
+	CloseQueryPopup();
+	main_image.ScrollbarsOn();
+
+        return anno;
     };
     
     // Handles when we wish to change from "rest" to "selected".
     this.RestToSelected = function (anno_id,event) {
-        if(event) event.stopPropagation();
-        if((IsUserAnonymous() || (!IsCreator(main_canvas.GetAnnotations()[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
-            PermissionError();
-            var anno = main_canvas.DetachAnnotation(anno_id);
-            main_canvas.AttachAnnotation(anno);
-            return;
-        }
-        this.active_canvas = SELECTED_CANVAS;
-        edit_popup_open = 1;
+      if(event) event.stopPropagation();
+      if((IsUserAnonymous() || (!IsCreator(main_canvas.GetAnnotations()[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
+	PermissionError();
+	var anno = main_canvas.DetachAnnotation(anno_id);
+	main_canvas.AttachAnnotation(anno);
+	return;
+      }
+      this.active_canvas = SELECTED_CANVAS;
+      edit_popup_open = 1;
+      
+      // Turn off automatic flag and write to XML file:
+      if(main_canvas.GetAnnotations()[anno_id].GetAutomatic()) {
+	// Insert data for server logfile:
+	old_name = main_canvas.GetAnnotations()[anno_id].GetObjName();
+	new_name = old_name;
+	InsertServerLogData('cpts_not_modified');
         
-        // Turn off automatic flag and write to XML file:
-        if(main_canvas.GetAnnotations()[anno_id].GetAutomatic()) {
-            // Insert data for server logfile:
-            old_name = main_canvas.GetAnnotations()[anno_id].GetObjName();
-            new_name = old_name;
-            InsertServerLogData('cpts_not_modified');
-            
-            // Set <automatic> in XML:
-            $(LM_xml).children("annotation").children("object").eq(anno_id).children("automatic").text('0');
-            
-            // Write XML to server:
-            WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
-            
-            //       SubmitAnnotations(false);
-        }
+	// Set <automatic> in XML:
+	$(LM_xml).children("annotation").children("object").eq(anno_id).children("automatic").text('0');
         
-        main_select_canvas.MoveToFront();
-        var anno = main_canvas.DetachAnnotation(anno_id);
-        main_select_canvas.AttachAnnotation(anno);
+	// Write XML to server:
+	WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+        
+	//       SubmitAnnotations(false);
+      }
+      
+      // Move select_canvas to front:
+      document.getElementById('select_canvas').style.zIndex = 0;
+      document.getElementById('select_canvas_div').style.zIndex = 0;
+      
+      var anno = main_canvas.DetachAnnotation(anno_id);
+      
+      editedControlPoints = 0;
+      
+      if(username_flag) submit_username();
+      
+      // Attach the annotation to the canvas:
+      main_select_canvas.AttachAnnotation(anno,'filled_polygon');
+
+      // Render the annotation:
+      main_select_canvas.RenderAnnotations();
+      
+      // Make edit popup appear.
+      var pt = anno.GetPopupPoint();
+      pt = main_image.SlideWindow(pt[0],pt[1]);
+      main_image.ScrollbarsOff();
+      if(anno.GetVerified()) {
+	mkVerifiedPopup(pt[0],pt[1]);
+      }
+      else {
+	// Set object list choices for points and lines:
+	var doReset = SetObjectChoicesPointLine(anno);
+	
+	// Popup edit bubble:
+	WriteLogMsg('*Opened_Edit_Popup');
+	mkEditPopup(pt[0],pt[1],anno);
+	
+	// If annotation is point or line, then 
+	if(doReset) object_choices = '...';
+	
+	main_image.SlideWindow(anno.center_x,anno.center_y);
+      }
+
     };
     
     // Handles when we wish to change from "selected" to "rest".
     this.SelectedToRest = function () {
-        this.active_canvas = REST_CANVAS;
-        edit_popup_open = 0;
-        main_select_canvas.MoveToBack();
-        var anno = main_select_canvas.DetachAnnotation();
-        main_canvas.AttachAnnotation(anno);
-        //anno.FillPolygon();
+      this.active_canvas = REST_CANVAS;
+      edit_popup_open = 0;
+      
+      // Move select_canvas to back:
+      document.getElementById('select_canvas').style.zIndex = -2;
+      document.getElementById('select_canvas_div').style.zIndex = -2;
+      
+      var anno = main_select_canvas.DetachAnnotation();
+      
+      WriteLogMsg('*Closed_Edit_Popup');
+      CloseEditPopup();
+      main_image.ScrollbarsOn();
+      
+      main_canvas.AttachAnnotation(anno);
     };
     
     // Handles when the user presses the mouse button down on the selected
     // canvas.
     this.SelectedCanvasMouseDown = function (event) {
-        if(main_select_canvas.isEditingControlPoint || main_select_canvas.isMovingCenterOfMass) {
-            this.SelectedCanvasMouseUp(event);
-            return;
-        }
-        var x = GetEventPosX(event);
-        var y = GetEventPosY(event);
-        var button = event.button;
-        if(username_flag) submit_username();
-        main_select_canvas.MouseDown(x,y,button);
-    };
-    
-    // Handles when the user moves the mouse button over the selected
-    // canvas.
-    this.SelectedCanvasMouseMove = function (event) {
-        if(this.active_canvas==SELECTED_CANVAS) {
-            var x = GetEventPosX(event);
-            var y = GetEventPosY(event);
-            var button = event.button;
-            if(username_flag) submit_username();
-            main_select_canvas.MouseMove(x,y,button);
-        }
-    };
-    
-    // Handles when the user releases the mouse button on the selected
-    // canvas.
-    this.SelectedCanvasMouseUp = function (event) {
-        var x = GetEventPosX(event);
-        var y = GetEventPosY(event);
-        var button = event.button;
-        if(username_flag) submit_username();
-        main_select_canvas.MouseUp(x,y,button);
+      if(isEditingControlPoint || isMovingCenterOfMass) {
+	this.MainPageMouseUp(event);
+	return;
+      }
+      var x = GetEventPosX(event);
+      var y = GetEventPosY(event);
+      var button = event.button;
+      if(username_flag) submit_username();
+      
+      if(button>1) return;
+      if(!isEditingControlPoint && main_select_canvas.GetAnnotation().StartMoveControlPoint(x,y,main_image.GetImRatio())) {
+	isEditingControlPoint = 1;
+	editedControlPoints = 1;
+      }
+      else if(!isMovingCenterOfMass && main_select_canvas.GetAnnotation().StartMoveCenterOfMass(x,y,main_image.GetImRatio())) {
+	isMovingCenterOfMass = 1;
+	editedControlPoints = 1;
+      }
+      else main_handler.SubmitEditLabel();
     };
     
     // Handles when the user moves the mouse button over the main page.
     this.MainPageMouseMove = function (event) {
-        if(this.active_canvas==SELECTED_CANVAS) {
-            var x = event.clientX-document.getElementById('main_section').offsetLeft;
-            var y = event.clientY-document.getElementById('main_section').offsetTop;
-            var button = event.button;
-            if((x<0) || (x>main_image.width_curr) || (y<0) || (y>main_image.height_curr)) {
-                main_select_canvas.MouseMove(x,y,button);
-            }
-        }
+      if(this.active_canvas==SELECTED_CANVAS) {
+	var x = event.clientX-document.getElementById('main_section').offsetLeft;
+	var y = event.clientY-document.getElementById('main_section').offsetTop;
+	var button = event.button;
+	if(button>1) return;
+	if(isEditingControlPoint) {
+	  main_select_canvas.GetAnnotation().MoveControlPoint(x,y,main_image.GetImRatio());
+	}
+	else if(isMovingCenterOfMass) {
+	  main_select_canvas.GetAnnotation().MoveCenterOfMass(x,y,main_image.GetImRatio());
+	}
+      }
     };
     
-    // Handles when the user moves the mouse button over the main page.
+    // Handles when the user releases the mouse button over the main page.
     this.MainPageMouseUp = function (event) {
-        if(this.active_canvas==SELECTED_CANVAS) {
-            var x = event.clientX-document.getElementById('main_section').offsetLeft;
-            var y = event.clientY-document.getElementById('main_section').offsetTop;
-            var button = event.button;
-            if((x<0) || (x>main_image.width_curr) || (y<0) || (y>main_image.height_curr)) {
-                main_select_canvas.MouseUp(x,y,button);
-            }
-        }
+      if(this.active_canvas==SELECTED_CANVAS) {
+	var x = event.clientX-document.getElementById('main_section').offsetLeft;
+	var y = event.clientY-document.getElementById('main_section').offsetTop;
+	var button = event.button;
+
+	if(button>1) return;
+	if(isEditingControlPoint) {
+	  main_select_canvas.GetAnnotation().MoveControlPoint(x,y,main_image.GetImRatio());
+	  main_select_canvas.GetAnnotation().FillPolygon();
+	  main_select_canvas.GetAnnotation().ShowCenterOfMass(main_image.GetImRatio());
+	  isEditingControlPoint = 0;
+	  return;
+	}
+	if(isMovingCenterOfMass) {
+	  main_select_canvas.GetAnnotation().MoveCenterOfMass(x,y,main_image.GetImRatio());
+	  main_select_canvas.GetAnnotation().FillPolygon();
+	  isMovingCenterOfMass = 0;
+	}
+      }
     };
     
     // Handles when the user presses a key while interacting with the tool.
