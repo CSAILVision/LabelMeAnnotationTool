@@ -6,7 +6,7 @@
 
 // This function creates and pupulates the list 
 function LoadAnnotationList() {
-    var html_str = '<div class="object_list" id="anno_list" style="border:0px solid black;z-index:0;">';
+    var html_str = '<div class="object_list" id="anno_list" style="border:0px solid black;z-index:0;" ondragleave="drop(event, -1)">';
     
     var Npolygons = $(LM_xml).children("annotation").children("object").length;
     var NundeletedPolygons = 0;

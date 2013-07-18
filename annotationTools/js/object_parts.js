@@ -58,9 +58,10 @@ function addPart(object_id, part_id) {
             removePart(childrens[i], object_id);
         }
 
-        //alertParts("quitar loops. Now this object "+object_id+"should not be children of "+part_id);
+        // alertParts("quitar loops. Now this object "+object_id+"should not be children of "+part_id);
 
-        // if all is fine then concatenate to current list of parts
+        // If all is fine then concatenate to current list of parts.
+        // first add it to the has parts list.
         var curr_obj = $(LM_xml).children("annotation").children("object").eq(object_id);
         if (curr_obj.children("parts").length>0) {
             parts = getParts(object_id);
@@ -68,8 +69,19 @@ function addPart(object_id, part_id) {
             curr_obj.children("parts").children("hasparts").text(parts.toString());
         } else {
             curr_obj.append("<parts><hasparts>" + part_id + "</hasparts></parts>");
-            //curr_obj.children("parts").children("hasparts").text(part_id.toString());
-       }
+        }
+
+        // Add isPartOf field (one object can only be part of another one):        
+        var curr_part = $(LM_xml).children("annotation").children("object").eq(part_id);
+        if (curr_part.children("parts").length>0) {
+            if (curr_part.children("parts").children("ispartof").length>0) {
+                curr_part.children("parts").children("ispartof").text(object_id.toString());
+            } else {
+                curr_part.children("parts").append("<ispartof>" + object_id + "</ispartof>");
+            }
+        } else {
+            curr_part.append("<parts><ispartof>" + object_id + "</ispartof></parts>");
+        }
     }
 }
 
@@ -86,6 +98,7 @@ function removePart(object_id, part_id) {
     if (remove!=-1) {
         parts.splice(remove, 1);
         $(LM_xml).children("annotation").children("object").eq(object_id).children("parts").children("hasparts").text(parts.toString());
+        $(LM_xml).children("annotation").children("object").eq(part_id).children("parts").children("ispartof").text("");
     }
 }
 

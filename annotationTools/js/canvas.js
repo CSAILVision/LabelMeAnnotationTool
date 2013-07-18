@@ -12,6 +12,7 @@ function canvas() {
     this.annotations; // includes name, deleted, verified info
     this.is_poly_selected; // Indicates whether a polygon is selected
     this.selected_poly; // Indicates which polygon is selected
+    this.selected_poly_parts; // Indicates the parts of the selected polygon 
     
     // *******************************************
     // Public methods:
@@ -32,19 +33,24 @@ function canvas() {
         this.unselectObjects();
         this.is_poly_selected = 1;
         this.selected_poly = idx;
+        this.selected_poly_parts = getPartChildrens(idx);
         this.annotations[idx].SelectPoly();
         var m = main_image.GetFileInfo().GetMode();
         if(view_ObjList) ChangeLinkColorFG(idx);
-        this.annotations[idx].FillPolygon();
-        
+        for (var i=0; i<this.selected_poly_parts.length; i++) {
+            this.annotations[this.selected_poly_parts[i]].FillPolygon();
+        }
     };
     
     this.unselectObjects = function () {
         if(!this.is_poly_selected) return;
         var m = main_image.GetFileInfo().GetMode();
         if(view_ObjList) ChangeLinkColorBG(this.selected_poly);
-        this.annotations[this.selected_poly].UnfillPolygon();
         this.annotations[this.selected_poly].UnselectPoly();
+        this.annotations[this.selected_poly].UnfillPolygon();
+        for (var i=0; i<this.selected_poly_parts.length; i++) {
+            this.annotations[this.selected_poly_parts[i]].UnfillPolygon();
+        }
         this.is_poly_selected = 0;
     };
     
@@ -53,7 +59,7 @@ function canvas() {
         var nn = this.annotations.length;
         var im_ratio = main_image.GetImRatio();
         
-        for(pp=0; pp < nn; pp++) {
+        for(var pp=0; pp < nn; pp++) {
             //       if(this.annotations[pp].GetDeleted()) continue;
             //       else {
             var isDeleted = this.annotations[pp].GetDeleted();

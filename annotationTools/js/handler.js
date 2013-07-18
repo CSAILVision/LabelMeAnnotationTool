@@ -134,7 +134,7 @@ function handler() {
         }
         
         if (!curr_obj.children("parts").length>0) {
-            curr_obj.append("<parts><hasparts></hasparts></parts>");
+            curr_obj.append("<parts><hasparts></hasparts><ispartof></ispartof></parts>");
         }
 
         
@@ -436,7 +436,7 @@ function handler() {
             html_str += '<occluded>' + new_occluded + '</occluded>';
             html_str += '<attributes>' + new_attributes + '</attributes>';
         }
-        html_str += '<parts><hasparts></hasparts></parts>';
+        html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
         var ts = GetTimeStamp();
         if(ts.length==20) html_str += '<date>' + ts + '</date>';
         html_str += '<id>' + obj_ndx + '</id>';
