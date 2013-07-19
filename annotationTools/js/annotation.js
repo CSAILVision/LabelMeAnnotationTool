@@ -289,12 +289,12 @@ function annotation(anno_id) {
     
     // Fill the interior of the polygon.
     this.FillPolygon = function () {
-        this.graphics.FillPolygon();
+      if(this.graphics) this.graphics.FillPolygon();
     };
     
     // Unfill the interior of the polygon.
     this.UnfillPolygon = function () {
-        this.graphics.UnfillPolygon();
+      if(this.graphics) this.graphics.UnfillPolygon();
     };
     
     // When you move the mouse over the first control point, then make it
