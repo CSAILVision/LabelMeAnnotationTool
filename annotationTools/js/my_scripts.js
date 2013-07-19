@@ -391,3 +391,23 @@ function SetObjectChoicesPointLine(anno) {
   
   return (isPoint || isLine);
 }
+
+// Returns true if the point (x,y) is close to polygon p.
+function IsNearPolygon(x,y,p) {
+  var sx = x / main_image.GetImRatio();
+  var sy = y / main_image.GetImRatio();
+  
+  var pt = main_canvas.GetAnnotations()[p].ClosestPoint(sx,sy);
+  var minDist = pt[2];
+  
+  // This is the sensitivity area around the outline of the polygon.
+  // Also, when you move the mouse over the sensitivity area, the area 
+  // gets bigger so you won't move off of it on accident.
+  var buffer = 5;
+  if(main_canvas.is_poly_selected) buffer = 13;
+  
+  // Note: need to multiply by im_ratio so that the sensitivity area 
+  // is not huge when you're zoomed in. 
+  return ((minDist*main_image.GetImRatio()) < buffer);
+}
+    

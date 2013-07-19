@@ -35,7 +35,6 @@ function canvas() {
         this.selected_poly = idx;
         this.selected_poly_parts = getPartChildrens(idx);
         this.annotations[idx].SelectPoly();
-        var m = main_image.GetFileInfo().GetMode();
         if(view_ObjList) ChangeLinkColorFG(idx);
         for (var i=0; i<this.selected_poly_parts.length; i++) {
             this.annotations[this.selected_poly_parts[i]].FillPolygon();
@@ -44,7 +43,6 @@ function canvas() {
     
     this.unselectObjects = function () {
         if(!this.is_poly_selected) return;
-        var m = main_image.GetFileInfo().GetMode();
         if(view_ObjList) ChangeLinkColorBG(this.selected_poly);
         this.annotations[this.selected_poly].UnselectPoly();
         this.annotations[this.selected_poly].UnfillPolygon();
@@ -60,8 +58,6 @@ function canvas() {
         var im_ratio = main_image.GetImRatio();
         
         for(var pp=0; pp < nn; pp++) {
-            //       if(this.annotations[pp].GetDeleted()) continue;
-            //       else {
             var isDeleted = this.annotations[pp].GetDeleted();
             if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
                 this.annotations[pp].DrawPolygon(im_ratio);
@@ -69,37 +65,11 @@ function canvas() {
                 // *****************************************
                 this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
                 this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
-                
-                // 	  this.annotations[pp].SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + pp + '); return false;');
-                // 	  this.annotations[pp].SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
                 this.annotations[pp].SetAttribute('oncontextmenu','return false');
                 this.annotations[pp].SetAttribute('style','cursor:pointer;');
                 // *****************************************
             }
         }
-    };
-    
-    // Detects if the point (x,y) is close to a polygon.  If so, return
-    // the index of the closest polygon.  Else, return -1.
-    this.IsNearPolygon = function (x,y,p) {
-        var sx = x / main_image.GetImRatio();
-        var sy = y / main_image.GetImRatio();
-        
-        var pt = this.annotations[p].ClosestPoint(sx,sy);
-        var minDist = pt[2];
-        
-        // this is the sensitivity area around the outlines of the polygon.
-        // 7.31.2006 - changed from dividing by im_ratio to multiplying by it
-        // so that the sensitivity area is not huge when you're zoomed in.
-        // also changed from 10 to 5.
-        // also - changed it so that when you move the mouse over the sensitivity
-        // area, the area gets bigger so you won't move off of it on accident.
-        var buffer = 5; //7.31.06
-        if(main_canvas.is_poly_selected) {
-            buffer = 13;
-        }
-        
-        return ((minDist*main_image.GetImRatio()) < buffer);
     };
     
     // Loop through all of the annotations and clear them from the canvas.
@@ -116,7 +86,6 @@ function canvas() {
         
         if((IsUserAnonymous() || (!IsCreator(this.annotations[idx].GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
-            //       PermissionError();
             return;
         }
         
@@ -124,8 +93,6 @@ function canvas() {
             main_handler.RestToSelected(idx,null);
             return;
         }
-        
-        //     this.annotations[idx].SetDeleted(1);
         
         if(idx>=num_orig_anno) {
             anno_count--;
@@ -175,9 +142,6 @@ function canvas() {
         var anno_id = anno.GetAnnoID();
         anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
         anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,' + anno_id + ');');
-        
-        //       anno.SetAttribute('onmousedown','parent.main_handler.RestToSelected(' + anno_id + '); return false;');
-        //       anno.SetAttribute('onmousemove','parent.main_handler.CanvasMouseMove(evt,' + anno_id + ');');
         anno.SetAttribute('oncontextmenu','return false');
         anno.SetAttribute('style','cursor:pointer;');
         // *****************************************
