@@ -27,22 +27,19 @@ function canvas() {
 
     // Loop through all of the annotations and draw the polygons.
     this.DrawAllPolygons = function () {
-        var nn = this.annotations.length;
-        var im_ratio = main_image.GetImRatio();
-        
-        for(var pp=0; pp < nn; pp++) {
-            var isDeleted = this.annotations[pp].GetDeleted();
-            if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
-                this.annotations[pp].DrawPolygon(im_ratio);
-                
-                // *****************************************
-                this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
-                this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
-                this.annotations[pp].SetAttribute('oncontextmenu','return false');
-                this.annotations[pp].SetAttribute('style','cursor:pointer;');
-                // *****************************************
-            }
-        }
+      for(var pp=0; pp < this.annotations.length; pp++) {
+	var isDeleted = this.annotations[pp].GetDeleted();
+	if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
+	  this.annotations[pp].DrawPolygon(main_image.GetImRatio());
+          
+	  // *****************************************
+	  this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
+	  this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
+	  this.annotations[pp].SetAttribute('oncontextmenu','return false');
+	  this.annotations[pp].SetAttribute('style','cursor:pointer;');
+	  // *****************************************
+	}
+      }
     };
     
     // Loop through all of the annotations and clear them from the canvas.
