@@ -411,3 +411,35 @@ function IsNearPolygon(x,y,p) {
   return ((minDist*main_image.GetImRatio()) < buffer);
 }
     
+// Render filled polygons for selected objects:
+function selectObject(idx) {
+  if(selected_poly==idx) return;
+  unselectObjects();
+  selected_poly = idx;
+  main_canvas.GetAnnotations()[idx].SelectPoly();
+  if(view_ObjList) ChangeLinkColorFG(idx);
+  
+  // Select object parts:
+  var selected_poly_parts = getPartChildrens(idx);
+  for (var i=0; i<selected_poly_parts.length; i++) {
+    main_canvas.GetAnnotations()[selected_poly_parts[i]].FillPolygon();
+  }
+}
+
+// Stop fill polygon rendering for selected objects:
+function unselectObjects() {
+  if(selected_poly == -1) return;
+  if(view_ObjList) ChangeLinkColorBG(selected_poly);
+  main_canvas.GetAnnotations()[selected_poly].UnselectPoly();
+  main_canvas.GetAnnotations()[selected_poly].UnfillPolygon();
+  
+  // Unselect object parts:
+  var selected_poly_parts = getPartChildrens(selected_poly);
+  for (var i=0; i<selected_poly_parts.length; i++) {
+    main_canvas.GetAnnotations()[selected_poly_parts[i]].UnfillPolygon();
+  }
+  
+  // Reset selected_poly variable:
+  selected_poly = -1;
+}
+

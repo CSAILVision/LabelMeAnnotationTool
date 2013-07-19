@@ -25,38 +25,6 @@ function canvas() {
         this.annotations = Array(num);
     };
 
-    // Render filled polygons for selected objects:
-    this.selectObject = function (idx) {
-      if(selected_poly==idx) return;
-      this.unselectObjects();
-      selected_poly = idx;
-      this.annotations[idx].SelectPoly();
-      if(view_ObjList) ChangeLinkColorFG(idx);
-
-      // Select object parts:
-      var selected_poly_parts = getPartChildrens(idx);
-      for (var i=0; i<selected_poly_parts.length; i++) {
-	this.annotations[selected_poly_parts[i]].FillPolygon();
-      }
-    };
-
-    // Stop fill polygon rendering for selected objects:
-    this.unselectObjects = function () {
-      if(selected_poly == -1) return;
-      if(view_ObjList) ChangeLinkColorBG(selected_poly);
-      this.annotations[selected_poly].UnselectPoly();
-      this.annotations[selected_poly].UnfillPolygon();
-
-      // Unselect object parts:
-      var selected_poly_parts = getPartChildrens(selected_poly);
-      for (var i=0; i<selected_poly_parts.length; i++) {
-	this.annotations[selected_poly_parts[i]].UnfillPolygon();
-      }
-      
-      // Reset selected_poly variable:
-      selected_poly = -1;
-    };
-    
     // Loop through all of the annotations and draw the polygons.
     this.DrawAllPolygons = function () {
         var nn = this.annotations.length;
@@ -105,7 +73,7 @@ function canvas() {
             UpdateCounterHTML();
         }
         
-        this.unselectObjects();
+        unselectObjects();
         if(view_ObjList) {
             RemoveAnnotationList();
             LoadAnnotationList();

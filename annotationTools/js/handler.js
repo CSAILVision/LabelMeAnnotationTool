@@ -198,7 +198,7 @@ function handler() {
             LoadAnnotationList();
         }
         
-        main_canvas.unselectObjects(); // Perhaps this should go elsewhere...
+        unselectObjects(); // Perhaps this should go elsewhere...
         main_handler.SelectedToRest();
     };
     
@@ -245,12 +245,12 @@ function handler() {
     
     // Handles when the user moves the mouse over an annotation link.
     this.AnnotationLinkMouseOver = function (a) {
-        if(this.active_canvas!=SELECTED_CANVAS) main_canvas.selectObject(a);
+        if(this.active_canvas!=SELECTED_CANVAS) selectObject(a);
     };
     
     // Handles when the user moves the mouse away from an annotation link.
     this.AnnotationLinkMouseOut = function () {
-        if(this.active_canvas!=SELECTED_CANVAS) main_canvas.unselectObjects();
+        if(this.active_canvas!=SELECTED_CANVAS) unselectObjects();
     };
     
     // Handles when the user moves the mouse over a polygon on the drawing
@@ -258,8 +258,8 @@ function handler() {
     this.CanvasMouseMove = function (event,pp) {
         var x = GetEventPosX(event);
         var y = GetEventPosY(event);
-        if(IsNearPolygon(x,y,pp)) main_canvas.selectObject(pp);
-        else main_canvas.unselectObjects();
+        if(IsNearPolygon(x,y,pp)) selectObject(pp);
+        else unselectObjects();
     };
     
     // Handles when we wish to change from "rest" to "draw".
