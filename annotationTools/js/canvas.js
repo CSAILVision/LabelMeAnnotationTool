@@ -49,52 +49,6 @@ function canvas() {
         }
     };
     
-    // Deletes the currently selected polygon from the canvas.
-    this.DeleteSelectedPolygon = function () {
-        if(selected_poly == -1) return;
-        var idx = selected_poly;
-        
-        if((IsUserAnonymous() || (!IsCreator(this.annotations[idx].GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
-            alert('You do not have permission to delete this polygon');
-            return;
-        }
-        
-        if(this.annotations[idx].GetVerified()) {
-            main_handler.RestToSelected(idx,null);
-            return;
-        }
-        
-        if(idx>=num_orig_anno) {
-            anno_count--;
-            setCookie('counter',anno_count);
-            UpdateCounterHTML();
-        }
-        
-        unselectObjects();
-        if(view_ObjList) {
-            RemoveAnnotationList();
-            LoadAnnotationList();
-        }
-        
-        submission_edited = 0;
-        old_name = this.annotations[idx].GetObjName();
-        new_name = this.annotations[idx].GetObjName();
-        
-        // Write to logfile:
-        WriteLogMsg('*Deleting_object');
-        InsertServerLogData('cpts_not_modified');
-        
-        // Set <deleted> in LM_xml:
-        $(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text('1');
-        
-        // Write XML to server:
-        WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
-        
-        //     SubmitAnnotations(0);
-        
-        this.annotations[idx].DeletePolygon();
-    };
-    
     // Add a new annotation to the canvas.
     this.AddAnnotation = function (anno) {
         this.annotations.push(anno);

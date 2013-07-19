@@ -647,7 +647,7 @@ function handler() {
         if(((event.keyCode==46) || (event.keyCode==8)) && !wait_for_input && !edit_popup_open && !username_flag) {
             // Determine whether we are deleting a complete or partially
             // complete polygon.
-            if(!this.EraseSegment()) main_canvas.DeleteSelectedPolygon();
+            if(!main_handler.EraseSegment()) DeleteSelectedPolygon();
         }
         // 27 - Esc key
         // Close edit popup if it is open.

@@ -416,8 +416,8 @@ function selectObject(idx) {
   if(selected_poly==idx) return;
   unselectObjects();
   selected_poly = idx;
-  main_canvas.GetAnnotations()[idx].SelectPoly();
   if(view_ObjList) ChangeLinkColorFG(idx);
+  main_canvas.GetAnnotations()[selected_poly].FillPolygon();
   
   // Select object parts:
   var selected_poly_parts = getPartChildrens(idx);
@@ -430,7 +430,6 @@ function selectObject(idx) {
 function unselectObjects() {
   if(selected_poly == -1) return;
   if(view_ObjList) ChangeLinkColorBG(selected_poly);
-  main_canvas.GetAnnotations()[selected_poly].UnselectPoly();
   main_canvas.GetAnnotations()[selected_poly].UnfillPolygon();
   
   // Unselect object parts:
@@ -443,3 +442,53 @@ function unselectObjects() {
   selected_poly = -1;
 }
 
+// Deletes the currently selected polygon from the canvas.
+function DeleteSelectedPolygon() {
+  if(selected_poly == -1) return;
+  
+  if((IsUserAnonymous() || (!IsCreator(main_canvas.GetAnnotations()[selected_poly].GetUsername()))) && (!IsUserAdmin()) && (selected_poly<num_orig_anno) && !action_DeleteExistingObjects) {
+    alert('You do not have permission to delete this polygon');
+    return;
+  }
+  
+  if(main_canvas.GetAnnotations()[selected_poly].GetVerified()) {
+    main_handler.RestToSelected(selected_poly,null);
+    return;
+  }
+  
+  if(selected_poly>=num_orig_anno) {
+    anno_count--;
+    setCookie('counter',anno_count);
+    UpdateCounterHTML();
+  }
+  
+  submission_edited = 0;
+  old_name = main_canvas.GetAnnotations()[selected_poly].GetObjName();
+  new_name = main_canvas.GetAnnotations()[selected_poly].GetObjName();
+  
+  // Write to logfile:
+  WriteLogMsg('*Deleting_object');
+  InsertServerLogData('cpts_not_modified');
+  
+  // Set <deleted> in LM_xml:
+  $(LM_xml).children("annotation").children("object").eq(selected_poly).children("deleted").text('1');
+  
+  // Write XML to server:
+  WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+  
+  //     SubmitAnnotations(0);
+  
+  // Need to keep track of the selected polygon since it gets reset
+  // in the next step:
+  var ndx = selected_poly;
+  
+  // Unselect the object:
+  unselectObjects();
+  if(view_ObjList) {
+    RemoveAnnotationList();
+    LoadAnnotationList();
+  }
+  
+  // Delete the polygon from the canvas:
+  main_canvas.GetAnnotations()[ndx].DeletePolygon();
+}

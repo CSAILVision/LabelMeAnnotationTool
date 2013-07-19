@@ -137,11 +137,13 @@ function MainInit() {
 </head>
 
 <!--#if expr="$QUERY_STRING_UNESCAPED!=badbrowser" -->
-<body id="body" onkeyup="javascript:main_handler.KeyPress(event);" onmousemove="javascript:main_handler.MainPageMouseMove(event);" onmouseup="javascript:main_handler.MainPageMouseUp(event);" style="visibility:hidden;" >
+<body id="body" onmousemove="javascript:main_handler.MainPageMouseMove(event);" onmouseup="javascript:main_handler.MainPageMouseUp(event);" style="visibility:hidden;" >
 
 <script type="text/javascript">
 WriteLogMsg('*start_loading');
-    
+
+// Set action when the user presses a key:
+document.onkeyup = main_handler.KeyPress;
 </script>
 
   <div id="mt_submit_form"></div>
