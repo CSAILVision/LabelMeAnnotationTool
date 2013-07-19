@@ -404,7 +404,7 @@ function IsNearPolygon(x,y,p) {
   // Also, when you move the mouse over the sensitivity area, the area 
   // gets bigger so you won't move off of it on accident.
   var buffer = 5;
-  if(main_canvas.is_poly_selected) buffer = 13;
+  if(selected_poly != -1) buffer = 13;
   
   // Note: need to multiply by im_ratio so that the sensitivity area 
   // is not huge when you're zoomed in. 

@@ -31,3 +31,7 @@ isMovingCenterOfMass = 0;
 
 // Boolean indicating whether the control points were edited:
 editedControlPoints = 0;
+
+// Scalar indicating which polygon is selected; -1 means no polygon is selected
+selected_poly = -1;
+

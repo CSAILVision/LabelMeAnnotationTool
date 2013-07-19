@@ -10,9 +10,6 @@ function canvas() {
     // *******************************************
     
     this.annotations; // includes name, deleted, verified info
-    this.is_poly_selected; // Indicates whether a polygon is selected
-    this.selected_poly; // Indicates which polygon is selected
-    this.selected_poly_parts; // Indicates the parts of the selected polygon 
     
     // *******************************************
     // Public methods:
@@ -27,29 +24,37 @@ function canvas() {
     this.CreateNewAnnotations = function (num) {
         this.annotations = Array(num);
     };
-    
+
+    // Render filled polygons for selected objects:
     this.selectObject = function (idx) {
-        if((this.is_poly_selected) && (this.selected_poly==idx)) return;
-        this.unselectObjects();
-        this.is_poly_selected = 1;
-        this.selected_poly = idx;
-        this.selected_poly_parts = getPartChildrens(idx);
-        this.annotations[idx].SelectPoly();
-        if(view_ObjList) ChangeLinkColorFG(idx);
-        for (var i=0; i<this.selected_poly_parts.length; i++) {
-            this.annotations[this.selected_poly_parts[i]].FillPolygon();
-        }
+      if(selected_poly==idx) return;
+      this.unselectObjects();
+      selected_poly = idx;
+      this.annotations[idx].SelectPoly();
+      if(view_ObjList) ChangeLinkColorFG(idx);
+
+      // Select object parts:
+      var selected_poly_parts = getPartChildrens(idx);
+      for (var i=0; i<selected_poly_parts.length; i++) {
+	this.annotations[selected_poly_parts[i]].FillPolygon();
+      }
     };
-    
+
+    // Stop fill polygon rendering for selected objects:
     this.unselectObjects = function () {
-        if(!this.is_poly_selected) return;
-        if(view_ObjList) ChangeLinkColorBG(this.selected_poly);
-        this.annotations[this.selected_poly].UnselectPoly();
-        this.annotations[this.selected_poly].UnfillPolygon();
-        for (var i=0; i<this.selected_poly_parts.length; i++) {
-            this.annotations[this.selected_poly_parts[i]].UnfillPolygon();
-        }
-        this.is_poly_selected = 0;
+      if(selected_poly == -1) return;
+      if(view_ObjList) ChangeLinkColorBG(selected_poly);
+      this.annotations[selected_poly].UnselectPoly();
+      this.annotations[selected_poly].UnfillPolygon();
+
+      // Unselect object parts:
+      var selected_poly_parts = getPartChildrens(selected_poly);
+      for (var i=0; i<selected_poly_parts.length; i++) {
+	this.annotations[selected_poly_parts[i]].UnfillPolygon();
+      }
+      
+      // Reset selected_poly variable:
+      selected_poly = -1;
     };
     
     // Loop through all of the annotations and draw the polygons.
@@ -81,8 +86,8 @@ function canvas() {
     
     // Deletes the currently selected polygon from the canvas.
     this.DeleteSelectedPolygon = function () {
-        if(!this.is_poly_selected) return;
-        var idx = this.selected_poly;
+        if(selected_poly == -1) return;
+        var idx = selected_poly;
         
         if((IsUserAnonymous() || (!IsCreator(this.annotations[idx].GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
