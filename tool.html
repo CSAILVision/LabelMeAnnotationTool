@@ -95,7 +95,7 @@ function GetXMLFile() {
 
 function MainInit() {
     main_handler = new handler();
-    main_canvas = new canvas();
+    main_canvas = new canvas('myCanvas_bg');
     main_select_canvas = new GenericCanvas('select_canvas');
     main_draw_canvas = new GenericCanvas('draw_canvas');
     main_query_canvas = new GenericCanvas('query_canvas');

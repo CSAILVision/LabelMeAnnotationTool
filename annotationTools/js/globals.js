@@ -23,15 +23,18 @@ if (getQueryVariable('mode')=='mt'){
 }
 
 // Boolean indicating whether a control point is being edited:
-isEditingControlPoint = 0;
+var isEditingControlPoint = 0;
 
 // Boolean indicating whether the center of mass of the polygon is being 
 // adjusted:
-isMovingCenterOfMass = 0;
+var isMovingCenterOfMass = 0;
 
 // Boolean indicating whether the control points were edited:
-editedControlPoints = 0;
+var editedControlPoints = 0;
 
 // Scalar indicating which polygon is selected; -1 means no polygon is selected
-selected_poly = -1;
+var selected_poly = -1;
 
+// Array storing all of the annotation structures.  Eventually this will be 
+// removed since we should read directly from LM_xml.
+var AllAnnotations = Array(0);

@@ -1,15 +1,13 @@
-// Created: 04/13/2006
-// Updated: 04/13/2006
-
 // annotation canvas
 // Keeps track of all information related to the main drawing canvas.
-function canvas() {
+function canvas(div_attach) {
     
-    // *******************************************
-    // Private variables:
-    // *******************************************
-    
-    this.annotations; // includes name, deleted, verified info
+  // *******************************************
+  // Private variables:
+  // *******************************************
+  
+//   this.annotations; // includes name, deleted, verified info
+  this.div_attach = div_attach; // name of DIV element to attach to
     
     // *******************************************
     // Public methods:
@@ -17,26 +15,21 @@ function canvas() {
     
     // Returns all of the annotations as an array.
     this.GetAnnotations = function () {
-        return this.annotations;
+      return AllAnnotations;
     };
     
-    // Allocates an array to hold 'num' annotations.
-    this.CreateNewAnnotations = function (num) {
-        this.annotations = Array(num);
-    };
-
     // Loop through all of the annotations and draw the polygons.
     this.DrawAllPolygons = function () {
-      for(var pp=0; pp < this.annotations.length; pp++) {
-	var isDeleted = this.annotations[pp].GetDeleted();
+      for(var pp=0; pp < this.GetAnnotations().length; pp++) {
+	var isDeleted = this.GetAnnotations()[pp].GetDeleted();
 	if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
-	  this.annotations[pp].DrawPolygon(main_image.GetImRatio());
+	  this.GetAnnotations()[pp].DrawPolygon(main_image.GetImRatio());
           
 	  // *****************************************
-	  this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
-	  this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
-	  this.annotations[pp].SetAttribute('oncontextmenu','return false');
-	  this.annotations[pp].SetAttribute('style','cursor:pointer;');
+	  this.GetAnnotations()[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
+	  this.GetAnnotations()[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
+	  this.GetAnnotations()[pp].SetAttribute('oncontextmenu','return false');
+	  this.GetAnnotations()[pp].SetAttribute('style','cursor:pointer;');
 	  // *****************************************
 	}
       }
@@ -44,23 +37,22 @@ function canvas() {
     
     // Loop through all of the annotations and clear them from the canvas.
     this.ClearAllAnnotations = function () {
-        for(var i=0;i<this.annotations.length;i++) {
-            this.annotations[i].DeletePolygon();
+        for(var i=0;i<this.GetAnnotations().length;i++) {
+            this.GetAnnotations()[i].DeletePolygon();
         }
     };
     
     // Add a new annotation to the canvas.
     this.AddAnnotation = function (anno) {
-        this.annotations.push(anno);
+        this.GetAnnotations().push(anno);
         this.AttachAnnotation(anno);
     };
     
     // Attach the annotation to the canvas.
     this.AttachAnnotation = function (anno) {
         if(anno.GetDeleted()&&(!view_Deleted)) return;
-        var im_ratio = main_image.GetImRatio();
-        anno.SetDivAttach('myCanvas_bg');
-        anno.DrawPolygon(im_ratio);
+        anno.SetDivAttach(this.div_attach);
+        anno.DrawPolygon(main_image.GetImRatio());
         
         // *****************************************
         var anno_id = anno.GetAnnoID();
@@ -73,7 +65,7 @@ function canvas() {
     
     // Detach annotation from the canvas.
     this.DetachAnnotation = function(anno_id) {
-        var anno = this.annotations[anno_id];
+        var anno = this.GetAnnotations()[anno_id];
         anno.DeletePolygon();
         return anno;
     };

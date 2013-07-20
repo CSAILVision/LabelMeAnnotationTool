@@ -223,7 +223,7 @@ function LoadAnnotationSuccess(xml) {
   var obj_elts = LM_xml.getElementsByTagName("object");
   var num_obj = obj_elts.length;
   
-  main_canvas.CreateNewAnnotations(num_obj);
+  AllAnnotations = Array(num_obj);
   num_orig_anno = num_obj;
 
   // Initialize any empty tags in the XML file:
@@ -292,7 +292,6 @@ function LoadTemplateSuccess(xml) {
   LM_xml = xml;
   LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
   LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
-  main_canvas.CreateNewAnnotations(0);
   num_orig_anno = 0;
   if(view_ObjList) LoadAnnotationList();
 }

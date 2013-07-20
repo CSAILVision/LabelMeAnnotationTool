@@ -498,8 +498,6 @@ function handler() {
       if(event) event.stopPropagation();
       if((IsUserAnonymous() || (!IsCreator(main_canvas.GetAnnotations()[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
 	PermissionError();
-	var anno = main_canvas.DetachAnnotation(anno_id);
-	main_canvas.AttachAnnotation(anno);
 	return;
       }
       this.active_canvas = SELECTED_CANVAS;
