@@ -44,7 +44,7 @@ function getPartsTree() {
 function addPartFields() {
     // makes sure all the annotations have all the fields
     var Npolygons = $(LM_xml).children("annotation").children("object").length;
-    
+        
     for(var obj_i=0; obj_i < Npolygons; obj_i++) {
         var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_i);
         

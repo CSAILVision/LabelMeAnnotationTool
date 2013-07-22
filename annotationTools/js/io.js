@@ -15,7 +15,7 @@ function WriteXML(url,xml_data,SuccessFunction,ErrorFunction) {
     // use regular expressions to replace all occurrences of
     sXmlString = sXmlString.replace(/ xmlns=\"http:\/\/www.w3.org\/1999\/xhtml\"/g, "");
                                     
-
+                        
     $.ajax({
     type: "POST",
     url: url,
