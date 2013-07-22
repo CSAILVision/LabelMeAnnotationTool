@@ -12,7 +12,7 @@ function LoadAnnotationList() {
     var NundeletedPolygons = 0;
     // count undeleted object
     for(var ii=0; ii < Npolygons; ii++) {
-        if (!main_canvas.GetAnnotations()[ii].GetDeleted()) {NundeletedPolygons += 1;}
+        if (!AllAnnotations[ii].GetDeleted()) {NundeletedPolygons += 1;}
     }
     
     // Get parts tree
@@ -38,7 +38,7 @@ function LoadAnnotationList() {
         }
         //alert("level="+level + "; node_i=" + ii);
 
-        var isDeleted = main_canvas.GetAnnotations()[ii].GetDeleted();
+        var isDeleted = AllAnnotations[ii].GetDeleted();
         
         if(((ii<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || ((ii>=num_orig_anno)&&(!isDeleted||(isDeleted&&view_Deleted)))) {
             
@@ -74,18 +74,18 @@ function LoadAnnotationList() {
             else
                 html_str += '>';
             
-            if(main_canvas.GetAnnotations()[ii].GetObjName().length==0 && !main_draw_canvas.GetAnnotation()) {
+            if(AllAnnotations[ii].GetObjName().length==0 && !main_draw_canvas.GetAnnotation()) {
                 html_str += '<i>[ Please enter name ]</i>';
             }
             else {
-                html_str += main_canvas.GetAnnotations()[ii].GetObjName();
+                html_str += AllAnnotations[ii].GetObjName();
             }
             
             if(isDeleted) html_str += '</b>';
             html_str += '</a>';
             
-            if(main_canvas.GetAnnotations()[ii].GetAttributes().length>0) {
-                html_str += ' (' + main_canvas.GetAnnotations()[ii].GetAttributes() +')';
+            if(AllAnnotations[ii].GetAttributes().length>0) {
+                html_str += ' (' + AllAnnotations[ii].GetAttributes() +')';
             }
 
             html_str += '</li></div>';

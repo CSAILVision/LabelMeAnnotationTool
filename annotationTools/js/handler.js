@@ -139,9 +139,9 @@ function handler() {
 
         
         if(editedControlPoints) {
-            for(var jj=0; jj < main_canvas.GetAnnotations()[obj_ndx].GetPtsX().length; jj++) {
-                curr_obj.children("polygon").children("pt").eq(jj).children("x").text(main_canvas.GetAnnotations()[obj_ndx].GetPtsX()[jj]);
-                curr_obj.children("polygon").children("pt").eq(jj).children("y").text(main_canvas.GetAnnotations()[obj_ndx].GetPtsY()[jj]);
+            for(var jj=0; jj < AllAnnotations[obj_ndx].GetPtsX().length; jj++) {
+                curr_obj.children("polygon").children("pt").eq(jj).children("x").text(AllAnnotations[obj_ndx].GetPtsX()[jj]);
+                curr_obj.children("polygon").children("pt").eq(jj).children("y").text(AllAnnotations[obj_ndx].GetPtsY()[jj]);
             }
         }
         
@@ -285,7 +285,7 @@ function handler() {
       if(username_flag) submit_username();
       
       // Create new annotation structure:
-      var anno = new annotation(main_canvas.GetAnnotations().length);
+      var anno = new annotation(AllAnnotations.length);
 
       // Add first control point:
       anno.AddFirstControlPoint(x,y);
@@ -496,7 +496,7 @@ function handler() {
     // Handles when we wish to change from "rest" to "selected".
     this.RestToSelected = function (anno_id,event) {
       if(event) event.stopPropagation();
-      if((IsUserAnonymous() || (!IsCreator(main_canvas.GetAnnotations()[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
+      if((IsUserAnonymous() || (!IsCreator(AllAnnotations[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
 	PermissionError();
 	return;
       }
@@ -504,9 +504,9 @@ function handler() {
       edit_popup_open = 1;
       
       // Turn off automatic flag and write to XML file:
-      if(main_canvas.GetAnnotations()[anno_id].GetAutomatic()) {
+      if(AllAnnotations[anno_id].GetAutomatic()) {
 	// Insert data for server logfile:
-	old_name = main_canvas.GetAnnotations()[anno_id].GetObjName();
+	old_name = AllAnnotations[anno_id].GetObjName();
 	new_name = old_name;
 	InsertServerLogData('cpts_not_modified');
         

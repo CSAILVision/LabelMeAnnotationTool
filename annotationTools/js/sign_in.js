@@ -96,7 +96,7 @@ function sign_out() {
   var p = document.getElementById('you_are_div');
   p.parentNode.removeChild(p);
   PlaceSignInHTML();
-  var all_annos = main_canvas.GetAnnotations();
+  var all_annos = AllAnnotations;
   for(i=num_orig_anno; i < all_annos.length; i++) {
     all_annos[i].SetUsername(username);
   }
@@ -171,7 +171,7 @@ function submit_username() {
   p.parentNode.removeChild(p);
   write_username();
 
-  var all_annos = main_canvas.GetAnnotations();
+  var all_annos = AllAnnotations;
   for(i=num_orig_anno; i < all_annos.length; i++) {
     all_annos[i].SetUsername(username);
   }

@@ -158,7 +158,7 @@ function InsertAfterDiv(html_str,tag_id) {
 
 function ChangeLinkColorBG(idx) {
   if(document.getElementById('Link'+idx)) {
-    var isDeleted = main_canvas.GetAnnotations()[idx].GetDeleted();
+    var isDeleted = AllAnnotations[idx].GetDeleted();
     if(isDeleted) document.getElementById('Link'+idx).style.color = '#888888';
     else document.getElementById('Link'+idx).style.color = '#0000FF';
   }
@@ -251,16 +251,16 @@ function LoadAnnotationSuccess(xml) {
 
   // loop over annotated objects
   for(var pp = 0; pp < num_obj; pp++) {
-    main_canvas.GetAnnotations()[pp] = new annotation(pp);
+    AllAnnotations[pp] = new annotation(pp);
     
     // insert polygon
     var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
     var numpts = pt_elts.length;
-    main_canvas.GetAnnotations()[pp].CreatePtsX(numpts);
-    main_canvas.GetAnnotations()[pp].CreatePtsY(numpts);
+    AllAnnotations[pp].CreatePtsX(numpts);
+    AllAnnotations[pp].CreatePtsY(numpts);
     for(ii=0; ii < numpts; ii++) {
-      main_canvas.GetAnnotations()[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
-      main_canvas.GetAnnotations()[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
+      AllAnnotations[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
+      AllAnnotations[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
     }
   }
   
@@ -396,7 +396,7 @@ function IsNearPolygon(x,y,p) {
   var sx = x / main_image.GetImRatio();
   var sy = y / main_image.GetImRatio();
   
-  var pt = main_canvas.GetAnnotations()[p].ClosestPoint(sx,sy);
+  var pt = AllAnnotations[p].ClosestPoint(sx,sy);
   var minDist = pt[2];
   
   // This is the sensitivity area around the outline of the polygon.
@@ -416,12 +416,12 @@ function selectObject(idx) {
   unselectObjects();
   selected_poly = idx;
   if(view_ObjList) ChangeLinkColorFG(idx);
-  main_canvas.GetAnnotations()[selected_poly].FillPolygon();
+  AllAnnotations[selected_poly].FillPolygon();
   
   // Select object parts:
   var selected_poly_parts = getPartChildrens(idx);
   for (var i=0; i<selected_poly_parts.length; i++) {
-    main_canvas.GetAnnotations()[selected_poly_parts[i]].FillPolygon();
+    AllAnnotations[selected_poly_parts[i]].FillPolygon();
   }
 }
 
@@ -429,12 +429,12 @@ function selectObject(idx) {
 function unselectObjects() {
   if(selected_poly == -1) return;
   if(view_ObjList) ChangeLinkColorBG(selected_poly);
-  main_canvas.GetAnnotations()[selected_poly].UnfillPolygon();
+  AllAnnotations[selected_poly].UnfillPolygon();
   
   // Unselect object parts:
   var selected_poly_parts = getPartChildrens(selected_poly);
   for (var i=0; i<selected_poly_parts.length; i++) {
-    main_canvas.GetAnnotations()[selected_poly_parts[i]].UnfillPolygon();
+    AllAnnotations[selected_poly_parts[i]].UnfillPolygon();
   }
   
   // Reset selected_poly variable:
@@ -445,12 +445,12 @@ function unselectObjects() {
 function DeleteSelectedPolygon() {
   if(selected_poly == -1) return;
   
-  if((IsUserAnonymous() || (!IsCreator(main_canvas.GetAnnotations()[selected_poly].GetUsername()))) && (!IsUserAdmin()) && (selected_poly<num_orig_anno) && !action_DeleteExistingObjects) {
+  if((IsUserAnonymous() || (!IsCreator(AllAnnotations[selected_poly].GetUsername()))) && (!IsUserAdmin()) && (selected_poly<num_orig_anno) && !action_DeleteExistingObjects) {
     alert('You do not have permission to delete this polygon');
     return;
   }
   
-  if(main_canvas.GetAnnotations()[selected_poly].GetVerified()) {
+  if(AllAnnotations[selected_poly].GetVerified()) {
     main_handler.RestToSelected(selected_poly,null);
     return;
   }
@@ -462,8 +462,8 @@ function DeleteSelectedPolygon() {
   }
   
   submission_edited = 0;
-  old_name = main_canvas.GetAnnotations()[selected_poly].GetObjName();
-  new_name = main_canvas.GetAnnotations()[selected_poly].GetObjName();
+  old_name = AllAnnotations[selected_poly].GetObjName();
+  new_name = AllAnnotations[selected_poly].GetObjName();
   
   // Write to logfile:
   WriteLogMsg('*Deleting_object');
@@ -489,5 +489,5 @@ function DeleteSelectedPolygon() {
   }
   
   // Delete the polygon from the canvas:
-  main_canvas.GetAnnotations()[ndx].DeletePolygon();
+  AllAnnotations[ndx].DeletePolygon();
 }
