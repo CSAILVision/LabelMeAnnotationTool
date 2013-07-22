@@ -8,11 +8,15 @@
 //   tree = getFormatedTree(object_id, level); // like the previous one but specifiying starting point
 //   addPart(object_id, part_id);
 //   removePart(object_id, part_id);
-//   childrens = getPartChildrens(object_id)
-//   parts = getParts(object_id);
+//   childrens = getPartChildrens(object_id); Gets de list of parts recursively.
+//   parent = getParent(object_id); (returns -1 if there is no parent)
 //   wholeobjects_ids = getNonParts();
 //
 //   where object_id and part_id and polygon ids.
+//
+//   Other utilities:
+//
+//   parts = getParts(object_id); this not recursive. It just gets the parts just bellow the node object_id. Use getPartChildrens to get all the parts recursively.
 
 
 function getPartsTree() {
@@ -20,7 +24,10 @@ function getPartsTree() {
     //    with tree[0] being an array of object IDs sorted
     //         tree[1] being the level (level = 0 for objects and >0 for parts)
     var tree;
-    
+        
+    // Add part fields (this calls a funcion inside object_parts.js)
+    addPartFields(); // makes sure all the annotations have all the fields.
+
     // recursive tree call
     //tree = get_tree([], [], 0);
     tree = getFormatedTree(-1, -1);
@@ -34,11 +41,34 @@ function getPartsTree() {
 // The next function work with LM_xml directly:
 // *******************************************
 
+function addPartFields() {
+    // makes sure all the annotations have all the fields
+    var Npolygons = $(LM_xml).children("annotation").children("object").length;
+    
+    for(var obj_i=0; obj_i < Npolygons; obj_i++) {
+        var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_i);
+        
+        if (curr_obj.children("parts").length>0) {
+            if (!curr_obj.children("parts").children("ispartof").length>0) {
+                $(LM_xml).children("annotation").children("object").eq(obj_i).children("parts").append("<ispartof></ispartof>");
+            }
+            if (!curr_obj.children("parts").children("hasparts").length>0) {
+                $(LM_xml).children("annotation").children("object").eq(obj_i).children("parts").append("<hasparts></hasparts>");
+            }
+        } else {
+            $(LM_xml).children("annotation").children("object").eq(obj_i).append("<parts><hasparts></hasparts><ispartof></ispartof></parts>");
+        }
+    }
+}
+
+
+
 function addPart(object_id, part_id) {
     var parts;
     var childrens;
     //alertParts();
-   
+    //alert("inicio. object="+object_id+", part="+part_id);
+
     // If part_id is already a part in some other object, remove it from there.
     // A part can only be a children of a single polygon.
     //alertParts("inicio. object="+object_id+", part="+part_id);
@@ -87,6 +117,8 @@ function addPart(object_id, part_id) {
 
 
 function removePart(object_id, part_id) {
+    // Removes the polygon part_id from the part list of polygon object_id.
+    // it deletes all the appropriate dependencies. 
     var parts = getParts(object_id);
     var remove=-1;
     //remove = parts.indexOf(part_id);
@@ -102,11 +134,41 @@ function removePart(object_id, part_id) {
     }
 }
 
+
+function removeAllParts(object_id) {
+    // Removes all the parts from polygon object_id by making them drop to the next parent.
+    // This function is useful when deleting an object. It makes sure that all the parts that this object had become parts of the object parent.
+    
+    // first find parent of object_id
+    parent_id = getParent(object_id);
+    
+    // then get list of parts
+    var parts = getParts(object_id); // gets direct children
+    
+    // loop on parts and remove the parts from object_id
+    for (var j=0; j<parts.length; j++) {
+        removePart(object_id, parts[j]);
+    }
+    
+    // then, if parent_id!=-1 then add all the parts as parts of parent_id
+    if (parent_id!=-1) {
+        for (var j=0; j<parts.length; j++) {
+            addPart(parent_id, parts[j]);
+        }
+    }
+}
+
+
 function getPartChildrens(object_id) {
+    // childrens = getPartChildrens(object_id);
+    //    Gets de list of parts recursively.
+    //    childrens [0] contains object_id. This will be the first element in the list.
+    //    childrens [1,2,...] contain the parts
     var childrens = new Array();
     childrens[0] = object_id;
     
-    var parts = getParts(object_id);
+    var parts = getParts(object_id); // gets direct children
+    // loop to get recursive list of parts
     for (var j=0; j<parts.length; j++) {
         var child_subtree = getPartChildrens(parts[j]);
         childrens = childrens.concat(child_subtree);
@@ -185,6 +247,22 @@ function getParts(object_id){
     }
     return parts;
 }
+
+
+function getParent(object_id){
+    var parent = -1;
+    var curr_obj = $(LM_xml).children("annotation").children("object").eq(object_id);
+
+    if (curr_obj.children("parts").length>0 && curr_obj.children("parts").children("ispartof").length>0) {
+        var tmp = curr_obj.children("parts").children("ispartof").text();
+        if (tmp.length>0) {
+            // if it is not empty, split and trasnform to numbers
+            parent = parseInt(tmp, 10);
+        }
+    }
+    return parent;
+}
+
 
 function alertParts(title) {
     var message = "PARTS:\n";

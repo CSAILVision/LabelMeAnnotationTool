@@ -133,9 +133,9 @@ function handler() {
             curr_obj.append("<occluded>" + new_occluded + "</occluded>");
         }
         
-        if (!curr_obj.children("parts").length>0) {
-            curr_obj.append("<parts><hasparts></hasparts><ispartof></ispartof></parts>");
-        }
+        //if (!curr_obj.children("parts").length>0) {
+        //    curr_obj.append("<parts><hasparts></hasparts><ispartof></ispartof></parts>");
+        //}
 
         
         if(editedControlPoints) {
@@ -157,6 +157,8 @@ function handler() {
             ChangeLinkColorFG(anno.GetAnnoID());
         }
     };
+    
+    
     
     // Handles when the user presses the delete button in response to
     // the edit popup bubble.
@@ -188,6 +190,9 @@ function handler() {
         // Set <deleted> in LM_xml:
         $(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text('1');
         
+        // Remove all the part dependencies for the deleted object
+        removeAllParts(idx);
+        
         // Write XML to server:
         WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
         
@@ -201,6 +206,8 @@ function handler() {
         unselectObjects(); // Perhaps this should go elsewhere...
         main_handler.SelectedToRest();
     };
+    
+    
     
     // ADJUST POLYGON,
     this.EditBubbleAdjustPolygon = function () {

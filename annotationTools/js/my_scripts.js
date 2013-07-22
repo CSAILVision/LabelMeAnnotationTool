@@ -248,6 +248,10 @@ function LoadAnnotationSuccess(xml) {
       curr_obj.children("polygon").append($("<username>anonymous</username>"));
     }
   }
+    
+  // Add part fields (this calls a funcion inside object_parts.js)
+  addPartFields(); // makes sure all the annotations have all the fields.
+    
 
   // loop over annotated objects
   for(var pp = 0; pp < num_obj; pp++) {
