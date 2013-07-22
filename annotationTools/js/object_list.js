@@ -47,7 +47,7 @@ function LoadAnnotationList() {
             
             if (use_parts) {
                 // define drag events (but only if the tool is allowed to use parts)
-                html_str += 'draggable="true" ondragstart="drag(event, '+ii+')" ondrop="drop(event, '+ii+')" ondragover="allowDrop(event, '+ii+')">'; // ondragleave="drop(event, -1)"
+                html_str += 'draggable="true" ondragstart="drag(event, '+ii+')" ondragend="dragend(event)" ondrop="drop(event, '+ii+')" ondragover="allowDrop(event, '+ii+')">'; // ondragleave="drop(event, -1)"
             }
             
             // change the icon for parts
@@ -66,7 +66,7 @@ function LoadAnnotationList() {
             'onmouseout="main_handler.AnnotationLinkMouseOut();" ';
             
             if (use_parts) {
-                html_str += 'ondrop="drop(event, '+ii+')" ondragover="allowDrop(event, '+ii+')"';
+                html_str += 'ondrop="drop(event, '+ii+')" ondragend="dragend(event)" ondragover="allowDrop(event, '+ii+')"';
             }
 
             if(isDeleted)
@@ -121,6 +121,12 @@ function drag(event, part_id)
     event.dataTransfer.setData("Text", part_id);
 }
 
+function dragend(event)
+{
+    // Write XML to server:
+    WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+}
+
 function allowDrop(event, object_id)
 {
     event.preventDefault();
@@ -156,9 +162,6 @@ function drop(event, object_id)
         // redraw object list
         RemoveAnnotationList();
         LoadAnnotationList();
-        
-        // Write XML to server:
-        WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
     }
 }
 

@@ -26,7 +26,7 @@ function getPartsTree() {
     var tree;
         
     // Add part fields (this calls a funcion inside object_parts.js)
-    addPartFields(); // makes sure all the annotations have all the fields.
+    //addPartFields(); // makes sure all the annotations have all the fields.
 
     // recursive tree call
     //tree = get_tree([], [], 0);
