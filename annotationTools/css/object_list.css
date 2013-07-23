@@ -47,6 +47,10 @@
     cursor: move;
 }
 
+.objectListLink:-webkit-drag {
+    background-color:rgb(50,255,50)
+}
+
 /* format for the list */
 .object_list ol {
     list-style-type:square; 
