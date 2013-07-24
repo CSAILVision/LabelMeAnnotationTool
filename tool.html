@@ -68,9 +68,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <script type="text/javascript">
 WriteLogMsg('*start_loading');
-
-// Set action when the user presses a key:
-document.onkeyup = main_handler.KeyPress;
 </script>
 
   <div id="mt_submit_form"></div>
@@ -232,6 +229,9 @@ document.onkeyup = main_handler.KeyPress;
     MainInit();
     
     initUserName();
+
+    // Set action when the user presses a key:
+    document.onkeyup = main_handler.KeyPress;
 
     // Collect statistics:
     var ref = document.referrer;
