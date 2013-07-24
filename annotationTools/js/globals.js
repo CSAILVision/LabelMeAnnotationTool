@@ -38,3 +38,22 @@ var selected_poly = -1;
 // Array storing all of the annotation structures.  Eventually this will be 
 // removed since we should read directly from LM_xml.
 var AllAnnotations = Array(0);
+
+// Class with functions to handle actions/events.
+var main_handler;
+
+// Canvas that renders polygons at rest state.
+var main_canvas;
+
+// Canvas containing polygons that are being edited.
+var main_select_canvas;
+
+// Canvas containing polygons that are being drawn.
+var main_draw_canvas;
+
+// Holds image.
+var main_image;
+
+// URL of XHTML namespace. This is needed for generating SVG elements.
+var xhtmlNS = 'http://www.w3.org/1999/xhtml';
+

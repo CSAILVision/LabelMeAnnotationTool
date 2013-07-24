@@ -40,6 +40,38 @@ var mt_N = 'inf';
 var object_choices = '...';
 
 
+// Main entry point for the annotation tool.
+function MainInit() {
+    main_handler = new handler();
+    main_canvas = new canvas('myCanvas_bg');
+    main_select_canvas = new GenericCanvas('select_canvas');
+    main_draw_canvas = new GenericCanvas('draw_canvas');
+    main_query_canvas = new GenericCanvas('query_canvas');
+    main_image = new image('im');
+
+    function main_image_onload_helper() {
+        main_image.SetImageDimensions();
+        var anno_file = main_image.GetFileInfo().GetFullName();
+        anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+        ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+    };
+    
+    main_image.GetNewImage(main_image_onload_helper);
+    
+    var dirname = main_image.GetFileInfo().GetDirName();
+    var imname = main_image.GetFileInfo().GetImName();
+
+    if(document.getElementById('img_url')) {
+      imPath = main_image.GetFileInfo().GetImagePath();
+        document.getElementById('img_url').onclick = function() {location.href=imPath};
+    }
+
+    
+  // if(document.getElementById('username_main_div')) write_username();
+
+  WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
+}
+
 // Get the x position of the mouse event.
 function GetEventPosX(event) {
   if(IsNetscape()) return event.layerX;
@@ -495,3 +527,37 @@ function DeleteSelectedPolygon() {
   // Delete the polygon from the canvas:
   AllAnnotations[ndx].DeletePolygon();
 }
+
+
+// UTILITIES    
+function CheckXMLExists() {
+  if(req_submit.readyState==4) {
+    if(req_submit.status != 200) {
+      alert("The XML annotation file does not exist yet.  Please label an object and try again");
+    }
+    else {
+      window.open(main_image.GetFileInfo().GetAnnotationPath());
+    }
+  }
+}
+
+function GetXMLFile() {
+  var xml_url = main_image.GetFileInfo().GetAnnotationPath();
+
+  // Check if VRML file exists:
+  if (window.XMLHttpRequest) {
+    req_submit = new XMLHttpRequest();
+    req_submit.onreadystatechange = CheckXMLExists;
+    req_submit.open("GET", xml_url, true);
+    req_submit.send('');
+  } 
+  else if (window.ActiveXObject) {
+    req_submit = new ActiveXObject("Microsoft.XMLHTTP");
+    if (req_submit) {
+      req_submit.onreadystatechange = CheckXMLExists;
+      req_submit.open("GET", xml_url, true);
+      req_submit.send('');
+    }
+  }
+}
+

@@ -51,79 +51,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <!--#endif -->
 
-  var main_handler;
-    main_handler = new handler();
-  var main_canvas;
-  var main_select_canvas;
-  var main_draw_canvas;
-  var main_image;
-  
-  var xhtmlNS = 'http://www.w3.org/1999/xhtml';
-
-    
-// UTILITIES    
-function CheckXMLExists() {
-  if(req_submit.readyState==4) {
-    if(req_submit.status != 200) {
-      alert("The XML annotation file does not exist yet.  Please label an object and try again");
-    }
-    else {
-      window.open(main_image.GetFileInfo().GetAnnotationPath());
-    }
-  }
-}
-
-function GetXMLFile() {
-  var xml_url = main_image.GetFileInfo().GetAnnotationPath();
-
-  // Check if VRML file exists:
-  if (window.XMLHttpRequest) {
-    req_submit = new XMLHttpRequest();
-    req_submit.onreadystatechange = CheckXMLExists;
-    req_submit.open("GET", xml_url, true);
-    req_submit.send('');
-  } 
-  else if (window.ActiveXObject) {
-    req_submit = new ActiveXObject("Microsoft.XMLHTTP");
-    if (req_submit) {
-      req_submit.onreadystatechange = CheckXMLExists;
-      req_submit.open("GET", xml_url, true);
-      req_submit.send('');
-    }
-  }
-}
-
-function MainInit() {
-    main_handler = new handler();
-    main_canvas = new canvas('myCanvas_bg');
-    main_select_canvas = new GenericCanvas('select_canvas');
-    main_draw_canvas = new GenericCanvas('draw_canvas');
-    main_query_canvas = new GenericCanvas('query_canvas');
-    main_image = new image('im');
-
-    function main_image_onload_helper() {
-        main_image.SetImageDimensions();
-        var anno_file = main_image.GetFileInfo().GetFullName();
-        anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
-        ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
-    };
-    
-    main_image.GetNewImage(main_image_onload_helper);
-    
-    var dirname = main_image.GetFileInfo().GetDirName();
-    var imname = main_image.GetFileInfo().GetImName();
-
-    if(document.getElementById('img_url')) {
-      imPath = main_image.GetFileInfo().GetImagePath();
-        document.getElementById('img_url').onclick = function() {location.href=imPath};
-    }
-
-    
-  // if(document.getElementById('username_main_div')) write_username();
-
-  WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
-}
-
 // ]]>
 </script>
 
@@ -291,28 +218,6 @@ document.onkeyup = main_handler.KeyPress;
 </div>
     
 
-<!-- </td></tr></table>   -->
-
-<!--<div id="right_side">
-     <script type="text/javascript">
-        document.getElementById('right_side').style.overflow='auto';
-    </script> 
-     changed the scroll property above from just overflow:auto. 6.19.06 for IE and Firefox //
-
-
-    <div style="font-size:small;">
-
-        <div id="username_main_div" style="font-size:small; padding-top:5px; padding-bottom:5px; padding-left:5px; padding-right:5px; width:150px;">
-	    </div> 
-
-      <div id="counter_div" style="font-size:small; display:none;">
-        <p>There are <font size="3"><b><span id="anno_count"></span></b>&#160;</font>labelled objects</p>
-      </div>
-
-    </div>
-</div>-->
-
-    
 <!-- DIV that will contain the object list -->
 <div id="anno_anchor">
 </div>
