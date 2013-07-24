@@ -113,7 +113,7 @@ function WriteLogMsg(msg) {
 
 function loadXMLDoc() {
   if(wait_for_input) return WaitForInput();
-  if(main_draw_canvas.GetAnnotation()) {
+  if(main_draw_canvas.GetAnnotations()) {
     alert("Need to close current polygon first.");
     return;
   }
