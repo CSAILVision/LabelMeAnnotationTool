@@ -459,7 +459,9 @@ function handler() {
         html_str += '</object>';
         $(LM_xml).children("annotation").append($(html_str));
         
+        AllAnnotations.push(anno);
         main_canvas.AddAnnotation(anno);
+        main_canvas.AttachAnnotation(anno);
         
         // Write XML to server:
         WriteXML(SubmitXmlUrl,LM_xml,function(){return;});

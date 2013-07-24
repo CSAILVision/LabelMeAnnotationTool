@@ -6,7 +6,7 @@ function canvas(div_attach) {
   // Private variables:
   // *******************************************
   
-//   this.annotations; // includes name, deleted, verified info
+  this.annotations = null; // includes name, deleted, verified info
   this.div_attach = div_attach; // name of DIV element to attach to
     
   // *******************************************
@@ -44,8 +44,8 @@ function canvas(div_attach) {
   
   // Add a new annotation to the canvas.
   this.AddAnnotation = function (anno) {
-    this.GetAnnotations().push(anno);
-    this.AttachAnnotation(anno);
+    if(!this.annotation) this.annotations = Array();
+    this.annotations.push(anno);
   };
   
   // Attach the annotation to the canvas.
