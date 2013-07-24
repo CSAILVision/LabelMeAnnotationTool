@@ -299,8 +299,18 @@ function LoadAnnotationSuccess(xml) {
       AllAnnotations[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
     }
   }
-  
+
+  // Add annotations to the main_canvas:
+  for(var pp=0; pp < AllAnnotations.length; pp++) {
+    var isDeleted = AllAnnotations[pp].GetDeleted();
+    if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
+      main_canvas.AddAnnotation(AllAnnotations[pp]);
+    }
+  }
+
+  // Render the polygons on the main_canvas:
   main_canvas.DrawAllPolygons();
+
   if(view_ObjList) LoadAnnotationList();
 }
 
