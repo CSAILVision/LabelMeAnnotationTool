@@ -18,26 +18,10 @@ function canvas(div_attach) {
     return this.annotations;
   };
 
-  // Add a new annotation to the canvas.
-  this.AddAnnotation = function (anno) {
-    this.annotations.push(anno);
-  };
-  
   // Attach the annotation to the canvas.
   this.AttachAnnotation = function (anno) {
-    if(anno.GetDeleted()&&(!view_Deleted)) return;
-
     this.annotations.push(anno);
     anno.SetDivAttach(this.div_attach);
-    anno.DrawPolygon(main_image.GetImRatio());
-    
-    // *****************************************
-    var anno_id = anno.GetAnnoID();
-    anno.SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
-    anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,' + anno_id + ');');
-    anno.SetAttribute('oncontextmenu','return false');
-    anno.SetAttribute('style','cursor:pointer;');
-    // *****************************************
   };
   
   // Detach annotation from the canvas.

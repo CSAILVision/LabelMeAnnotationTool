@@ -460,9 +460,12 @@ function handler() {
         $(LM_xml).children("annotation").append($(html_str));
         
         AllAnnotations.push(anno);
-        main_canvas.AddAnnotation(anno);
-        main_canvas.AttachAnnotation(anno);
-        
+
+	if(!anno.GetDeleted()||view_Deleted) {
+	  main_canvas.AttachAnnotation(anno);
+	  main_canvas.RenderAnnotations();
+        }
+
         // Write XML to server:
         WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
         
@@ -582,7 +585,10 @@ function handler() {
       CloseEditPopup();
       main_image.ScrollbarsOn();
       
-      main_canvas.AttachAnnotation(anno);
+      if(!anno.GetDeleted()||view_Deleted) {
+	main_canvas.AttachAnnotation(anno);
+	main_canvas.RenderAnnotations();
+      }
     };
     
     // Handles when the user presses the mouse button down on the selected
