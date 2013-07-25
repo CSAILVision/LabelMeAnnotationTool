@@ -18,13 +18,6 @@ function canvas(div_attach) {
     return this.annotations;
   };
 
-  // Loop through all of the annotations and clear them from the canvas.
-  this.ClearAllAnnotations = function () {
-    for(var i=0;i<this.annotations.length;i++) {
-      this.annotations[i].DeletePolygon();
-    }
-  };
-  
   // Add a new annotation to the canvas.
   this.AddAnnotation = function (anno) {
     this.annotations.push(anno);
@@ -64,7 +57,7 @@ function canvas(div_attach) {
 
   // Render all attached annotations:
   this.RenderAnnotations = function () {
-    if(!this.annotations) return;
+    this.ClearAnnotations();
 
     for(var pp=0; pp < this.annotations.length; pp++) {
       var anno_id = this.annotations[pp].GetAnnoID();
@@ -73,6 +66,13 @@ function canvas(div_attach) {
       this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
       this.annotations[pp].SetAttribute('oncontextmenu','return false');
       this.annotations[pp].SetAttribute('style','cursor:pointer;');
+    }
+  };
+  
+  // Loop through all of the annotations and clear them from the canvas.
+  this.ClearAnnotations = function () {
+    for(var i=0;i<this.annotations.length;i++) {
+      this.annotations[i].DeletePolygon();
     }
   };
   

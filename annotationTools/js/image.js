@@ -160,7 +160,7 @@ function image(id) {
         // Scale and scroll the image so that the center stays in the center of the visible area
         this.ScaleFrame(amt);
         
-        main_canvas.ClearAllAnnotations();
+        main_canvas.ClearAnnotations();
         var anno_draw = main_draw_canvas.DetachAnnotation();
         
         // set the size of the image (this.im is the image object)
