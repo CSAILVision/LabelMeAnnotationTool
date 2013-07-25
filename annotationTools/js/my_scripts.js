@@ -309,7 +309,7 @@ function LoadAnnotationSuccess(xml) {
   }
 
   // Render the polygons on the main_canvas:
-  main_canvas.DrawAllPolygons();
+  main_canvas.RenderAnnotations();
 
   if(view_ObjList) LoadAnnotationList();
 }

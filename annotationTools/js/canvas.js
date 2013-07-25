@@ -18,18 +18,6 @@ function canvas(div_attach) {
     return this.annotations;
   };
 
-  // Loop through all of the annotations and draw the polygons.
-  this.DrawAllPolygons = function () {
-    for(var pp=0; pp < this.annotations.length; pp++) {
-      var anno_id = this.annotations[pp].GetAnnoID();
-      this.annotations[pp].DrawPolygon(main_image.GetImRatio());
-      this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
-      this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
-      this.annotations[pp].SetAttribute('oncontextmenu','return false');
-      this.annotations[pp].SetAttribute('style','cursor:pointer;');
-    }
-  };
-  
   // Loop through all of the annotations and clear them from the canvas.
   this.ClearAllAnnotations = function () {
     for(var i=0;i<this.annotations.length;i++) {
@@ -69,4 +57,19 @@ function canvas(div_attach) {
     }
     return anno;
   };
+
+  // Render all attached annotations:
+  this.RenderAnnotations = function () {
+    if(!this.annotations) return;
+
+    for(var pp=0; pp < this.annotations.length; pp++) {
+      var anno_id = this.annotations[pp].GetAnnoID();
+      this.annotations[pp].DrawPolygon(main_image.GetImRatio());
+      this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
+      this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
+      this.annotations[pp].SetAttribute('oncontextmenu','return false');
+      this.annotations[pp].SetAttribute('style','cursor:pointer;');
+    }
+  };
+  
 }
