@@ -173,7 +173,7 @@ function image(id) {
         $("#query_canvas").width(this.width_curr).height(this.height_curr);
         
         // Redraw polygons.
-        main_canvas.DrawAllPolygons();
+        main_canvas.RenderAnnotations();
 	if(anno_draw) {
 	  // Attach the annotation:
 	  main_draw_canvas.AttachAnnotation(anno_draw,'polyline');
