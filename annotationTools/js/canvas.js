@@ -15,7 +15,7 @@ function canvas(div_attach) {
   
   // Returns all of the annotations as an array.
   this.GetAnnotations = function () {
-    return AllAnnotations;
+    return this.annotations;
   };
 
   // Loop through all of the annotations and draw the polygons.
@@ -32,8 +32,8 @@ function canvas(div_attach) {
   
   // Loop through all of the annotations and clear them from the canvas.
   this.ClearAllAnnotations = function () {
-    for(var i=0;i<this.GetAnnotations().length;i++) {
-      this.GetAnnotations()[i].DeletePolygon();
+    for(var i=0;i<this.annotations.length;i++) {
+      this.annotations[i].DeletePolygon();
     }
   };
   
@@ -60,8 +60,13 @@ function canvas(div_attach) {
   
   // Detach annotation from the canvas.
   this.DetachAnnotation = function(anno_id) {
-    var anno = this.GetAnnotations()[anno_id];
-    anno.DeletePolygon();
+    var anno = null;
+    for(var i=0; i<this.annotations.length; i++) {
+      if(this.annotations[i].GetAnnoID()==anno_id) {
+	anno = this.annotations[i];
+	anno.DeletePolygon();
+      }
+    }
     return anno;
   };
 }
