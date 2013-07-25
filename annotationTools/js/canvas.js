@@ -34,6 +34,8 @@ function canvas(div_attach) {
   // Attach the annotation to the canvas.
   this.AttachAnnotation = function (anno) {
     if(anno.GetDeleted()&&(!view_Deleted)) return;
+
+    this.annotations.push(anno);
     anno.SetDivAttach(this.div_attach);
     anno.DrawPolygon(main_image.GetImRatio());
     
@@ -51,7 +53,10 @@ function canvas(div_attach) {
     var anno = null;
     for(var i=0; i<this.annotations.length; i++) {
       if(this.annotations[i].GetAnnoID()==anno_id) {
-	anno = this.annotations[i];
+	// Remove annotation structure from list:
+	anno = this.annotations.splice(i,1)[0];
+	
+	// Remove rendering of polygon from the canvas:
 	anno.DeletePolygon();
       }
     }
