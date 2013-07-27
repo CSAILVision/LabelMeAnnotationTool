@@ -44,9 +44,9 @@ var object_choices = '...';
 function MainInit() {
     main_handler = new handler();
     main_canvas = new canvas('myCanvas_bg');
-    main_select_canvas = new GenericCanvas('select_canvas');
-    main_draw_canvas = new GenericCanvas('draw_canvas');
-    main_query_canvas = new GenericCanvas('query_canvas');
+    main_select_canvas = new canvas('select_canvas');
+    main_draw_canvas = new canvas('draw_canvas');
+    main_query_canvas = new canvas('query_canvas');
     main_image = new image('im');
 
     function main_image_onload_helper() {
@@ -145,7 +145,7 @@ function WriteLogMsg(msg) {
 
 function loadXMLDoc() {
   if(wait_for_input) return WaitForInput();
-  if(main_draw_canvas.GetAnnotations()) {
+  if(main_draw_canvas.Peek()) {
     alert("Need to close current polygon first.");
     return;
   }

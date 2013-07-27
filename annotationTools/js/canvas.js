@@ -14,9 +14,11 @@ function canvas(div_attach) {
   // Public methods:
   // *******************************************
   
-  // Returns all of the annotations as an array.
-  this.GetAnnotations = function () {
-    return this.annotations;
+  // Returns the last annotation in the array (null if empty).
+  this.Peek = function () {
+    var i = this.annotations.length-1;
+    if(i < 0) return null;
+    return this.annotations[i];
   };
 
   // Attach the annotation to the canvas.
@@ -27,20 +29,33 @@ function canvas(div_attach) {
   };
   
   // Detach annotation from the canvas.
-  this.DetachAnnotation = function(anno_id) {
-    var anno = null;
-    for(var i=0; i<this.annotations.length; i++) {
-      if(this.annotations[i].GetAnnoID()==anno_id) {
-	// Remove annotation structure from list:
-	anno = this.annotations.splice(i,1)[0];
-
-	// Remove from this.rendering_style:
-	this.rendering_style.splice(i,1);
-	
-	// Remove rendering of polygon from the canvas:
-	anno.DeletePolygon();
+  this.DetachAnnotation = function() {
+    var i;
+    if(arguments.length==0)
+      i = (this.annotations.length-1); // Get last annotation
+    else {
+      var anno_id = arguments[0];
+      var is_matched = false;
+      for(i=0; i<this.annotations.length; i++) {
+	if(this.annotations[i].GetAnnoID()==anno_id) {
+	  is_matched = true;
+	  break;
+	}
       }
+      if(!is_matched) i = -1;
     }
+
+    if(i<0) return null;
+
+    // Remove annotation structure from list:
+    var anno = this.annotations.splice(i,1)[0];
+    
+    // Remove from this.rendering_style:
+    this.rendering_style.splice(i,1);
+    
+    // Remove rendering of polygon from the canvas:
+    anno.DeletePolygon();
+
     return anno;
   };
 
@@ -59,6 +74,13 @@ function canvas(div_attach) {
 	this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
 	this.annotations[pp].SetAttribute('oncontextmenu','return false');
 	this.annotations[pp].SetAttribute('style','cursor:pointer;');
+	break;
+      case 'filled_polygon':
+	this.annotations[pp].DrawPolygon(main_image.GetImRatio());
+	this.annotations[pp].FillPolygon();
+	break;
+      case 'polyline':
+	this.annotations[pp].DrawPolyLine();
 	break;
       default:
 	alert('Invalid rendering_style');

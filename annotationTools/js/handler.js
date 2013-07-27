@@ -63,7 +63,7 @@ function handler() {
     // Submits the object label in response to the edit/delete popup bubble.
     this.SubmitEditLabel = function () {
         submission_edited = 1;
-        anno = main_select_canvas.GetAnnotations();
+        anno = main_select_canvas.Peek();
         
         // object name
         old_name = anno.GetObjName();
@@ -163,14 +163,14 @@ function handler() {
     // Handles when the user presses the delete button in response to
     // the edit popup bubble.
     this.EditBubbleDeleteButton = function () {
-        var idx = main_select_canvas.GetAnnotations().GetAnnoID();
+        var idx = main_select_canvas.Peek().GetAnnoID();
         //     if(IsUserAnonymous() && (idx<num_orig_anno)) {
-        if((IsUserAnonymous() || (!IsCreator(main_select_canvas.GetAnnotations().GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
+        if((IsUserAnonymous() || (!IsCreator(main_select_canvas.Peek().GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
             return;
         }
         
-        //     main_select_canvas.GetAnnotations().SetDeleted(1);
+        //     main_select_canvas.Peek().SetDeleted(1);
         
         if(idx>=num_orig_anno) {
             anno_count--;
@@ -182,8 +182,8 @@ function handler() {
         submission_edited = 0;
         
         // Insert data for server logfile:
-        old_name = main_select_canvas.GetAnnotations().GetObjName();
-        new_name = main_select_canvas.GetAnnotations().GetObjName();
+        old_name = main_select_canvas.Peek().GetObjName();
+        new_name = main_select_canvas.Peek().GetObjName();
         WriteLogMsg('*Deleting_object');
         InsertServerLogData('cpts_not_modified');
         
@@ -219,8 +219,8 @@ function handler() {
       CloseEditPopup();
       main_image.ScrollbarsOn();
       
-      main_select_canvas.GetAnnotations().ShowControlPoints();
-      main_select_canvas.GetAnnotations().ShowCenterOfMass(main_image.GetImRatio());
+      main_select_canvas.Peek().ShowControlPoints();
+      main_select_canvas.Peek().ShowCenterOfMass(main_image.GetImRatio());
     };
     
     /*  // Handles when the user presses the zoom "plus" (in) button.  Zooms in on
@@ -245,7 +245,7 @@ function handler() {
     this.AnnotationLinkClick = function (idx) {
       if(this.active_canvas==REST_CANVAS) main_handler.RestToSelected(idx,null);
       else if(this.active_canvas==SELECTED_CANVAS) {
-	var anno_id = main_select_canvas.GetAnnotations().GetAnnoID();
+	var anno_id = main_select_canvas.Peek().GetAnnoID();
 	if(edit_popup_open && (idx==anno_id)) main_handler.SelectedToRest();
       }
     };
@@ -319,8 +319,8 @@ function handler() {
         if(username_flag) submit_username();
         
         // If right-clicked and can successfully close the polygon.
-        if((button>1) && main_draw_canvas.GetAnnotations().ClosePolygon()) this.DrawToQuery();
-        else main_draw_canvas.GetAnnotations().AddControlPoint(x,y);
+        if((button>1) && main_draw_canvas.Peek().ClosePolygon()) this.DrawToQuery();
+        else main_draw_canvas.Peek().AddControlPoint(x,y);
     };
     
     // Handles when we wish to change from "draw" to "query".
@@ -604,11 +604,11 @@ function handler() {
       if(username_flag) submit_username();
       
       if(button>1) return;
-      if(!isEditingControlPoint && main_select_canvas.GetAnnotations().StartMoveControlPoint(x,y,main_image.GetImRatio())) {
+      if(!isEditingControlPoint && main_select_canvas.Peek().StartMoveControlPoint(x,y,main_image.GetImRatio())) {
 	isEditingControlPoint = 1;
 	editedControlPoints = 1;
       }
-      else if(!isMovingCenterOfMass && main_select_canvas.GetAnnotations().StartMoveCenterOfMass(x,y,main_image.GetImRatio())) {
+      else if(!isMovingCenterOfMass && main_select_canvas.Peek().StartMoveCenterOfMass(x,y,main_image.GetImRatio())) {
 	isMovingCenterOfMass = 1;
 	editedControlPoints = 1;
       }
@@ -623,10 +623,10 @@ function handler() {
 	var button = event.button;
 	if(button>1) return;
 	if(isEditingControlPoint) {
-	  main_select_canvas.GetAnnotations().MoveControlPoint(x,y,main_image.GetImRatio());
+	  main_select_canvas.Peek().MoveControlPoint(x,y,main_image.GetImRatio());
 	}
 	else if(isMovingCenterOfMass) {
-	  main_select_canvas.GetAnnotations().MoveCenterOfMass(x,y,main_image.GetImRatio());
+	  main_select_canvas.Peek().MoveCenterOfMass(x,y,main_image.GetImRatio());
 	}
       }
     };
@@ -640,15 +640,15 @@ function handler() {
 
 	if(button>1) return;
 	if(isEditingControlPoint) {
-	  main_select_canvas.GetAnnotations().MoveControlPoint(x,y,main_image.GetImRatio());
-	  main_select_canvas.GetAnnotations().FillPolygon();
-	  main_select_canvas.GetAnnotations().ShowCenterOfMass(main_image.GetImRatio());
+	  main_select_canvas.Peek().MoveControlPoint(x,y,main_image.GetImRatio());
+	  main_select_canvas.Peek().FillPolygon();
+	  main_select_canvas.Peek().ShowCenterOfMass(main_image.GetImRatio());
 	  isEditingControlPoint = 0;
 	  return;
 	}
 	if(isMovingCenterOfMass) {
-	  main_select_canvas.GetAnnotations().MoveCenterOfMass(x,y,main_image.GetImRatio());
-	  main_select_canvas.GetAnnotations().FillPolygon();
+	  main_select_canvas.Peek().MoveCenterOfMass(x,y,main_image.GetImRatio());
+	  main_select_canvas.Peek().FillPolygon();
 	  isMovingCenterOfMass = 0;
 	}
       }
@@ -674,7 +674,7 @@ function handler() {
     
     // Handles when the user erases a segment.
     this.EraseSegment = function () {
-        var anno = main_draw_canvas.GetAnnotations();
+        var anno = main_draw_canvas.Peek();
         if(anno && !anno.DeleteLastControlPoint()) {
             //       // Write to logfile:
             //       WriteLogMsg('*Deleted_object_during_labeling');
@@ -691,13 +691,13 @@ function handler() {
     
     // Handles when the user mouses over the first control point.
     this.MousedOverFirstControlPoint = function () {
-        main_draw_canvas.GetAnnotations().MouseOverFirstPoint();
+        main_draw_canvas.Peek().MouseOverFirstPoint();
     };
     
     // Handles when the user mouses away from the first control point.
     this.MousedOutFirstControlPoint = function () {
         if(this.active_canvas!=DRAW_CANVAS) return;
-        main_draw_canvas.GetAnnotations().MouseOutFirstPoint();
+        main_draw_canvas.Peek().MouseOutFirstPoint();
     };
     
     // *******************************************
