@@ -8,7 +8,8 @@ function canvas(div_attach) {
   
   this.annotations = Array(); // includes name, deleted, verified info
   this.div_attach = div_attach; // name of DIV element to attach to
-    
+  this.rendering_style = Array(); // indicates how to render the annotations
+
   // *******************************************
   // Public methods:
   // *******************************************
@@ -19,8 +20,9 @@ function canvas(div_attach) {
   };
 
   // Attach the annotation to the canvas.
-  this.AttachAnnotation = function (anno) {
+  this.AttachAnnotation = function (anno,rendering_style) {
     this.annotations.push(anno);
+    this.rendering_style.push(rendering_style);
     anno.SetDivAttach(this.div_attach);
   };
   
@@ -31,6 +33,9 @@ function canvas(div_attach) {
       if(this.annotations[i].GetAnnoID()==anno_id) {
 	// Remove annotation structure from list:
 	anno = this.annotations.splice(i,1)[0];
+
+	// Remove from this.rendering_style:
+	this.rendering_style.splice(i,1);
 	
 	// Remove rendering of polygon from the canvas:
 	anno.DeletePolygon();
@@ -41,15 +46,23 @@ function canvas(div_attach) {
 
   // Render all attached annotations:
   this.RenderAnnotations = function () {
+    // Clear the canvas:
     this.ClearAnnotations();
 
     for(var pp=0; pp < this.annotations.length; pp++) {
-      var anno_id = this.annotations[pp].GetAnnoID();
-      this.annotations[pp].DrawPolygon(main_image.GetImRatio());
-      this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
-      this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
-      this.annotations[pp].SetAttribute('oncontextmenu','return false');
-      this.annotations[pp].SetAttribute('style','cursor:pointer;');
+      // Render the annotation depending on its rendering_style:
+      switch(this.rendering_style[pp]) {
+      case 'polygon':
+	var anno_id = this.annotations[pp].GetAnnoID();
+	this.annotations[pp].DrawPolygon(main_image.GetImRatio());
+	this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
+	this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
+	this.annotations[pp].SetAttribute('oncontextmenu','return false');
+	this.annotations[pp].SetAttribute('style','cursor:pointer;');
+	break;
+      default:
+	alert('Invalid rendering_style');
+      }
     }
   };
   

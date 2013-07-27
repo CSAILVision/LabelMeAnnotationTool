@@ -304,7 +304,7 @@ function LoadAnnotationSuccess(xml) {
   for(var pp=0; pp < AllAnnotations.length; pp++) {
     var isDeleted = AllAnnotations[pp].GetDeleted();
     if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
-      main_canvas.AttachAnnotation(AllAnnotations[pp]);
+      main_canvas.AttachAnnotation(AllAnnotations[pp],'polygon');
     }
   }
 
