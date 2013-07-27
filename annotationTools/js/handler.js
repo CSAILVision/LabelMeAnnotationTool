@@ -223,24 +223,6 @@ function handler() {
       main_select_canvas.Peek().ShowCenterOfMass(main_image.GetImRatio());
     };
     
-    /*  // Handles when the user presses the zoom "plus" (in) button.  Zooms in on
-     // the image by amt percent.
-     this.ZoomPlus = function (amt) {
-     main_image.Zoom(amt);
-     };
-     
-     // Handles when the user presses the zoom "minux" (out) button.  Zooms out
-     // on the image by amt percent.
-     this.ZoomMinus = function (amt) {
-     main_image.Zoom(amt);
-     };
-     
-     // Handles when the user presses on the "Fit Image" link.  The result is
-     // that the displayed image fits nicely onto the page (no scrollbars).
-     this.ZoomFitImage = function () {
-     main_image.Zoom('fitted');
-     }; */
-    
     // Handles when the user clicks on the link for an annotation.
     this.AnnotationLinkClick = function (idx) {
       if(this.active_canvas==REST_CANVAS) main_handler.RestToSelected(idx,null);
