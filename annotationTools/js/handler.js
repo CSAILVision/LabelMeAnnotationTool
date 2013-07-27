@@ -218,9 +218,13 @@ function handler() {
       
       CloseEditPopup();
       main_image.ScrollbarsOn();
-      
-      main_select_canvas.Peek().ShowControlPoints();
-      main_select_canvas.Peek().ShowCenterOfMass(main_image.GetImRatio());
+
+      // Get annotation on the select canvas:
+      var anno = main_select_canvas.Peek();
+
+      // Show control points:
+      anno.ShowControlPoints();
+      anno.ShowCenterOfMass(main_image.GetImRatio());
     };
     
     // Handles when the user clicks on the link for an annotation.
@@ -600,8 +604,8 @@ function handler() {
     // Handles when the user moves the mouse button over the main page.
     this.MainPageMouseMove = function (event) {
       if(this.active_canvas==SELECTED_CANVAS) {
-	var x = event.clientX-document.getElementById('main_section').offsetLeft;
-	var y = event.clientY-document.getElementById('main_section').offsetTop;
+	var x = GetEventPosX(event);
+	var y = GetEventPosY(event);
 	var button = event.button;
 	if(button>1) return;
 	if(isEditingControlPoint) {
@@ -616,8 +620,8 @@ function handler() {
     // Handles when the user releases the mouse button over the main page.
     this.MainPageMouseUp = function (event) {
       if(this.active_canvas==SELECTED_CANVAS) {
-	var x = event.clientX-document.getElementById('main_section').offsetLeft;
-	var y = event.clientY-document.getElementById('main_section').offsetTop;
+	var x = GetEventPosX(event);
+	var y = GetEventPosY(event);
 	var button = event.button;
 
 	if(button>1) return;
