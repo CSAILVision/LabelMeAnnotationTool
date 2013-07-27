@@ -1,5 +1,4 @@
-// annotation canvas
-// Keeps track of all information related to the main drawing canvas.
+// Generic rendering canvas.
 function canvas(div_attach) {
     
   // *******************************************
