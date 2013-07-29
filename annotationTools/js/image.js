@@ -48,14 +48,6 @@ function image(id) {
         edit_popup_open = 0;
     };
     
-    // Handles when the user clicks on a frame (video mode)
-    //  this.SetNewImage = function(onload_helper){
-    //  this.im.src = this.file_info.GetImagePath();
-    //  this.im.onload = onload_helper;
-    //  wait_for_input = 0;
-    //  edit_popup_open = 0;
-    //}
-    
     // Returns the ratio of the available width/height to the original
     // width/height.
     this.GetImRatio = function() {
@@ -219,21 +211,6 @@ function image(id) {
         this.width_orig = im.width;
         this.height_orig = im.height;
         return;
-        
-        //7.12.06 Safari image dimensions fix
-        /*if(IsSafari()) {
-            var url = im.src;
-            var img = new Image;
-            img.src=url;
-            img.visibility='hidden';
-            img.display='none';
-            this.width_orig = img.width;
-            this.height_orig = img.height;
-        }
-        else {
-            this.width_orig = im.width;
-            this.height_orig = im.height;
-        }*/
     };
     
     //gets available width (6.14.06)
