@@ -11,7 +11,7 @@ function initUserName() {
 
     if (username.length==0) {
         username = getCookie("username");
-        if (username.length==0) {
+        if (!username || (username.length==0)) {
             username = "anonymous";
         }
     }
