@@ -1,9 +1,6 @@
-// Created: 04/14/2006
-// Updated: 04/14/2006
-
 // annotation class
-// Keeps track of all information related to an individual
-// annotation.
+// Keeps track of all information related to an individual annotation.
+
 function annotation(anno_id) {
     
     // *******************************************
@@ -18,7 +15,6 @@ function annotation(anno_id) {
     this.all_lines = null;
     this.first_point = null;
     this.anno_id = anno_id;
-    //   this.div_attach = 'moz_canvas';
     this.div_attach = 'myCanvas_bg';
     this.lastx = -1;
     this.lasty = -1;
@@ -200,15 +196,15 @@ function annotation(anno_id) {
 			       Math.round(this.GetPtsY()[0]*im_ratio));
       }
       else if((this.GetPtsX().length==3) && isAngle) {
-	this.graphics.DrawPolyLine(this.GetPtsX(),this.GetPtsY(),this.getObjectColor(this.anno_id),im_ratio);
+	this.graphics.DrawPolyLine(this.GetPtsX(),this.GetPtsY(),this.getObjectColor(),im_ratio);
       }
       else if(this.GetAutomatic()==1) {
 	this.graphics.DrawDashedPolygon(this.GetPtsX(),this.GetPtsY(),
-					this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
+					this.getObjectColor(),im_ratio,this.GetObjName());
       }
       else {
 	this.graphics.DrawPolygon(this.GetPtsX(),this.GetPtsY(),
-				  this.getObjectColor(this.anno_id),im_ratio,this.GetObjName());
+				  this.getObjectColor(),im_ratio,this.GetObjName());
       }
     };
     
@@ -313,8 +309,6 @@ function annotation(anno_id) {
                                        Math.round(this.pts_y[0]*im_ratio),'#00ff00',8);
             this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
             this.first_point.SetAttribute('onmouseout','main_handler.MousedOutFirstControlPoint();');
-            // 	this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
-            // 	this.first_point.SetAttribute('onmouseout','parent.main_handler.MousedOutFirstControlPoint();');
             this.first_point.SetAttribute('style','cursor:pointer;');
         }
     };
@@ -567,36 +561,23 @@ function annotation(anno_id) {
         return 0;
     };
     
-    this.getObjectColor = function (p) {
-        //if the polygon is still open, then its color should be blue.  (7.27.06)
-        if(this.is_selected && (this.lastx!=-1)) return "#0000ff";
-        if(this.GetDeleted()) return "#888888";
+    this.getObjectColor = function () {
+      // If the polygon is still open then return blue:
+      if(this.is_selected && (this.lastx!=-1)) return "#0000ff";
+      
+      // If the polygon has been deleted then return gray:
+      if(this.GetDeleted()) return "#888888";
         
-        //otherwise:
-        var objectColors = new Array(14);
-        objectColors[0] = "009900"; // good
-        objectColors[1] = "00ff00"; // maybe
-        objectColors[2] = "ccff00"; // good
-        objectColors[3] = "ffff00"; // same as 2
-        objectColors[4] = "ffcc00"; // maybe
-        objectColors[5] = "ff9999"; // good
-        objectColors[6] = "cc0033"; // maybe
-        objectColors[7] = "ff33cc"; // good
-        objectColors[8] = "9933ff"; // maybe
-        objectColors[9] = "990099"; // bad
-        objectColors[10] = "000099"; // bad
-        objectColors[11] = "006699"; // bad
-        objectColors[12] = "00ccff"; // good
-        objectColors[13] = "999900"; // bad
-        
-        // case insensative hashing:
-        var name = this.GetObjName().toUpperCase(); 
-        var hash = 0;
-        for(var i=0;i<name.length;i++) { //hash code based on name
-            hash += this.charCodeAt(name,i);
-        }
-        hash = (((hash + 567) * 1048797) % 14); //pseudo-randomize
-        return "#"+ objectColors[hash];
+      // List of possible object colors:
+      var objectColors = Array("#009900","#00ff00","#ccff00","#ffff00","#ffcc00","#ff9999","#cc0033","#ff33cc","#9933ff","#990099","#000099","#006699","#00ccff","#999900");
+      
+      // Pseudo-randomized case insensitive hashing based on object name:
+      var name = this.GetObjName().toUpperCase(); 
+      var hash = 0;
+      for(var i = 0; i < name.length;i++) hash += this.charCodeAt(name,i);
+      hash = (((hash + 567) * 1048797) % objectColors.length);
+      
+      return objectColors[hash];
     };
     
     // Compute the L2 distance between two Cartesian points.
