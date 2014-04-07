@@ -30,8 +30,12 @@ function graphics(div_attach,name) {
   // Draw a dashed polygon given an array of control points X and Y.
   // Returns the polygon element
   this.DrawDashedPolygon = function(X,Y,color,scale,obj_name) {
-    this.DrawPolygon(X,Y,color,scale,obj_name);
-    $('#' + this.name).attr('stroke-dasharray','9, 5');
+    // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
+    var poly_points = "";
+    for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
+
+    // Draw dashed polygon:
+    $('#' + this.div_attach).append('<a xmlns="http://www.w3.org/2000/svg"><polygon xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" points="' + poly_points + '" fill="none" stroke="' + color + '" stroke-width="4" stroke-dasharray="9,5" /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');
   };
 
   // Fill the drawn object.
