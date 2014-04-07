@@ -38,17 +38,6 @@ function graphics(div_attach,name) {
     $('#' + this.div_attach).append('<a xmlns="http://www.w3.org/2000/svg"><polygon xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" points="' + poly_points + '" fill="none" stroke="' + color + '" stroke-width="4" stroke-dasharray="9,5" /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');
   };
 
-  // Fill the drawn object.
-  this.FillPolygon = function () {
-    $('#' + this.name).attr("fill",$('#' + this.name).attr("stroke"));
-    $('#' + this.name).attr("fill-opacity","0.5");
-  };
-
-  // Unfill the drawn object.
-  this.UnfillPolygon = function () {
-    $('#' + this.name).attr("fill","none");
-  };
-		
   // Draw a line segment given starting coordinates and ending coordinates.
   this.DrawLineSegment = function(x1,y1,x2,y2,scale,color) {
     $('#' + this.div_attach).append('<line xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" x1="' + x1*scale + '" x2="' + x2*scale + '" y1="' + y1*scale + '" y2="' + y2*scale + '" stroke="' + color + '" stroke-width="4" />');
@@ -67,25 +56,6 @@ function graphics(div_attach,name) {
     $('#' + this.div_attach).append('<image xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" width="36" height="43" x="' + x + '" y="' + y + '" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="Icons/flag.png" />');
   };
 		
-  // Clear all drawings related to this object.
-  this.ClearDrawing = function () {
-    var q = document.getElementById(this.name);
-    if(q) q.parentNode.removeChild(q);
-  };
-  
-  // Sets an attribute for the drawn object.
-  this.SetAttribute = function(field,value) {
-    var v = $('#' + this.name).attr(field);
-    if(v != null) value += v;
-    $('#' + this.name).attr(field,value);
-  };
-
-  // Move this drawn element to the top in the depth ordering.
-  this.MoveToTop = function () {
-    var q = document.getElementById(this.name);
-    if(q) q.parentNode.appendChild(q);
-  };
-
   // Draw a polyline given an array of control points X and Y.
   // Returns the polygon element
   this.DrawPolyLine = function(X,Y, color, scale) {
@@ -95,5 +65,12 @@ function graphics(div_attach,name) {
     
     // Draw polyline:
     $('#' + this.div_attach).append('<polyline xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" points="' + poly_points + '" fill="none" stroke="' + color + '" stroke-width="4" />');
+  };
+
+  // Sets an attribute for the drawn object.
+  this.SetAttribute = function(field,value) {
+    var v = $('#' + this.name).attr(field);
+    if(v != null) value += v;
+    $('#' + this.name).attr(field,value);
   };
 }

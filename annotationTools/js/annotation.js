@@ -30,6 +30,9 @@ function annotation(anno_id) {
     this.center_point = 0;
     this.center_x;
     this.center_y;
+
+    // Element id of drawn polygon:
+    this.polygon_id = null;
     
     // *******************************************
     // Public methods:
@@ -105,12 +108,6 @@ function annotation(anno_id) {
         this.pts_y = Array(numpts);
     };
     
-    // Refresh last control point (set to be the last entered control point):
-    this.RefreshLastControlPoint = function () {
-        this.lastx = this.pts_x[this.pts_x.length-1];
-        this.lasty = this.pts_y[this.pts_y.length-1];
-    };
-    
     // Select this polygon.
     this.SelectPoly = function () {
         this.is_selected = 1;
@@ -141,38 +138,35 @@ function annotation(anno_id) {
     
     // Adds a new control point to the polygon.
     this.AddControlPoint = function (x,y) {
-        if(this.CloseErrorFlag) {
-            this.CloseErrorFlag = 0;
-            return;
-        }
-        x = Math.round(x/main_image.GetImRatio());
-        y = Math.round(y/main_image.GetImRatio());
-        
-        // 7.31.06 - disallow making a point at x=1. move it to x=2 instead.
-        // This is because where there are points at x=1, there are lines
-        // missing.
-        if(x==1) {
-            x=2;
-        }
-        
-        this.pts_x.push(x);
-        this.pts_y.push(y);
-        
-        if(!this.all_lines) this.all_lines = Array();
-        
-        var line_idx = this.all_lines.length;
-        var color = '#0000ff'; // blue
-        this.all_lines.push(new graphics(this.div_attach,
-                                         'sGraphics'+this.anno_id+'_'+line_idx));
-        this.all_lines[line_idx].DrawLineSegment(this.lastx,this.lasty,x,y,
-                                                 main_image.GetImRatio(),color);
-        this.all_lines[line_idx].SetAttribute('style','cursor:crosshair;');
-        
-        // Move the first control point to be on top of any drawn lines.
-        this.first_point.MoveToTop();
-        
-        this.lastx = x;
-        this.lasty = y;
+      if(this.CloseErrorFlag) {
+	this.CloseErrorFlag = 0;
+	return;
+      }
+      x = Math.round(x/main_image.GetImRatio());
+      y = Math.round(y/main_image.GetImRatio());
+      
+      // 7.31.06 - disallow making a point at x=1. move it to x=2 instead.
+      // This is because where there are points at x=1, there are lines
+      // missing.
+      if(x==1) x=2;
+      
+      this.pts_x.push(x);
+      this.pts_y.push(y);
+      
+      if(!this.all_lines) this.all_lines = Array();
+      
+      var line_idx = this.all_lines.length;
+      var color = '#0000ff'; // blue
+      this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+line_idx));
+      this.all_lines[line_idx].DrawLineSegment(this.lastx,this.lasty,x,y,main_image.GetImRatio(),color);
+      this.all_lines[line_idx].SetAttribute('style','cursor:crosshair;');
+      
+      // Move the first control point to be on top of any drawn lines.
+      $('#'+this.div_attach).append($('#first_point'));
+      
+      // Update lastx,lasty:
+      this.lastx = x;
+      this.lasty = y;
     };
     
     // Closes the polygon.  Returns 1 if close was successful, 0 otherwise.
@@ -190,7 +184,8 @@ function annotation(anno_id) {
     // Draw a polygon given this annotation's control points.
     this.DrawPolygon = function (im_ratio) {
       if(!this.graphics) {
-	this.graphics = new graphics(this.div_attach,'sGraphics'+this.anno_id);
+	this.polygon_id = '#sGraphics'+this.anno_id;
+	this.graphics = new graphics(this.div_attach,this.polygon_id.substr(1,this.polygon_id.length));
       }
       
       // Determine if an angle has been labeled:
@@ -219,82 +214,90 @@ function annotation(anno_id) {
     
     // Draw a poly-line given this annotation's control points (i.e.
     // don't connect the last point to the first point).  This function
-    // is used when we zoom.
+    // is used when we zoom, close the "what is this object?" popup bubble, 
+    // or start a new polygon.
     this.DrawPolyLine = function (im_ratio) {
+      // Set "is_selected" flag:
+      this.is_selected = 1;
+      
+      // Draw line segments:
+      var color = '#0000ff'; // blue
       var im_ratio = main_image.GetImRatio();
-      this.SelectPoly();
+      this.all_lines = Array();
+      for(var i = 0; i < this.pts_x.length-1; i++) {
+	this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+i));
+	this.all_lines[i].DrawLineSegment(this.pts_x[i],this.pts_y[i],this.pts_x[i+1],this.pts_y[i+1],im_ratio,color);
+	this.all_lines[i].SetAttribute('style','cursor:crosshair;');
+      }
 
-        var color = '#0000ff'; // blue
-        var im_ratio = main_image.GetImRatio();
-        if(!this.all_lines) this.all_lines = Array();
-        else {
-            for(var i = 0; i < this.all_lines.length; i++) {
-                this.all_lines[i].ClearDrawing();
-            }
-            this.all_lines = Array();
-        }
-        for(var i = 0; i < this.pts_x.length-1; i++) {
-            this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+(i-1)));
-            this.all_lines[i].DrawLineSegment(this.pts_x[i],this.pts_y[i],
-                                              this.pts_x[i+1],this.pts_y[i+1],
-                                              im_ratio,color);
-            this.all_lines[i].SetAttribute('style','cursor:crosshair;');
-        }
-        
-        if(this.first_point) {
-            this.first_point.ClearDrawing();
-        }
-        this.first_point = new graphics(this.div_attach,'first_point');
-        this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),
-                                   Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
-        
-        this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-        this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
-        //       this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
-        //       this.first_point.SetAttribute('onmouseover','parent.main_handler.MousedOverFirstControlPoint();');
+      // Draw first point:
+      if($('#first_point').length>0) $('#first_point').remove();
+      this.first_point = new graphics(this.div_attach,'first_point');
+      this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
 
-	// Refresh last control point:
-	this.RefreshLastControlPoint();
+      // Set actions for first point:
+      this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
+      
+      // Refresh lastx,lasty:
+      this.lastx = this.pts_x[this.pts_x.length-1];
+      this.lasty = this.pts_y[this.pts_y.length-1];
     };
     
     // Deletes the annotation's polygon from the screen.
     this.DeletePolygon = function () {
-        if(this.graphics) {
-            this.graphics.ClearDrawing();
-            this.graphics = null;
-        }
-        this.RemoveFirstPoint();
-        this.RemoveAllLines();
-        this.RemoveControlPoints();
-        this.RemoveCenterOfMass();
+      // Remove drawn polygon:
+      if(this.graphics) {
+	$(this.polygon_id).remove();
+	this.graphics = null;
+	this.polygon_id = null;
+      }
+
+      // Remove all line segments for partially-drawn polygon:
+      if(this.all_lines) {
+	for(var i = 0; i < this.all_lines.length; i++) $('#sGraphics'+this.anno_id+'_'+i).remove();
+	this.all_lines = null;
+      }
+
+      // Remove first drawn point:
+      this.RemoveFirstPoint();
+
+      // Remove any drawn control points:
+      this.RemoveControlPoints();
+
+      // Remove drawn center-of-mass point:
+      this.RemoveCenterOfMass();
     };
     
     // Deletes the last control point that the user entered.
     this.DeleteLastControlPoint = function () {
-        if(this.pts_x.length>1) {
-            if(this.all_lines) {
-                var l = this.all_lines.length;
-                this.all_lines[l-1].ClearDrawing();
-                this.all_lines = this.all_lines.slice(0,l-1);
-            }
-            else {
-                this.all_lines[0].ClearDrawing();
-                this.all_lines = null;
-            }
-            this.ShortenPts();
-            return 1;
-        }
-        return 0;
+      if(this.pts_x.length>1) {
+	var l = this.all_lines.length;
+	$('#sGraphics'+this.anno_id+'_'+(l-1)).remove();
+	this.all_lines = this.all_lines.slice(0,l-1);
+
+	// Remove last point from polygon array:
+        var l = this.pts_x.length;
+        this.pts_x = this.pts_x.slice(0,l-1);
+        this.pts_y = this.pts_y.slice(0,l-1);
+        this.lastx = this.pts_x[l-2];
+        this.lasty = this.pts_y[l-2];
+	return 1;
+      }
+      return 0;
     };
     
     // Fill the interior of the polygon.
     this.FillPolygon = function () {
-      if(this.graphics) this.graphics.FillPolygon();
+      if(this.graphics) {
+	$(this.polygon_id).attr("fill",$(this.polygon_id).attr("stroke"));
+	$(this.polygon_id).attr("fill-opacity","0.5");
+      }
     };
     
     // Unfill the interior of the polygon.
     this.UnfillPolygon = function () {
-      if(this.graphics) this.graphics.UnfillPolygon();
+      if(this.graphics) $(this.polygon_id).attr("fill","none");
     };
     
     // When you move the mouse over the first control point, then make it
@@ -327,19 +330,17 @@ function annotation(anno_id) {
                                    Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
         this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
         this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
-        //       this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;parent.main_handler.DrawCanvasMouseDown(event);');
-        //       this.first_point.SetAttribute('onmouseover','parent.main_handler.MousedOverFirstControlPoint();');
     };
     
     // This function shows all control points for an annotation it takes in
     // arrays of x and y points
     this.ShowControlPoints = function () {
-        var im_ratio = main_image.GetImRatio();
-        if(!this.control_points) this.control_points = new Array();
-        for(i=0; i<this.pts_x.length; i++) {
-            this.control_points.push(new graphics(this.div_attach,this.anno_id + ':ctrl_point#'+ i));
-            this.control_points[i].DrawPoint(Math.round(this.pts_x[i]*im_ratio),Math.round(this.pts_y[i]*im_ratio),'#00ff00',5);
-        }
+      var im_ratio = main_image.GetImRatio();
+      if(!this.control_points) this.control_points = new Array();
+      for(i=0; i<this.pts_x.length; i++) {
+	this.control_points.push(new graphics(this.div_attach,this.anno_id + '_ctrl_point_'+ i));
+	this.control_points[i].DrawPoint(Math.round(this.pts_x[i]*im_ratio),Math.round(this.pts_y[i]*im_ratio),'#00ff00',5);
+      }
     };
     
     this.StartMoveControlPoint = function (x,y,im_ratio) {
@@ -354,20 +355,20 @@ function annotation(anno_id) {
     };
     
     this.MoveControlPoint = function (x,y,im_ratio) {
-        var i = this.selectedControlPoint;
-        this.pts_x[i] = Math.round(x/im_ratio);
-        this.pts_y[i] = Math.round(y/im_ratio);
-        
-        this.pts_x[i] = Math.max(Math.min(this.pts_x[i],main_image.width_orig),1);
-        this.pts_y[i] = Math.max(Math.min(this.pts_y[i],main_image.height_orig),1);
-        
-        // Adjust polygon:
-        this.graphics.ClearDrawing();
-        this.DrawPolygon(im_ratio);
-        
-        // Adjust control points:
-        this.RemoveControlPoints();
-        this.ShowControlPoints();
+      var i = this.selectedControlPoint;
+      this.pts_x[i] = Math.round(x/im_ratio);
+      this.pts_y[i] = Math.round(y/im_ratio);
+      
+      this.pts_x[i] = Math.max(Math.min(this.pts_x[i],main_image.width_orig),1);
+      this.pts_y[i] = Math.max(Math.min(this.pts_y[i],main_image.height_orig),1);
+      
+      // Remove polygon and redraw:
+      $(this.polygon_id).remove();
+      this.DrawPolygon(im_ratio);
+      
+      // Adjust control points:
+      this.RemoveControlPoints();
+      this.ShowControlPoints();
     };
     
     this.StartMoveCenterOfMass = function (x,y,im_ratio) {
@@ -399,8 +400,8 @@ function annotation(anno_id) {
         this.center_x = Math.round(im_ratio*(dx+this.center_x));
         this.center_y = Math.round(im_ratio*(dy+this.center_y));
         
-        // Adjust polygon:
-        this.graphics.ClearDrawing();
+        // Remove polygon and redraw:
+	$(this.polygon_id).remove();
         this.DrawPolygon(im_ratio);
         
         // Adjust control points:
@@ -484,10 +485,10 @@ function annotation(anno_id) {
     
     // This function removes the middle grab point for a polygon
     this.RemoveCenterOfMass = function() {
-        if(this.center_point) {
-            this.center_point.ClearDrawing();
-            this.center_point = null;
-        }
+      if(this.center_point) {
+	$('#center_point').remove();
+	this.center_point = null;
+      }
     };
     
     // Gets the (x,y) point where a popup bubble can be attached.
@@ -544,31 +545,20 @@ function annotation(anno_id) {
     // Private methods:
     // *******************************************
     
+    // Remove first drawn point:
     this.RemoveFirstPoint = function () {
-        if(this.first_point) {
-            this.first_point.ClearDrawing();
-            this.first_point = null;
-        }
-    };
-    
-    // Remove all lines.
-    this.RemoveAllLines = function () {
-        if(this.all_lines) {
-            for(var i = 0; i < this.all_lines.length; i++) {
-                this.all_lines[i].ClearDrawing();
-            }
-            this.all_lines = null;
-        }
+      if($('#first_point').length>0) {
+	$('#first_point').remove();
+	this.first_point = null;
+      }
     };
     
     // This function removes all displayed control points from an annotation
     this.RemoveControlPoints = function () {
-        if(this.control_points) {
-            for(i=0; i<this.control_points.length; i++) {
-                this.control_points[i].ClearDrawing();
-            }
-            this.control_points = null;
-        }
+      if(this.control_points) {
+	for(var i = 0; i < this.control_points.length; i++) $('#'+this.anno_id+'_ctrl_point_'+i).remove();
+	this.control_points = null;
+      }
     };
     
     this.charCodeAt = function (text,position) {
@@ -607,14 +597,6 @@ function annotation(anno_id) {
         }
         hash = (((hash + 567) * 1048797) % 14); //pseudo-randomize
         return "#"+ objectColors[hash];
-    };
-    
-    this.ShortenPts = function () {
-        var l = this.pts_x.length;
-        this.pts_x = this.pts_x.slice(0,l-1);
-        this.pts_y = this.pts_y.slice(0,l-1);
-        this.lastx = this.pts_x[l-2];
-        this.lasty = this.pts_y[l-2];
     };
     
     // Compute the L2 distance between two Cartesian points.

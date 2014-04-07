@@ -50,8 +50,8 @@ function handler() {
 	main_image.ScrollbarsOn();
 	
 	// Move select_canvas to front:
-	document.getElementById('select_canvas').style.zIndex = 0;
-	document.getElementById('select_canvas_div').style.zIndex = 0;
+	document.getElementById('draw_canvas').style.zIndex = 0;
+	document.getElementById('draw_canvas_div').style.zIndex = 0;
 
 	// Attach the annotation:
         main_draw_canvas.AttachAnnotation(anno,'polyline');
