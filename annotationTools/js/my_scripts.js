@@ -164,30 +164,6 @@ function ShowNextImage() {
   if(s!=null) s.submit();
 }
 
-// Insert HTML code after a div element:
-function InsertAfterDiv(html_str,tag_id) {
-  if((typeof Range !== "undefined") && !Range.prototype.createContextualFragment) {
-    Range.prototype.createContextualFragment = function(html) {
-      var frag = document.createDocumentFragment(), 
-      div = document.createElement("div");
-      frag.appendChild(div);
-      div.outerHTML = html;
-      return frag;
-    };
-  }
-
-  var elt = document.getElementById(tag_id);
-  var x = document.createRange();
-  try {
-    x.setStartAfter(elt);
-  }
-  catch(err) {
-    alert(tag_id);
-  }
-  x = x.createContextualFragment(html_str);
-  elt.appendChild(x);
-}
-
 function ChangeLinkColorBG(idx) {
   if(document.getElementById('Link'+idx)) {
     var isDeleted = AllAnnotations[idx].GetDeleted();

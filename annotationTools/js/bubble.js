@@ -79,7 +79,7 @@ function mkBubbleHTML(left,top,bubble_type,anno) {
     html_str += '</div>';
 
     // Insert bubble in page created HTML
-    InsertAfterDiv(html_str,'main_section');
+    $('#main_section').append(html_str);
     
     // Place bubble in the right location taking into account the rendered size and the location of the arrow
     if (top>214){  

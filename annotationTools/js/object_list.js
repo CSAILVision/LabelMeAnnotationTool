@@ -93,9 +93,9 @@ function LoadAnnotationList() {
     }
     
     html_str += '</ol><p ondrop="drop(event, -1)" ondragover="event.preventDefault();"><br/><br/><br/></p></div>';
-    
-    InsertAfterDiv(html_str,'anno_anchor');
-    
+
+    // Attach annotation list to 'anno_anchor' DIV element:
+    $('#anno_anchor').append(html_str);
 }
 
 
