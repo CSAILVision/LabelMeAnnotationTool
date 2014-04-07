@@ -77,10 +77,13 @@ function canvas(div_attach) {
       case 'polygon':
 	var anno_id = this.annotations[pp].GetAnnoID();
 	this.annotations[pp].DrawPolygon(main_image.GetImRatio());
+	
+	// Set polygon actions:
 	this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
 	this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
 	this.annotations[pp].SetAttribute('oncontextmenu','return false');
-	this.annotations[pp].SetAttribute('style','cursor:pointer;');
+	this.annotations[pp].SetCSS('cursor','pointer');
+
 	break;
       case 'filled_polygon':
 	this.annotations[pp].DrawPolygon(main_image.GetImRatio());

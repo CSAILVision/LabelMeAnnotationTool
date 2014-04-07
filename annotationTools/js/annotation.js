@@ -155,7 +155,7 @@ function annotation(anno_id) {
       var color = '#0000ff'; // blue
       this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+line_idx));
       this.all_lines[line_idx].DrawLineSegment(this.lastx,this.lasty,x,y,main_image.GetImRatio(),color);
-      this.all_lines[line_idx].SetAttribute('style','cursor:crosshair;');
+      $('#sGraphics'+this.anno_id+'_'+line_idx).css('cursor','crosshair');
       
       // Move the first control point to be on top of any drawn lines.
       $('#'+this.div_attach).append($('#first_point'));
@@ -174,7 +174,12 @@ function annotation(anno_id) {
     
     // Set attribute of drawn polygon.
     this.SetAttribute = function(field,value) {
-      this.graphics.SetAttribute(field,value);
+      $(this.polygon_id).attr(field,value);
+    };
+    
+    // Set attribute of drawn polygon.
+    this.SetCSS = function(field,value) {
+      $(this.polygon_id).css(field,value);
     };
     
     // Draw a polygon given this annotation's control points.
@@ -223,7 +228,7 @@ function annotation(anno_id) {
       for(var i = 0; i < this.pts_x.length-1; i++) {
 	this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+i));
 	this.all_lines[i].DrawLineSegment(this.pts_x[i],this.pts_y[i],this.pts_x[i+1],this.pts_y[i+1],im_ratio,color);
-	this.all_lines[i].SetAttribute('style','cursor:crosshair;');
+	$('#sGraphics'+this.anno_id+'_'+i).css('cursor','crosshair');
       }
 
       // Draw first point:
@@ -232,8 +237,8 @@ function annotation(anno_id) {
       this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
 
       // Set actions for first point:
-      this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-      this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
+      $('#first_point').attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      $('#first_point').attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
       
       // Refresh lastx,lasty:
       this.lastx = this.pts_x[this.pts_x.length-1];
@@ -300,30 +305,32 @@ function annotation(anno_id) {
     // bigger to indicate it should be clicked on.  Do this if two or more
     // lines have been drawn.
     this.MouseOverFirstPoint = function () {
-        //     if(this.pts_x.length>=3) {
-        if(this.pts_x.length>=2) { // Allow users to annotate lines
-            var im_ratio = main_image.GetImRatio();
-            this.RemoveFirstPoint();
-            this.first_point = new graphics(this.div_attach,'first_point');
-            this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),
-                                       Math.round(this.pts_y[0]*im_ratio),'#00ff00',8);
-            this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-            this.first_point.SetAttribute('onmouseout','main_handler.MousedOutFirstControlPoint();');
-            this.first_point.SetAttribute('style','cursor:pointer;');
-        }
+      if(this.pts_x.length > 0) {
+	var im_ratio = main_image.GetImRatio();
+	this.RemoveFirstPoint();
+	this.first_point = new graphics(this.div_attach,'first_point');
+	this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),Math.round(this.pts_y[0]*im_ratio),'#00ff00',8);
+
+	// Set actions for first point:
+	$('#first_point').attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+	$('#first_point').attr('onmouseout','main_handler.MousedOutFirstControlPoint();');
+	$('#first_point').css('cursor','pointer');
+      }
     };
     
     // When you move the mouse over the first control point, then make it
     // bigger to indicate it should be clicked on.  Do this if two or more
     // lines have been drawn.
     this.MouseOutFirstPoint = function () {
-        var im_ratio = main_image.GetImRatio();
-        this.RemoveFirstPoint();
-        this.first_point = new graphics(this.div_attach,'first_point');
-        this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),
-                                   Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
-        this.first_point.SetAttribute('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-        this.first_point.SetAttribute('onmouseover','main_handler.MousedOverFirstControlPoint();');
+      var im_ratio = main_image.GetImRatio();
+      this.RemoveFirstPoint();
+      this.first_point = new graphics(this.div_attach,'first_point');
+      this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
+
+      // Set actions for first point:
+      $('#first_point').attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      $('#first_point').attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
+      $('#first_point').css('cursor','pointer');
     };
     
     // This function shows all control points for an annotation it takes in

@@ -66,11 +66,4 @@ function graphics(div_attach,name) {
     // Draw polyline:
     $('#' + this.div_attach).append('<polyline xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" points="' + poly_points + '" fill="none" stroke="' + color + '" stroke-width="4" />');
   };
-
-  // Sets an attribute for the drawn object.
-  this.SetAttribute = function(field,value) {
-    var v = $('#' + this.name).attr(field);
-    if(v != null) value += v;
-    $('#' + this.name).attr(field,value);
-  };
 }
