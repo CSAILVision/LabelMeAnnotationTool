@@ -47,6 +47,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!--#include virtual="./annotationTools/js/canvas.js" -->
 <!--#include virtual="./annotationTools/js/handler.js" -->
 <!--#include virtual="./annotationTools/js/sign_in.js" -->
+<!--#include virtual="./annotationTools/js/startup.js" -->
 
 <!--#endif -->
 
@@ -63,14 +64,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 </head>
 
 <!--#if expr="$QUERY_STRING_UNESCAPED!=badbrowser" -->
-<body id="body" onmouseup="javascript:main_handler.MainPageMouseUp(event);" style="visibility:hidden;" >
+<body id="body" style="visibility:hidden;" >
 
-<script type="text/javascript">
-WriteLogMsg('*start_loading');
-</script>
-
+  <!-- Mechanical Turk instructions and submit button -->
   <div id="mt_submit_form"></div>
-
     
   <!-- HEADER AND LOGO -->  
   <div class="header" id="header">
@@ -94,29 +91,27 @@ WriteLogMsg('*start_loading');
               
       </div>
  </div>
- 
-    
-
     
     <!-- BUTTONS -->
    <div id="tool_buttons">
-       <!-- DOWNLOAD BUTTONS -->
-
-       
        <!-- NAVIGATION BUTTONS  -->
        <div id="label_buttons_navigation">
-        <button id="img_url" class="labelBtn" type="button" title="download IMG file" onclick="GetXMLFile();" >
+	 <!-- DOWNLOAD IMAGE BUTTON -->
+        <button id="img_url" class="labelBtn" type="button" title="Download image">
                <img src="Icons/download_img.png"  height="30" />
         </button>
-           
-        <button id="download XML file" class="labelBtn" type="button" title="download XML file" onclick="GetXMLFile();" >
+
+	 <!-- DOWNLOAD XML BUTTON -->
+        <button id="Download XML file" class="labelBtn" type="button" title="download XML file" onclick="GetXMLFile();" >
                <img src="Icons/download_xml.png"  height="30" />
         </button>
            
+	 <!-- HELP BUTTON -->
         <button id="help" class="labelBtn" type="button" title="Show help page" onclick="location.href='annotationTools/html/labeling_instructions.html'" >
             <img src="Icons/help_new.png"  height="30" />
         </button>
         
+	 <!-- NEXT IMAGE BUTTON -->
         <button id="nextImage" class="labelBtn" type="button" title="Next Image" onclick="ShowNextImage()" >
             <img src="Icons/next_2.png" height="30" />
         </button>
@@ -124,16 +119,19 @@ WriteLogMsg('*start_loading');
 
        <!-- DRAWING BUTTONS -->
        <div id="label_buttons_drawing">
+	 <!-- ZOOM IN BUTTON -->
           <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In" onclick="main_image.Zoom(1.15)" >
               <img src="Icons/zoomin.png" width="30" height="38" />
           </button>
+	 <!-- ZOOM OUT BUTTON -->
            <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out" onclick="main_image.Zoom(1.0/1.15)" >
                <img src="Icons/zoomout.png" width="30" height="38" />
            </button>
+	 <!-- FIT IMAGE BUTTON -->
           <button id="fit" class="labelBtnDraw" type="button" title="Fit Image" onclick="main_image.Zoom('fitted')" >
               <img src="Icons/fitscreen.png" width="30" height="38" />
           </button>
-          
+	 <!-- ERASE BUTTON -->
           <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegmentButton()" >
               <img src="Icons/erase.png"  width="30" height="38" />
           </button>
@@ -144,7 +142,6 @@ WriteLogMsg('*start_loading');
 <div class="image_canvas" id="main_section">
     
     <div id="loading">Loading image...</div>
-    
       
     <div id="main_image" class="top" style="visibility:hidden; overflow:auto;">
         
@@ -212,28 +209,17 @@ WriteLogMsg('*start_loading');
       </div>
 
 </div>
-    
 
 <!-- DIV that will contain the object list -->
 <div id="anno_anchor">
 </div>
 
-
+<!-- DIV for Mechanical Turk feedback form -->
 <div id="mt_feedback" style="position:absolute;bottom:4px;" />
 
-
-<!-- INITIALIZATION TOOL -->
+<!-- Start up LabelMe -->
 <script type="text/javascript">
-    // Initializing some variables
-    MainInit();
-    
-    initUserName();
-
-    // Set action when the user presses a key:
-    document.onkeyup = main_handler.KeyPress;
-
-    // Collect statistics:
-    var ref = document.referrer;
+  StartupLabelMe();
 </script>
     
 </body>

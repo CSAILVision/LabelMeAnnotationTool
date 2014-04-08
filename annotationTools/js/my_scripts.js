@@ -1,5 +1,3 @@
-// my_scripts.js
-// Modified: 03/05/2007
 // This file contains global variables and functions.  This file
 // should be minimized and abstracted whenever possible.  It is 
 // best to refrain from adding new variables/functions to this
@@ -27,11 +25,7 @@ var view_Deleted = 0;
 var view_ObjList = true;
 
 // MT variables:
-// var LMbaseurl = 'http://old-labelme.csail.mit.edu/developers/brussell/LabelMe-video/tool.html';
-// var MThelpPage = 'http://old-labelme.csail.mit.edu/developers/brussell/LabelMe-video/mt_instructions.html';
-// var LMbaseurl = 'http://labelme.csail.mit.edu/tool.html';
 var LMbaseurl = 'http://' + window.location.host + window.location.pathname;
-// var MThelpPage = 'http://labelme.csail.mit.edu/mt_instructions.html';
 var MThelpPage = 'annotationTools/html/mt_instructions.html';
 var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
 var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
@@ -39,38 +33,6 @@ var mt_N = 'inf';
 
 var object_choices = '...';
 
-
-// Main entry point for the annotation tool.
-function MainInit() {
-    main_handler = new handler();
-    main_canvas = new canvas('myCanvas_bg');
-    main_select_canvas = new canvas('select_canvas');
-    main_draw_canvas = new canvas('draw_canvas');
-    main_query_canvas = new canvas('query_canvas');
-    main_image = new image('im');
-
-    function main_image_onload_helper() {
-        main_image.SetImageDimensions();
-        var anno_file = main_image.GetFileInfo().GetFullName();
-        anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
-        ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
-    };
-    
-    main_image.GetNewImage(main_image_onload_helper);
-    
-    var dirname = main_image.GetFileInfo().GetDirName();
-    var imname = main_image.GetFileInfo().GetImName();
-
-    if(document.getElementById('img_url')) {
-      imPath = main_image.GetFileInfo().GetImagePath();
-        document.getElementById('img_url').onclick = function() {location.href=imPath};
-    }
-
-    
-  // if(document.getElementById('username_main_div')) write_username();
-
-  WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
-}
 
 // Get the x position of the mouse event.
 function GetEventPosX(event) {
@@ -82,16 +44,6 @@ function GetEventPosX(event) {
 function GetEventPosY(event) {
   if(IsNetscape()) return event.layerY;
   return event.offsetY;
-}
-
-// If IE, then makes the HTML to show the 'next' icon with the appropriate 
-// transparencies; if firefox, then just make an img src to show the image
-function ShowUndoImg() {
-  var oo = document.createElementNS(xhtmlNS,'img');
-  oo.setAttributeNS(null,"id","undo_image_png");
-  oo.setAttributeNS(null,"src","Icons/undo.png");
-  oo.setAttributeNS(null,"style","cursor:hand; width:3em;");
-  document.getElementById('png_undo').appendChild(oo);
 }
 
 function RemoveSpecialChars(str) {
@@ -179,9 +131,6 @@ function ChangeLinkColorFG(idx) {
 
 function UpdateCounterHTML() {
     return;
-  //var m = main_image.GetFileInfo().GetMode();
-  //if((m=='im') || (m=='mt')) return;
-  //document.getElementById('anno_count').innerHTML = anno_count;
 }
 
 function LoadCounterText() {
@@ -223,101 +172,6 @@ function XMLGet(fname) {
   }
   return req_anno;
 }
-
-function LoadAnnotationSuccess(xml) {
-  // Set global variable:
-  LM_xml = xml;
-
-  var obj_elts = LM_xml.getElementsByTagName("object");
-  var num_obj = obj_elts.length;
-  
-  AllAnnotations = Array(num_obj);
-  num_orig_anno = num_obj;
-
-  // Initialize any empty tags in the XML file:
-  for(var pp = 0; pp < num_obj; pp++) {
-    var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
-
-    // Initialize object name if empty in the XML file:
-    if(curr_obj.children("name").length == 0) {
-      curr_obj.append($("<name></name>"));
-    }
-
-    // Set object IDs:
-    if(curr_obj.children("id").length > 0) {
-      curr_obj.children("id").text(""+pp);
-    }
-    else {
-      curr_obj.append($("<id>" + pp + "</id>"));
-    }
-
-    // Initialize username if empty in the XML file:
-    if(curr_obj.children("polygon").children("username").length == 0) {
-      curr_obj.children("polygon").append($("<username>anonymous</username>"));
-    }
-  }
-    
-  // Add part fields (this calls a funcion inside object_parts.js)
-  addPartFields(); // makes sure all the annotations have all the fields.
-    
-
-  // loop over annotated objects
-  for(var pp = 0; pp < num_obj; pp++) {
-    AllAnnotations[pp] = new annotation(pp);
-    
-    // insert polygon
-    var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
-    var numpts = pt_elts.length;
-    AllAnnotations[pp].CreatePtsX(numpts);
-    AllAnnotations[pp].CreatePtsY(numpts);
-    for(ii=0; ii < numpts; ii++) {
-      AllAnnotations[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
-      AllAnnotations[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
-    }
-  }
-
-  // Add annotations to the main_canvas:
-  for(var pp=0; pp < AllAnnotations.length; pp++) {
-    var isDeleted = AllAnnotations[pp].GetDeleted();
-    if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
-      main_canvas.AttachAnnotation(AllAnnotations[pp],'polygon');
-    }
-  }
-
-  // Render the polygons on the main_canvas:
-  main_canvas.RenderAnnotations();
-
-  if(view_ObjList) LoadAnnotationList();
-}
-
-// Annotation file does not exist, so load template:
-function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
-  if(jqXHR.status==404) 
-    ReadXML(main_image.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
-  else
-    alert(jqXHR.status);
-}
-
-// Annotation template does not exist for this folder, so load default 
-// LabelMe template:
-function LoadTemplate404(jqXHR,textStatus,errorThrown) {
-  if(jqXHR.status==404)
-    ReadXML('annotationCache/XMLTemplates/labelme.xml',LoadTemplateSuccess,function(jqXHR) {
-	alert(jqXHR.status);
-      });
-  else
-    alert(jqXHR.status);
-}
-
-// Actions after template load success:
-function LoadTemplateSuccess(xml) {
-  LM_xml = xml;
-  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
-  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
-  num_orig_anno = 0;
-  if(view_ObjList) LoadAnnotationList();
-}
-
 
 function InsertServerLogData(modifiedControlPoints) {
   var old_pri = LM_xml.getElementsByTagName("private");
