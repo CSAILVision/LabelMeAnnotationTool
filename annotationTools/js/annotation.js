@@ -10,15 +10,11 @@ function annotation(anno_id) {
     this.pts_x = new Array();
     this.pts_y = new Array();
     
-    this.is_selected;
     this.graphics = null;
     this.all_lines = null;
     this.first_point = null;
     this.anno_id = anno_id;
     this.div_attach = 'myCanvas_bg';
-    this.lastx = -1;
-    this.lasty = -1;
-    this.CloseErrorFlag = 0;
     
     // This array stores graphics objects for each control point
     this.control_points = new Array();
@@ -104,16 +100,6 @@ function annotation(anno_id) {
         this.pts_y = Array(numpts);
     };
     
-    // Select this polygon.
-    this.SelectPoly = function () {
-        this.is_selected = 1;
-    };
-    
-    // Unselect this polygon.
-    this.UnselectPoly = function () {
-        this.is_selected = 0;
-    };
-    
     // Draws first control point of a new polygon.
     this.AddFirstControlPoint = function (x,y) {
         var im_ratio = main_image.GetImRatio();
@@ -127,19 +113,17 @@ function annotation(anno_id) {
         
         this.pts_x.push(x);
         this.pts_y.push(y);
-        
-        this.lastx = x;
-        this.lasty = y;
     };
     
-    // Adds a new control point to the polygon.
+    // Adds a new control point to the polygon.  This function gets called
+    // after the first point already exists.
     this.AddControlPoint = function (x,y) {
-      if(this.CloseErrorFlag) {
-	this.CloseErrorFlag = 0;
-	return;
-      }
-      x = Math.round(x/main_image.GetImRatio());
-      y = Math.round(y/main_image.GetImRatio());
+      // Get image scale:
+      var scale = main_image.GetImRatio();
+
+      // Scale point:
+      x = Math.round(x/scale);
+      y = Math.round(y/scale);
       
       // 7.31.06 - disallow making a point at x=1. move it to x=2 instead.
       // This is because where there are points at x=1, there are lines
@@ -152,24 +136,13 @@ function annotation(anno_id) {
       if(!this.all_lines) this.all_lines = Array();
       
       var line_idx = this.all_lines.length;
-      var color = '#0000ff'; // blue
+      var n = this.pts_x.length-1;
       this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+line_idx));
-      this.all_lines[line_idx].DrawLineSegment(this.lastx,this.lasty,x,y,main_image.GetImRatio(),color);
+      this.all_lines[line_idx].DrawLineSegment(this.pts_x[n-1],this.pts_y[n-1],this.pts_x[n],this.pts_y[n],scale,'#0000ff');
       $('#sGraphics'+this.anno_id+'_'+line_idx).css('cursor','crosshair');
       
       // Move the first control point to be on top of any drawn lines.
       $('#'+this.div_attach).append($('#first_point'));
-      
-      // Update lastx,lasty:
-      this.lastx = x;
-      this.lasty = y;
-    };
-    
-    // Closes the polygon.  Returns 1 if close was successful, 0 otherwise.
-    this.ClosePolygon = function () {
-      this.lastx = -1;
-      this.lasty = -1;
-      return 1;
     };
     
     // Set attribute of drawn polygon.
@@ -177,7 +150,7 @@ function annotation(anno_id) {
       $(this.polygon_id).attr(field,value);
     };
     
-    // Set attribute of drawn polygon.
+    // Set CSS attribute of drawn polygon.
     this.SetCSS = function(field,value) {
       $(this.polygon_id).css(field,value);
     };
@@ -218,9 +191,6 @@ function annotation(anno_id) {
     // is used when we zoom, close the "what is this object?" popup bubble, 
     // or start a new polygon.
     this.DrawPolyLine = function (im_ratio) {
-      // Set "is_selected" flag:
-      this.is_selected = 1;
-      
       // Draw line segments:
       var color = '#0000ff'; // blue
       var im_ratio = main_image.GetImRatio();
@@ -239,10 +209,6 @@ function annotation(anno_id) {
       // Set actions for first point:
       $('#first_point').attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
       $('#first_point').attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
-      
-      // Refresh lastx,lasty:
-      this.lastx = this.pts_x[this.pts_x.length-1];
-      this.lasty = this.pts_y[this.pts_y.length-1];
     };
     
     // Deletes the annotation's polygon from the screen.
@@ -281,8 +247,7 @@ function annotation(anno_id) {
         var l = this.pts_x.length;
         this.pts_x = this.pts_x.slice(0,l-1);
         this.pts_y = this.pts_y.slice(0,l-1);
-        this.lastx = this.pts_x[l-2];
-        this.lasty = this.pts_y[l-2];
+
 	return 1;
       }
       return 0;
@@ -569,9 +534,6 @@ function annotation(anno_id) {
     };
     
     this.getObjectColor = function () {
-      // If the polygon is still open then return blue:
-      if(this.is_selected && (this.lastx!=-1)) return "#0000ff";
-      
       // If the polygon has been deleted then return gray:
       if(this.GetDeleted()) return "#888888";
         

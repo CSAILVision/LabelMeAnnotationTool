@@ -305,7 +305,7 @@ function handler() {
         if(username_flag) submit_username();
         
         // If right-clicked and can successfully close the polygon.
-        if((button>1) && main_draw_canvas.Peek().ClosePolygon()) this.DrawToQuery();
+        if(button > 1) this.DrawToQuery();
         else main_draw_canvas.Peek().AddControlPoint(x,y);
     };
     
