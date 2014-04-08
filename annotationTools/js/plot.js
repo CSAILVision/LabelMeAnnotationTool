@@ -1,6 +1,37 @@
 // This file contains functions for plotting polygons, lines, points, etc. 
 // onto an SVG canvas.
 
+// Plots all the LabelMe annotations and returns the DOM element id.
+function LMplot(xml,imagename) {
+  // Display image:
+  $('body').append('<svg id="canvas" width="1920" height="2560" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image id="img" xlink:href="' + imagename + '" x="0" y="0" height="1920" width="2560" /></svg>');
+
+  // Display polygons:
+  var N = $(xml).children("annotation").children("object").length;
+  for(var i = 0; i < N; i++) {
+    var obj = $(xml).children("annotation").children("object").eq(i);
+    if(!parseInt(obj.children("deleted").text())) {
+      // Get object name:
+      var name = obj.children("name").text();
+
+      // Get points:
+      var X = Array();
+      var Y = Array();
+      for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
+	X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
+	Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
+      }
+
+      // Draw polygon:
+      var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
+      var scale = 1;
+      DrawPolygon('canvas',X,Y,name,attr,scale);
+    }
+  }
+
+  return 'canvas';
+}
+
 // Draws a polygon.  Returns DOM element id of drawn polygon.
 //   element_id - String containing DOM element id to attach to.
 //   X - Array with X coordinates.
@@ -85,4 +116,23 @@ function DrawPoint(element_id,x,y,attr,scale) {
   $('#'+element_id).append('<circle xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" cx="' + x*scale + '" cy="' + y*scale + '" ' + attr + ' />');
 
   return dom_id;
+}
+
+function charCodeAt(text,position) {
+  var tmp = text.substring(position,position+1);
+  for(var i=1;i<=255;i++) if(unescape('%'+i.toString(16)) == tmp) return i;
+  return 0;
+}
+
+function HashObjectColor(name) {
+  // List of possible object colors:
+  var objectColors = Array("#009900","#00ff00","#ccff00","#ffff00","#ffcc00","#ff9999","#cc0033","#ff33cc","#9933ff","#990099","#000099","#006699","#00ccff","#999900");
+  
+  // Pseudo-randomized case insensitive hashing based on object name:
+  name = name.toUpperCase(); 
+  var hash = 0;
+  for(var i = 0; i < name.length;i++) hash += charCodeAt(name,i);
+  hash = (((hash + 567) * 1048797) % objectColors.length);
+  
+  return objectColors[hash];
 }
