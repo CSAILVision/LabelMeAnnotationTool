@@ -1,69 +1,85 @@
-// graphics class
-// Implements graphics/drawing routines for the labeling tool.
-
-function graphics(div_attach,name) {
-		
-  // *******************************************
-  // Private variables:
-  // *******************************************
-  this.name = name;
-		
-  //the way the template is set up in line1.svg, this input needs to be
-  //"MyCanvas"
-  this.div_attach = div_attach;
+// Draws a polygon.  Returns DOM element id of drawn polygon.
+//   element_id - String containing DOM element id to attach to.
+//   X - Array with X coordinates.
+//   Y - Array with Y coordinates.
+//   obj_name - String with object name (empty string if no name).
+//   attr - String containing polygon attributes.
+//   scale - Scalar value to scale X,Y coordinates (optional).
+function DrawPolygon(element_id,X,Y,obj_name,attr,scale) {
+  // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
+  var poly_points = "";
+  for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
   
-  // *******************************************
-  // Public methods:
-  // *******************************************
+  // Get drawn object DOM element id:
+  var dom_id = element_id + '_obj' + $('#'+element_id).children().length;
+
+  // Draw polygon:
+  $('#'+element_id).append('<a xmlns="http://www.w3.org/2000/svg"><polygon xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" points="' + poly_points + '" ' + attr + ' /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');
+
+  return dom_id;
+}
+
+// Draw a flag given a point (X,Y).  Returns DOM element id of drawn flag.
+//   element_id - String containing DOM element id to attach to.
+//   X - Scalar with X coordinate.
+//   Y - Scalar with Y coordinate.
+//   obj_name - String with object name (empty string if no name).
+//   scale - Scalar value to scale X,Y coordinates (optional).
+function DrawFlag(element_id,x,y,obj_name,scale) {
+  // Apply scale:
+  x *= scale; y *= scale;
+
+  // Apply flag location offset:
+  x -= 12; y -= 38;
   
-  // Draw a polygon given an array of control points X and Y.
-  // Returns the polygon element
-  this.DrawPolygon = function(X,Y,color,scale,obj_name) {
-    // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
-    var poly_points = "";
-    for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
+  // Get drawn object DOM element id:
+  var dom_id = element_id + '_obj' + $('#'+element_id).children().length;
 
-    // Draw polygon:
-    $('#' + this.div_attach).append('<a xmlns="http://www.w3.org/2000/svg"><polygon xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" points="' + poly_points + '" fill="none" stroke="' + color + '" stroke-width="4" /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');
-  };
+  // Draw flag:
+  $('#'+element_id).append('<image xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" width="36" height="43" x="' + x + '" y="' + y + '" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="Icons/flag.png" />');
 
-  // Draw a dashed polygon given an array of control points X and Y.
-  // Returns the polygon element
-  this.DrawDashedPolygon = function(X,Y,color,scale,obj_name) {
-    // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
-    var poly_points = "";
-    for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
+  return dom_id;
+}
 
-    // Draw dashed polygon:
-    $('#' + this.div_attach).append('<a xmlns="http://www.w3.org/2000/svg"><polygon xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" points="' + poly_points + '" fill="none" stroke="' + color + '" stroke-width="4" stroke-dasharray="9,5" /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');
-  };
-
-  // Draw a line segment given starting coordinates and ending coordinates.
-  this.DrawLineSegment = function(x1,y1,x2,y2,scale,color) {
-    $('#' + this.div_attach).append('<line xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" x1="' + x1*scale + '" x2="' + x2*scale + '" y1="' + y1*scale + '" y2="' + y2*scale + '" stroke="' + color + '" stroke-width="4" />');
-  };
+// Draw a polyline.  Returns DOM element id of drawn polyline.
+//   element_id - String containing DOM element id to attach to.
+//   X - Array with X coordinates.
+//   Y - Array with Y coordinates.
+//   obj_name - String with object name (empty string if no name).
+//   attr - String containing polygon attributes.
+//   scale - Scalar value to scale X,Y coordinates (optional).
+function DrawPolyLine(element_id,X,Y,obj_name,attr,scale) {
+  // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
+  var poly_points = "";
+  for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
   
-  // Draw a point given coordinates.
-  this.DrawPoint = function(x,y,color,width) {
-    $('#' + this.div_attach).append('<circle xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" cx="' + x + '" cy="' + y + '" r="' + width + '" fill="' + color + '" stroke="#ffffff" stroke-width="' + width/2 + '" />');
-  };
-		
-  // Draw a flag given coordinates.
-  this.DrawFlag = function(x,y) {
-    // Apply flag location offset:
-    x -= 12; y -= 38;
+  // Get drawn object DOM element id:
+  var dom_id = element_id + '_obj' + $('#'+element_id).children().length;
 
-    $('#' + this.div_attach).append('<image xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" width="36" height="43" x="' + x + '" y="' + y + '" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="Icons/flag.png" />');
-  };
-		
-  // Draw a polyline given an array of control points X and Y.
-  // Returns the polygon element
-  this.DrawPolyLine = function(X,Y, color, scale) {
-    // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
-    var poly_points = "";
-    for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
-    
-    // Draw polyline:
-    $('#' + this.div_attach).append('<polyline xmlns="http://www.w3.org/2000/svg" id="' + this.name + '" points="' + poly_points + '" fill="none" stroke="' + color + '" stroke-width="4" />');
-  };
+  // Draw polyline:
+  $('#'+element_id).append('<polyline xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" points="' + poly_points + '" ' + attr + ' />');
+
+  return dom_id;
+}
+
+// Draw a line segment given starting coordinates and ending coordinates.
+function DrawLineSegment(element_id,x1,y1,x2,y2,attr,scale) {
+  // Get drawn object DOM element id:
+  var dom_id = element_id + '_line' + $('#'+element_id).children().length;
+
+  // Draw line segment:
+  $('#'+element_id).append('<line xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" x1="' + x1*scale + '" x2="' + x2*scale + '" y1="' + y1*scale + '" y2="' + y2*scale + '" ' + attr + ' />');
+
+  return dom_id;
+}
+  
+// Draw a point.
+function DrawPoint(element_id,x,y,attr,scale) {
+  // Get drawn object DOM element id:
+  var dom_id = element_id + '_point' + $('#'+element_id).children().length;
+
+  // Draw point:
+  $('#'+element_id).append('<circle xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" cx="' + x*scale + '" cy="' + y*scale + '" ' + attr + ' />');
+
+  return dom_id;
 }
