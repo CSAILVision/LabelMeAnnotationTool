@@ -25,15 +25,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <script type="text/javascript">
 // <![CDATA[
-<!--#include virtual="./annotationTools/js/browser.js" -->  
-
-  // Check browser:
-  GetBrowserInfo();
-  if(!(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome())) {
-    window.location="tool.html?badbrowser";
-  }
-
 <!--#include virtual="./annotationTools/js/jquery-1.9.1.js" -->
+<!--#include virtual="./annotationTools/js/browser.js" -->  
 <!--#include virtual="./annotationTools/js/globals.js" -->
 <!--#include virtual="./annotationTools/js/io.js" -->
 <!--#include virtual="./annotationTools/js/plot.js" -->
@@ -48,9 +41,6 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!--#include virtual="./annotationTools/js/handler.js" -->
 <!--#include virtual="./annotationTools/js/sign_in.js" -->
 <!--#include virtual="./annotationTools/js/startup.js" -->
-
-<!--#endif -->
-
 // ]]>
 </script>
 
@@ -63,8 +53,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 </head>
 
-<!--#if expr="$QUERY_STRING_UNESCAPED!=badbrowser" -->
-<body id="body" style="visibility:hidden;" >
+<!-- Start up LabelMe after HTML elements load -->
+<body id="body" style="visibility:hidden;" onload="javascript:StartupLabelMe();">
 
   <!-- Mechanical Turk instructions and submit button -->
   <div id="mt_submit_form"></div>
@@ -207,31 +197,13 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
                 style="position:absolute;left:0px;top:0px;z-index:-2;" />
           </div>
       </div>
-
 </div>
 
 <!-- DIV that will contain the object list -->
-<div id="anno_anchor">
-</div>
+<div id="anno_anchor"></div>
 
 <!-- DIV for Mechanical Turk feedback form -->
 <div id="mt_feedback" style="position:absolute;bottom:4px;" />
 
-<!-- Start up LabelMe -->
-<script type="text/javascript">
-  StartupLabelMe();
-</script>
-    
 </body>
-    
-<!--#else -->
-<body>
-<p><img src="Icons/LabelMe.gif" /></p><br />
-<p>Sorry!  This page only works with Mozilla Firefox, Chrome, and Internet Explorer.  We may
-support other browsers in the future.</p>
-
-<p><a href="http://www.mozilla.org">Download Mozilla Firefox?</a></p>
-</body>
-<!--#endif -->
-
 </html>
