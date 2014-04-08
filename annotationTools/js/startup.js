@@ -88,6 +88,7 @@ function LoadAnnotationSuccess(xml) {
   FinishStartup();
 }
 
+// Finish the startup process:
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
   if(view_ObjList) LoadAnnotationList();
@@ -104,7 +105,7 @@ function FinishStartup() {
   document.onkeyup = main_handler.KeyPress;
   
   // Collect statistics:
-  var ref = document.referrer;
+  ref = document.referrer;
 
   // Write "finished" messages:
   WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());

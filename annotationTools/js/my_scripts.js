@@ -128,33 +128,6 @@ function ChangeLinkColorFG(idx) {
   document.getElementById('Link'+idx).style.color = '#FF0000';
 }
 
-
-function UpdateCounterHTML() {
-    return;
-}
-
-function LoadCounterText() {
-  var cookie_counter = getCookie('counter');
-  if(cookie_counter > anno_count) anno_count = cookie_counter;
-
-  var objXml = XMLGet('annotationCache/counter');
-
-  if(objXml.status==200) {
-    var tmp_count = parseInt(objXml.responseText);
-    if(tmp_count > anno_count) {
-      anno_count = tmp_count;
-      setCookie('counter',anno_count);
-    }
-    UpdateCounterHTML();
-  }
-  else if(objXml.status==404) {
-    alert('counter file not found');
-  }
-  else {
-    alert('Unknown objXml.status');
-  }
-}
-
 function XMLGet(fname) {
   var url = 'annotationTools/perl/get_anno_file.cgi';
   // branch for native XMLHttpRequest object
@@ -334,7 +307,6 @@ function DeleteSelectedPolygon() {
   if(selected_poly>=num_orig_anno) {
     anno_count--;
     setCookie('counter',anno_count);
-    UpdateCounterHTML();
   }
   
   submission_edited = 0;

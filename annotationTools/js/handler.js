@@ -175,8 +175,6 @@ function handler() {
         if(idx>=num_orig_anno) {
             anno_count--;
             global_count--;
-            setCookie('counter',anno_count);
-            UpdateCounterHTML();
         }
         
         submission_edited = 0;
@@ -461,9 +459,6 @@ function handler() {
             RemoveAnnotationList();
             LoadAnnotationList();
         }
-        
-        setCookie('counter',anno_count);
-        UpdateCounterHTML();
         
         var m = main_image.GetFileInfo().GetMode();
         if(m=='mt') {

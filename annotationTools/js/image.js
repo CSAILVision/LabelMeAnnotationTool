@@ -40,7 +40,6 @@ function image(id) {
         document.getElementById('loading').style.display = '';
         if(IsMicrosoft()) this.im.style.visibility = 'hidden';
         else this.im.style.display = 'none';
-        LoadCounterText();
         if(!this.file_info.ParseURL()) return;
         this.im.src = this.file_info.GetImagePath();
         this.im.onload = onload_helper;

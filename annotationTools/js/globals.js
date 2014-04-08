@@ -57,3 +57,5 @@ var main_image;
 // URL of XHTML namespace. This is needed for generating SVG elements.
 var xhtmlNS = 'http://www.w3.org/1999/xhtml';
 
+// Website that refers to LabelMe:
+var ref;
