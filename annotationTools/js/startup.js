@@ -73,16 +73,23 @@ function LoadAnnotationSuccess(xml) {
     }
   }
 
-  // Add annotations to the main_canvas:
-  for(var pp=0; pp < AllAnnotations.length; pp++) {
+  // Add annotations to the main_canvas and render:
+  for(var pp = 0; pp < num_obj; pp++) {
     var isDeleted = AllAnnotations[pp].GetDeleted();
-    if(((pp<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || (pp>=num_orig_anno)) {
+    if((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted)) {
+      // Attach to main_canvas:
       main_canvas.AttachAnnotation(AllAnnotations[pp],'polygon');
+
+      // Render the polygon:
+      AllAnnotations[pp].DrawPolygon(main_image.GetImRatio());
+      
+      // Set polygon actions:
+      AllAnnotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
+      AllAnnotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
+      AllAnnotations[pp].SetAttribute('oncontextmenu','return false');
+      AllAnnotations[pp].SetCSS('cursor','pointer');
     }
   }
-
-  // Render the polygons on the main_canvas:
-  main_canvas.RenderAnnotations();
 
   // Finish the startup scripts:
   FinishStartup();
