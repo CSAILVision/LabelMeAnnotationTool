@@ -10,22 +10,29 @@ function annotation(anno_id) {
     this.pts_x = new Array();
     this.pts_y = new Array();
     
-    this.graphics = null;
-    this.all_lines = null;
-    this.first_point = null;
     this.anno_id = anno_id;
     this.div_attach = 'myCanvas_bg';
     
     // This array stores graphics objects for each control point
-    this.control_points = new Array();
     this.selectedControlPoint = -1;
-    this.center_point = 0;
     this.center_x;
     this.center_y;
 
     // Element id of drawn polygon:
     this.polygon_id = null;
+
+    // Element ids of drawn line segments:
+    this.line_ids = null;
+
+    // Element id for drawn first point:
+    this.point_id = null;
     
+    // Element ids of drawn control points:
+    this.control_ids = null;
+
+    // Element id of drawn center point:
+    this.center_id = null;
+
     // *******************************************
     // Public methods:
     // *******************************************
@@ -133,16 +140,19 @@ function annotation(anno_id) {
       this.pts_x.push(x);
       this.pts_y.push(y);
       
-      if(!this.all_lines) this.all_lines = Array();
+      if(!this.line_ids) this.line_ids = Array();
       
-      var line_idx = this.all_lines.length;
+      var line_idx = this.line_ids.length;
       var n = this.pts_x.length-1;
-      this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+line_idx));
-      this.all_lines[line_idx].DrawLineSegment(this.pts_x[n-1],this.pts_y[n-1],this.pts_x[n],this.pts_y[n],scale,'#0000ff');
-      $('#sGraphics'+this.anno_id+'_'+line_idx).css('cursor','crosshair');
+      
+      // Draw line segment:
+      this.line_ids.push(DrawLineSegment(this.div_attach,this.pts_x[n-1],this.pts_y[n-1],this.pts_x[n],this.pts_y[n],'stroke="#0000ff" stroke-width="4"',scale));
+
+      // Set cursor to be crosshair on line segment:
+      $('#'+this.line_ids[line_idx]).css('cursor','crosshair');
       
       // Move the first control point to be on top of any drawn lines.
-      $('#'+this.div_attach).append($('#first_point'));
+      $('#'+this.div_attach).append($('#'+this.point_id));
     };
     
     // Set attribute of drawn polygon.
@@ -157,32 +167,27 @@ function annotation(anno_id) {
     
     // Draw a polygon given this annotation's control points.
     this.DrawPolygon = function (im_ratio) {
-      if(!this.graphics) {
-	this.polygon_id = '#sGraphics'+this.anno_id;
-	this.graphics = new graphics(this.div_attach,this.polygon_id.substr(1,this.polygon_id.length));
-      }
-      
       // Determine if an angle has been labeled:
       var strtok = this.GetObjName().split(/ /);
       var isAngle = 0;
-      for(var i = 0; i < strtok.length; i++) {
-	if(strtok[i]=='angle') isAngle = 1;
-      }
+      for(var i = 0; i < strtok.length; i++) if(strtok[i]=='angle') isAngle = 1;
       
       if(this.GetPtsX().length==1) {
-	this.graphics.DrawFlag(Math.round(this.GetPtsX()[0]*im_ratio),
-			       Math.round(this.GetPtsY()[0]*im_ratio));
+	this.polygon_id = '#'+DrawFlag(this.div_attach,this.GetPtsX()[0],this.GetPtsY()[0],this.GetObjName(),im_ratio);
       }
       else if((this.GetPtsX().length==3) && isAngle) {
-	this.graphics.DrawPolyLine(this.GetPtsX(),this.GetPtsY(),this.getObjectColor(),im_ratio);
+	var attr = 'fill="none" stroke="' + this.getObjectColor() + '" stroke-width="4"';
+	this.polygon_id = '#'+DrawPolyLine(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
       else if(this.GetAutomatic()==1) {
-	this.graphics.DrawDashedPolygon(this.GetPtsX(),this.GetPtsY(),
-					this.getObjectColor(),im_ratio,this.GetObjName());
+	// Draw a dashed polygon:
+	var attr = 'fill="none" stroke="' + this.getObjectColor() + '" stroke-width="4" stroke-dasharray="9,5"';
+	this.polygon_id = '#'+DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
       else {
-	this.graphics.DrawPolygon(this.GetPtsX(),this.GetPtsY(),
-				  this.getObjectColor(),im_ratio,this.GetObjName());
+	// Draw a polygon:
+	var attr = 'fill="none" stroke="' + this.getObjectColor() + '" stroke-width="4"';
+	this.polygon_id = '#'+DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
     };
     
@@ -192,38 +197,38 @@ function annotation(anno_id) {
     // or start a new polygon.
     this.DrawPolyLine = function (im_ratio) {
       // Draw line segments:
-      var color = '#0000ff'; // blue
       var im_ratio = main_image.GetImRatio();
-      this.all_lines = Array();
+      this.line_ids = Array();
       for(var i = 0; i < this.pts_x.length-1; i++) {
-	this.all_lines.push(new graphics(this.div_attach,'sGraphics'+this.anno_id+'_'+i));
-	this.all_lines[i].DrawLineSegment(this.pts_x[i],this.pts_y[i],this.pts_x[i+1],this.pts_y[i+1],im_ratio,color);
-	$('#sGraphics'+this.anno_id+'_'+i).css('cursor','crosshair');
+	// Draw line segment:
+	this.line_ids.push(DrawLineSegment(this.div_attach,this.pts_x[i],this.pts_y[i],this.pts_x[i+1],this.pts_y[i+1],'stroke="#0000ff" stroke-width="4"',im_ratio));
+
+	// Set cursor to be crosshair on line segment:
+	$('#'+this.line_ids[i]).css('cursor','crosshair');
       }
 
       // Draw first point:
-      if($('#first_point').length>0) $('#first_point').remove();
-      this.first_point = new graphics(this.div_attach,'first_point');
-      this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
+      if(this.point_id) $('#'+this.point_id).remove();
+      this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',im_ratio);
+
 
       // Set actions for first point:
-      $('#first_point').attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-      $('#first_point').attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
+      $('#'+this.point_id).attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      $('#'+this.point_id).attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
     };
     
     // Deletes the annotation's polygon from the screen.
     this.DeletePolygon = function () {
       // Remove drawn polygon:
-      if(this.graphics) {
+      if(this.polygon_id) {
 	$(this.polygon_id).remove();
-	this.graphics = null;
 	this.polygon_id = null;
       }
 
       // Remove all line segments for partially-drawn polygon:
-      if(this.all_lines) {
-	for(var i = 0; i < this.all_lines.length; i++) $('#sGraphics'+this.anno_id+'_'+i).remove();
-	this.all_lines = null;
+      if(this.line_ids) {
+	for(var i = 0; i < this.line_ids.length; i++) $('#'+this.line_ids[i]).remove();
+	this.line_ids = null;
       }
 
       // Remove first drawn point:
@@ -239,9 +244,9 @@ function annotation(anno_id) {
     // Deletes the last control point that the user entered.
     this.DeleteLastControlPoint = function () {
       if(this.pts_x.length>1) {
-	var l = this.all_lines.length;
-	$('#sGraphics'+this.anno_id+'_'+(l-1)).remove();
-	this.all_lines = this.all_lines.slice(0,l-1);
+	var l = this.line_ids.length;
+	$('#'+this.line_ids[l-1]).remove();
+	this.line_ids = this.line_ids.slice(0,l-1);
 
 	// Remove last point from polygon array:
         var l = this.pts_x.length;
@@ -255,7 +260,7 @@ function annotation(anno_id) {
     
     // Fill the interior of the polygon.
     this.FillPolygon = function () {
-      if(this.graphics) {
+      if(this.polygon_id) {
 	$(this.polygon_id).attr("fill",$(this.polygon_id).attr("stroke"));
 	$(this.polygon_id).attr("fill-opacity","0.5");
       }
@@ -263,7 +268,7 @@ function annotation(anno_id) {
     
     // Unfill the interior of the polygon.
     this.UnfillPolygon = function () {
-      if(this.graphics) $(this.polygon_id).attr("fill","none");
+      if(this.polygon_id) $(this.polygon_id).attr("fill","none");
     };
     
     // When you move the mouse over the first control point, then make it
@@ -273,13 +278,12 @@ function annotation(anno_id) {
       if(this.pts_x.length > 0) {
 	var im_ratio = main_image.GetImRatio();
 	this.RemoveFirstPoint();
-	this.first_point = new graphics(this.div_attach,'first_point');
-	this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),Math.round(this.pts_y[0]*im_ratio),'#00ff00',8);
+	this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="8" fill="#00ff00" stroke="#ffffff" stroke-width="4"',im_ratio);
 
 	// Set actions for first point:
-	$('#first_point').attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-	$('#first_point').attr('onmouseout','main_handler.MousedOutFirstControlPoint();');
-	$('#first_point').css('cursor','pointer');
+	$('#'+this.point_id).attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+	$('#'+this.point_id).attr('onmouseout','main_handler.MousedOutFirstControlPoint();');
+	$('#'+this.point_id).css('cursor','pointer');
       }
     };
     
@@ -289,23 +293,21 @@ function annotation(anno_id) {
     this.MouseOutFirstPoint = function () {
       var im_ratio = main_image.GetImRatio();
       this.RemoveFirstPoint();
-      this.first_point = new graphics(this.div_attach,'first_point');
-      this.first_point.DrawPoint(Math.round(this.pts_x[0]*im_ratio),Math.round(this.pts_y[0]*im_ratio),'#00ff00',6);
+      this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',im_ratio);
 
       // Set actions for first point:
-      $('#first_point').attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
-      $('#first_point').attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
-      $('#first_point').css('cursor','pointer');
+      $('#'+this.point_id).attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      $('#'+this.point_id).attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
+      $('#'+this.point_id).css('cursor','pointer');
     };
     
     // This function shows all control points for an annotation it takes in
     // arrays of x and y points
     this.ShowControlPoints = function () {
       var im_ratio = main_image.GetImRatio();
-      if(!this.control_points) this.control_points = new Array();
+      if(!this.control_ids) this.control_ids = new Array();
       for(i=0; i<this.pts_x.length; i++) {
-	this.control_points.push(new graphics(this.div_attach,this.anno_id + '_ctrl_point_'+ i));
-	this.control_points[i].DrawPoint(Math.round(this.pts_x[i]*im_ratio),Math.round(this.pts_y[i]*im_ratio),'#00ff00',5);
+	this.control_ids.push(DrawPoint(this.div_attach,this.pts_x[i],this.pts_y[i],'r="5" fill="#00ff00" stroke="#ffffff" stroke-width="2.5"',im_ratio));
       }
     };
     
@@ -438,22 +440,17 @@ function annotation(anno_id) {
     // This function shows the middle grab point for a polygon
     // the point to be shown is given as input
     this.ShowCenterOfMass = function(im_ratio) {
-        this.centerOfMass();
-        if(!this.center_point) {
-            this.center_point = new graphics(this.div_attach,'center_point');
-        }
-        var MarkerSize = 8;
-        if(this.pts_x.length==1) MarkerSize = 6;
-        
-        this.center_point.DrawPoint(Math.round(this.center_x*im_ratio),
-                                    Math.round(this.center_y*im_ratio),'red',MarkerSize);
+      this.centerOfMass();
+      var MarkerSize = 8;
+      if(this.pts_x.length==1) MarkerSize = 6;
+      this.center_id = DrawPoint(this.div_attach,this.center_x,this.center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
     };
     
     // This function removes the middle grab point for a polygon
     this.RemoveCenterOfMass = function() {
-      if(this.center_point) {
-	$('#center_point').remove();
-	this.center_point = null;
+      if(this.center_id) {
+	$('#'+this.center_id).remove();
+	this.center_id = null;
       }
     };
     
@@ -513,17 +510,17 @@ function annotation(anno_id) {
     
     // Remove first drawn point:
     this.RemoveFirstPoint = function () {
-      if($('#first_point').length>0) {
-	$('#first_point').remove();
-	this.first_point = null;
+      if(this.point_id) {
+	$('#'+this.point_id).remove();
+	this.point_id = null;
       }
     };
     
     // This function removes all displayed control points from an annotation
     this.RemoveControlPoints = function () {
-      if(this.control_points) {
-	for(var i = 0; i < this.control_points.length; i++) $('#'+this.anno_id+'_ctrl_point_'+i).remove();
-	this.control_points = null;
+      if(this.control_ids) {
+	for(var i = 0; i < this.control_ids.length; i++) $('#'+this.control_ids[i]).remove();
+	this.control_ids = null;
       }
     };
     
