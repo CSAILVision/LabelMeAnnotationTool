@@ -72,11 +72,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         You are:
         <b><span id="usernametxt" type="text" style="max-width:120px; height:1.2em;" tabindex="0" title="This username will get associated to each new polygon inside the XML.">anonymous
         </span></b>
-        <font size="-2">(<a href="#" title="Click to change the username" onclick="javascript:show_enterUserNameDIV(); return false;">change user</a>)</font>
+        <font size="-2">(<a href="#" id="changeuser" title="Click to change the username">change user</a>)</font>
       </div>
       <div id="enterUserName" style="display:none;">
         Enter name:
-        <input id="userEnter" type="text" style="width:120px;" tabindex="0" value="" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using." onkeyup="javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);" />
+        <input id="userEnter" type="text" style="width:120px;" tabindex="0" value="" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using." />
       </div>
     </div>
   </div>
@@ -91,7 +91,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       </button>
       
       <!-- DOWNLOAD XML BUTTON -->
-      <button id="Download XML file" class="labelBtn" type="button" title="download XML file" onclick="javascript:GetXMLFile();" >
+      <button id="xml_url" class="labelBtn" type="button" title="Download XML file">
         <img src="Icons/download_xml.png"  height="30" />
       </button>
       
@@ -101,7 +101,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       </button>
       
       <!-- NEXT IMAGE BUTTON -->
-      <button id="nextImage" class="labelBtn" type="button" title="Next Image" onclick="javascript:ShowNextImage()" >
+      <button id="nextImage" class="labelBtn" type="button" title="Next Image">
         <img src="Icons/next_2.png" height="30" />
       </button>
     </div>
@@ -109,19 +109,19 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <!-- DRAWING BUTTONS -->
     <div id="label_buttons_drawing">
       <!-- ZOOM IN BUTTON -->
-      <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In" onclick="javascript:main_image.Zoom(1.15)" >
+      <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In">
         <img src="Icons/zoomin.png" width="30" height="38" />
       </button>
       <!-- ZOOM OUT BUTTON -->
-      <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out" onclick="javascript:main_image.Zoom(1.0/1.15)" >
+      <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out">
         <img src="Icons/zoomout.png" width="30" height="38" />
       </button>
       <!-- FIT IMAGE BUTTON -->
-      <button id="fit" class="labelBtnDraw" type="button" title="Fit Image" onclick="javascript:main_image.Zoom('fitted')" >
+      <button id="fit" class="labelBtnDraw" type="button" title="Fit Image">
         <img src="Icons/fitscreen.png" width="30" height="38" />
       </button>
       <!-- ERASE BUTTON -->
-      <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="javascript:main_handler.EraseSegmentButton()" >
+      <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment">
         <img src="Icons/erase.png"  width="30" height="38" />
       </button>
     </div>
@@ -132,21 +132,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
     <div id="loading">Loading image...</div>
     <div id="main_image" class="top" style="visibility:hidden; overflow:auto;">
       <div id="show_new_image" style="visibility:hidden;">
-        <form name="submitform"
-              id="submitform"
-              action="javascript:loadXMLDoc();"
-              method="post"
-              style="margin-bottom:0px;">
-        </form>
+        <form name="submitform" id="submitform" method="post" style="margin-bottom:0px;" />
       </div>
       
       <img id="im" style="vertical-align:bottom;z-index:-3;" />
       
-      <div id="myCanvas_bg_div"
-           style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
-           onmousedown="javascript:main_handler.RestToDraw(event);return false;"
-           oncontextmenu="javascript:return false;"
-           onmouseover="javascript:unselectObjects();">
+      <div id="myCanvas_bg_div" style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
         <svg:svg 
            id="myCanvas_bg"
            width="100%"
@@ -154,12 +145,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
            style="position:absolute;left:0px;top:0px;z-index:0;" />
       </div>
       
-      <div id="select_canvas_div"
-           style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
-           oncontextmenu="javascript:return false;" 
-           onmousedown="javascript:main_handler.SelectedCanvasMouseDown(event);return false;"
-           onmousemove="javascript:main_handler.MainPageMouseMove(event);return false;"
-           onmouseup="javascript:main_handler.MainPageMouseUp(event);return false;">
+      <div id="select_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
         <svg:svg 
            id="select_canvas"
            width="100%"
@@ -167,10 +153,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
            style="position:absolute;left:0px;top:0px;z-index:-2;" />
       </div>	      
       
-      <div id="draw_canvas_div"
-           style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);"
-           onmousedown="javascript:main_handler.DrawCanvasMouseDown(event);return false;"
-           oncontextmenu="javascript:return false;">
+      <div id="draw_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
         <svg:svg 
            id="draw_canvas"
            width="100%"
@@ -178,11 +161,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
            style="position:absolute;left:0px;top:0px;z-index:-2;" />
       </div>
       
-      <div id="query_canvas_div"
-           style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);"
-           onmousedown="javascript:event.preventDefault();WaitForInput();return false;"
-           onmouseup="javascript:event.preventDefault();"
-           oncontextmenu="javascript:return false;">
+      <div id="query_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
         <svg:svg 
            id="query_canvas"
            width="100%"

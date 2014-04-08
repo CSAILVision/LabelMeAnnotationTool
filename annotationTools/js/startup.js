@@ -113,6 +113,27 @@ function FinishStartup() {
   console.log('LabelMe: setting actions');
   if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_image.GetFileInfo().GetImagePath();');
   $('#body').attr('onmouseup',"javascript:main_handler.MainPageMouseUp(event);");
+  $('#changeuser').attr("onclick","javascript:show_enterUserNameDIV(); return false;");
+  $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
+  $('#xml_url').attr("onclick","javascript:GetXMLFile();");
+  $('#nextImage').attr("onclick","javascript:ShowNextImage()");
+  $('#zoomin').attr("onclick","javascript:main_image.Zoom(1.15)");
+  $('#zoomout').attr("onclick","javascript:main_image.Zoom(1.0/1.15)");
+  $('#fit').attr("onclick","javascript:main_image.Zoom('fitted')");
+  $('#erase').attr("onclick","javascript:main_handler.EraseSegmentButton()");
+  $('#submitform').attr("action","javascript:loadXMLDoc();");
+  $('#myCanvas_bg_div').attr("onmousedown","javascript:main_handler.RestToDraw(event);return false;");
+  $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
+  $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
+  $('#select_canvas_div').attr("oncontextmenu","javascript:return false;");
+  $('#select_canvas_div').attr("onmousedown","javascript:main_handler.SelectedCanvasMouseDown(event);return false;");
+  $('#select_canvas_div').attr("onmousemove","javascript:main_handler.MainPageMouseMove(event);return false;");
+  $('#select_canvas_div').attr("onmouseup","javascript:main_handler.MainPageMouseUp(event);return false;");
+  $('#draw_canvas_div').attr("onmousedown","javascript:main_handler.DrawCanvasMouseDown(event);return false;");
+  $('#draw_canvas_div').attr("oncontextmenu","javascript:return false;");
+  $('#query_canvas_div').attr("onmousedown","javascript:event.preventDefault();WaitForInput();return false;");
+  $('#query_canvas_div').attr("onmouseup","javascript:event.preventDefault();");
+  $('#query_canvas_div').attr("oncontextmenu","javascript:return false;");
 
   // Initialize the username:
   initUserName();
