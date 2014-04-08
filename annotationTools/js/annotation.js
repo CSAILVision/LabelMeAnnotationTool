@@ -176,17 +176,17 @@ function annotation(anno_id) {
 	this.polygon_id = '#'+DrawFlag(this.div_attach,this.GetPtsX()[0],this.GetPtsY()[0],this.GetObjName(),im_ratio);
       }
       else if((this.GetPtsX().length==3) && isAngle) {
-	var attr = 'fill="none" stroke="' + this.getObjectColor() + '" stroke-width="4"';
+	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4"';
 	this.polygon_id = '#'+DrawPolyLine(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
       else if(this.GetAutomatic()==1) {
 	// Draw a dashed polygon:
-	var attr = 'fill="none" stroke="' + this.getObjectColor() + '" stroke-width="4" stroke-dasharray="9,5"';
+	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4" stroke-dasharray="9,5"';
 	this.polygon_id = '#'+DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
       else {
 	// Draw a polygon:
-	var attr = 'fill="none" stroke="' + this.getObjectColor() + '" stroke-width="4"';
+	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4"';
 	this.polygon_id = '#'+DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
     };
@@ -522,28 +522,6 @@ function annotation(anno_id) {
 	for(var i = 0; i < this.control_ids.length; i++) $('#'+this.control_ids[i]).remove();
 	this.control_ids = null;
       }
-    };
-    
-    this.charCodeAt = function (text,position) {
-        var tmp = text.substring(position,position+1);
-        for(var i=1;i<=255;i++) if(unescape('%'+i.toString(16)) == tmp) return i;
-        return 0;
-    };
-    
-    this.getObjectColor = function () {
-      // If the polygon has been deleted then return gray:
-      if(this.GetDeleted()) return "#888888";
-        
-      // List of possible object colors:
-      var objectColors = Array("#009900","#00ff00","#ccff00","#ffff00","#ffcc00","#ff9999","#cc0033","#ff33cc","#9933ff","#990099","#000099","#006699","#00ccff","#999900");
-      
-      // Pseudo-randomized case insensitive hashing based on object name:
-      var name = this.GetObjName().toUpperCase(); 
-      var hash = 0;
-      for(var i = 0; i < name.length;i++) hash += this.charCodeAt(name,i);
-      hash = (((hash + 567) * 1048797) % objectColors.length);
-      
-      return objectColors[hash];
     };
     
     // Compute the L2 distance between two Cartesian points.

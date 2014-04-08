@@ -118,20 +118,22 @@ function DrawPoint(element_id,x,y,attr,scale) {
   return dom_id;
 }
 
-function charCodeAt(text,position) {
-  var tmp = text.substring(position,position+1);
-  for(var i=1;i<=255;i++) if(unescape('%'+i.toString(16)) == tmp) return i;
-  return 0;
-}
-
 function HashObjectColor(name) {
   // List of possible object colors:
   var objectColors = Array("#009900","#00ff00","#ccff00","#ffff00","#ffcc00","#ff9999","#cc0033","#ff33cc","#9933ff","#990099","#000099","#006699","#00ccff","#999900");
   
   // Pseudo-randomized case insensitive hashing based on object name:
-  name = name.toUpperCase(); 
   var hash = 0;
-  for(var i = 0; i < name.length;i++) hash += charCodeAt(name,i);
+  name = name.toUpperCase(); 
+  for(var i = 0; i < name.length;i++) {
+    var tmp = name.substring(i,i+1);
+    for(var j = 1; j <= 255; j++) {
+      if(unescape('%'+j.toString(16)) == tmp) {
+	hash += j;
+	break;
+      }
+    }
+  }
   hash = (((hash + 567) * 1048797) % objectColors.length);
   
   return objectColors[hash];
