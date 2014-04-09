@@ -231,5 +231,7 @@ function StopMoveCenterOfMass(event) {
 function StopAdjustEvent() {
   if(username_flag) submit_username();
   main_handler.SubmitEditLabel();
+  RemoveControlPoints(anno);
+  RemoveCenterOfMass(anno);
   console.log('LabelMe: Stopped adjust event.');
 }
