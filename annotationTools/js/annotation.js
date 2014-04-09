@@ -157,12 +157,12 @@ function annotation(anno_id) {
     
     // Set attribute of drawn polygon.
     this.SetAttribute = function(field,value) {
-      $(this.polygon_id).attr(field,value);
+      $('#'+this.polygon_id).attr(field,value);
     };
     
     // Set CSS attribute of drawn polygon.
     this.SetCSS = function(field,value) {
-      $(this.polygon_id).css(field,value);
+      $('#'+this.polygon_id).css(field,value);
     };
     
     // Draw a polygon given this annotation's control points.
@@ -173,22 +173,23 @@ function annotation(anno_id) {
       for(var i = 0; i < strtok.length; i++) if(strtok[i]=='angle') isAngle = 1;
       
       if(this.GetPtsX().length==1) {
-	this.polygon_id = '#'+DrawFlag(this.div_attach,this.GetPtsX()[0],this.GetPtsY()[0],this.GetObjName(),im_ratio);
+	this.polygon_id = DrawFlag(this.div_attach,this.GetPtsX()[0],this.GetPtsY()[0],this.GetObjName(),im_ratio);
       }
       else if((this.GetPtsX().length==3) && isAngle) {
 	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4"';
-	this.polygon_id = '#'+DrawPolyLine(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
+	this.polygon_id = DrawPolyLine(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
       else if(this.GetAutomatic()==1) {
 	// Draw a dashed polygon:
 	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4" stroke-dasharray="9,5"';
-	this.polygon_id = '#'+DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
+	this.polygon_id = DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
       else {
 	// Draw a polygon:
 	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4"';
-	this.polygon_id = '#'+DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
+	this.polygon_id = DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
       }
+      return this.polygon_id;
     };
     
     // Draw a poly-line given this annotation's control points (i.e.
@@ -221,7 +222,7 @@ function annotation(anno_id) {
     this.DeletePolygon = function () {
       // Remove drawn polygon:
       if(this.polygon_id) {
-	$(this.polygon_id).remove();
+	$('#'+this.polygon_id).remove();
 	this.polygon_id = null;
       }
 
@@ -260,15 +261,12 @@ function annotation(anno_id) {
     
     // Fill the interior of the polygon.
     this.FillPolygon = function () {
-      if(this.polygon_id) {
-	$(this.polygon_id).attr("fill",$(this.polygon_id).attr("stroke"));
-	$(this.polygon_id).attr("fill-opacity","0.5");
-      }
+      FillPolygon(this.polygon_id);
     };
     
     // Unfill the interior of the polygon.
     this.UnfillPolygon = function () {
-      if(this.polygon_id) $(this.polygon_id).attr("fill","none");
+      if(this.polygon_id) $('#'+this.polygon_id).attr("fill","none");
     };
     
     // When you move the mouse over the first control point, then make it
@@ -331,7 +329,7 @@ function annotation(anno_id) {
       this.pts_y[i] = Math.max(Math.min(this.pts_y[i],main_image.height_orig),1);
       
       // Remove polygon and redraw:
-      $(this.polygon_id).remove();
+      $('#'+this.polygon_id).remove();
       this.DrawPolygon(im_ratio);
       
       // Adjust control points:
@@ -369,7 +367,7 @@ function annotation(anno_id) {
         this.center_y = Math.round(im_ratio*(dy+this.center_y));
         
         // Remove polygon and redraw:
-	$(this.polygon_id).remove();
+	$('#'+this.polygon_id).remove();
         this.DrawPolygon(im_ratio);
         
         // Adjust control points:

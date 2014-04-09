@@ -86,8 +86,7 @@ function canvas(div_attach) {
 
 	break;
       case 'filled_polygon':
-	this.annotations[pp].DrawPolygon(main_image.GetImRatio());
-	this.annotations[pp].FillPolygon();
+	FillPolygon(this.annotations[pp].DrawPolygon(main_image.GetImRatio()));
 	break;
       case 'polyline':
 	this.annotations[pp].DrawPolyLine();

@@ -4,7 +4,7 @@
 // Plots all the LabelMe annotations and returns the DOM element id.
 function LMplot(xml,imagename) {
   // Display image:
-  $('body').append('<svg id="canvas" width="1920" height="2560" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image id="img" xlink:href="' + imagename + '" x="0" y="0" height="1920" width="2560" /></svg>');
+  $('body').append('<svg id="canvas" width="2560" height="1920" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image id="img" xlink:href="' + imagename + '" x="0" y="0" height="1920" width="2560" /></svg>');
 
   // Display polygons:
   var N = $(xml).children("annotation").children("object").length;
@@ -138,3 +138,12 @@ function HashObjectColor(name) {
   
   return objectColors[hash];
 }
+
+// Fill the interior of a polygon.  Input is DOM element id.
+function FillPolygon(id) {
+  if(id) {
+    $('#'+id).attr("fill",$('#'+id).attr("stroke"));
+    $('#'+id).attr("fill-opacity","0.5");
+  }
+}
+    
