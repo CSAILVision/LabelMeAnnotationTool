@@ -271,7 +271,7 @@ function HTMLadjustpolygonButton() {
 // show small icon on the top-right to close the window
 function GetCloseImg() {
     return '<img style="border: 0pt none; width:14px; height:14px; z-index:4; -moz-user-select:none; position:absolute; cursor:pointer; right:8px;'+
-    'top: 8px;" src="Icons/close.png" height="14" width="14" onclick="main_handler.SelectedToRest()" />';
+    'top: 8px;" src="Icons/close.png" height="14" width="14" onclick="javascript:StopEditEvent()" />';
 }
 
 

@@ -99,7 +99,7 @@ function handler() {
             }
         }
         
-        main_handler.SelectedToRest();
+        StopEditEvent();
         
         // Insert data to write to logfile:
         if(editedControlPoints) {
@@ -205,7 +205,7 @@ function handler() {
         }
         
         unselectObjects(); // Perhaps this should go elsewhere...
-        main_handler.SelectedToRest();
+        StopEditEvent();
     };
     
     
@@ -233,7 +233,7 @@ function handler() {
       if(active_canvas==REST_CANVAS) StartEditEvent(idx,null);
       else if(active_canvas==SELECTED_CANVAS) {
 	var anno_id = main_select_canvas.Peek().GetAnnoID();
-	if(edit_popup_open && (idx==anno_id)) main_handler.SelectedToRest();
+	if(edit_popup_open && (idx==anno_id)) StopEditEvent();
       }
     };
     
@@ -489,27 +489,6 @@ function handler() {
         return anno;
     };
     
-    // Handles when we wish to change from "selected" to "rest".
-    this.SelectedToRest = function () {
-      active_canvas = REST_CANVAS;
-      edit_popup_open = 0;
-      
-      // Move select_canvas to back:
-      document.getElementById('select_canvas').style.zIndex = -2;
-      document.getElementById('select_canvas_div').style.zIndex = -2;
-      
-      var anno = main_select_canvas.DetachAnnotation();
-      
-      WriteLogMsg('*Closed_Edit_Popup');
-      CloseEditPopup();
-      main_image.ScrollbarsOn();
-      
-      if(!anno.GetDeleted()||view_Deleted) {
-	main_canvas.AttachAnnotation(anno,'polygon');
-	main_canvas.RenderAnnotations();
-      }
-    };
-    
     // Handles when the user presses the mouse button down on the selected
     // canvas.
     this.SelectedCanvasMouseDown = function (event) {
@@ -583,7 +562,7 @@ function handler() {
         }
         // 27 - Esc key
         // Close edit popup if it is open.
-        if(event.keyCode==27 && edit_popup_open) main_handler.SelectedToRest();
+        if(event.keyCode==27 && edit_popup_open) StopEditEvent();
     };
     
     // Handles when the user clicks on the "Erase Segment" button.

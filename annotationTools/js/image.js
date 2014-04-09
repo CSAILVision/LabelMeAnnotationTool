@@ -133,7 +133,7 @@ function image(id) {
         if(wait_for_input) return;// WaitForInput();
         
         // if an old polygon is being edited while the user press the zoom button then close the polygon and zoom.
-        if(edit_popup_open) main_handler.SelectedToRest();
+        if(edit_popup_open) StopEditEvent();
         
         if(amt=='fitted') {
                 this.im_ratio = this.browser_im_ratio;

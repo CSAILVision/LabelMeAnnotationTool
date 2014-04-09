@@ -62,3 +62,29 @@ function StartEditEvent(anno_id,event) {
     main_image.SlideWindow(anno.center_x,anno.center_y);
   }
 }
+
+// This function is called when the edit event is finished.  It can be
+// triggered when the user (1) clicks the close edit bubble button, 
+// (2) zooms, (3) submits an object label in the popup bubble, 
+// (4) presses the delete button in the popup bubble, (5) clicks the 
+// object in the object list, (6) presses the ESC key.
+function StopEditEvent() {
+  active_canvas = REST_CANVAS;
+  edit_popup_open = 0;
+  
+  // Move select_canvas to back:
+  document.getElementById('select_canvas').style.zIndex = -2;
+  document.getElementById('select_canvas_div').style.zIndex = -2;
+  
+  var anno = main_select_canvas.DetachAnnotation();
+  
+  WriteLogMsg('*Closed_Edit_Popup');
+  CloseEditPopup();
+  main_image.ScrollbarsOn();
+  
+  if(!anno.GetDeleted()||view_Deleted) {
+    main_canvas.AttachAnnotation(anno,'polygon');
+    main_canvas.RenderAnnotations();
+  }
+  console.log('LabelMe: Stopped edit event.');
+}
