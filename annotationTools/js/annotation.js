@@ -234,12 +234,6 @@ function annotation(anno_id) {
 
       // Remove first drawn point:
       this.RemoveFirstPoint();
-
-      // Remove any drawn control points:
-      this.RemoveControlPoints();
-
-      // Remove drawn center-of-mass point:
-      this.RemoveCenterOfMass();
     };
     
     // Deletes the last control point that the user entered.
@@ -297,159 +291,6 @@ function annotation(anno_id) {
       $('#'+this.point_id).attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
       $('#'+this.point_id).attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
       $('#'+this.point_id).css('cursor','pointer');
-    };
-    
-    // This function shows all control points for an annotation it takes in
-    // arrays of x and y points
-    this.ShowControlPoints = function () {
-      var im_ratio = main_image.GetImRatio();
-      if(!this.control_ids) this.control_ids = new Array();
-      for(i=0; i<this.pts_x.length; i++) {
-	this.control_ids.push(DrawPoint(this.div_attach,this.pts_x[i],this.pts_y[i],'r="5" fill="#00ff00" stroke="#ffffff" stroke-width="2.5"',im_ratio));
-      }
-    };
-    
-    this.StartMoveControlPoint = function (x,y,im_ratio) {
-        var i = this.getNearestControlPoint(x,y,im_ratio);
-        if(i>=0) {
-            this.RemoveCenterOfMass();
-            this.selectedControlPoint = i;
-            this.MoveControlPoint(x,y,im_ratio);
-            return 1;
-        }
-        return 0;
-    };
-    
-    this.MoveControlPoint = function (x,y,im_ratio) {
-      var i = this.selectedControlPoint;
-      this.pts_x[i] = Math.round(x/im_ratio);
-      this.pts_y[i] = Math.round(y/im_ratio);
-      
-      this.pts_x[i] = Math.max(Math.min(this.pts_x[i],main_image.width_orig),1);
-      this.pts_y[i] = Math.max(Math.min(this.pts_y[i],main_image.height_orig),1);
-      
-      // Remove polygon and redraw:
-      $('#'+this.polygon_id).remove();
-      this.DrawPolygon(im_ratio);
-      
-      // Adjust control points:
-      this.RemoveControlPoints();
-      this.ShowControlPoints();
-    };
-    
-    this.StartMoveCenterOfMass = function (x,y,im_ratio) {
-        var d = Math.sqrt(Math.pow(Math.round(this.center_x*im_ratio)-x,2)+Math.pow(Math.round(this.center_y*im_ratio)-y,2));
-        if(d<=4) {
-            this.RemoveControlPoints();
-            this.MoveCenterOfMass(x,y,im_ratio);
-            return 1;
-        }
-        return 0;
-    };
-    
-    this.MoveCenterOfMass = function(x,y,im_ratio) {
-        var dx = Math.round(x/im_ratio)-this.center_x;
-        var dy = Math.round(y/im_ratio)-this.center_y;
-        
-        // Adjust dx,dy to make sure we don't go outside of the image:
-        for(i=0; i<this.pts_x.length; i++) {
-            dx = Math.max(this.pts_x[i]+dx,1)-this.pts_x[i];
-            dy = Math.max(this.pts_y[i]+dy,1)-this.pts_y[i];
-            dx = Math.min(this.pts_x[i]+dx,main_image.width_orig)-this.pts_x[i];
-            dy = Math.min(this.pts_y[i]+dy,main_image.height_orig)-this.pts_y[i];
-        }
-        
-        for(i=0; i<this.pts_x.length; i++) {
-            this.pts_x[i] = Math.round(this.pts_x[i]+dx);
-            this.pts_y[i] = Math.round(this.pts_y[i]+dy);
-        }
-        this.center_x = Math.round(im_ratio*(dx+this.center_x));
-        this.center_y = Math.round(im_ratio*(dy+this.center_y));
-        
-        // Remove polygon and redraw:
-	$('#'+this.polygon_id).remove();
-        this.DrawPolygon(im_ratio);
-        
-        // Adjust control points:
-        this.RemoveControlPoints();
-        this.ShowControlPoints();
-        
-        this.RemoveCenterOfMass();
-        this.ShowCenterOfMass(im_ratio);
-    };
-    
-    this.getNearestControlPoint = function (x,y,im_ratio) {
-        var d = 4;
-        var cpt = -1;
-        for(i=0; i<this.pts_x.length; i++) {
-            var j = Math.sqrt(Math.pow(Math.round(this.pts_x[i]*im_ratio)-x,2)+Math.pow(Math.round(this.pts_y[i]*im_ratio)-y,2));
-            if(j<d) {
-                d = j;
-                cpt = i;
-            }
-        }
-        return cpt;
-    };
-    
-    this.centerOfMass = function () {
-        var x = this.pts_x;
-        var y = this.pts_y;
-        var length = x.length;
-        var mdpts_x = new Array();
-        var mdpts_y = new Array();
-        var lengths = new Array();
-        
-        if(length==1) {
-            this.center_x = x[0];
-            this.center_y = y[0];
-            return;
-        }
-        
-        for(i=1; i < length; i++) {
-            mdpts_x[i-1] = Math.round((x[i-1] + x[i])/2);
-            mdpts_y[i-1] = Math.round((y[i-1] + y[i])/2);
-            lengths[i-1] = Math.round(Math.sqrt(Math.pow(x[i-1] - x[i], 2) +
-                                                Math.pow(y[i-1] - y[i], 2)));
-        }
-        mdpts_x[length - 1] = Math.round((x[0] + x[length - 1])/2);
-        mdpts_y[length - 1] = Math.round((y[0] + y[length - 1])/2);
-        lengths[i-1] = Math.round(Math.sqrt(Math.pow(x[0] - x[length - 1], 2) +
-                                            Math.pow(y[0] - y[length - 1], 2)));
-        
-        var sumlengths = 0;
-        var length_l = lengths.length;
-        for(i = 0; i < length_l; i++) {
-            sumlengths = sumlengths + lengths[i];
-        }
-        
-        this.center_x = 0;
-        for(i = 0; i < length_l; i++) {
-            this.center_x = this.center_x + mdpts_x[i]*lengths[i];
-        }
-        this.center_x = this.center_x / sumlengths;
-        
-        this.center_y = 0;
-        for(i = 0; i < length_l; i++) {
-            this.center_y = this.center_y + mdpts_y[i]*lengths[i];
-        }
-        this.center_y = this.center_y / sumlengths;
-    };
-    
-    // This function shows the middle grab point for a polygon
-    // the point to be shown is given as input
-    this.ShowCenterOfMass = function(im_ratio) {
-      this.centerOfMass();
-      var MarkerSize = 8;
-      if(this.pts_x.length==1) MarkerSize = 6;
-      this.center_id = DrawPoint(this.div_attach,this.center_x,this.center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
-    };
-    
-    // This function removes the middle grab point for a polygon
-    this.RemoveCenterOfMass = function() {
-      if(this.center_id) {
-	$('#'+this.center_id).remove();
-	this.center_id = null;
-      }
     };
     
     // Gets the (x,y) point where a popup bubble can be attached.
@@ -511,14 +352,6 @@ function annotation(anno_id) {
       if(this.point_id) {
 	$('#'+this.point_id).remove();
 	this.point_id = null;
-      }
-    };
-    
-    // This function removes all displayed control points from an annotation
-    this.RemoveControlPoints = function () {
-      if(this.control_ids) {
-	for(var i = 0; i < this.control_ids.length; i++) $('#'+this.control_ids[i]).remove();
-	this.control_ids = null;
       }
     };
     

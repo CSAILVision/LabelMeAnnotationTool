@@ -15,11 +15,6 @@ var active_canvas = REST_CANVAS;
 function handler() {
     
     // *******************************************
-    // Private variables:
-    // *******************************************
-    this.objEnter = '';
-    
-    // *******************************************
     // Public methods:
     // *******************************************
     
@@ -63,7 +58,7 @@ function handler() {
       // object name
       old_name = anno.GetObjName();
       if(document.getElementById('objEnter')) new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
-      else new_name = RemoveSpecialChars(this.objEnter);
+      else new_name = RemoveSpecialChars(adjust_objEnter);
       
       var re = /[a-zA-Z0-9]/;
       if(!re.test(new_name)) {
@@ -74,11 +69,11 @@ function handler() {
       if (use_attributes) {
 	// occlusion field
 	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
-	else new_occluded = RemoveSpecialChars(this.occluded);
+	else new_occluded = RemoveSpecialChars(adjust_occluded);
 	
 	// attributes field
 	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-	else new_attributes = RemoveSpecialChars(this.attributes);
+	else new_attributes = RemoveSpecialChars(adjust_attributes);
       }
       
       StopEditEvent();
@@ -161,24 +156,6 @@ function handler() {
         
         unselectObjects(); // Perhaps this should go elsewhere...
         StopEditEvent();
-    };
-    
-    // ADJUST POLYGON,
-    this.EditBubbleAdjustPolygon = function () {
-      // we need to capture the data before closing the bubble (THIS IS AN UGLY HACK)
-      this.objEnter = document.getElementById('objEnter').value;
-      this.attributes = document.getElementById('attributes').value;
-      this.occluded = document.getElementById('occluded').value;
-      
-      CloseEditPopup();
-      main_image.ScrollbarsOn();
-
-      // Get annotation on the select canvas:
-      var anno = main_select_canvas.Peek();
-
-      // Show control points:
-      anno.ShowControlPoints();
-      anno.ShowCenterOfMass(main_image.GetImRatio());
     };
     
     // Handles when the user clicks on the link for an annotation.
@@ -380,69 +357,6 @@ function handler() {
 	main_image.ScrollbarsOn();
 
         return anno;
-    };
-    
-    // Handles when the user presses the mouse button down on the selected
-    // canvas.
-    this.SelectedCanvasMouseDown = function (event) {
-      if(isEditingControlPoint || isMovingCenterOfMass) {
-	this.MainPageMouseUp(event);
-	return;
-      }
-      var x = GetEventPosX(event);
-      var y = GetEventPosY(event);
-      var button = event.button;
-      if(username_flag) submit_username();
-      
-      if(button>1) return;
-      if(!isEditingControlPoint && main_select_canvas.Peek().StartMoveControlPoint(x,y,main_image.GetImRatio())) {
-	isEditingControlPoint = 1;
-	editedControlPoints = 1;
-      }
-      else if(!isMovingCenterOfMass && main_select_canvas.Peek().StartMoveCenterOfMass(x,y,main_image.GetImRatio())) {
-	isMovingCenterOfMass = 1;
-	editedControlPoints = 1;
-      }
-      else main_handler.SubmitEditLabel();
-    };
-    
-    // Handles when the user moves the mouse button over the main page.
-    this.MainPageMouseMove = function (event) {
-      if(active_canvas==SELECTED_CANVAS) {
-	var x = GetEventPosX(event);
-	var y = GetEventPosY(event);
-	var button = event.button;
-	if(button>1) return;
-	if(isEditingControlPoint) {
-	  main_select_canvas.Peek().MoveControlPoint(x,y,main_image.GetImRatio());
-	}
-	else if(isMovingCenterOfMass) {
-	  main_select_canvas.Peek().MoveCenterOfMass(x,y,main_image.GetImRatio());
-	}
-      }
-    };
-    
-    // Handles when the user releases the mouse button over the main page.
-    this.MainPageMouseUp = function (event) {
-      if(active_canvas==SELECTED_CANVAS) {
-	var x = GetEventPosX(event);
-	var y = GetEventPosY(event);
-	var button = event.button;
-
-	if(button>1) return;
-	if(isEditingControlPoint) {
-	  main_select_canvas.Peek().MoveControlPoint(x,y,main_image.GetImRatio());
-	  main_select_canvas.Peek().FillPolygon();
-	  main_select_canvas.Peek().ShowCenterOfMass(main_image.GetImRatio());
-	  isEditingControlPoint = 0;
-	  return;
-	}
-	if(isMovingCenterOfMass) {
-	  main_select_canvas.Peek().MoveCenterOfMass(x,y,main_image.GetImRatio());
-	  main_select_canvas.Peek().FillPolygon();
-	  isMovingCenterOfMass = 0;
-	}
-      }
     };
     
     // Handles when the user presses a key while interacting with the tool.

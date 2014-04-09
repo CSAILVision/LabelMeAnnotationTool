@@ -265,7 +265,7 @@ function HTMLdeleteeditButton() {
 }
 
 function HTMLadjustpolygonButton() {
-    return '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="main_handler.EditBubbleAdjustPolygon();" /> ';
+    return '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="StartAdjustEvent();" /> ';
 }
 
 // show small icon on the top-right to close the window
