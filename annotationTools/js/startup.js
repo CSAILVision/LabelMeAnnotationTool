@@ -157,7 +157,7 @@ function FinishStartup() {
   $('#fit').attr("onclick","javascript:main_image.Zoom('fitted')");
   $('#erase').attr("onclick","javascript:main_handler.EraseSegmentButton()");
   $('#submitform').attr("action","javascript:loadXMLDoc();");
-  $('#myCanvas_bg_div').attr("onmousedown","javascript:main_handler.RestToDraw(event);return false;");
+  $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
   $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
   $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
   $('#select_canvas_div').attr("oncontextmenu","javascript:return false;");

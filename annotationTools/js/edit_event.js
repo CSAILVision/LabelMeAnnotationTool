@@ -28,8 +28,8 @@ function StartEditEvent(anno_id,event) {
   }
   
   // Move select_canvas to front:
-  document.getElementById('select_canvas').style.zIndex = 0;
-  document.getElementById('select_canvas_div').style.zIndex = 0;
+  $('#select_canvas').css('z-index','0');
+  $('#select_canvas_div').css('z-index','0');
   
   var anno = main_canvas.DetachAnnotation(anno_id);
   
@@ -73,8 +73,8 @@ function StopEditEvent() {
   edit_popup_open = 0;
   
   // Move select_canvas to back:
-  document.getElementById('select_canvas').style.zIndex = -2;
-  document.getElementById('select_canvas_div').style.zIndex = -2;
+  $('#select_canvas').css('z-index','-2');
+  $('#select_canvas_div').css('z-index','-2');
   
   var anno = main_select_canvas.DetachAnnotation();
   

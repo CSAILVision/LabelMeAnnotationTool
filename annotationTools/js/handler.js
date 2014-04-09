@@ -256,44 +256,6 @@ function handler() {
         else unselectObjects();
     };
     
-    // Handles when we wish to change from "rest" to "draw".
-    this.RestToDraw = function (event) {
-      if(!action_CreatePolygon) {
-	//       alert('You do not have permission to add new polygons');
-	return;
-      }
-      if(active_canvas != REST_CANVAS) return;
-      active_canvas = DRAW_CANVAS;
-      // Get (x,y) mouse click location and button.
-      var x = GetEventPosX(event);
-      var y = GetEventPosY(event);
-      var button = event.button;
-      
-      // If the user does not left click, then ignore mouse-down action.
-      if(button>1) return;
-      
-      // Move draw canvas to front:
-      document.getElementById('draw_canvas').style.zIndex = 0;
-      document.getElementById('draw_canvas_div').style.zIndex = 0;
-      
-      if(username_flag) submit_username();
-      
-      // Create new annotation structure:
-      var anno = new annotation(AllAnnotations.length);
-
-      // Add first control point:
-      anno.AddFirstControlPoint(x,y);
-
-      // Attach the annotation to the draw canvas:
-      main_draw_canvas.AttachAnnotation(anno,'polyline');
-
-      // Render the annotation:
-      main_draw_canvas.RenderAnnotations();
-      
-      WriteLogMsg('*start_polygon');
-
-    };
-    
     // Handles when the user presses the mouse button down on the drawing
     // canvas.
     this.DrawCanvasMouseDown = function (event) {
@@ -314,7 +276,7 @@ function handler() {
     this.DrawToQuery = function () {
         if((object_choices!='...') && (object_choices.length==1)) {
             this.SubmitQuery();
-            this.DrawToRest();
+            StopDrawEvent();
             return;
         }
         active_canvas = QUERY_CANVAS;
@@ -347,17 +309,6 @@ function handler() {
 
 	// Render the annotation:
         main_query_canvas.RenderAnnotations();
-    };
-    
-    // Handles when we wish to change from "draw" to "rest".
-    this.DrawToRest = function () {
-        active_canvas = REST_CANVAS;
-
-	// Move draw canvas to the back:
-	document.getElementById('draw_canvas').style.zIndex = -2;
-	document.getElementById('draw_canvas_div').style.zIndex = -2;
-
-        main_draw_canvas.DetachAnnotation();
     };
     
     // Submits the object label in response to the "What is this object?"
@@ -582,7 +533,7 @@ function handler() {
             //       new_name = '';
             //       SubmitAnnotations(0);
             
-            this.DrawToRest();
+            StopDrawEvent();
         }
         return anno;
     };
