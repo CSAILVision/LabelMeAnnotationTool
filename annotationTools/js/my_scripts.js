@@ -300,7 +300,7 @@ function DeleteSelectedPolygon() {
   }
   
   if(AllAnnotations[selected_poly].GetVerified()) {
-    main_handler.RestToSelected(selected_poly,null);
+    StartEditEvent(selected_poly,null);
     return;
   }
   

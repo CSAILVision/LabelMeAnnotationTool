@@ -93,7 +93,7 @@ function LoadAnnotationSuccess(xml) {
       AllAnnotations[pp].DrawPolygon(main_image.GetImRatio());
       
       // Set polygon actions:
-      AllAnnotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + pp + ',evt); return false;');
+      AllAnnotations[pp].SetAttribute('onmousedown','StartEditEvent(' + pp + ',evt); return false;');
       AllAnnotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ pp +'); return false;');
       AllAnnotations[pp].SetAttribute('oncontextmenu','return false');
       AllAnnotations[pp].SetCSS('cursor','pointer');

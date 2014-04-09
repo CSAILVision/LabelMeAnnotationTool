@@ -8,12 +8,15 @@ var REST_CANVAS = 1;
 var DRAW_CANVAS = 2;
 var SELECTED_CANVAS = 3;
 var QUERY_CANVAS = 4;
+
+// Global variable indicating which canvas is active:
+var active_canvas = REST_CANVAS;
+
 function handler() {
     
     // *******************************************
     // Private variables:
     // *******************************************
-    this.active_canvas = REST_CANVAS;
     this.objEnter = '';
     
     // *******************************************
@@ -38,7 +41,7 @@ function handler() {
     // Handles when the user presses the undo close button in response to
     // the "What is this object?" popup bubble.
     this.WhatIsThisObjectUndoCloseButton = function () {
-        this.active_canvas = DRAW_CANVAS;
+        active_canvas = DRAW_CANVAS;
 
 	// Move query canvas to the back:
 	document.getElementById('query_canvas').style.zIndex = -2;
@@ -227,8 +230,8 @@ function handler() {
     
     // Handles when the user clicks on the link for an annotation.
     this.AnnotationLinkClick = function (idx) {
-      if(this.active_canvas==REST_CANVAS) main_handler.RestToSelected(idx,null);
-      else if(this.active_canvas==SELECTED_CANVAS) {
+      if(active_canvas==REST_CANVAS) StartEditEvent(idx,null);
+      else if(active_canvas==SELECTED_CANVAS) {
 	var anno_id = main_select_canvas.Peek().GetAnnoID();
 	if(edit_popup_open && (idx==anno_id)) main_handler.SelectedToRest();
       }
@@ -236,12 +239,12 @@ function handler() {
     
     // Handles when the user moves the mouse over an annotation link.
     this.AnnotationLinkMouseOver = function (a) {
-        if(this.active_canvas!=SELECTED_CANVAS) selectObject(a);
+        if(active_canvas!=SELECTED_CANVAS) selectObject(a);
     };
     
     // Handles when the user moves the mouse away from an annotation link.
     this.AnnotationLinkMouseOut = function () {
-        if(this.active_canvas!=SELECTED_CANVAS) unselectObjects();
+        if(active_canvas!=SELECTED_CANVAS) unselectObjects();
     };
     
     // Handles when the user moves the mouse over a polygon on the drawing
@@ -259,8 +262,8 @@ function handler() {
 	//       alert('You do not have permission to add new polygons');
 	return;
       }
-      if(this.active_canvas != REST_CANVAS) return;
-      this.active_canvas = DRAW_CANVAS;
+      if(active_canvas != REST_CANVAS) return;
+      active_canvas = DRAW_CANVAS;
       // Get (x,y) mouse click location and button.
       var x = GetEventPosX(event);
       var y = GetEventPosY(event);
@@ -294,7 +297,7 @@ function handler() {
     // Handles when the user presses the mouse button down on the drawing
     // canvas.
     this.DrawCanvasMouseDown = function (event) {
-        if(this.active_canvas!=DRAW_CANVAS) return;
+        if(active_canvas!=DRAW_CANVAS) return;
         
         var x = GetEventPosX(event);
         var y = GetEventPosY(event);
@@ -314,7 +317,7 @@ function handler() {
             this.DrawToRest();
             return;
         }
-        this.active_canvas = QUERY_CANVAS;
+        active_canvas = QUERY_CANVAS;
 
 	// Move draw canvas to the back:
 	document.getElementById('draw_canvas').style.zIndex = -2;
@@ -348,7 +351,7 @@ function handler() {
     
     // Handles when we wish to change from "draw" to "rest".
     this.DrawToRest = function () {
-        this.active_canvas = REST_CANVAS;
+        active_canvas = REST_CANVAS;
 
 	// Move draw canvas to the back:
 	document.getElementById('draw_canvas').style.zIndex = -2;
@@ -382,7 +385,7 @@ function handler() {
         
         if((object_choices!='...') && (object_choices.length==1)) {
             nn = RemoveSpecialChars(object_choices[0]);
-            this.active_canvas = REST_CANVAS;
+            active_canvas = REST_CANVAS;
 
 	    // Move draw canvas to the back:
 	    document.getElementById('draw_canvas').style.zIndex = -2;
@@ -472,7 +475,7 @@ function handler() {
     
     // Handles when we wish to change from "query" to "rest".
     this.QueryToRest = function () {
-        this.active_canvas = REST_CANVAS;
+        active_canvas = REST_CANVAS;
 
 	// Move query canvas to the back:
 	document.getElementById('query_canvas').style.zIndex = -2;
@@ -486,74 +489,9 @@ function handler() {
         return anno;
     };
     
-    // Handles when we wish to change from "rest" to "selected".
-    this.RestToSelected = function (anno_id,event) {
-      if(event) event.stopPropagation();
-      if((IsUserAnonymous() || (!IsCreator(AllAnnotations[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
-	PermissionError();
-	return;
-      }
-      this.active_canvas = SELECTED_CANVAS;
-      edit_popup_open = 1;
-      
-      // Turn off automatic flag and write to XML file:
-      if(AllAnnotations[anno_id].GetAutomatic()) {
-	// Insert data for server logfile:
-	old_name = AllAnnotations[anno_id].GetObjName();
-	new_name = old_name;
-	InsertServerLogData('cpts_not_modified');
-        
-	// Set <automatic> in XML:
-	$(LM_xml).children("annotation").children("object").eq(anno_id).children("automatic").text('0');
-        
-	// Write XML to server:
-	WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
-        
-	//       SubmitAnnotations(false);
-      }
-      
-      // Move select_canvas to front:
-      document.getElementById('select_canvas').style.zIndex = 0;
-      document.getElementById('select_canvas_div').style.zIndex = 0;
-      
-      var anno = main_canvas.DetachAnnotation(anno_id);
-      
-      editedControlPoints = 0;
-      
-      if(username_flag) submit_username();
-      
-      // Attach the annotation to the canvas:
-      main_select_canvas.AttachAnnotation(anno,'filled_polygon');
-
-      // Render the annotation:
-      main_select_canvas.RenderAnnotations();
-      
-      // Make edit popup appear.
-      var pt = anno.GetPopupPoint();
-      pt = main_image.SlideWindow(pt[0],pt[1]);
-      main_image.ScrollbarsOff();
-      if(anno.GetVerified()) {
-	mkVerifiedPopup(pt[0],pt[1]);
-      }
-      else {
-	// Set object list choices for points and lines:
-	var doReset = SetObjectChoicesPointLine(anno);
-	
-	// Popup edit bubble:
-	WriteLogMsg('*Opened_Edit_Popup');
-	mkEditPopup(pt[0],pt[1],anno);
-	
-	// If annotation is point or line, then 
-	if(doReset) object_choices = '...';
-	
-	main_image.SlideWindow(anno.center_x,anno.center_y);
-      }
-
-    };
-    
     // Handles when we wish to change from "selected" to "rest".
     this.SelectedToRest = function () {
-      this.active_canvas = REST_CANVAS;
+      active_canvas = REST_CANVAS;
       edit_popup_open = 0;
       
       // Move select_canvas to back:
@@ -598,7 +536,7 @@ function handler() {
     
     // Handles when the user moves the mouse button over the main page.
     this.MainPageMouseMove = function (event) {
-      if(this.active_canvas==SELECTED_CANVAS) {
+      if(active_canvas==SELECTED_CANVAS) {
 	var x = GetEventPosX(event);
 	var y = GetEventPosY(event);
 	var button = event.button;
@@ -614,7 +552,7 @@ function handler() {
     
     // Handles when the user releases the mouse button over the main page.
     this.MainPageMouseUp = function (event) {
-      if(this.active_canvas==SELECTED_CANVAS) {
+      if(active_canvas==SELECTED_CANVAS) {
 	var x = GetEventPosX(event);
 	var y = GetEventPosY(event);
 	var button = event.button;
@@ -677,7 +615,7 @@ function handler() {
     
     // Handles when the user mouses away from the first control point.
     this.MousedOutFirstControlPoint = function () {
-        if(this.active_canvas!=DRAW_CANVAS) return;
+        if(active_canvas!=DRAW_CANVAS) return;
         main_draw_canvas.Peek().MouseOutFirstPoint();
     };
     

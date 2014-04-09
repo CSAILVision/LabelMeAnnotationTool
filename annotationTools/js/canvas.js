@@ -79,7 +79,7 @@ function canvas(div_attach) {
 	this.annotations[pp].DrawPolygon(main_image.GetImRatio());
 	
 	// Set polygon actions:
-	this.annotations[pp].SetAttribute('onmousedown','main_handler.RestToSelected(' + anno_id + ',evt); return false;');
+	this.annotations[pp].SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
 	this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
 	this.annotations[pp].SetAttribute('oncontextmenu','return false');
 	this.annotations[pp].SetCSS('cursor','pointer');
