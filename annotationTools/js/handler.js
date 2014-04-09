@@ -26,16 +26,8 @@ function handler() {
     // Handles when the user presses the delete button in response to
     // the "What is this object?" popup bubble.
     this.WhatIsThisObjectDeleteButton = function () {
-        //     // Write to logfile:
-        //     WriteLogMsg('*Deleted_object_during_labeling');
-        
-        submission_edited = 0;
-        
-        //     old_name = '';
-        //     new_name = '';
-        //     SubmitAnnotations(0);
-        
-        this.QueryToRest();
+      submission_edited = 0;
+      this.QueryToRest();
     };
     
     // Handles when the user presses the undo close button in response to
@@ -65,115 +57,79 @@ function handler() {
     
     // Submits the object label in response to the edit/delete popup bubble.
     this.SubmitEditLabel = function () {
-        submission_edited = 1;
-        anno = main_select_canvas.Peek();
+      submission_edited = 1;
+      anno = main_select_canvas.Peek();
+      
+      // object name
+      old_name = anno.GetObjName();
+      if(document.getElementById('objEnter')) new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
+      else new_name = RemoveSpecialChars(this.objEnter);
+      
+      var re = /[a-zA-Z0-9]/;
+      if(!re.test(new_name)) {
+	alert('Please enter an object name');
+	return;
+      }
+      
+      if (use_attributes) {
+	// occlusion field
+	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+	else new_occluded = RemoveSpecialChars(this.occluded);
+	
+	// attributes field
+	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+	else new_attributes = RemoveSpecialChars(this.attributes);
+      }
+      
+      StopEditEvent();
+      
+      // Insert data to write to logfile:
+      if(editedControlPoints) InsertServerLogData('cpts_modified');
+      else InsertServerLogData('cpts_not_modified');
+      
+      // Object index:
+      var obj_ndx = anno.anno_id;
+      
+      // Pointer to object:
+      var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
+      
+      // Set fields:
+      curr_obj.children("name").text(new_name);
+      if(curr_obj.children("automatic").length > 0) curr_obj.children("automatic").text("0");
+      
+      // Insert attributes (and create field if it is not there):
+      if(curr_obj.children("attributes").length>0) curr_obj.children("attributes").text(new_attributes);
+      else curr_obj.append("<attributes>" + new_attributes + "</attributes>");
         
-        // object name
-        old_name = anno.GetObjName();
-        if(document.getElementById('objEnter'))
-        {new_name = RemoveSpecialChars(document.getElementById('objEnter').value);}
-        else
-        {new_name = RemoveSpecialChars(this.objEnter);}
+      if(curr_obj.children("occluded").length>0) curr_obj.children("occluded").text(new_occluded);
+      else curr_obj.append("<occluded>" + new_occluded + "</occluded>");
         
-        var re = /[a-zA-Z0-9]/;
-        if(!re.test(new_name)) {
-            alert('Please enter an object name');
-            return;
-        }
-        
-        if (use_attributes) {
-            // occlusion field
-            if (document.getElementById('occluded')) {
-                new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
-            }
-            else {
-                new_occluded = RemoveSpecialChars(this.occluded);
-            }
-            
-            // attributes field
-            if(document.getElementById('attributes')) {
-                new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-            }
-            else {
-                new_attributes = RemoveSpecialChars(this.attributes);
-            }
-        }
-        
-        StopEditEvent();
-        
-        // Insert data to write to logfile:
-        if(editedControlPoints) {
-            InsertServerLogData('cpts_modified');
-        }
-        else {
-            InsertServerLogData('cpts_not_modified');
-        }
-        
-        // Object index:
-        var obj_ndx = anno.anno_id;
-        
-        // Pointer to object:
-        var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
-        
-        // Set fields:
-        curr_obj.children("name").text(new_name);
-        if(curr_obj.children("automatic").length > 0) {
-            curr_obj.children("automatic").text("0");
-        }
-        
-        // Insert attributes (and create field if it is not there):
-        if(curr_obj.children("attributes").length>0) {
-            curr_obj.children("attributes").text(new_attributes);
-        }
-        else {
-            curr_obj.append("<attributes>" + new_attributes + "</attributes>");
-        }
-        
-        if(curr_obj.children("occluded").length>0) {
-            curr_obj.children("occluded").text(new_occluded);
-        }
-        else {
-            curr_obj.append("<occluded>" + new_occluded + "</occluded>");
-        }
-        
-        //if (!curr_obj.children("parts").length>0) {
-        //    curr_obj.append("<parts><hasparts></hasparts><ispartof></ispartof></parts>");
-        //}
-
-        
-        if(editedControlPoints) {
-            for(var jj=0; jj < AllAnnotations[obj_ndx].GetPtsX().length; jj++) {
-                curr_obj.children("polygon").children("pt").eq(jj).children("x").text(AllAnnotations[obj_ndx].GetPtsX()[jj]);
-                curr_obj.children("polygon").children("pt").eq(jj).children("y").text(AllAnnotations[obj_ndx].GetPtsY()[jj]);
-            }
-        }
-        
-        // Write XML to server:
-        WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
-        
-        
-        //     SubmitAnnotations(editedControlPoints);
-        
-        if(view_ObjList) {
-            RemoveAnnotationList();
-            LoadAnnotationList();
-            ChangeLinkColorFG(anno.GetAnnoID());
-        }
+      if(editedControlPoints) {
+	for(var jj=0; jj < AllAnnotations[obj_ndx].GetPtsX().length; jj++) {
+	  curr_obj.children("polygon").children("pt").eq(jj).children("x").text(AllAnnotations[obj_ndx].GetPtsX()[jj]);
+	  curr_obj.children("polygon").children("pt").eq(jj).children("y").text(AllAnnotations[obj_ndx].GetPtsY()[jj]);
+	}
+      }
+      
+      // Write XML to server:
+      WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+      
+      // Refresh object list:
+      if(view_ObjList) {
+	RemoveAnnotationList();
+	LoadAnnotationList();
+	ChangeLinkColorFG(anno.GetAnnoID());
+      }
     };
-    
-    
     
     // Handles when the user presses the delete button in response to
     // the edit popup bubble.
     this.EditBubbleDeleteButton = function () {
         var idx = main_select_canvas.Peek().GetAnnoID();
-        //     if(IsUserAnonymous() && (idx<num_orig_anno)) {
         if((IsUserAnonymous() || (!IsCreator(main_select_canvas.Peek().GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
             return;
         }
-        
-        //     main_select_canvas.Peek().SetDeleted(1);
         
         if(idx>=num_orig_anno) {
             anno_count--;
@@ -196,9 +152,8 @@ function handler() {
         
         // Write XML to server:
         WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
-        
-        //     SubmitAnnotations(0);
-        
+
+	// Refresh object list:
         if(view_ObjList) {
             RemoveAnnotationList();
             LoadAnnotationList();
@@ -207,8 +162,6 @@ function handler() {
         unselectObjects(); // Perhaps this should go elsewhere...
         StopEditEvent();
     };
-    
-    
     
     // ADJUST POLYGON,
     this.EditBubbleAdjustPolygon = function () {
@@ -314,115 +267,104 @@ function handler() {
     // Submits the object label in response to the "What is this object?"
     // popup bubble. THIS FUNCTION IS A MESS!!!!
     this.SubmitQuery = function () {
-        var nn;
-        var anno;
-        
-        // If the attributes are active, read the fields.
-        if (use_attributes) {
-            // get attributes (is the field exists)
-            if(document.getElementById('attributes')) {
-                new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-            }else{
-                new_attributes = "";
-            }
-            
-            // get occlusion field (is the field exists)
-            if (document.getElementById('occluded')) {
-                new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
-            }else{
-                new_occluded = "";
-            }
-        }
-        
-        if((object_choices!='...') && (object_choices.length==1)) {
-            nn = RemoveSpecialChars(object_choices[0]);
-            active_canvas = REST_CANVAS;
+      var nn;
+      var anno;
+      
+      // If the attributes are active, read the fields.
+      if (use_attributes) {
+	// get attributes (is the field exists)
+	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+	else new_attributes = "";
+	
+	// get occlusion field (is the field exists)
+	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+	else new_occluded = "";
+      }
+      
+      if((object_choices!='...') && (object_choices.length==1)) {
+	nn = RemoveSpecialChars(object_choices[0]);
+	active_canvas = REST_CANVAS;
+	
+	// Move draw canvas to the back:
+	document.getElementById('draw_canvas').style.zIndex = -2;
+	document.getElementById('draw_canvas_div').style.zIndex = -2;
+	
+	var anno = main_draw_canvas.DetachAnnotation();
+      }
+      else {
+	nn = RemoveSpecialChars(document.getElementById('objEnter').value);
+	anno = this.QueryToRest();
+      }
+      
+      var re = /[a-zA-Z0-9]/;
+      if(!re.test(nn)) {
+	alert('Please enter an object name');
+	return;
+      }
+      
+      submission_edited = 0;
 
-	    // Move draw canvas to the back:
-	    document.getElementById('draw_canvas').style.zIndex = -2;
-	    document.getElementById('draw_canvas_div').style.zIndex = -2;
-
-            var anno = main_draw_canvas.DetachAnnotation();
-        }
-        else {
-            nn = RemoveSpecialChars(document.getElementById('objEnter').value);
-            anno = this.QueryToRest();
-        }
-        
-        var re = /[a-zA-Z0-9]/;
-        if(!re.test(nn)) {
-            alert('Please enter an object name');
-            return;
-        }
-        
-        submission_edited = 0;
-        new_name = nn; // WHY DO YOU USE nn AS AN INTERMEDIATE NAME?
-        //     new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
-        old_name = new_name;  // WHY????????
-        
-        //     var anno = this.QueryToRest();
-        
-        
-        anno_count++;
-        global_count++;
-        
-        // Insert data for server logfile:
-        InsertServerLogData('cpts_not_modified');
-        
-        // Get object index:
-        var obj_ndx = anno.anno_id;
-        
-        // Insert data into XML:
-        var html_str = '<object>';
-        html_str += '<name>' + new_name + '</name>';
-        html_str += '<deleted>0</deleted>';
-        html_str += '<verified>0</verified>';
-        if(use_attributes) {
-            html_str += '<occluded>' + new_occluded + '</occluded>';
-            html_str += '<attributes>' + new_attributes + '</attributes>';
-        }
-        html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
-        var ts = GetTimeStamp();
-        if(ts.length==20) html_str += '<date>' + ts + '</date>';
-        html_str += '<id>' + obj_ndx + '</id>';
-        html_str += '<polygon>';
-        html_str += '<username>' + username + '</username>';
-        for(var jj=0; jj < anno.GetPtsX().length; jj++) {
-            html_str += '<pt>';
-            html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
-            html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
-            html_str += '</pt>';
-        }
-        html_str += '</polygon>';
-        html_str += '</object>';
-        $(LM_xml).children("annotation").append($(html_str));
-        
-        AllAnnotations.push(anno);
-
-	if(!anno.GetDeleted()||view_Deleted) {
-	  main_canvas.AttachAnnotation(anno,'polygon');
-	  main_canvas.RenderAnnotations();
-        }
-
-        // Write XML to server:
-        WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
-        
-        //     SubmitAnnotations(0);
-        
-        if(view_ObjList) {
-            RemoveAnnotationList();
-            LoadAnnotationList();
-        }
-        
-        var m = main_image.GetFileInfo().GetMode();
-        if(m=='mt') {
-            document.getElementById('object_name').value=new_name;
-            document.getElementById('number_objects').value=global_count;
-            document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_image.GetFileInfo().GetDirName() + '&image=' + main_image.GetFileInfo().GetImName();
-            if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
-        }
+      // Update old and new object names for logfile:
+      new_name = nn;
+      old_name = nn;
+      
+      anno_count++;
+      global_count++;
+      
+      // Insert data for server logfile:
+      InsertServerLogData('cpts_not_modified');
+      
+      // Get object index:
+      var obj_ndx = anno.anno_id;
+      
+      // Insert data into XML:
+      var html_str = '<object>';
+      html_str += '<name>' + new_name + '</name>';
+      html_str += '<deleted>0</deleted>';
+      html_str += '<verified>0</verified>';
+      if(use_attributes) {
+	html_str += '<occluded>' + new_occluded + '</occluded>';
+	html_str += '<attributes>' + new_attributes + '</attributes>';
+      }
+      html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
+      var ts = GetTimeStamp();
+      if(ts.length==20) html_str += '<date>' + ts + '</date>';
+      html_str += '<id>' + obj_ndx + '</id>';
+      html_str += '<polygon>';
+      html_str += '<username>' + username + '</username>';
+      for(var jj=0; jj < anno.GetPtsX().length; jj++) {
+	html_str += '<pt>';
+	html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
+	html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
+	html_str += '</pt>';
+      }
+      html_str += '</polygon>';
+      html_str += '</object>';
+      $(LM_xml).children("annotation").append($(html_str));
+      
+      AllAnnotations.push(anno);
+      
+      if(!anno.GetDeleted()||view_Deleted) {
+	main_canvas.AttachAnnotation(anno,'polygon');
+	main_canvas.RenderAnnotations();
+      }
+      
+      // Write XML to server:
+      WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+      
+      if(view_ObjList) {
+	RemoveAnnotationList();
+	LoadAnnotationList();
+      }
+      
+      var m = main_image.GetFileInfo().GetMode();
+      if(m=='mt') {
+	document.getElementById('object_name').value=new_name;
+	document.getElementById('number_objects').value=global_count;
+	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_image.GetFileInfo().GetDirName() + '&image=' + main_image.GetFileInfo().GetImName();
+	if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
+      }
     };
-    
     
     // Handles when we wish to change from "query" to "rest".
     this.QueryToRest = function () {
