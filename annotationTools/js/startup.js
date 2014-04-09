@@ -104,6 +104,41 @@ function LoadAnnotationSuccess(xml) {
   FinishStartup();
 }
 
+// Annotation file does not exist, so load template:
+function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
+  if(jqXHR.status==404) 
+    ReadXML(main_image.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
+  else
+    alert(jqXHR.status);
+}
+
+// Annotation template does not exist for this folder, so load default 
+// LabelMe template:
+function LoadTemplate404(jqXHR,textStatus,errorThrown) {
+  if(jqXHR.status==404)
+    ReadXML('annotationCache/XMLTemplates/labelme.xml',LoadTemplateSuccess,function(jqXHR) {
+	alert(jqXHR.status);
+      });
+  else
+    alert(jqXHR.status);
+}
+
+// Actions after template load success:
+function LoadTemplateSuccess(xml) {
+  // Set global variable:
+  LM_xml = xml;
+
+  // Set folder and image filename:
+  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
+  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
+
+  // Set global variable:
+  num_orig_anno = 0;
+
+  // Finish the startup scripts:
+  FinishStartup();
+}
+
 // Finish the startup process:
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
@@ -147,39 +182,4 @@ function FinishStartup() {
   // Write "finished" messages:
   WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
   console.log('LabelMe: finished loading');
-}
-
-// Annotation file does not exist, so load template:
-function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
-  if(jqXHR.status==404) 
-    ReadXML(main_image.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
-  else
-    alert(jqXHR.status);
-}
-
-// Annotation template does not exist for this folder, so load default 
-// LabelMe template:
-function LoadTemplate404(jqXHR,textStatus,errorThrown) {
-  if(jqXHR.status==404)
-    ReadXML('annotationCache/XMLTemplates/labelme.xml',LoadTemplateSuccess,function(jqXHR) {
-	alert(jqXHR.status);
-      });
-  else
-    alert(jqXHR.status);
-}
-
-// Actions after template load success:
-function LoadTemplateSuccess(xml) {
-  // Set global variable:
-  LM_xml = xml;
-
-  // Set folder and image filename:
-  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
-  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
-
-  // Set global variable:
-  num_orig_anno = 0;
-
-  // Finish the startup scripts:
-  FinishStartup();
 }
