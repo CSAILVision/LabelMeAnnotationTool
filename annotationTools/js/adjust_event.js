@@ -2,6 +2,13 @@ var adjust_objEnter = '';
 var adjust_attributes;
 var adjust_occluded;
 
+// Index into which control point has been selected:
+var selectedControlPoint;
+
+// Location of center of mass:
+var center_x;
+var center_y;
+
 // ADJUST POLYGON,
 function StartAdjustEvent() {
   console.log('LabelMe: Starting adjust event...');
@@ -56,7 +63,7 @@ function ShowCenterOfMass(anno) {
   if(anno.pts_x.length==1) MarkerSize = 6;
 
   // Draw center point:
-  anno.center_id = DrawPoint(anno.div_attach,anno.center_x,anno.center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
+  anno.center_id = DrawPoint(anno.div_attach,center_x,center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
 
   // Set action:
   $('#'+anno.center_id).attr('onmousedown','javascript:StartMoveCenterOfMass();');
@@ -79,8 +86,8 @@ function centerOfMass(anno) {
   var lengths = new Array();
   
   if(length==1) {
-    anno.center_x = x[0];
-    anno.center_y = y[0];
+    center_x = x[0];
+    center_y = y[0];
     return;
   }
   
@@ -99,13 +106,13 @@ function centerOfMass(anno) {
   var length_l = lengths.length;
   for(i = 0; i < length_l; i++) sumlengths = sumlengths + lengths[i];
   
-  anno.center_x = 0;
-  for(i = 0; i < length_l; i++) anno.center_x = anno.center_x + mdpts_x[i]*lengths[i];
-  anno.center_x = anno.center_x / sumlengths;
+  center_x = 0;
+  for(i = 0; i < length_l; i++) center_x = center_x + mdpts_x[i]*lengths[i];
+  center_x = center_x / sumlengths;
   
-  anno.center_y = 0;
-  for(i = 0; i < length_l; i++) anno.center_y = anno.center_y + mdpts_y[i]*lengths[i];
-  anno.center_y = anno.center_y / sumlengths;
+  center_y = 0;
+  for(i = 0; i < length_l; i++) center_y = center_y + mdpts_y[i]*lengths[i];
+  center_y = center_y / sumlengths;
 }
 
 function StartMoveControlPoint(i) {
@@ -118,7 +125,7 @@ function StartMoveControlPoint(i) {
     var anno = main_select_canvas.Peek();
     
     RemoveCenterOfMass(anno);
-    anno.selectedControlPoint = i;
+    selectedControlPoint = i;
 
     isEditingControlPoint = 1;
     editedControlPoints = 1;
@@ -133,7 +140,7 @@ function MoveControlPoint(event) {
     var x = GetEventPosX(event);
     var y = GetEventPosY(event);
     var im_ratio = main_image.GetImRatio();
-    var i = anno.selectedControlPoint;
+    var i = selectedControlPoint;
 
     // Set point:
     anno.pts_x[i] = Math.max(Math.min(Math.round(x/im_ratio),main_image.width_orig),1);
@@ -186,8 +193,8 @@ function MoveCenterOfMass(event) {
     var y = GetEventPosY(event);
     var im_ratio = main_image.GetImRatio();
 
-    var dx = Math.round(x/im_ratio)-anno.center_x;
-    var dy = Math.round(y/im_ratio)-anno.center_y;
+    var dx = Math.round(x/im_ratio)-center_x;
+    var dy = Math.round(y/im_ratio)-center_y;
     
     // Adjust dx,dy to make sure we don't go outside of the image:
     for(i=0; i<anno.pts_x.length; i++) {
@@ -201,18 +208,17 @@ function MoveCenterOfMass(event) {
       anno.pts_x[i] = Math.round(anno.pts_x[i]+dx);
       anno.pts_y[i] = Math.round(anno.pts_y[i]+dy);
     }
-    anno.center_x = Math.round(im_ratio*(dx+anno.center_x));
-    anno.center_y = Math.round(im_ratio*(dy+anno.center_y));
+    center_x = Math.round(im_ratio*(dx+center_x));
+    center_y = Math.round(im_ratio*(dy+center_y));
     
     // Remove polygon and redraw:
     $('#'+anno.polygon_id).remove();
     anno.DrawPolygon(im_ratio);
     
-    // Adjust control points:
+    // Redraw control points and center of mass:
     RemoveControlPoints(anno);
-    ShowControlPoints(anno);
-    
     RemoveCenterOfMass(anno);
+    ShowControlPoints(anno);
     ShowCenterOfMass(anno);
   }
 }

@@ -13,11 +13,6 @@ function annotation(anno_id) {
     this.anno_id = anno_id;
     this.div_attach = 'myCanvas_bg';
     
-    // This array stores graphics objects for each control point
-    this.selectedControlPoint = -1;
-    this.center_x;
-    this.center_y;
-
     // Element id of drawn polygon:
     this.polygon_id = null;
 
