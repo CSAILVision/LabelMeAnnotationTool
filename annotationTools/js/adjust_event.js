@@ -127,9 +127,6 @@ function StartMoveControlPoint(i) {
     $('#select_canvas_div').attr("onmousemove","javascript:MoveControlPoint(event);");
     $('#body').attr("onmouseup","javascript:StopMoveControlPoint(event);");
 
-    // Get annotation on the select canvas:
-    var anno = main_select_canvas.Peek();
-    
     RemoveCenterOfMass();
     selectedControlPoint = i;
 
@@ -179,9 +176,6 @@ function StartMoveCenterOfMass() {
     $('#select_canvas_div').attr("onmousedown","");
     $('#select_canvas_div').attr("onmousemove","javascript:MoveCenterOfMass(event);");
     $('#body').attr("onmouseup","javascript:StopMoveCenterOfMass(event);");
-
-    // Get annotation on the select canvas:
-    var anno = main_select_canvas.Peek();
 
     RemoveControlPoints();
 
