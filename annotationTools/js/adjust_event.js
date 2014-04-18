@@ -15,6 +15,9 @@ var control_ids = null;
 // Element id of drawn center point:
 var center_id = null;
 
+// ID of DOM element to attach to:
+var control_div_attach = 'select_canvas';
+
 // ADJUST POLYGON,
 function StartAdjustEvent() {
   console.log('LabelMe: Starting adjust event...');
@@ -46,7 +49,7 @@ function ShowControlPoints(anno) {
   if(!control_ids) control_ids = new Array();
   for(var i = 0; i < anno.pts_x.length; i++) {
     // Draw control point:
-    control_ids.push(DrawPoint(anno.div_attach,anno.pts_x[i],anno.pts_y[i],'r="5" fill="#00ff00" stroke="#ffffff" stroke-width="2.5"',im_ratio));
+    control_ids.push(DrawPoint(control_div_attach,anno.pts_x[i],anno.pts_y[i],'r="5" fill="#00ff00" stroke="#ffffff" stroke-width="2.5"',im_ratio));
 
     // Set action:
     $('#'+control_ids[i]).attr('onmousedown','javascript:StartMoveControlPoint(' + i + ');');
@@ -69,7 +72,7 @@ function ShowCenterOfMass(anno) {
   if(anno.pts_x.length==1) MarkerSize = 6;
 
   // Draw center point:
-  center_id = DrawPoint(anno.div_attach,center_x,center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
+  center_id = DrawPoint(control_div_attach,center_x,center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
 
   // Set action:
   $('#'+center_id).attr('onmousedown','javascript:StartMoveCenterOfMass();');
