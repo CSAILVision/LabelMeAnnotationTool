@@ -58,8 +58,6 @@ function StartEditEvent(anno_id,event) {
     
     // If annotation is point or line, then 
     if(doReset) object_choices = '...';
-    
-    main_image.SlideWindow(anno.center_x,anno.center_y);
   }
 }
 
