@@ -22,12 +22,6 @@ function annotation(anno_id) {
     // Element id for drawn first point:
     this.point_id = null;
     
-    // Element ids of drawn control points:
-    this.control_ids = null;
-
-    // Element id of drawn center point:
-    this.center_id = null;
-
     // *******************************************
     // Public methods:
     // *******************************************

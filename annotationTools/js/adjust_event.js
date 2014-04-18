@@ -9,6 +9,12 @@ var selectedControlPoint;
 var center_x;
 var center_y;
 
+// Element ids of drawn control points:
+var control_ids = null;
+
+// Element id of drawn center point:
+var center_id = null;
+
 // ADJUST POLYGON,
 function StartAdjustEvent() {
   console.log('LabelMe: Starting adjust event...');
@@ -37,21 +43,21 @@ function StartAdjustEvent() {
 // This function shows all control points for an annotation.
 function ShowControlPoints(anno) {
   var im_ratio = main_image.GetImRatio();
-  if(!anno.control_ids) anno.control_ids = new Array();
+  if(!control_ids) control_ids = new Array();
   for(var i = 0; i < anno.pts_x.length; i++) {
     // Draw control point:
-    anno.control_ids.push(DrawPoint(anno.div_attach,anno.pts_x[i],anno.pts_y[i],'r="5" fill="#00ff00" stroke="#ffffff" stroke-width="2.5"',im_ratio));
+    control_ids.push(DrawPoint(anno.div_attach,anno.pts_x[i],anno.pts_y[i],'r="5" fill="#00ff00" stroke="#ffffff" stroke-width="2.5"',im_ratio));
 
     // Set action:
-    $('#'+anno.control_ids[i]).attr('onmousedown','javascript:StartMoveControlPoint(' + i + ');');
+    $('#'+control_ids[i]).attr('onmousedown','javascript:StartMoveControlPoint(' + i + ');');
   }
 }
 
 // This function removes all displayed control points from an annotation
-function RemoveControlPoints(anno) {
-  if(anno.control_ids) {
-    for(var i = 0; i < anno.control_ids.length; i++) $('#'+anno.control_ids[i]).remove();
-    anno.control_ids = null;
+function RemoveControlPoints() {
+  if(control_ids) {
+    for(var i = 0; i < control_ids.length; i++) $('#'+control_ids[i]).remove();
+    control_ids = null;
   }
 }
 
@@ -63,17 +69,17 @@ function ShowCenterOfMass(anno) {
   if(anno.pts_x.length==1) MarkerSize = 6;
 
   // Draw center point:
-  anno.center_id = DrawPoint(anno.div_attach,center_x,center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
+  center_id = DrawPoint(anno.div_attach,center_x,center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
 
   // Set action:
-  $('#'+anno.center_id).attr('onmousedown','javascript:StartMoveCenterOfMass();');
+  $('#'+center_id).attr('onmousedown','javascript:StartMoveCenterOfMass();');
 }
 
 // This function removes the middle grab point for a polygon
-function RemoveCenterOfMass(anno) {
-  if(anno.center_id) {
-    $('#'+anno.center_id).remove();
-    anno.center_id = null;
+function RemoveCenterOfMass() {
+  if(center_id) {
+    $('#'+center_id).remove();
+    center_id = null;
   }
 }
     
@@ -124,7 +130,7 @@ function StartMoveControlPoint(i) {
     // Get annotation on the select canvas:
     var anno = main_select_canvas.Peek();
     
-    RemoveCenterOfMass(anno);
+    RemoveCenterOfMass();
     selectedControlPoint = i;
 
     isEditingControlPoint = 1;
@@ -151,7 +157,7 @@ function MoveControlPoint(event) {
     anno.DrawPolygon(im_ratio);
     
     // Adjust control points:
-    RemoveControlPoints(anno);
+    RemoveControlPoints();
     ShowControlPoints(anno);
   }
 } 
@@ -177,7 +183,7 @@ function StartMoveCenterOfMass() {
     // Get annotation on the select canvas:
     var anno = main_select_canvas.Peek();
 
-    RemoveControlPoints(anno);
+    RemoveControlPoints();
 
     isMovingCenterOfMass = 1;
     editedControlPoints = 1;
@@ -216,8 +222,8 @@ function MoveCenterOfMass(event) {
     anno.DrawPolygon(im_ratio);
     
     // Redraw control points and center of mass:
-    RemoveControlPoints(anno);
-    RemoveCenterOfMass(anno);
+    RemoveControlPoints();
+    RemoveCenterOfMass();
     ShowControlPoints(anno);
     ShowCenterOfMass(anno);
   }
@@ -237,7 +243,7 @@ function StopMoveCenterOfMass(event) {
 function StopAdjustEvent() {
   if(username_flag) submit_username();
   main_handler.SubmitEditLabel();
-  RemoveControlPoints(anno);
-  RemoveCenterOfMass(anno);
+  RemoveControlPoints();
+  RemoveCenterOfMass();
   console.log('LabelMe: Stopped adjust event.');
 }
