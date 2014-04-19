@@ -86,3 +86,44 @@ function StopEditEvent() {
   }
   console.log('LabelMe: Stopped edit event.');
 }
+
+var adjust_objEnter = '';
+var adjust_attributes;
+var adjust_occluded;
+
+function AdjustPolygonButton() {
+  // We need to capture the data before closing the bubble 
+  // (THIS IS AN UGLY HACK)
+  adjust_objEnter = document.getElementById('objEnter').value;
+  adjust_attributes = document.getElementById('attributes').value;
+  adjust_occluded = document.getElementById('occluded').value;
+  
+  // Close the edit popup bubble:
+  CloseEditPopup();
+
+  // Turn on image scrollbars:
+  main_image.ScrollbarsOn();
+  
+  // Get annotation on the select canvas:
+  var anno = main_select_canvas.Peek();
+
+  // Remove polygon from canvas:
+  $('#'+anno.polygon_id).remove();
+
+  // Start adjust event:
+  StartAdjustEvent(anno.pts_x,anno.pts_y,anno.GetObjName(),function() {
+      // Submit username:
+      if(username_flag) submit_username();
+
+      // Redraw polygon:
+      var anno = main_select_canvas.Peek();
+      anno.DrawPolygon(main_image.GetImRatio());
+
+      // Set polygon (x,y) points:
+      anno.pts_x = adjust_x;
+      anno.pts_y = adjust_y;
+      
+      // Submit annotation:
+      main_handler.SubmitEditLabel();
+    });
+}

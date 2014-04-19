@@ -1,6 +1,9 @@
-var adjust_objEnter = '';
-var adjust_attributes;
-var adjust_occluded;
+// Boolean indicating whether a control point is being edited:
+var isEditingControlPoint = 0;
+
+// Boolean indicating whether the center of mass of the polygon is being 
+// adjusted:
+var isMovingCenterOfMass = 0;
 
 // Index into which control point has been selected:
 var selectedControlPoint;
@@ -26,32 +29,18 @@ var adjust_x;
 var adjust_y;
 var adjust_obj_name;
 
+// Function to call when adjust event is finished:
+var ExitFunction = function(){return;};
+
 // ADJUST POLYGON,
-function StartAdjustEvent() {
+function StartAdjustEvent(x,y,obj_name,_ExitFunction) {
   console.log('LabelMe: Starting adjust event...');
 
-  // We need to capture the data before closing the bubble 
-  // (THIS IS AN UGLY HACK)
-  adjust_objEnter = document.getElementById('objEnter').value;
-  adjust_attributes = document.getElementById('attributes').value;
-  adjust_occluded = document.getElementById('occluded').value;
-  
-  // Close the edit popup bubble:
-  CloseEditPopup();
-
-  // Turn on image scrollbars:
-  main_image.ScrollbarsOn();
-  
-  // Get annotation on the select canvas:
-  var anno = main_select_canvas.Peek();
-
-  // Remove polygon from canvas:
-  $('#'+anno.polygon_id).remove();
-
-  // Get polygon (x,y) points:
-  adjust_x = anno.pts_x;
-  adjust_y = anno.pts_y;
-  adjust_obj_name = anno.GetObjName();
+  // Set polygon, object name, and exit function:
+  adjust_x = x;
+  adjust_y = y;
+  adjust_obj_name = obj_name;
+  ExitFunction = _ExitFunction;
 
   // Draw polygon:
   adjust_polygon_id = adjust_DrawPolygon(control_div_attach,adjust_x,adjust_y,adjust_obj_name,main_image.GetImRatio());
@@ -218,23 +207,17 @@ function StopMoveCenterOfMass(event) {
 }
 
 function StopAdjustEvent() {
-  if(username_flag) submit_username();
-
   // Remove polygon:
   $('#'+adjust_polygon_id).remove();
-
-  // Redraw polygon:
-  var anno = main_select_canvas.Peek();
-  anno.DrawPolygon(main_image.GetImRatio());
 
   // Remove control points and center of mass point:
   RemoveControlPoints();
   RemoveCenterOfMass();
 
-  // Submit annotation:
-  main_handler.SubmitEditLabel();
-  
   console.log('LabelMe: Stopped adjust event.');
+
+  // Call exit function:
+  ExitFunction();
 }
 
 /*************** Helper functions ****************/

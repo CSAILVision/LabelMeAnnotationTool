@@ -22,13 +22,6 @@ if (getQueryVariable('mode')=='mt'){
     use_parts = 0;
 }
 
-// Boolean indicating whether a control point is being edited:
-var isEditingControlPoint = 0;
-
-// Boolean indicating whether the center of mass of the polygon is being 
-// adjusted:
-var isMovingCenterOfMass = 0;
-
 // Boolean indicating whether the control points were edited:
 var editedControlPoints = 0;
 
