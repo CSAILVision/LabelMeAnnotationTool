@@ -67,7 +67,7 @@ function RemoveControlPoints() {
 // This function shows the middle grab point for a polygon.
 function ShowCenterOfMass(anno) {
   var im_ratio = main_image.GetImRatio();
-  centerOfMass(anno);
+  CenterOfMass(anno.pts_x,anno.pts_y);
   var MarkerSize = 8;
   if(anno.pts_x.length==1) MarkerSize = 6;
 
@@ -85,43 +85,29 @@ function RemoveCenterOfMass() {
     center_id = null;
   }
 }
-    
-function centerOfMass(anno) {
-  var x = anno.pts_x;
-  var y = anno.pts_y;
-  var length = x.length;
-  var mdpts_x = new Array();
-  var mdpts_y = new Array();
-  var lengths = new Array();
+
+// Compute center of mass for a polygon:
+function CenterOfMass(x,y) {
+  var N = x.length;
   
-  if(length==1) {
+  // Trivial center of mass for single point:
+  if(N==1) {
     center_x = x[0];
     center_y = y[0];
     return;
   }
-  
-  for(i=1; i < length; i++) {
-    mdpts_x[i-1] = Math.round((x[i-1] + x[i])/2);
-    mdpts_y[i-1] = Math.round((y[i-1] + y[i])/2);
-    lengths[i-1] = Math.round(Math.sqrt(Math.pow(x[i-1] - x[i], 2) +
-					Math.pow(y[i-1] - y[i], 2)));
+
+  // The midpoint is the average polygon edge midpoint weighted by edge length:
+  center_x = 0; center_y = 0;
+  var perimeter = 0;
+  for(var i = 1; i <= N; i++) {
+    var length = Math.round(Math.sqrt(Math.pow(x[i-1]-x[i%N], 2) + Math.pow(y[i-1]-y[i%N], 2)));
+    center_x += length*Math.round((x[i-1] + x[i%N])/2);
+    center_y += length*Math.round((y[i-1] + y[i%N])/2);
+    perimeter += length;
   }
-  mdpts_x[length - 1] = Math.round((x[0] + x[length - 1])/2);
-  mdpts_y[length - 1] = Math.round((y[0] + y[length - 1])/2);
-  lengths[i-1] = Math.round(Math.sqrt(Math.pow(x[0] - x[length - 1], 2) +
-				      Math.pow(y[0] - y[length - 1], 2)));
-  
-  var sumlengths = 0;
-  var length_l = lengths.length;
-  for(i = 0; i < length_l; i++) sumlengths = sumlengths + lengths[i];
-  
-  center_x = 0;
-  for(i = 0; i < length_l; i++) center_x = center_x + mdpts_x[i]*lengths[i];
-  center_x = center_x / sumlengths;
-  
-  center_y = 0;
-  for(i = 0; i < length_l; i++) center_y = center_y + mdpts_y[i]*lengths[i];
-  center_y = center_y / sumlengths;
+  center_x /= perimeter;
+  center_y /= perimeter;
 }
 
 function StartMoveControlPoint(i) {
