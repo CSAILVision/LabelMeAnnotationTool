@@ -67,9 +67,11 @@ function RemoveControlPoints() {
 // This function shows the middle grab point for a polygon.
 function ShowCenterOfMass(anno) {
   var im_ratio = main_image.GetImRatio();
-  CenterOfMass(anno.pts_x,anno.pts_y);
   var MarkerSize = 8;
   if(anno.pts_x.length==1) MarkerSize = 6;
+
+  // Get center point for polygon:
+  CenterOfMass(anno.pts_x,anno.pts_y);
 
   // Draw center point:
   center_id = DrawPoint(control_div_attach,center_x,center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',im_ratio);
@@ -84,30 +86,6 @@ function RemoveCenterOfMass() {
     $('#'+center_id).remove();
     center_id = null;
   }
-}
-
-// Compute center of mass for a polygon:
-function CenterOfMass(x,y) {
-  var N = x.length;
-  
-  // Trivial center of mass for single point:
-  if(N==1) {
-    center_x = x[0];
-    center_y = y[0];
-    return;
-  }
-
-  // The midpoint is the average polygon edge midpoint weighted by edge length:
-  center_x = 0; center_y = 0;
-  var perimeter = 0;
-  for(var i = 1; i <= N; i++) {
-    var length = Math.round(Math.sqrt(Math.pow(x[i-1]-x[i%N], 2) + Math.pow(y[i-1]-y[i%N], 2)));
-    center_x += length*Math.round((x[i-1] + x[i%N])/2);
-    center_y += length*Math.round((y[i-1] + y[i%N])/2);
-    perimeter += length;
-  }
-  center_x /= perimeter;
-  center_y /= perimeter;
 }
 
 function StartMoveControlPoint(i) {
@@ -132,11 +110,10 @@ function MoveControlPoint(event) {
     var x = GetEventPosX(event);
     var y = GetEventPosY(event);
     var im_ratio = main_image.GetImRatio();
-    var i = selectedControlPoint;
 
     // Set point:
-    anno.pts_x[i] = Math.max(Math.min(Math.round(x/im_ratio),main_image.width_orig),1);
-    anno.pts_y[i] = Math.max(Math.min(Math.round(y/im_ratio),main_image.height_orig),1);
+    anno.pts_x[selectedControlPoint] = Math.max(Math.min(Math.round(x/im_ratio),main_image.width_orig),1);
+    anno.pts_y[selectedControlPoint] = Math.max(Math.min(Math.round(y/im_ratio),main_image.height_orig),1);
     
     // Remove polygon and redraw:
     $('#'+anno.polygon_id).remove();
@@ -182,18 +159,20 @@ function MoveCenterOfMass(event) {
     var y = GetEventPosY(event);
     var im_ratio = main_image.GetImRatio();
 
+    // Get displacement:
     var dx = Math.round(x/im_ratio)-center_x;
     var dy = Math.round(y/im_ratio)-center_y;
     
     // Adjust dx,dy to make sure we don't go outside of the image:
-    for(i=0; i<anno.pts_x.length; i++) {
+    for(var i = 0; i < anno.pts_x.length; i++) {
       dx = Math.max(anno.pts_x[i]+dx,1)-anno.pts_x[i];
       dy = Math.max(anno.pts_y[i]+dy,1)-anno.pts_y[i];
       dx = Math.min(anno.pts_x[i]+dx,main_image.width_orig)-anno.pts_x[i];
       dy = Math.min(anno.pts_y[i]+dy,main_image.height_orig)-anno.pts_y[i];
     }
     
-    for(i=0; i<anno.pts_x.length; i++) {
+    // Adjust polygon and center point:
+    for(var i = 0; i < anno.pts_x.length; i++) {
       anno.pts_x[i] = Math.round(anno.pts_x[i]+dx);
       anno.pts_y[i] = Math.round(anno.pts_y[i]+dy);
     }
@@ -230,3 +209,30 @@ function StopAdjustEvent() {
   RemoveCenterOfMass();
   console.log('LabelMe: Stopped adjust event.');
 }
+
+/*************** Helper functions ****************/
+
+// Compute center of mass for a polygon given array of points (x,y):
+function CenterOfMass(x,y) {
+  var N = x.length;
+  
+  // Trivial center of mass for single point:
+  if(N==1) {
+    center_x = x[0];
+    center_y = y[0];
+    return;
+  }
+
+  // The midpoint is the average polygon edge midpoint weighted by edge length:
+  center_x = 0; center_y = 0;
+  var perimeter = 0;
+  for(var i = 1; i <= N; i++) {
+    var length = Math.round(Math.sqrt(Math.pow(x[i-1]-x[i%N], 2) + Math.pow(y[i-1]-y[i%N], 2)));
+    center_x += length*Math.round((x[i-1] + x[i%N])/2);
+    center_y += length*Math.round((y[i-1] + y[i%N])/2);
+    perimeter += length;
+  }
+  center_x /= perimeter;
+  center_y /= perimeter;
+}
+
