@@ -18,6 +18,9 @@ var center_id = null;
 // ID of DOM element to attach to:
 var control_div_attach = 'select_canvas';
 
+// ID of drawn polygon:
+var adjust_polygon_id;
+
 // ADJUST POLYGON,
 function StartAdjustEvent() {
   console.log('LabelMe: Starting adjust event...');
@@ -28,11 +31,21 @@ function StartAdjustEvent() {
   adjust_attributes = document.getElementById('attributes').value;
   adjust_occluded = document.getElementById('occluded').value;
   
+  // Close the edit popup bubble:
   CloseEditPopup();
+
+  // Turn on image scrollbars:
   main_image.ScrollbarsOn();
   
   // Get annotation on the select canvas:
   var anno = main_select_canvas.Peek();
+
+  // Remove polygon from canvas:
+  $('#'+anno.polygon_id).remove();
+
+  // Draw polygon:
+  adjust_polygon_id = adjust_DrawPolygon(control_div_attach,anno.pts_x,anno.pts_y,anno.GetObjName(),main_image.GetImRatio());
+  FillPolygon(adjust_polygon_id);
   
   // Show control points:
   ShowControlPoints(anno);
@@ -116,8 +129,8 @@ function MoveControlPoint(event) {
     anno.pts_y[selectedControlPoint] = Math.max(Math.min(Math.round(y/im_ratio),main_image.height_orig),1);
     
     // Remove polygon and redraw:
-    $('#'+anno.polygon_id).remove();
-    anno.DrawPolygon(im_ratio);
+    $('#'+adjust_polygon_id).remove();
+    adjust_polygon_id = adjust_DrawPolygon(control_div_attach,anno.pts_x,anno.pts_y,anno.GetObjName(),im_ratio);
     
     // Adjust control points:
     RemoveControlPoints();
@@ -129,7 +142,7 @@ function StopMoveControlPoint(event) {
   if(isEditingControlPoint) {
     MoveControlPoint(event);
     var anno = main_select_canvas.Peek();
-    FillPolygon(anno.polygon_id);
+    FillPolygon(adjust_polygon_id);
     ShowCenterOfMass(anno);
     isEditingControlPoint = 0;
 
@@ -180,8 +193,8 @@ function MoveCenterOfMass(event) {
     center_y = Math.round(im_ratio*(dy+center_y));
     
     // Remove polygon and redraw:
-    $('#'+anno.polygon_id).remove();
-    anno.DrawPolygon(im_ratio);
+    $('#'+adjust_polygon_id).remove();
+    adjust_polygon_id = adjust_DrawPolygon(control_div_attach,anno.pts_x,anno.pts_y,anno.GetObjName(),im_ratio);
     
     // Redraw control points and center of mass:
     RemoveControlPoints();
@@ -195,7 +208,7 @@ function StopMoveCenterOfMass(event) {
   if(isMovingCenterOfMass) {
     MoveCenterOfMass(event);
     var anno = main_select_canvas.Peek();
-    FillPolygon(anno.polygon_id);
+    FillPolygon(adjust_polygon_id);
     isMovingCenterOfMass = 0;
     
     $('#select_canvas_div').attr("onmousedown","javascript:StopAdjustEvent();return false;");
@@ -204,9 +217,20 @@ function StopMoveCenterOfMass(event) {
 
 function StopAdjustEvent() {
   if(username_flag) submit_username();
-  main_handler.SubmitEditLabel();
+  // Remove polygon:
+  $('#'+adjust_polygon_id).remove();
+
+  // Redraw polygon:
+  var anno = main_select_canvas.Peek();
+  anno.DrawPolygon(main_image.GetImRatio());
+
+  // Remove control points and center of mass point:
   RemoveControlPoints();
   RemoveCenterOfMass();
+
+  // Submit annotation:
+  main_handler.SubmitEditLabel();
+  
   console.log('LabelMe: Stopped adjust event.');
 }
 
@@ -216,14 +240,15 @@ function StopAdjustEvent() {
 function CenterOfMass(x,y) {
   var N = x.length;
   
-  // Trivial center of mass for single point:
+  // Center of mass for a single point:
   if(N==1) {
     center_x = x[0];
     center_y = y[0];
     return;
   }
 
-  // The midpoint is the average polygon edge midpoint weighted by edge length:
+  // The center of mass is the average polygon edge midpoint weighted by 
+  // edge length:
   center_x = 0; center_y = 0;
   var perimeter = 0;
   for(var i = 1; i <= N; i++) {
@@ -236,3 +261,9 @@ function CenterOfMass(x,y) {
   center_y /= perimeter;
 }
 
+function adjust_DrawPolygon(dom_id,x,y,obj_name,scale) {
+  if(x.length==1) return DrawFlag(dom_id,x[0],y[0],obj_name,scale);
+
+  var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4"';
+  return DrawPolygon(dom_id,x,y,obj_name,attr,scale);
+}
