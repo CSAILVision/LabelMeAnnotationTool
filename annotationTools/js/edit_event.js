@@ -91,6 +91,8 @@ var adjust_objEnter = '';
 var adjust_attributes;
 var adjust_occluded;
 
+var adjust_event;
+
 function AdjustPolygonButton() {
   // We need to capture the data before closing the bubble 
   // (THIS IS AN UGLY HACK)
@@ -111,7 +113,7 @@ function AdjustPolygonButton() {
   $('#'+anno.polygon_id).remove();
 
   // Start adjust event:
-  StartAdjustEvent(anno.pts_x,anno.pts_y,anno.GetObjName(),function() {
+  adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,anno.GetObjName(),function(x,y,_editedControlPoints) {
       // Submit username:
       if(username_flag) submit_username();
 
@@ -120,10 +122,14 @@ function AdjustPolygonButton() {
       anno.DrawPolygon(main_image.GetImRatio());
 
       // Set polygon (x,y) points:
-      anno.pts_x = adjust_x;
-      anno.pts_y = adjust_y;
+      anno.pts_x = x;
+      anno.pts_y = y;
+
+      // Set global variable whether the control points have been edited:
+      editedControlPoints = _editedControlPoints;
       
       // Submit annotation:
       main_handler.SubmitEditLabel();
-    });
+    },main_image.GetImRatio());
+  adjust_event.StartEvent();
 }
