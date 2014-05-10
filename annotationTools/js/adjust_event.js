@@ -62,7 +62,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     this.ShowCenterOfMass();
     
     // Set mousedown action to stop adjust event when user clicks on canvas:
-    $('#'+this.dom_attach).attr("onmousedown","javascript:adjust_event.StopAdjustEvent();return false;");
+    $('#'+this.dom_attach).unbind();
+    $('#'+this.dom_attach).mousedown({obj: this},function(e) {
+	return e.data.obj.StopAdjustEvent.bind(e.data.obj);
+      });
   };
   
   // Stop polygon adjust event:
@@ -88,7 +91,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.control_ids.push(DrawPoint(this.dom_attach,this.x[i],this.y[i],'r="5" fill="#00ff00" stroke="#ffffff" stroke-width="2.5"',this.scale));
       
       // Set action:
-      $('#'+this.control_ids[i]).attr('onmousedown','javascript:adjust_event.StartMoveControlPoint(' + i + ');');
+      $('#'+this.control_ids[i]).mousedown({obj: this,point: i},function(e) {
+	  return e.data.obj.StartMoveControlPoint(e.data.point);
+	});
     }
   };
 
@@ -112,7 +117,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     this.center_id = DrawPoint(this.dom_attach,this.center_x,this.center_y,'r="' + MarkerSize + '" fill="red" stroke="#ffffff" stroke-width="' + MarkerSize/2 + '"',this.scale);
     
     // Set action:
-    $('#'+this.center_id).attr('onmousedown','javascript:adjust_event.StartMoveCenterOfMass();');
+    $('#'+this.center_id).mousedown({obj: this},function(e) {
+	return e.data.obj.StartMoveCenterOfMass();
+      });
   };
 
   // This function removes the middle grab point for a polygon
@@ -125,10 +132,14 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
   this.StartMoveControlPoint = function(i) {
     if(!this.isEditingControlPoint) {
-      $('#'+this.dom_attach).attr("onmousedown","");
-      $('#'+this.dom_attach).attr("onmousemove","javascript:adjust_event.MoveControlPoint(event);");
-      $('#body').attr("onmouseup","javascript:adjust_event.StopMoveControlPoint(event);");
-      
+      $('#'+this.dom_attach).unbind();
+      $('#'+this.dom_attach).mousemove({obj: this},function(e) {
+	  return e.data.obj.MoveControlPoint(e);
+	});
+      $('#body').mouseup({obj: this},function(e) {
+	  return e.data.obj.StopMoveControlPoint(e);
+	});      
+
       this.RemoveCenterOfMass();
       this.selectedControlPoint = i;
       
@@ -162,17 +173,26 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       FillPolygon(this.polygon_id);
       this.ShowCenterOfMass();
       this.isEditingControlPoint = false;
-      
-      $('#'+this.dom_attach).attr("onmousedown","javascript:adjust_event.StopAdjustEvent();return false;");
+
+      // Set action:
+      $('#'+this.dom_attach).unbind();
+      $('#'+this.dom_attach).mousedown({obj: this},function(e) {
+	  return e.data.obj.StopAdjustEvent();
+	});
+
     }
   };
 
   this.StartMoveCenterOfMass = function() {
     if(!this.isMovingCenterOfMass) {
-      $('#'+this.dom_attach).attr("onmousedown","");
-      $('#'+this.dom_attach).attr("onmousemove","javascript:adjust_event.MoveCenterOfMass(event);");
-      $('#body').attr("onmouseup","javascript:adjust_event.StopMoveCenterOfMass(event);");
-      
+      $('#'+this.dom_attach).unbind();
+      $('#'+this.dom_attach).mousemove({obj: this},function(e) {
+	  return e.data.obj.MoveCenterOfMass(e);
+	});
+      $('#body').mouseup({obj: this},function(e) {
+	  return e.data.obj.StopMoveCenterOfMass(e);
+	});
+
       this.RemoveControlPoints();
       
       this.isMovingCenterOfMass = true;
@@ -228,8 +248,13 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
       FillPolygon(this.polygon_id);
       this.isMovingCenterOfMass = false;
-      
-      $('#'+this.dom_attach).attr("onmousedown","javascript:adjust_event.StopAdjustEvent();return false;");
+
+      // Set action:
+      $('#'+this.dom_attach).unbind();
+      $('#'+this.dom_attach).mousedown({obj: this},function(e) {
+	  return e.data.obj.StopAdjustEvent();
+	});
+
     }
   };
 

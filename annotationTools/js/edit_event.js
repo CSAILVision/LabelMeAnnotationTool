@@ -91,8 +91,6 @@ var adjust_objEnter = '';
 var adjust_attributes;
 var adjust_occluded;
 
-var adjust_event;
-
 function AdjustPolygonButton() {
   // We need to capture the data before closing the bubble 
   // (THIS IS AN UGLY HACK)
@@ -112,8 +110,8 @@ function AdjustPolygonButton() {
   // Remove polygon from canvas:
   $('#'+anno.polygon_id).remove();
 
-  // Start adjust event:
-  adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,anno.GetObjName(),function(x,y,_editedControlPoints) {
+  // Create adjust event:
+  var adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,anno.GetObjName(),function(x,y,_editedControlPoints) {
       // Submit username:
       if(username_flag) submit_username();
 
@@ -131,5 +129,7 @@ function AdjustPolygonButton() {
       // Submit annotation:
       main_handler.SubmitEditLabel();
     },main_image.GetImRatio());
+
+  // Start adjust event:
   adjust_event.StartEvent();
 }
