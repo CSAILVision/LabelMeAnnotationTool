@@ -134,10 +134,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     if(!this.isEditingControlPoint) {
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousemove({obj: this},function(e) {
-	  return e.data.obj.MoveControlPoint(e);
+	  return e.data.obj.MoveControlPoint(e.originalEvent);
 	});
       $('#body').mouseup({obj: this},function(e) {
-	  return e.data.obj.StopMoveControlPoint(e);
+	  return e.data.obj.StopMoveControlPoint(e.originalEvent);
 	});      
 
       this.RemoveCenterOfMass();
@@ -187,10 +187,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     if(!this.isMovingCenterOfMass) {
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousemove({obj: this},function(e) {
-	  return e.data.obj.MoveCenterOfMass(e);
+	  return e.data.obj.MoveCenterOfMass(e.originalEvent);
 	});
       $('#body').mouseup({obj: this},function(e) {
-	  return e.data.obj.StopMoveCenterOfMass(e);
+	  return e.data.obj.StopMoveCenterOfMass(e.originalEvent);
 	});
 
       this.RemoveControlPoints();
