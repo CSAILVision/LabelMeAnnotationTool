@@ -253,7 +253,7 @@ function HTMLdoneeditButton() {
 }
 
 function HTMLundocloseButton() {
-    return '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="main_handler.WhatIsThisObjectUndoCloseButton();" tabindex="0" /> ';
+    return '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" /> ';
 }
 
 function HTMLdeleteButton() {

@@ -96,54 +96,6 @@ function annotation(anno_id) {
         this.pts_y = Array(numpts);
     };
     
-    // Draws first control point of a new polygon.
-    this.AddFirstControlPoint = function (x,y) {
-        var im_ratio = main_image.GetImRatio();
-        x = Math.round(x/im_ratio);
-        y = Math.round(y/im_ratio);
-        
-        // 7.31.06 - disallow making a point at x=1. move it to x=2 instead.
-        // This is because where there are points at x=1, there are lines
-        // missing.
-        if(x==1) x=2;
-        
-        this.pts_x.push(x);
-        this.pts_y.push(y);
-    };
-    
-    // Adds a new control point to the polygon.  This function gets called
-    // after the first point already exists.
-    this.AddControlPoint = function (x,y) {
-      // Get image scale:
-      var scale = main_image.GetImRatio();
-
-      // Scale point:
-      x = Math.round(x/scale);
-      y = Math.round(y/scale);
-      
-      // 7.31.06 - disallow making a point at x=1. move it to x=2 instead.
-      // This is because where there are points at x=1, there are lines
-      // missing.
-      if(x==1) x=2;
-      
-      this.pts_x.push(x);
-      this.pts_y.push(y);
-      
-      if(!this.line_ids) this.line_ids = Array();
-      
-      var line_idx = this.line_ids.length;
-      var n = this.pts_x.length-1;
-      
-      // Draw line segment:
-      this.line_ids.push(DrawLineSegment(this.div_attach,this.pts_x[n-1],this.pts_y[n-1],this.pts_x[n],this.pts_y[n],'stroke="#0000ff" stroke-width="4"',scale));
-
-      // Set cursor to be crosshair on line segment:
-      $('#'+this.line_ids[line_idx]).css('cursor','crosshair');
-      
-      // Move the first control point to be on top of any drawn lines.
-      $('#'+this.div_attach).append($('#'+this.point_id));
-    };
-    
     // Set attribute of drawn polygon.
     this.SetAttribute = function(field,value) {
       $('#'+this.polygon_id).attr(field,value);
@@ -203,7 +155,7 @@ function annotation(anno_id) {
 
 
       // Set actions for first point:
-      $('#'+this.point_id).attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      $('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
       $('#'+this.point_id).attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
     };
     
@@ -262,7 +214,7 @@ function annotation(anno_id) {
 	this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="8" fill="#00ff00" stroke="#ffffff" stroke-width="4"',im_ratio);
 
 	// Set actions for first point:
-	$('#'+this.point_id).attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+	$('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
 	$('#'+this.point_id).attr('onmouseout','main_handler.MousedOutFirstControlPoint();');
 	$('#'+this.point_id).css('cursor','pointer');
       }
@@ -277,7 +229,7 @@ function annotation(anno_id) {
       this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',im_ratio);
 
       // Set actions for first point:
-      $('#'+this.point_id).attr('onmousedown','var event=new Object(); event.button=2;main_handler.DrawCanvasMouseDown(event);');
+      $('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
       $('#'+this.point_id).attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
       $('#'+this.point_id).css('cursor','pointer');
     };

@@ -25,31 +25,6 @@ function handler() {
       this.QueryToRest();
     };
     
-    // Handles when the user presses the undo close button in response to
-    // the "What is this object?" popup bubble.
-    this.WhatIsThisObjectUndoCloseButton = function () {
-        active_canvas = DRAW_CANVAS;
-
-	// Move query canvas to the back:
-	document.getElementById('query_canvas').style.zIndex = -2;
-	document.getElementById('query_canvas_div').style.zIndex = -2;
-
-        var anno = main_query_canvas.DetachAnnotation();
-
-	CloseQueryPopup();
-	main_image.ScrollbarsOn();
-	
-	// Move select_canvas to front:
-	document.getElementById('draw_canvas').style.zIndex = 0;
-	document.getElementById('draw_canvas_div').style.zIndex = 0;
-
-	// Attach the annotation:
-        main_draw_canvas.AttachAnnotation(anno,'polyline');
-
-	// Render the annotation:
-	main_draw_canvas.RenderAnnotations();
-    };
-    
     // Submits the object label in response to the edit/delete popup bubble.
     this.SubmitEditLabel = function () {
       submission_edited = 1;
@@ -184,22 +159,6 @@ function handler() {
         var y = GetEventPosY(event);
         if(IsNearPolygon(x,y,pp)) selectObject(pp);
         else unselectObjects();
-    };
-    
-    // Handles when the user presses the mouse button down on the drawing
-    // canvas.
-    this.DrawCanvasMouseDown = function (event) {
-        if(active_canvas!=DRAW_CANVAS) return;
-        
-        var x = GetEventPosX(event);
-        var y = GetEventPosY(event);
-        var button = event.button;
-        
-        if(username_flag) submit_username();
-        
-        // If right-clicked and can successfully close the polygon.
-        if(button > 1) this.DrawToQuery();
-        else main_draw_canvas.Peek().AddControlPoint(x,y);
     };
     
     // Handles when we wish to change from "draw" to "query".

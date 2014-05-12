@@ -160,7 +160,7 @@ function FinishStartup() {
   $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
   $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
   $('#select_canvas_div').attr("oncontextmenu","javascript:return false;");
-  $('#draw_canvas_div').attr("onmousedown","javascript:main_handler.DrawCanvasMouseDown(event);return false;");
+  $('#draw_canvas_div').attr("onmousedown","javascript:DrawCanvasMouseDown(event);return false;");
   $('#draw_canvas_div').attr("oncontextmenu","javascript:return false;");
   $('#query_canvas_div').attr("onmousedown","javascript:event.preventDefault();WaitForInput();return false;");
   $('#query_canvas_div').attr("onmouseup","javascript:event.preventDefault();");
