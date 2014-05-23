@@ -1,51 +1,14 @@
 // THIS CODE TAKES CARE OF THE BUBBLE THAT APPEARS ON THE ANNOTATION TOOL
 // WHEN EDITING OBJECT PROPERTIES
 
-// THINGS THAT WILL BE GOOD TO SIMPLIFY:
-//  1- why are there two functions -almost-identical- to close the bubble?
-//  2- why is different the way the data is submitted in edit and query? I think with LM_xml data handling this will be simplified.
-//  3- I want functions
-//        LM_xml.store(obj_index, fieldname, value)
-//        LM_xml.getvalue(obj_index, fieldname)
-//        LM_xml.sendtoserver
-//
-
 // *******************************************
 // Public methods:
 // *******************************************
 
-function mkPopup(left,top) {
-  wait_for_input = 1;
-  mkBubbleHTML(left,top,'query');
-}
-
-function mkEditPopup(left,top,anno) {
-  edit_popup_open = 1;
-  mkBubbleHTML(left,top,'edit',anno);
-}
-
-function mkVerifiedPopup(left,top) {
-  edit_popup_open = 1;
-  mkBubbleHTML(left,top,'verified');
-}
-
-function CloseQueryPopup() {
-  wait_for_input = 0;
-  var p = document.getElementById('myPopup');
-  p.parentNode.removeChild(p);
-}
-
-function CloseEditPopup() {
-  edit_popup_open = 0;
-  var p = document.getElementById('myPopup');
-  if(p) p.parentNode.removeChild(p);
-}
-
-// *******************************************
-// Private methods:
-// *******************************************
-
-function mkBubbleHTML(left,top,bubble_type,anno) {
+// This function creates the popup bubble.  Takes as input (x,y) location,
+// the html to include inside the popup bubble, and the dom element to 
+// attach to. Returns the dom element name for the popup bubble.
+function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   var html_str;
   
   // Adjust location to account for the displacement of the arrow:
@@ -59,25 +22,15 @@ function mkBubbleHTML(left,top,bubble_type,anno) {
   else {
     html_str  = '<div class= "bubble top" id="myPopup" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
   }
-  
-  // Select the type of bubble (adding new object, editing existing object, ...) 
-  switch(bubble_type) {
-  case 'query':
-    html_str += GetPopupForm("");
-    break;
-  case 'edit':
-    html_str += GetCloseImg() + GetPopupForm(anno);
-    break;
-  case 'verified':
-    html_str += GetCloseImg() + GetVerifiedPopupForm();
-    break;
-  default:
-    alert('Invalid bubble_type');
-  }
+
+  // Insert bubble inner contents:
+  html_str += innerHTML;
+
+  // Close div tag:
   html_str += '</div>';
   
   // Insert bubble in page created HTML
-  $('#main_section').append(html_str);
+  $('#'+dom_attach).append(html_str);
   
   // Place bubble in the right location taking into account the rendered size and the location of the arrow
   if (top>214){  
@@ -87,10 +40,73 @@ function mkBubbleHTML(left,top,bubble_type,anno) {
   else {
     document.getElementById('myPopup').style.top = (top) + 'px';
   }
-  
+
+  return 'myPopup';
+}
+
+// *******************************************
+// Private methods:
+// *******************************************
+
+// show small icon on the top-right to close the window
+function GetCloseImg() {
+  return '<img style="border: 0pt none; width:14px; height:14px; z-index:4; -moz-user-select:none; position:absolute; cursor:pointer; right:8px;'+
+    'top: 8px;" src="Icons/close.png" height="14" width="14" onclick="javascript:StopEditEvent()" />';
+}
+
+
+
+
+// *******************************************
+// All functions below here need to be moved to their appropriate module:
+// *******************************************
+
+// THINGS THAT WILL BE GOOD TO SIMPLIFY:
+//  1- why are there two functions -almost-identical- to close the bubble?
+//  2- why is different the way the data is submitted in edit and query? I think with LM_xml data handling this will be simplified.
+//  3- I want functions
+//        LM_xml.store(obj_index, fieldname, value)
+//        LM_xml.getvalue(obj_index, fieldname)
+//        LM_xml.sendtoserver
+//
+
+// Query popup bubble:
+function mkPopup(left,top) {
+  wait_for_input = 1;
+  var innerHTML = GetPopupForm("");
+  CreatePopupBubble(left,top,innerHTML,'main_section');
+
   // Focus the cursor inside the box
   document.getElementById('objEnter').focus();
   document.getElementById('objEnter').select();
+}
+
+function mkEditPopup(left,top,anno) {
+  edit_popup_open = 1;
+  var innerHTML = GetCloseImg() + GetPopupForm(anno);
+  CreatePopupBubble(left,top,innerHTML,'main_section');
+
+  // Focus the cursor inside the box
+  document.getElementById('objEnter').focus();
+  document.getElementById('objEnter').select();
+}
+
+function mkVerifiedPopup(left,top) {
+  edit_popup_open = 1;
+  var innerHTML = GetCloseImg() + GetVerifiedPopupForm();
+  CreatePopupBubble(left,top,innerHTML,'main_section');
+}
+
+function CloseQueryPopup() {
+  wait_for_input = 0;
+  var p = document.getElementById('myPopup');
+  p.parentNode.removeChild(p);
+}
+
+function CloseEditPopup() {
+  edit_popup_open = 0;
+  var p = document.getElementById('myPopup');
+  if(p) p.parentNode.removeChild(p);
 }
 
 // ****************************
@@ -270,10 +286,4 @@ function HTMLdeleteeditButton() {
 
 function HTMLadjustpolygonButton() {
   return '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="AdjustPolygonButton();" /> ';
-}
-
-// show small icon on the top-right to close the window
-function GetCloseImg() {
-  return '<img style="border: 0pt none; width:14px; height:14px; z-index:4; -moz-user-select:none; position:absolute; cursor:pointer; right:8px;'+
-    'top: 8px;" src="Icons/close.png" height="14" width="14" onclick="javascript:StopEditEvent()" />';
 }
