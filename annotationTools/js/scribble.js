@@ -1,3 +1,3 @@
-function StartScribble(tag_buttons,tag_canvas) {
+function InitializeScribbleMode(tag_buttons,tag_canvas) {
   console.log('Started scribble mode');
 }

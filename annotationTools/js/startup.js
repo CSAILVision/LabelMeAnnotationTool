@@ -170,7 +170,7 @@ function FinishStartup() {
   initUserName();
 
   // Enable scribble mode:
-  if(scribble_mode) StartScribble();
+  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_image');
   
   // Set action when the user presses a key:
   document.onkeyup = main_handler.KeyPress;
