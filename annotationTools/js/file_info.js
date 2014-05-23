@@ -151,6 +151,9 @@ function file_info() {
                     object_choices = par_value.replace('_',' ');
                     object_choices = object_choices.split(/,/);
                 }
+                if((par_field=='scribble')&&(par_value=='true')) {
+		  scribble_mode = true;
+		}
                 par_str = par_str.substring(idx+1,par_str.length);
             } while(idx != -1);
             if((!this.dir_name) || (!this.im_name)) return this.SetURL(labelme_url);

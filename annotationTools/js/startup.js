@@ -168,6 +168,9 @@ function FinishStartup() {
 
   // Initialize the username:
   initUserName();
+
+  // Enable scribble mode:
+  if(scribble_mode) StartScribble();
   
   // Set action when the user presses a key:
   document.onkeyup = main_handler.KeyPress;

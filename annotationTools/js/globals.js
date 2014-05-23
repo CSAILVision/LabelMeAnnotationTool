@@ -52,3 +52,5 @@ var xhtmlNS = 'http://www.w3.org/1999/xhtml';
 
 // Website that refers to LabelMe:
 var ref;
+
+var scribble_mode = false;
