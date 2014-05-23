@@ -10,6 +10,7 @@
 // attach to. Returns the dom element name for the popup bubble.
 function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   var html_str;
+  var bubble_name = 'myPopup';
   
   // Adjust location to account for the displacement of the arrow:
   left = left - 22;
@@ -17,10 +18,10 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   
   // Select the vertical position of the bubble decoration arrow
   if (top>214){
-    html_str  = '<div class= "bubble" id="myPopup" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
+    html_str  = '<div class= "bubble" id="' + bubble_name + '" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
   }
   else {
-    html_str  = '<div class= "bubble top" id="myPopup" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
+    html_str  = '<div class= "bubble top" id="' + bubble_name + '" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
   }
 
   // Insert bubble inner contents:
@@ -29,19 +30,19 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   // Close div tag:
   html_str += '</div>';
   
-  // Insert bubble in page created HTML
+  // Insert bubble into the DOM tree:
   $('#'+dom_attach).append(html_str);
   
   // Place bubble in the right location taking into account the rendered size and the location of the arrow
   if (top>214){  
-    h = $("#myPopup").height();
-    document.getElementById('myPopup').style.top = (top -h -80) + 'px';
+    h = $('#'+bubble_name).height();
+    document.getElementById(bubble_name).style.top = (top -h -80) + 'px';
   }
   else {
-    document.getElementById('myPopup').style.top = (top) + 'px';
+    document.getElementById(bubble_name).style.top = (top) + 'px';
   }
 
-  return 'myPopup';
+  return bubble_name;
 }
 
 // *******************************************
