@@ -13,15 +13,15 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   var bubble_name = 'myPopup';
   
   // Adjust location to account for the displacement of the arrow:
-  left = left - 22;
-  if (left<5) left=5;
+  left -= 22;
+  if (left < 5) left = 5;
   
   // Select the vertical position of the bubble decoration arrow
-  if (top>214){
-    html_str  = '<div class= "bubble" id="' + bubble_name + '" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
+  if (top > 214) {
+    html_str  = '<div class= "bubble" id="' + bubble_name + '" style="position:absolute;z-index:5; left:' + left + 'px; top:' + top + 'px;">';
   }
   else {
-    html_str  = '<div class= "bubble top" id="' + bubble_name + '" style="position:absolute;z-index:5; left:'+left+'px; top:'+top+'px;">';
+    html_str  = '<div class= "bubble top" id="' + bubble_name + '" style="position:absolute;z-index:5; left:' + left + 'px; top:' + top + 'px;">';
   }
 
   // Insert bubble inner contents:
@@ -34,9 +34,9 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   $('#'+dom_attach).append(html_str);
   
   // Place bubble in the right location taking into account the rendered size and the location of the arrow
-  if (top>214){  
+  if(top > 214) {  
     h = $('#'+bubble_name).height();
-    document.getElementById(bubble_name).style.top = (top -h -80) + 'px';
+    document.getElementById(bubble_name).style.top = (top-h-80) + 'px';
   }
   else {
     document.getElementById(bubble_name).style.top = (top) + 'px';
@@ -45,17 +45,21 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   return bubble_name;
 }
 
-// *******************************************
-// Private methods:
-// *******************************************
-
-// show small icon on the top-right to close the window
-function GetCloseImg() {
-  return '<img style="border: 0pt none; width:14px; height:14px; z-index:4; -moz-user-select:none; position:absolute; cursor:pointer; right:8px;'+
-    'top: 8px;" src="Icons/close.png" height="14" width="14" onclick="javascript:StopEditEvent()" />';
+// This function creates the close button at the top-right corner of the 
+// popup bubble. Inputs are the dom_bubble name (returned from 
+// CreatePopupBubble()) and (optionally) a function to run when the close
+// button is pressed.
+function CreatePopupBubbleCloseButton(dom_bubble,close_function) {
+  if(arguments.length==1) {
+    close_function = function() {return;};
+  }
+  var html_str = '<img style="border: 0pt none; width:14px; height:14px; z-index:4; -moz-user-select:none; position:absolute; cursor:pointer; right:8px; top: 8px;" src="Icons/close.png" height="14" width="14" />';
+  $('#'+dom_bubble).append(html_str);
+  $('#'+dom_bubble).mousedown(function () {
+      $('#'+dom_bubble).remove();
+      close_function();
+    });
 }
-
-
 
 
 // *******************************************
@@ -84,8 +88,9 @@ function mkPopup(left,top) {
 
 function mkEditPopup(left,top,anno) {
   edit_popup_open = 1;
-  var innerHTML = GetCloseImg() + GetPopupForm(anno);
-  CreatePopupBubble(left,top,innerHTML,'main_section');
+  var innerHTML = GetPopupForm(anno);
+  var dom_bubble = CreatePopupBubble(left,top,innerHTML,'main_section');
+  CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
 
   // Focus the cursor inside the box
   document.getElementById('objEnter').focus();
@@ -94,8 +99,9 @@ function mkEditPopup(left,top,anno) {
 
 function mkVerifiedPopup(left,top) {
   edit_popup_open = 1;
-  var innerHTML = GetCloseImg() + GetVerifiedPopupForm();
-  CreatePopupBubble(left,top,innerHTML,'main_section');
+  var innerHTML = GetVerifiedPopupForm();
+  var dom_bubble = CreatePopupBubble(left,top,innerHTML,'main_section');
+  CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
 }
 
 function CloseQueryPopup() {
