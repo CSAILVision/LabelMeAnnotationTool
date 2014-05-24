@@ -47,7 +47,12 @@ function StartEditEvent(anno_id,event) {
   var pt = anno.GetPopupPoint();
   pt = main_image.SlideWindow(pt[0],pt[1]);
   main_image.ScrollbarsOff();
-  if(anno.GetVerified()) mkVerifiedPopup(pt[0],pt[1]);
+  if(anno.GetVerified()) {
+    edit_popup_open = 1;
+    var innerHTML = "<b>This annotation has been blocked.</b><br />";
+    var dom_bubble = CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');
+    CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
+  }
   else {
     // Set object list choices for points and lines:
     var doReset = SetObjectChoicesPointLine(anno);

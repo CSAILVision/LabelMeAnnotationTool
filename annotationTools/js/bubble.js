@@ -97,13 +97,6 @@ function mkEditPopup(left,top,anno) {
   document.getElementById('objEnter').select();
 }
 
-function mkVerifiedPopup(left,top) {
-  edit_popup_open = 1;
-  var innerHTML = GetVerifiedPopupForm();
-  var dom_bubble = CreatePopupBubble(left,top,innerHTML,'main_section');
-  CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
-}
-
 function CloseQueryPopup() {
   wait_for_input = 0;
   var p = document.getElementById('myPopup');
@@ -163,10 +156,6 @@ function GetPopupForm(anno) {
   }
   
   return html_str;
-}
-
-function GetVerifiedPopupForm() {
-  return "<b>This annotation has been blocked.</b><br />";
 }
 
 
