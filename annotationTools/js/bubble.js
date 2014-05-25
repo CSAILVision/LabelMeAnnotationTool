@@ -149,16 +149,28 @@ function GetPopupForm(anno) {
   // Buttons
   html_str += "<br />";
   if (obj_name=="") {
-    html_str += HTMLdoneButton() + HTMLundocloseButton() + HTMLdeleteButton();
+    /***** Finished drawing a polygon *****/
+
+    // Done button:
+    html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
+
+    // Undo close button:
+    html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
+
+    // Delete button:
+    html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
   }
   else {
-    // treat the special case of edditing a polygon:
-    html_str += HTMLdoneeditButton();
+    /***** Editing a polygon *****/
+    
+    // Done button:
+    html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
 
     // Adjust polygon button:
     html_str += '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
 
-    html_str += HTMLdeleteeditButton();
+    // Delete button:
+    html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" />';
   }
   
   return html_str;
@@ -260,28 +272,4 @@ function HTMLpartsBox(parts) {
   }
   
   return html_str;
-}
-
-
-// ****************************
-// show basic buttons
-// ****************************
-function HTMLdoneButton() {
-  return '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" /> ';
-}
-
-function HTMLdoneeditButton() {
-  return '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" /> ';
-}
-
-function HTMLundocloseButton() {
-  return '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" /> ';
-}
-
-function HTMLdeleteButton() {
-  return '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" /> ';
-}
-
-function HTMLdeleteeditButton() {
-  return '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" /> ';
 }
