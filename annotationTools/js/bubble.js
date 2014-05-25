@@ -79,7 +79,7 @@ function CreatePopupBubbleCloseButton(dom_bubble,close_function) {
 // Query popup bubble:
 function mkPopup(left,top) {
   wait_for_input = 1;
-  var innerHTML = GetPopupForm("");
+  var innerHTML = GetPopupFormDraw();
   CreatePopupBubble(left,top,innerHTML,'main_section');
 
   // Focus the cursor inside the box
@@ -89,7 +89,7 @@ function mkPopup(left,top) {
 
 function mkEditPopup(left,top,anno) {
   edit_popup_open = 1;
-  var innerHTML = GetPopupForm(anno);
+  var innerHTML = GetPopupFormEdit(anno);
   var dom_bubble = CreatePopupBubble(left,top,innerHTML,'main_section');
   CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
 
@@ -114,68 +114,68 @@ function CloseEditPopup() {
 // Forms:
 // ****************************
 
-// Forms to enter a new object
-function GetPopupForm(anno) {
-  // get object name and attributes from 'anno'
-  var obj_name = "";
-  var attributes = "";
-  var occluded = "";
-  var parts = "";
-  if (anno) {
-    obj_name = anno.GetObjName();
-    if (obj_name=="") {
-      // if the object field is empty, but the annotation exists, 
-      // then it means we are in edit mode.
-      obj_name = "?";
-    }
-    attributes = anno.GetAttributes();
-    occluded = anno.GetOccluded();
-    parts = anno.GetParts();
+function GetPopupFormDraw() {
+  html_str = "<b>Enter object name</b><br />";
+  html_str += HTMLobjectBox("");
+  
+  if(use_attributes) {
+    html_str += HTMLoccludedBox("");
+    html_str += "<b>Enter attributes</b><br />";
+    html_str += HTMLattributesBox("");
   }
+  
+  if(use_parts) {
+    html_str += HTMLpartsBox("");
+  }
+  
+  html_str += "<br />";
+  
+  // Done button:
+  html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
+  
+  // Undo close button:
+  html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
+  
+  // Delete button:
+  html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
+  
+  return html_str;
+}
+
+function GetPopupFormEdit(anno) {
+  // get object name and attributes from 'anno'
+  var obj_name = anno.GetObjName();
+  if(obj_name=="") obj_name = "?";
+  var attributes = anno.GetAttributes();
+  var occluded = anno.GetOccluded();
+  var parts = anno.GetParts();
   
   html_str = "<b>Enter object name</b><br />";
   html_str += HTMLobjectBox(obj_name);
   
-  if (use_attributes) {
+  if(use_attributes) {
     html_str += HTMLoccludedBox(occluded);
     html_str += "<b>Enter attributes</b><br />";
     html_str += HTMLattributesBox(attributes);
   }
   
-  if (use_parts) {
+  if(use_parts) {
     html_str += HTMLpartsBox(parts);
   }
-    
-  // Buttons
+  
   html_str += "<br />";
-  if (obj_name=="") {
-    /***** Finished drawing a polygon *****/
-
-    // Done button:
-    html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
-
-    // Undo close button:
-    html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
-
-    // Delete button:
-    html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
-  }
-  else {
-    /***** Editing a polygon *****/
-    
-    // Done button:
-    html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
-
-    // Adjust polygon button:
-    html_str += '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
-
-    // Delete button:
-    html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" />';
-  }
+  
+  // Done button:
+  html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
+  
+  // Adjust polygon button:
+  html_str += '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
+  
+  // Delete button:
+  html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" />';
   
   return html_str;
 }
-
 
 // ****************************
 // Simple building blocks:
