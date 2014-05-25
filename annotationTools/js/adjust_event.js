@@ -64,7 +64,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     // Set mousedown action to stop adjust event when user clicks on canvas:
     $('#'+this.dom_attach).unbind();
     $('#'+this.dom_attach).mousedown({obj: this},function(e) {
-	return e.data.obj.StopAdjustEvent.bind(e.data.obj);
+	return e.data.obj.StopAdjustEvent();
       });
   };
   
