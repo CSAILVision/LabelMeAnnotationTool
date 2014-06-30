@@ -172,6 +172,10 @@ function image(id) {
 	  // Render the annotation:
 	  main_draw_canvas.RenderAnnotations();
 	}
+    if (drawing_mode == 1){
+            scribble_canvas.redraw();
+            scribble_canvas.drawMask();
+        }
     };
     
     

@@ -137,8 +137,8 @@ function handler() {
     this.AnnotationLinkClick = function (idx) {
       if(active_canvas==REST_CANVAS) StartEditEvent(idx,null);
       else if(active_canvas==SELECTED_CANVAS) {
-	var anno_id = main_select_canvas.Peek().GetAnnoID();
-	if(edit_popup_open && (idx==anno_id)) StopEditEvent();
+      	var anno_id = main_select_canvas.Peek().GetAnnoID();
+      	if(edit_popup_open && (idx==anno_id)) StopEditEvent();
       }
     };
     
@@ -266,31 +266,70 @@ function handler() {
       var ts = GetTimeStamp();
       if(ts.length==20) html_str += '<date>' + ts + '</date>';
       html_str += '<id>' + obj_ndx + '</id>';
-      html_str += '<polygon>';
-      html_str += '<username>' + username + '</username>';
-      for(var jj=0; jj < anno.GetPtsX().length; jj++) {
-	html_str += '<pt>';
-	html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
-	html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
-	html_str += '</pt>';
+      
+      if (anno.GetType() == 1){
+          html_str += '<segm>';
+          html_str += '<username>' + username + '</username>';
+
+          html_str += '<box>';
+          html_str += '<xmin>' + anno.GetPtsX()[0] + '</xmin>'; 
+          html_str += '<ymin>' + anno.GetPtsY()[0] + '</ymin>';
+          html_str += '<xmax>' + anno.GetPtsX()[1] + '</xmax>'; 
+          html_str += '<ymax>' + anno.GetPtsY()[2] + '</ymax>';
+          html_str += '</box>';
+
+          html_str += '<mask>'+ anno.GetImName()+'</mask>';
+
+          html_str += '<scribbles>';
+          html_str += '<xmin>' + anno.GetCornerLX() + '</xmin>'; 
+          html_str += '<ymin>' + anno.GetCornerLY() + '</ymin>';
+          html_str += '<xmax>' + anno.GetCornerRX() + '</xmax>'; 
+          html_str += '<ymax>' + anno.GetCornerRY() + '</ymax>';
+          html_str += '<scribble_name>'+ anno.GetScribbleName()+'</scribble_name>'; 
+          html_str += '</scribbles>';
+
+          html_str += '</segm>';
+          html_str += '</object>';
+          $(LM_xml).children("annotation").append($(html_str));
+
+          AllAnnotations.push(anno);
+
+          if(!anno.GetDeleted()||view_Deleted) {
+            main_canvas.AttachAnnotation(anno,'polygon');
+            main_canvas.RenderAnnotations();
+          }
+
+          scribble_canvas.cleanscribbles();
+          scribble_canvas.scribble_image = "";
+          scribble_canvas.colorseg = Math.floor(Math.random()*14);
+          
       }
-      html_str += '</polygon>';
-      html_str += '</object>';
-      $(LM_xml).children("annotation").append($(html_str));
+      else {
+          html_str += '<polygon>';
+          html_str += '<username>' + username + '</username>';
+          for(var jj=0; jj < anno.GetPtsX().length; jj++) {
+            html_str += '<pt>';
+            html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
+            html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
+            html_str += '</pt>';
+          }
+          html_str += '</polygon>';
+          html_str += '</object>';
+          $(LM_xml).children("annotation").append($(html_str));
       
-      AllAnnotations.push(anno);
-      
+          AllAnnotations.push(anno);
+      }
       if(!anno.GetDeleted()||view_Deleted) {
-	main_canvas.AttachAnnotation(anno,'polygon');
-	main_canvas.RenderAnnotations();
+      	main_canvas.AttachAnnotation(anno,'polygon');
+      	main_canvas.RenderAnnotations();
       }
       
       // Write XML to server:
       WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
       
       if(view_ObjList) {
-	RemoveAnnotationList();
-	LoadAnnotationList();
+      	RemoveAnnotationList();
+      	LoadAnnotationList();
       }
       
       var m = main_image.GetFileInfo().GetMode();
