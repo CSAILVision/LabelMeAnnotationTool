@@ -60,14 +60,19 @@ function LoadAnnotationSuccess(xml) {
     if(curr_obj.children("id").length > 0) curr_obj.children("id").text(""+pp);
     else curr_obj.append($("<id>" + pp + "</id>"));
 
-    // Initialize username if empty in the XML file:
-    // Xavier's changes: check first if we have a polygon or a segmentation
-    if(curr_obj.children("polygon").length == 0){
+    /*************************************************************/
+    /*************************************************************/
+    // Scribble: 
+    // Initialize username if empty in the XML file. Check first if we 
+    // have a polygon or a segmentation:
+    if(curr_obj.children("polygon").length == 0) { // Segmentation
       if(curr_obj.children("segm").children("username").length == 0) {
         curr_obj.children("segm").append($("<username>anonymous</username>"));
       }
     }
     else if(curr_obj.children("polygon").children("username").length == 0) curr_obj.children("polygon").append($("<username>anonymous</username>"));
+    /*************************************************************/
+    /*************************************************************/
   }
     
   // Add part fields (this calls a funcion inside object_parts.js)
@@ -77,7 +82,10 @@ function LoadAnnotationSuccess(xml) {
   for(var pp = 0; pp < num_obj; pp++) {
     AllAnnotations[pp] = new annotation(pp);
     
-    // If Annotation is polygon, insert polygon
+    /*************************************************************/
+    /*************************************************************/
+    // Scribble: 
+    // If annotation is polygon, insert polygon:
     if(obj_elts[pp].getElementsByTagName("polygon").length > 0){
       var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
       var numpts = pt_elts.length;
@@ -88,7 +96,7 @@ function LoadAnnotationSuccess(xml) {
         AllAnnotations[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
       }
     }
-    // Otherwise, insert segmentation
+    // Otherwise, insert segmentation:
     else if (scribble_mode){
       AllAnnotations[pp].SetType(1);
       AllAnnotations[pp].SetImName(obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("mask")[0].firstChild.nodeValue);
@@ -101,12 +109,13 @@ function LoadAnnotationSuccess(xml) {
       var yc3 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("ymin")[0].firstChild.nodeValue);
       var xc4 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("xmax")[0].firstChild.nodeValue);
       var yc4 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("ymax")[0].firstChild.nodeValue);
-    
   
       AllAnnotations[pp].SetImageCorners(xc1,yc1,xc2,yc2);
       AllAnnotations[pp].SetCorners(xc3,yc3,xc4,yc4);
-      
     }
+    /*************************************************************/
+    /*************************************************************/
+
   }
 
   // Add annotations to the main_canvas and render:
