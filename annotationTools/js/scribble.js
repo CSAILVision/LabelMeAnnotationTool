@@ -64,6 +64,17 @@ function InitializeScribbleMode(tag_button, tag_canvas){
             </button><input type="button" class="segbut" id="segmentbtn" value="Segment" title="Press this button to see the segmentation results." onclick="scribble_canvas.segmentImage(0)"/><input type="button" class="segbut"  id="donebtn" value="Done" title="Press this button after you are done with the scribbling." onclick="scribble_canvas.segmentImage(1)"/> \
             <p> </p><div id="loadspinner" style="display: none;"><img src="Icons/segment_loader.gif"/> </div></div>';
   $('#'+tag_button).append(html_str);    
+
+  html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:getPackFile();"> \
+        <img src="Icons/download_all.png" height="30" /> \
+      </button>';
+  html_str3 = '<form action="annotationTools/php/getpackfile.php" method="post" id="packform"> \
+        <input type="hidden" id= "folder" name="folder" value="provesfinal" /> \
+        <input type="hidden" id= "name" name="name" value="img2.jpg" /> \
+       </form>';
+  $('#tool_buttons').append(html_str3);
+  $('#help').before(html_str2);    
+ console.log(tag_button);
   document.getElementById("segmDiv").setAttribute('style', 'opacity: 0.2');
   document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
 
