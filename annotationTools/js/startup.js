@@ -190,14 +190,12 @@ function FinishStartup() {
   $('#zoomin').attr("onclick","javascript:main_image.Zoom(1.15)");
   $('#zoomout').attr("onclick","javascript:main_image.Zoom(1.0/1.15)");
   $('#fit').attr("onclick","javascript:main_image.Zoom('fitted')");
-  $('#erase').attr("onclick","javascript:main_handler.EraseSegmentButton()");
+  $('#erase').attr("onclick","javascript:main_handler.EraseSegment()");
   $('#submitform').attr("action","javascript:loadXMLDoc();");
   $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
   $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
   $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
   $('#select_canvas_div').attr("oncontextmenu","javascript:return false;");
-  $('#draw_canvas_div').attr("onmousedown","javascript:DrawCanvasMouseDown(event);return false;");
-  $('#draw_canvas_div').attr("oncontextmenu","javascript:return false;");
   $('#query_canvas_div').attr("onmousedown","javascript:event.preventDefault();WaitForInput();return false;");
   $('#query_canvas_div').attr("onmouseup","javascript:event.preventDefault();");
   $('#query_canvas_div').attr("oncontextmenu","javascript:return false;");

@@ -218,11 +218,11 @@ function GetTimeStamp() {
 
 
 // Set object list choices for points and lines:
-function SetObjectChoicesPointLine(anno) {
+function SetObjectChoicesPointLine(num_control_points) {
   // If point has been labeled, then make autocomplete have "point"
   // be option:
   var isPoint = 0;
-  if((anno.GetPtsX().length==1) && (object_choices=='...')) {
+  if((num_control_points==1) && (object_choices=='...')) {
     object_choices = 'point';
     object_choices = object_choices.split(/,/);
     isPoint = 1;
@@ -231,7 +231,7 @@ function SetObjectChoicesPointLine(anno) {
   // If line has been labeled, then make autocomplete have "line"
   // and "horizon line" be options:
   var isLine = 0;
-  if((anno.GetPtsX().length==2) && (object_choices=='...')) {
+  if((num_control_points==2) && (object_choices=='...')) {
     object_choices = 'line,horizon line';
     object_choices = object_choices.split(/,/);
     isLine = 1;

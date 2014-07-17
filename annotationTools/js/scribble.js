@@ -50,7 +50,7 @@ function InitializeScribbleMode(tag_button, tag_canvas){
              <button id="polygon" class="labelBtnDraw" type="button" title="Start Polygon" onclick="SetDrawingMode(0)" > \
                  <img id="polygonModeImg" src="Icons/polygon.png"  width="30" height="38" /> \
              </button> \
-             <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegmentButton()" > \
+             <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegment()" > \
               <img src="Icons/erase.png"  width="30" height="38" /> \
               </button> \
           </div>';
@@ -322,11 +322,13 @@ function scribble_canvas(tag) {
   document.getElementById('query_canvas_div').style.zIndex = 0;
 
   // Set object list choices for points and lines:
-  var doReset = SetObjectChoicesPointLine(anno);
+  var doReset = SetObjectChoicesPointLine(anno.GetPtsX().length);
+
+  // Get location where popup bubble will appear:
+  var im_ratio = main_image.GetImRatio();
+  var pt = main_image.SlideWindow((anno.GetPtsX()[0]*im_ratio + anno.GetPtsX()[1]*im_ratio)/2,(anno.GetPtsY()[0]*im_ratio + anno.GetPtsY()[2]*im_ratio)/2);
 
   // Make query popup appear.
-  var pt = anno.GetPopupPoint();
-  pt = main_image.SlideWindow(pt[0],pt[1]);
   main_image.ScrollbarsOff();
   WriteLogMsg('*What_is_this_object_query');
   

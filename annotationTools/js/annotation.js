@@ -363,28 +363,6 @@ function annotation(anno_id) {
       $('#'+this.point_id).css('cursor','pointer');
     };
     
-    // Gets the (x,y) point where a popup bubble can be attached.
-    this.GetPopupPoint = function () {
-        var im_ratio = main_image.GetImRatio();
-        var pt = Array(2);
-
-	/*************************************************************/
-	/*************************************************************/
-	// Scribble: if this.anno_type != 0
-        if (this.anno_type == 0) {
-	  pt[0] = Math.round(this.pts_x[0]*im_ratio);
-	  pt[1] = Math.round(this.pts_y[0]*im_ratio);
-        }
-        else {
-	  pt[0] = (this.pts_x[0]*im_ratio + this.pts_x[1]*im_ratio)/2;
-	  pt[1] = (this.pts_y[0]*im_ratio + this.pts_y[2]*im_ratio)/2;
-        }
-	/*************************************************************/
-	/*************************************************************/
-
-        return pt;
-    };
-    
     // Returns the closest point to (x,y) that lies along the boundary of
     // the polygon.
     this.ClosestPoint = function (x,y) {

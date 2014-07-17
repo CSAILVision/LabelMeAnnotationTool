@@ -42,7 +42,13 @@ function StartDrawEvent(event) {
   // Render the annotation:
 //   draw_anno.DrawPolyLine();
   main_draw_canvas.RenderAnnotations();
-  
+
+  // Set mousedown action to handle when user clicks on the drawing canvas:
+  $('#draw_canvas_div').unbind();
+  $('#draw_canvas_div').mousedown({obj: this},function(e) {
+      return DrawCanvasMouseDown(e.originalEvent);
+    });
+
   WriteLogMsg('*start_polygon');
 }
 
@@ -85,9 +91,44 @@ function DrawCanvasMouseDown(event) {
 function DrawCanvasClosePolygon() {
   if(active_canvas!=DRAW_CANVAS) return;
   if(username_flag) submit_username();
-  main_handler.DrawToQuery();
-}
+  if((object_choices!='...') && (object_choices.length==1)) {
+    main_handler.SubmitQuery();
+    StopDrawEvent();
+    return;
+  }
+  active_canvas = QUERY_CANVAS;
+  
+  // Move draw canvas to the back:
+  document.getElementById('draw_canvas').style.zIndex = -2;
+  document.getElementById('draw_canvas_div').style.zIndex = -2;
+  
+  var anno = main_draw_canvas.DetachAnnotation();
+  
+  // Move query canvas to front:
+  document.getElementById('query_canvas').style.zIndex = 0;
+  document.getElementById('query_canvas_div').style.zIndex = 0;
+  
+  // Set object list choices for points and lines:
+  var doReset = SetObjectChoicesPointLine(anno.GetPtsX().length);
 
+  // Get location where popup bubble will appear:
+  var pt = main_image.SlideWindow(Math.round(anno.GetPtsX()[0]*main_image.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_image.GetImRatio()));
+
+  // Make query popup appear.
+  main_image.ScrollbarsOff();
+  WriteLogMsg('*What_is_this_object_query');
+  mkPopup(pt[0],pt[1]);
+  
+  // If annotation is point or line, then 
+  if(doReset) object_choices = '...';
+  
+  // Attach the annotation to the canvas:
+  main_query_canvas.AttachAnnotation(anno,'filled_polygon');
+  
+  // Render the annotation:
+  main_query_canvas.RenderAnnotations();
+}
+    
 // Handles when the user presses the undo close button in response to
 // the "What is this object?" popup bubble.
 function UndoCloseButton() {

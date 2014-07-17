@@ -43,9 +43,10 @@ function StartEditEvent(anno_id,event) {
   // Render the annotation:
   main_select_canvas.RenderAnnotations();
   
+  // Get location where popup bubble will appear:
+  var pt = main_image.SlideWindow(Math.round(anno.GetPtsX()[0]*main_image.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_image.GetImRatio()));
+
   // Make edit popup appear.
-  var pt = anno.GetPopupPoint();
-  pt = main_image.SlideWindow(pt[0],pt[1]);
   main_image.ScrollbarsOff();
   if(anno.GetVerified()) {
     edit_popup_open = 1;
@@ -55,7 +56,7 @@ function StartEditEvent(anno_id,event) {
   }
   else {
     // Set object list choices for points and lines:
-    var doReset = SetObjectChoicesPointLine(anno);
+    var doReset = SetObjectChoicesPointLine(anno.GetPtsX().length);
     
     // Popup edit bubble:
     WriteLogMsg('*Opened_Edit_Popup');

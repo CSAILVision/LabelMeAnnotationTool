@@ -161,45 +161,6 @@ function handler() {
         else unselectObjects();
     };
     
-    // Handles when we wish to change from "draw" to "query".
-    this.DrawToQuery = function () {
-        if((object_choices!='...') && (object_choices.length==1)) {
-            this.SubmitQuery();
-            StopDrawEvent();
-            return;
-        }
-        active_canvas = QUERY_CANVAS;
-
-	// Move draw canvas to the back:
-	document.getElementById('draw_canvas').style.zIndex = -2;
-	document.getElementById('draw_canvas_div').style.zIndex = -2;
-
-        var anno = main_draw_canvas.DetachAnnotation();
-
-	// Move query canvas to front:
-	document.getElementById('query_canvas').style.zIndex = 0;
-	document.getElementById('query_canvas_div').style.zIndex = 0;
-
-	// Set object list choices for points and lines:
-	var doReset = SetObjectChoicesPointLine(anno);
-
-	// Make query popup appear.
-	var pt = anno.GetPopupPoint();
-	pt = main_image.SlideWindow(pt[0],pt[1]);
-	main_image.ScrollbarsOff();
-	WriteLogMsg('*What_is_this_object_query');
-	mkPopup(pt[0],pt[1]);
-	
-	// If annotation is point or line, then 
-	if(doReset) object_choices = '...';
-
-	// Attach the annotation to the canvas:
-        main_query_canvas.AttachAnnotation(anno,'filled_polygon');
-
-	// Render the annotation:
-        main_query_canvas.RenderAnnotations();
-    };
-    
     // Submits the object label in response to the "What is this object?"
     // popup bubble. THIS FUNCTION IS A MESS!!!!
     this.SubmitQuery = function () {
@@ -375,23 +336,11 @@ function handler() {
         if(event.keyCode==27 && edit_popup_open) StopEditEvent();
     };
     
-    // Handles when the user clicks on the "Erase Segment" button.
-    this.EraseSegmentButton = function () {
-        this.EraseSegment();
-    };
-    
     // Handles when the user erases a segment.
     this.EraseSegment = function () {
         var anno = main_draw_canvas.Peek();
         if(anno && !anno.DeleteLastControlPoint()) {
-            //       // Write to logfile:
-            //       WriteLogMsg('*Deleted_object_during_labeling');
-            
             submission_edited = 0;
-            //       old_name = '';
-            //       new_name = '';
-            //       SubmitAnnotations(0);
-            
             StopDrawEvent();
         }
         return anno;
