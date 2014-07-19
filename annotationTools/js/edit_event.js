@@ -1,5 +1,7 @@
 // This file contains the scripts for when the edit event is activated.
 
+var select_anno = null;
+
 // This function is called with the edit event is started.  It can be 
 // triggered when the user (1) clicks a polygon, (2) clicks the object in
 // the object list, (3) deletes a verified polygon.
@@ -37,11 +39,9 @@ function StartEditEvent(anno_id,event) {
   
   if(username_flag) submit_username();
   
-  // Attach the annotation to the canvas:
-  main_select_canvas.AttachAnnotation(anno,'filled_polygon');
-  
-  // Render the annotation:
-  main_select_canvas.RenderAnnotations();
+  select_anno = anno;
+  select_anno.SetDivAttach('select_canvas');
+  FillPolygon(select_anno.DrawPolygon(main_image.GetImRatio()));
   
   // Get location where popup bubble will appear:
   var pt = main_image.SlideWindow(Math.round(anno.GetPtsX()[0]*main_image.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_image.GetImRatio()));
@@ -80,7 +80,10 @@ function StopEditEvent() {
   $('#select_canvas').css('z-index','-2');
   $('#select_canvas_div').css('z-index','-2');
   
-  var anno = main_select_canvas.DetachAnnotation();
+  // Remove polygon from the query canvas:
+  select_anno.DeletePolygon();
+  var anno = select_anno;
+  select_anno = null;
   
   WriteLogMsg('*Closed_Edit_Popup');
   CloseEditPopup();
@@ -111,7 +114,7 @@ function AdjustPolygonButton() {
   main_image.ScrollbarsOn();
   
   // Get annotation on the select canvas:
-  var anno = main_select_canvas.Peek();
+  var anno = select_anno;
 
   // Remove polygon from canvas:
   $('#'+anno.polygon_id).remove();
@@ -122,7 +125,7 @@ function AdjustPolygonButton() {
       if(username_flag) submit_username();
 
       // Redraw polygon:
-      var anno = main_select_canvas.Peek();
+      anno = select_anno;
       anno.DrawPolygon(main_image.GetImRatio());
 
       // Set polygon (x,y) points:

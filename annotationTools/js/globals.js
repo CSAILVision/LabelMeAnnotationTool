@@ -38,9 +38,6 @@ var main_handler;
 // Canvas that renders polygons at rest state.
 var main_canvas;
 
-// Canvas containing polygons that are being edited.
-var main_select_canvas;
-
 // Canvas containing polygons that are being drawn.
 var main_draw_canvas;
 

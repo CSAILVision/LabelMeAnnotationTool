@@ -12,7 +12,6 @@ function StartupLabelMe() {
     // Initialize global variables:
     main_handler = new handler();
     main_canvas = new canvas('myCanvas_bg');
-    main_select_canvas = new canvas('select_canvas');
     main_draw_canvas = new canvas('draw_canvas');
     main_image = new image('im');
     

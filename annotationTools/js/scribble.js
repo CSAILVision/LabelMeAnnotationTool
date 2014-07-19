@@ -797,7 +797,11 @@ this.HTMLobjectBox = function(obj_name) {
       document.getElementById('select_canvas').style.zIndex = -2;
       document.getElementById('select_canvas_div').style.zIndex = -2;
       
-      var anno = main_select_canvas.DetachAnnotation();
+      // Remove polygon from the query canvas:
+      select_anno.DeletePolygon();
+      var anno = select_anno;
+      select_anno = null;
+  
       CloseEditPopup();
       this.SetDrawingMode(1);
       main_image.ScrollbarsOn();

@@ -28,7 +28,7 @@ function handler() {
     // Submits the object label in response to the edit/delete popup bubble.
     this.SubmitEditLabel = function () {
       submission_edited = 1;
-      anno = main_select_canvas.Peek();
+      var anno = select_anno;
       
       // object name
       old_name = anno.GetObjName();
@@ -95,8 +95,9 @@ function handler() {
     // Handles when the user presses the delete button in response to
     // the edit popup bubble.
     this.EditBubbleDeleteButton = function () {
-        var idx = main_select_canvas.Peek().GetAnnoID();
-        if((IsUserAnonymous() || (!IsCreator(main_select_canvas.Peek().GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
+        var idx = select_anno.GetAnnoID();
+
+        if((IsUserAnonymous() || (!IsCreator(select_anno.GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
             return;
         }
@@ -109,8 +110,8 @@ function handler() {
         submission_edited = 0;
         
         // Insert data for server logfile:
-        old_name = main_select_canvas.Peek().GetObjName();
-        new_name = main_select_canvas.Peek().GetObjName();
+        old_name = select_anno.GetObjName();
+        new_name = select_anno.GetObjName();
         WriteLogMsg('*Deleting_object');
         InsertServerLogData('cpts_not_modified');
         
@@ -137,7 +138,7 @@ function handler() {
     this.AnnotationLinkClick = function (idx) {
       if(active_canvas==REST_CANVAS) StartEditEvent(idx,null);
       else if(active_canvas==SELECTED_CANVAS) {
-	var anno_id = main_select_canvas.Peek().GetAnnoID();
+	var anno_id = select_anno.GetAnnoID();
 	if(edit_popup_open && (idx==anno_id)) StopEditEvent();
       }
     };
