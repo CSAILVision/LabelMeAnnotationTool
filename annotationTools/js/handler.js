@@ -186,7 +186,7 @@ function handler() {
 	document.getElementById('draw_canvas').style.zIndex = -2;
 	document.getElementById('draw_canvas_div').style.zIndex = -2;
 	
-	var anno = main_draw_canvas.DetachAnnotation();
+	anno = main_draw_canvas.DetachAnnotation();
       }
       else {
 	nn = RemoveSpecialChars(document.getElementById('objEnter').value);
@@ -199,19 +199,15 @@ function handler() {
 	return;
       }
       
-      submission_edited = 0;
-
       // Update old and new object names for logfile:
       new_name = nn;
       old_name = nn;
       
+      submission_edited = 0;
       global_count++;
       
       // Insert data for server logfile:
       InsertServerLogData('cpts_not_modified');
-      
-      // Get object index:
-      var obj_ndx = anno.anno_id;
       
       // Insert data into XML:
       var html_str = '<object>';
@@ -225,7 +221,7 @@ function handler() {
       html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
       var ts = GetTimeStamp();
       if(ts.length==20) html_str += '<date>' + ts + '</date>';
-      html_str += '<id>' + obj_ndx + '</id>';
+      html_str += '<id>' + anno.anno_id + '</id>';
       
       if(anno.GetType() == 1) {
 	/*************************************************************/
