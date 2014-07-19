@@ -103,7 +103,6 @@ function handler() {
         }
         
         if(idx>=num_orig_anno) {
-            anno_count--;
             global_count--;
         }
         
@@ -206,7 +205,6 @@ function handler() {
       new_name = nn;
       old_name = nn;
       
-      anno_count++;
       global_count++;
       
       // Insert data for server logfile:

@@ -6,7 +6,6 @@
 var wait_for_input;
 var edit_popup_open = 0;
 var num_orig_anno;
-var anno_count = 0;
 var global_count = 0;
 var req_submit;
 var submission_edited = 0; // If polygon has been edited.
@@ -302,11 +301,6 @@ function DeleteSelectedPolygon() {
   if(AllAnnotations[selected_poly].GetVerified()) {
     StartEditEvent(selected_poly,null);
     return;
-  }
-  
-  if(selected_poly>=num_orig_anno) {
-    anno_count--;
-    setCookie('counter',anno_count);
   }
   
   submission_edited = 0;
