@@ -1,6 +1,7 @@
 // This file contains the scripts for when the draw event is activated.
 
 var draw_anno;
+var query_anno = null;
 
 // This function is called with the draw event is started.  It can be 
 // triggered when the user (1) clicks on the base canvas.
@@ -122,13 +123,12 @@ function DrawCanvasClosePolygon() {
   // If annotation is point or line, then 
   if(doReset) object_choices = '...';
   
-  // Attach the annotation to the canvas:
-  main_query_canvas.AttachAnnotation(anno,'filled_polygon');
-  
-  // Render the annotation:
-  main_query_canvas.RenderAnnotations();
+  // Render annotation:
+  query_anno = anno;
+  query_anno.SetDivAttach('query_canvas');
+  FillPolygon(query_anno.DrawPolygon(main_image.GetImRatio()));
 }
-    
+
 // Handles when the user presses the undo close button in response to
 // the "What is this object?" popup bubble.
 function UndoCloseButton() {
@@ -138,7 +138,10 @@ function UndoCloseButton() {
   document.getElementById('query_canvas').style.zIndex = -2;
   document.getElementById('query_canvas_div').style.zIndex = -2;
   
-  var anno = main_query_canvas.DetachAnnotation();
+  // Remove polygon from the query canvas:
+  query_anno.DeletePolygon();
+  var anno = query_anno;
+  query_anno = null;
   
   CloseQueryPopup();
   main_image.ScrollbarsOn();

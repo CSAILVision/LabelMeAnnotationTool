@@ -315,7 +315,10 @@ function handler() {
 	document.getElementById('query_canvas').style.zIndex = -2;
 	document.getElementById('query_canvas_div').style.zIndex = -2;
 
-	var anno = main_query_canvas.DetachAnnotation();
+	// Remove polygon from the query canvas:
+	query_anno.DeletePolygon();
+	var anno = query_anno;
+	query_anno = null;
 
 	CloseQueryPopup();
 	main_image.ScrollbarsOn();

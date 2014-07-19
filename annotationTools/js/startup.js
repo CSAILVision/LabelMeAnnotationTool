@@ -14,7 +14,6 @@ function StartupLabelMe() {
     main_canvas = new canvas('myCanvas_bg');
     main_select_canvas = new canvas('select_canvas');
     main_draw_canvas = new canvas('draw_canvas');
-    main_query_canvas = new canvas('query_canvas');
     main_image = new image('im');
     
     // This function gets run after image is loaded:

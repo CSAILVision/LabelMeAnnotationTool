@@ -10,7 +10,7 @@ var resp;
 // Indicates whether we are in segmentation or polygon mode
 drawing_mode = 0;
 
-
+var query_scribble_anno = null;
 
 // Switch between polygon and scribble mode. If a polygon is open or the user is
 // in the middle of the segmentation an alert appears to indicate so.
@@ -348,13 +348,19 @@ function scribble_canvas(tag) {
   // If annotation is point or line, then 
   if(doReset) object_choices = '...';
 
-  // Attach the annotation to the canvas:
-        main_query_canvas.AttachAnnotation(anno,'polygon');
-
-  // Render the annotation:
-        main_query_canvas.RenderAnnotations();
+	// Render annotation:
+	query_scribble_anno = anno;
+	query_scribble_anno.SetDivAttach('query_canvas');
+	var anno_id = query_scribble_anno.GetAnnoID();
+	query_scribble_anno.DrawPolygon(main_image.GetImRatio());
+	
+	// Set polygon actions:
+	query_scribble_anno.SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
+	query_scribble_anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
+	query_scribble_anno.SetAttribute('oncontextmenu','return false');
+	query_scribble_anno.SetCSS('cursor','pointer');
     };
-    
+
 this.GetPopupFormDraw = function() {
   html_str = "<b>Enter object name</b><br />";
   html_str += this.HTMLobjectBox("");
@@ -770,7 +776,10 @@ this.HTMLobjectBox = function(obj_name) {
         document.getElementById('query_canvas').style.zIndex = -2;
         document.getElementById('query_canvas_div').style.zIndex = -2;
         active_canvas = REST_CANVAS;
-        var anno = main_query_canvas.DetachAnnotation();
+
+	// Remove polygon from the query canvas:
+	query_scribble_anno.DeletePolygon();
+	query_scribble_anno = null;
 
         CloseQueryPopup();
         main_image.ScrollbarsOn();
