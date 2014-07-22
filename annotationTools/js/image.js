@@ -151,13 +151,14 @@ function image(id) {
         // Scale and scroll the image so that the center stays in the center of the visible area
         this.ScaleFrame(amt);
         
-        main_canvas.ClearAnnotations();
-
 	// Remove polygon from draw canvas:
-	draw_anno.DeletePolygon();
-	var anno = draw_anno;
-	draw_anno = null;
-        
+	var anno = null;
+	if(draw_anno) {
+	  draw_anno.DeletePolygon();
+	  anno = draw_anno;
+	  draw_anno = null;
+        }
+
         // set the size of the image (this.im is the image object)
         this.im.width = this.width_curr;
         this.im.height = this.height_curr;

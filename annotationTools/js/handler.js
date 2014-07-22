@@ -187,9 +187,12 @@ function handler() {
 	document.getElementById('draw_canvas_div').style.zIndex = -2;
 	
 	// Remove polygon from the draw canvas:
-	draw_anno.DeletePolygon();
-	var anno = draw_anno;
-	draw_anno = null;
+	var anno = null;
+	if(draw_anno) {
+	  draw_anno.DeletePolygon();
+	  anno = draw_anno;
+	  draw_anno = null;
+	}
       }
       else {
 	nn = RemoveSpecialChars(document.getElementById('objEnter').value);

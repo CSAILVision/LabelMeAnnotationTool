@@ -18,32 +18,22 @@ function canvas(div_attach) {
     anno.SetDivAttach(this.div_attach);
   };
   
-  // Detach annotation from the canvas. 
-  // 1. If zero arguments are passed in, then the last annotation is 
-  // detached and returned.
-  // 2. If the annotation ID is passed in, then the corresponding
-  // annotation is located, detached, and returned.
-  this.DetachAnnotation = function() {
+  // Detach annotation from the canvas. Given the annotation ID, the 
+  // corresponding annotation is located, detached, and returned.
+  this.DetachAnnotation = function(anno_id) {
     var i;
-    if(arguments.length==0) {
-      // Get index of last annotation:
-      i = (this.annotations.length-1);
-    }
-    else {
-      // Get index of annotation matching input annotation ID:
-      var anno_id = arguments[0];
-      var is_matched = false;
-      for(i=0; i<this.annotations.length; i++) {
-	if(this.annotations[i].GetAnnoID()==anno_id) {
-	  is_matched = true;
-	  break;
-	}
+
+    // Get index of annotation matching input annotation ID:
+    var is_matched = false;
+    for(i=0; i<this.annotations.length; i++) {
+      if(this.annotations[i].GetAnnoID()==anno_id) {
+	is_matched = true;
+	break;
       }
-      if(!is_matched) i = -1;
     }
 
-    // If invalid index, then did not find valid annotation, so return null:
-    if(i<0) return null;
+    // Did not find valid annotation, so return null:
+    if(!is_matched) return null;
 
     // Remove annotation structure from list:
     var anno = this.annotations.splice(i,1)[0];
@@ -56,8 +46,10 @@ function canvas(div_attach) {
 
   // Render all attached annotations:
   this.RenderAnnotations = function () {
-    // Clear the canvas:
-    this.ClearAnnotations();
+    // Loop through all of the annotations and clear them from the canvas.
+    for(var i=0;i<this.annotations.length;i++) {
+      this.annotations[i].DeletePolygon();
+    }
 
     for(var pp=0; pp < this.annotations.length; pp++) {
       // Render the annotation:
@@ -69,13 +61,6 @@ function canvas(div_attach) {
       this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
       this.annotations[pp].SetAttribute('oncontextmenu','return false');
       this.annotations[pp].SetCSS('cursor','pointer');
-    }
-  };
-  
-  // Loop through all of the annotations and clear them from the canvas.
-  this.ClearAnnotations = function () {
-    for(var i=0;i<this.annotations.length;i++) {
-      this.annotations[i].DeletePolygon();
     }
   };
   

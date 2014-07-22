@@ -316,9 +316,12 @@ function scribble_canvas(tag) {
   document.getElementById('draw_canvas_div').style.zIndex = -2;
 
 	// Remove polygon from draw canvas:
-	draw_anno.DeletePolygon();
-	var anno = draw_anno;
-	draw_anno = null;
+	var anno = null;
+	if(draw_anno) {
+	  draw_anno.DeletePolygon();
+	  anno = draw_anno;
+	  draw_anno = null;
+	}
 
   // Move query canvas to front:
   document.getElementById('query_canvas').style.zIndex = 0;
