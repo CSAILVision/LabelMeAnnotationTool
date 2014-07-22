@@ -1,6 +1,6 @@
 // This file contains the scripts for when the draw event is activated.
 
-var draw_anno;
+var draw_anno = null;
 var query_anno = null;
 
 // This function is called with the draw event is started.  It can be 
@@ -36,13 +36,9 @@ function StartDrawEvent(event) {
   draw_anno.pts_x.push(Math.round(x/main_image.GetImRatio()));
   draw_anno.pts_y.push(Math.round(y/main_image.GetImRatio()));
   
-  // Attach the annotation to the draw canvas:
-//   draw_anno.SetDivAttach('draw_canvas');
-  main_draw_canvas.AttachAnnotation(draw_anno,'polyline');
-  
-  // Render the annotation:
-//   draw_anno.DrawPolyLine();
-  main_draw_canvas.RenderAnnotations();
+  // Draw polyline:
+  draw_anno.SetDivAttach('draw_canvas');
+  draw_anno.DrawPolyLine();
 
   // Set mousedown action to handle when user clicks on the drawing canvas:
   $('#draw_canvas_div').unbind();
@@ -67,8 +63,9 @@ function DrawCanvasMouseDown(event) {
   var x = Math.round(GetEventPosX(event)/scale);
   var y = Math.round(GetEventPosY(event)/scale);
 
+  var anno = draw_anno;
+
   // Add point to polygon:
-  var anno = main_draw_canvas.Peek();
   anno.pts_x.push(x);
   anno.pts_y.push(y);
   
@@ -103,7 +100,10 @@ function DrawCanvasClosePolygon() {
   document.getElementById('draw_canvas').style.zIndex = -2;
   document.getElementById('draw_canvas_div').style.zIndex = -2;
   
-  var anno = main_draw_canvas.DetachAnnotation();
+  // Remove polygon from the draw canvas:
+  draw_anno.DeletePolygon();
+  var anno = draw_anno;
+  draw_anno = null;
   
   // Move query canvas to front:
   document.getElementById('query_canvas').style.zIndex = 0;
@@ -146,15 +146,14 @@ function UndoCloseButton() {
   CloseQueryPopup();
   main_image.ScrollbarsOn();
   
-  // Move select_canvas to front:
+  // Move draw_canvas to front:
   document.getElementById('draw_canvas').style.zIndex = 0;
   document.getElementById('draw_canvas_div').style.zIndex = 0;
-  
-  // Attach the annotation:
-  main_draw_canvas.AttachAnnotation(anno,'polyline');
-  
-  // Render the annotation:
-  main_draw_canvas.RenderAnnotations();
+
+  // Draw polyline:
+  draw_anno = anno;
+  draw_anno.SetDivAttach('draw_canvas');
+  draw_anno.DrawPolyLine();
 }
 
 // This function is called when the draw event is finished.  It can be
@@ -167,10 +166,10 @@ function StopDrawEvent() {
   // Move draw canvas to the back:
   $('#draw_canvas').css('z-index','-2');
   $('#draw_canvas_div').css('z-index','-2');
-  
-  // Remove rendering of polygon from the canvas:
-//   draw_anno.DeletePolygon();
-  main_draw_canvas.DetachAnnotation();
+
+  // Remove polygon from draw canvas:
+  draw_anno.DeletePolygon();
+  draw_anno = null;
 
   // Write message to the console:
   console.log('LabelMe: Stopped draw event.');

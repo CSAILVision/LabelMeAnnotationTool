@@ -96,7 +96,7 @@ function WriteLogMsg(msg) {
 
 function loadXMLDoc() {
   if(wait_for_input) return WaitForInput();
-  if(main_draw_canvas.Peek()) {
+  if(draw_anno) {
     alert("Need to close current polygon first.");
     return;
   }

@@ -74,7 +74,7 @@ function LoadAnnotationList() {
             else
                 html_str += '>';
             
-            if(AllAnnotations[ii].GetObjName().length==0 && !main_draw_canvas.Peek()) {
+            if(AllAnnotations[ii].GetObjName().length==0 && !draw_anno) {
                 html_str += '<i>[ Please enter name ]</i>';
             }
             else {

@@ -29,7 +29,7 @@ function SetDrawingMode(mode){
 
     }
     if (mode == 1) {
-        if(main_draw_canvas.Peek()) {
+        if(draw_anno) {
             alert("Need to close current polygon first.");
             return;
         }
@@ -315,7 +315,10 @@ function scribble_canvas(tag) {
   document.getElementById('draw_canvas').style.zIndex = -2;
   document.getElementById('draw_canvas_div').style.zIndex = -2;
 
-        var anno = main_draw_canvas.DetachAnnotation();
+	// Remove polygon from draw canvas:
+	draw_anno.DeletePolygon();
+	var anno = draw_anno;
+	draw_anno = null;
 
   // Move query canvas to front:
   document.getElementById('query_canvas').style.zIndex = 0;
@@ -462,10 +465,18 @@ this.HTMLobjectBox = function(obj_name) {
       anno.SetCorners(object_corners[0], object_corners[1], object_corners[2], object_corners[3]);
       anno.SetImName(resp);
       anno.SetScribbleName(imagname+'_scribble_'+Nobj+'.png');
-      main_draw_canvas.AttachAnnotation(anno,'polygon');
+
+      // Draw polygon on draw canvas:
+      draw_anno = anno;
+      draw_anno.SetDivAttach('draw_canvas');
+      draw_anno.DrawPolygon(main_image.GetImRatio());
       
-      // Render the annotation:
-      main_draw_canvas.RenderAnnotations();
+      // Set polygon actions:
+      draw_anno.SetAttribute('onmousedown','StartEditEvent(' + draw_anno.GetAnnoID() + ',evt); return false;');
+      draw_anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
+      draw_anno.SetAttribute('oncontextmenu','return false');
+      draw_anno.SetCSS('cursor','pointer');
+
       
       this.DrawToQuery();
     }
@@ -627,7 +638,7 @@ this.HTMLobjectBox = function(obj_name) {
       
       if (drawing_mode == 0){
         SetDrawingMode(1);
-        if (main_draw_canvas.Peek()) return;
+        if(draw_anno) return;
       }
       if (this.clickX.length == 0 && this.annotationid == -1){
         alert("Can not segment: you need to scribble on the image first");
@@ -756,7 +767,7 @@ this.HTMLobjectBox = function(obj_name) {
   this.setCurrentDraw = function(val){
       if (drawing_mode == 0){ 
         SetDrawingMode(1);
-        if (main_draw_canvas.Peek()) return;
+        if(draw_anno) return;
       }
       if (val != OBJECT_DRAWING && val != BG_DRAWING && val != RUBBER_DRAWING) return;
       if (val == OBJECT_DRAWING) this.scribblecanvas.setAttribute('style','cursor:url(Icons/red_pointer.cur), default');

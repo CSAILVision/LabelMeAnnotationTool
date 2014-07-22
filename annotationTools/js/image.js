@@ -152,7 +152,11 @@ function image(id) {
         this.ScaleFrame(amt);
         
         main_canvas.ClearAnnotations();
-        var anno_draw = main_draw_canvas.DetachAnnotation();
+
+	// Remove polygon from draw canvas:
+	draw_anno.DeletePolygon();
+	var anno = draw_anno;
+	draw_anno = null;
         
         // set the size of the image (this.im is the image object)
         this.im.width = this.width_curr;
@@ -165,12 +169,11 @@ function image(id) {
         
         // Redraw polygons.
         main_canvas.RenderAnnotations();
-	if(anno_draw) {
-	  // Attach the annotation:
-	  main_draw_canvas.AttachAnnotation(anno_draw,'polyline');
-
-	  // Render the annotation:
-	  main_draw_canvas.RenderAnnotations();
+	if(anno) {
+	  // Draw polyline:
+	  draw_anno = anno;
+	  draw_anno.SetDivAttach('draw_canvas');
+	  draw_anno.DrawPolyLine();
 	}
 
 	/*************************************************************/

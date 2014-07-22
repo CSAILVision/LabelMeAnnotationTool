@@ -186,7 +186,10 @@ function handler() {
 	document.getElementById('draw_canvas').style.zIndex = -2;
 	document.getElementById('draw_canvas_div').style.zIndex = -2;
 	
-	anno = main_draw_canvas.DetachAnnotation();
+	// Remove polygon from the draw canvas:
+	draw_anno.DeletePolygon();
+	var anno = draw_anno;
+	draw_anno = null;
       }
       else {
 	nn = RemoveSpecialChars(document.getElementById('objEnter').value);
@@ -336,23 +339,22 @@ function handler() {
     
     // Handles when the user erases a segment.
     this.EraseSegment = function () {
-        var anno = main_draw_canvas.Peek();
-        if(anno && !anno.DeleteLastControlPoint()) {
+        if(draw_anno && !draw_anno.DeleteLastControlPoint()) {
             submission_edited = 0;
             StopDrawEvent();
         }
-        return anno;
+        return draw_anno;
     };
     
     // Handles when the user mouses over the first control point.
     this.MousedOverFirstControlPoint = function () {
-        main_draw_canvas.Peek().MouseOverFirstPoint();
+        draw_anno.MouseOverFirstPoint();
     };
     
     // Handles when the user mouses away from the first control point.
     this.MousedOutFirstControlPoint = function () {
         if(active_canvas!=DRAW_CANVAS) return;
-        main_draw_canvas.Peek().MouseOutFirstPoint();
+        draw_anno.MouseOutFirstPoint();
     };
     
     // *******************************************
