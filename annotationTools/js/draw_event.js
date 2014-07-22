@@ -55,6 +55,7 @@ function DrawCanvasMouseDown(event) {
   // User right-clicked mouse, so close polygon and return:
   if(event.button > 1) return DrawCanvasClosePolygon();
 
+  // Else, the user left-clicked the mouse.
   if(active_canvas!=DRAW_CANVAS) return;
   if(username_flag) submit_username();
 
@@ -63,25 +64,24 @@ function DrawCanvasMouseDown(event) {
   var x = Math.round(GetEventPosX(event)/scale);
   var y = Math.round(GetEventPosY(event)/scale);
 
-  var anno = draw_anno;
-
   // Add point to polygon:
-  anno.pts_x.push(x);
-  anno.pts_y.push(y);
+  draw_anno.pts_x.push(x);
+  draw_anno.pts_y.push(y);
+
+  // Create array of line IDs if it is null:
+  if(!draw_anno.line_ids) draw_anno.line_ids = Array();
   
-  if(!anno.line_ids) anno.line_ids = Array();
-  
-  var line_idx = anno.line_ids.length;
-  var n = anno.pts_x.length-1;
+  var line_idx = draw_anno.line_ids.length;
+  var n = draw_anno.pts_x.length-1;
   
   // Draw line segment:
-  anno.line_ids.push(DrawLineSegment(anno.div_attach,anno.pts_x[n-1],anno.pts_y[n-1],anno.pts_x[n],anno.pts_y[n],'stroke="#0000ff" stroke-width="4"',scale));
+  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_anno.pts_x[n-1],draw_anno.pts_y[n-1],draw_anno.pts_x[n],draw_anno.pts_y[n],'stroke="#0000ff" stroke-width="4"',scale));
 
   // Set cursor to be crosshair on line segment:
-  $('#'+anno.line_ids[line_idx]).css('cursor','crosshair');
+  $('#'+draw_anno.line_ids[line_idx]).css('cursor','crosshair');
   
   // Move the first control point to be on top of any drawn lines.
-  $('#'+anno.div_attach).append($('#'+anno.point_id));
+  $('#'+draw_anno.div_attach).append($('#'+draw_anno.point_id));
 }    
 
 // Handles when the user closes the polygon by right-clicking or clicking 
