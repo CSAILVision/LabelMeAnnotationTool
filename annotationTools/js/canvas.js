@@ -13,7 +13,7 @@ function canvas(div_attach) {
   // *******************************************
   
   // Attach the annotation to the canvas.
-  this.AttachAnnotation = function (anno,rendering_style) {
+  this.AttachAnnotation = function (anno) {
     this.annotations.push(anno);
     anno.SetDivAttach(this.div_attach);
   };

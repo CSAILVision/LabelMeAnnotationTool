@@ -120,7 +120,7 @@ function LoadAnnotationSuccess(xml) {
     var isDeleted = AllAnnotations[pp].GetDeleted();
     if((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted)) {
       // Attach to main_canvas:
-      main_canvas.AttachAnnotation(AllAnnotations[pp],'polygon');
+      main_canvas.AttachAnnotation(AllAnnotations[pp]);
 
       // Render the polygon:
       AllAnnotations[pp].DrawPolygon(main_image.GetImRatio());

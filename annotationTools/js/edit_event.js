@@ -90,7 +90,7 @@ function StopEditEvent() {
   main_image.ScrollbarsOn();
   
   if(!anno.GetDeleted()||view_Deleted) {
-    main_canvas.AttachAnnotation(anno,'polygon');
+    main_canvas.AttachAnnotation(anno);
     main_canvas.RenderAnnotations();
   }
   console.log('LabelMe: Stopped edit event.');

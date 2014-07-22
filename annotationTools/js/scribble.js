@@ -503,7 +503,7 @@ this.HTMLobjectBox = function(obj_name) {
        scribble_canvas.UpdateMaskXML(idx, anno);
        //WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
        }
-       main_canvas.AttachAnnotation(anno,'polygon');
+       main_canvas.AttachAnnotation(anno);
        
        scribble_canvas.annotationid = -1;
        scribble_canvas.cleanscribbles();

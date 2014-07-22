@@ -276,7 +276,7 @@ function handler() {
       AllAnnotations.push(anno);
       
       if(!anno.GetDeleted()||view_Deleted) {
-	main_canvas.AttachAnnotation(anno,'polygon');
+	main_canvas.AttachAnnotation(anno);
 	main_canvas.RenderAnnotations();
       }
       
