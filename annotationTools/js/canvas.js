@@ -72,25 +72,15 @@ function canvas(div_attach) {
     this.ClearAnnotations();
 
     for(var pp=0; pp < this.annotations.length; pp++) {
-      // Render the annotation depending on its rendering_style:
-      switch(this.rendering_style[pp]) {
-      case 'polygon':
-	var anno_id = this.annotations[pp].GetAnnoID();
-	this.annotations[pp].DrawPolygon(main_image.GetImRatio());
-	
-	// Set polygon actions:
-	this.annotations[pp].SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
-	this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
-	this.annotations[pp].SetAttribute('oncontextmenu','return false');
-	this.annotations[pp].SetCSS('cursor','pointer');
-
-	break;
-      case 'polyline':
-	this.annotations[pp].DrawPolyLine();
-	break;
-      default:
-	alert('Invalid rendering_style');
-      }
+      // Render the annotation:
+      var anno_id = this.annotations[pp].GetAnnoID();
+      this.annotations[pp].DrawPolygon(main_image.GetImRatio());
+      
+      // Set polygon actions:
+      this.annotations[pp].SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
+      this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
+      this.annotations[pp].SetAttribute('oncontextmenu','return false');
+      this.annotations[pp].SetCSS('cursor','pointer');
     }
   };
   
