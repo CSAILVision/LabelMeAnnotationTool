@@ -7,7 +7,6 @@ function canvas(div_attach) {
   
   this.annotations = Array(); // includes name, deleted, verified info
   this.div_attach = div_attach; // name of DIV element to attach to
-  this.rendering_style = Array(); // indicates how to render the annotations
 
   // *******************************************
   // Public methods:
@@ -23,7 +22,6 @@ function canvas(div_attach) {
   // Attach the annotation to the canvas.
   this.AttachAnnotation = function (anno,rendering_style) {
     this.annotations.push(anno);
-    this.rendering_style.push(rendering_style);
     anno.SetDivAttach(this.div_attach);
   };
   
@@ -56,9 +54,6 @@ function canvas(div_attach) {
 
     // Remove annotation structure from list:
     var anno = this.annotations.splice(i,1)[0];
-    
-    // Remove from this.rendering_style:
-    this.rendering_style.splice(i,1);
     
     // Remove rendering of polygon from the canvas:
     anno.DeletePolygon();
