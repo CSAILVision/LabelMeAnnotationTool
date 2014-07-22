@@ -12,13 +12,6 @@ function canvas(div_attach) {
   // Public methods:
   // *******************************************
   
-  // Returns the last annotation in the array (null if empty).
-  this.Peek = function () {
-    var i = this.annotations.length-1;
-    if(i < 0) return null;
-    return this.annotations[i];
-  };
-
   // Attach the annotation to the canvas.
   this.AttachAnnotation = function (anno,rendering_style) {
     this.annotations.push(anno);
