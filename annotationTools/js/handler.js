@@ -317,7 +317,7 @@ function handler() {
 	document.getElementById('query_canvas_div').style.zIndex = -2;
 
 	// Remove polygon from the query canvas:
-	query_anno.DeletePolygon();
+	if(query_anno) query_anno.DeletePolygon();
 	var anno = query_anno;
 	query_anno = null;
 
