@@ -476,7 +476,7 @@ this.HTMLobjectBox = function(obj_name) {
       
       // Set polygon actions:
       draw_anno.SetAttribute('onmousedown','StartEditEvent(' + draw_anno.GetAnnoID() + ',evt); return false;');
-      draw_anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
+      draw_anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ draw_anno.GetAnnoID() +'); return false;');
       draw_anno.SetAttribute('oncontextmenu','return false');
       draw_anno.SetCSS('cursor','pointer');
 
