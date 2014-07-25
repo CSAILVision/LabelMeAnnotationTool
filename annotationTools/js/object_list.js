@@ -6,7 +6,11 @@
 
 // This function creates and pupulates the list 
 function LoadAnnotationList() {
-    var html_str = '<div class="object_list" id="anno_list" style="border:0px solid black;z-index:0;" ondragleave="drop(event, -1)">';
+    var html_str = '<div class="object_list" id="anno_list" style="border:0px solid black;z-index:0;" '+
+                    'ondrop="drop(event, -1)" '+
+                    'ondragenter="return dragEnter(event)" '+
+                    'ondragover="return dragOver(event)"'+
+                   '>';
     
     var Npolygons = $(LM_xml).children("annotation").children("object").length;
     var NundeletedPolygons = 0;
@@ -21,7 +25,11 @@ function LoadAnnotationList() {
     // Create DIV
     html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
     if (use_parts){
-        html_str += '<p style="font-size:10px;line-height:100%" ondrop="drop(event, -1)" ondragover="event.preventDefault();">Drag a tag on top of another one to create a part-of relationship.</p>';
+       html_str += '<p style="font-size:10px;line-height:100%" '+
+                    'ondrop="drop(event, -1)" '+
+                    'ondragenter="return dragEnter(event)" '+
+                    'ondragover="return dragOver(event)">'+
+                    'Drag a tag on top of another one to create a part-of relationship.</p>';
     }
     html_str += '<ol>';
         
@@ -47,7 +55,11 @@ function LoadAnnotationList() {
             
             if (use_parts) {
                 // define drag events (but only if the tool is allowed to use parts)
-                html_str += 'draggable="true" ondragstart="drag(event, '+ii+')" ondragend="dragend(event)" ondrop="drop(event, '+ii+')" ondragover="allowDrop(event, '+ii+')">'; // ondragleave="drop(event, -1)"
+                html_str += 'draggable="true" ondragstart="drag(event, '+ii+')" '+
+                            'ondragend="dragend(event, '+ii+')" '+
+                            'ondrop="drop(event, '+ii+')" '+
+                            'ondragenter="return dragEnter(event)" '+
+                            'ondragover="return dragOver(event)">'; // ondragleave="drop(event, -1)"
             }
             
             // change the icon for parts
@@ -66,7 +78,10 @@ function LoadAnnotationList() {
             'onmouseout="main_handler.AnnotationLinkMouseOut();" ';
             
             if (use_parts) {
-                html_str += 'ondrop="drop(event, '+ii+')" ondragend="dragend(event)" ondragover="allowDrop(event, '+ii+')"';
+                html_str += 'ondrop="drop(event, '+ii+')" '+
+                            'ondragend="dragend(event, '+ii+')" '+
+                            'ondragenter="return dragEnter(event)" '+
+                            'ondragover="return dragOver(event)"';
             }
 
             if(isDeleted)
@@ -92,8 +107,7 @@ function LoadAnnotationList() {
         }
     }
     
-    html_str += '</ol><p ondrop="drop(event, -1)" ondragover="event.preventDefault();"><br/><br/><br/></p></div>';
-
+    html_str += '</ol><p><br/></p></div>';
     // Attach annotation list to 'anno_anchor' DIV element:
     $('#anno_anchor').append(html_str);
 }
@@ -121,40 +135,41 @@ function drag(event, part_id)
     event.dataTransfer.setData("Text", part_id);
 }
 
-function dragend(event)
+function dragend(event, object_id)
 {
-    // Write XML to server:
+    event.preventDefault();
+    //var part_id=event.dataTransfer.getData("Text");
+   //alert('object ' + object_id + ' Part_id=' + part_id);
+ 
+    // Modify part structure and draw object list
+    //if (object_id!=part_id){
+    //    addPart(object_id, part_id);
+    //    RemoveAnnotationList();
+    //    LoadAnnotationList();
+    //}
+   // Write XML to server:
     WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
 }
 
-function allowDrop(event, object_id)
+function dragEnter(event) 
 {
-    event.preventDefault();
-    main_handler.AnnotationLinkMouseOver(object_id);
-    
-//    Npolygons = $(LM_xml).children("annotation").children("object").length;
-//    if (Npolygons<20){
-//        // only animate if there are few polygons
-//        var part_id=event.dataTransfer.getData("Text");
-//        
-//        //alert(object_id+', part='+part_id);
-//        // modify part structure
-//        if (object_id!=part_id){
-//            addPart(object_id, part_id);
-//            
-//            // redraw object list
-//            RemoveAnnotationList();
-//            LoadAnnotationList();
-//        }
-//    }
+event.preventDefault();
+return true;
+}
+
+function dragOver(event)
+{
+event.preventDefault();
 }
 
 function drop(event, object_id)
 {
     event.preventDefault();
     var part_id=event.dataTransfer.getData("Text");
+    event.stopPropagation();
     
-    //alert(object_id+', part='+part_id);
+    //alert('DROP: '+ object_id+', part='+part_id);
+
     // modify part structure
     if (object_id!=part_id){
         addPart(object_id, part_id);
