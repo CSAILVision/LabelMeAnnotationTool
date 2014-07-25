@@ -223,3 +223,273 @@
 05-Jun-2012 16:40:16 127.0.0.1 *start_loading
 05-Jun-2012 16:40:16 127.0.0.1 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_6_8) AppleWebKit/536.5 (KHTML, like Gecko) Chrome/19.0.1084.53 Safari/536.5
 05-Jun-2012 16:40:16 127.0.0.1 *done_loading_Images/example_folder/img3.jpg
+23-Jul-2014 15:23:44 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 15:23:44 18.101.8.74 *start_loading
+23-Jul-2014 15:26:52 198.134.93.46 *start_loading
+23-Jul-2014 15:26:52 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:27:02 198.134.93.46 *start_loading
+23-Jul-2014 15:27:02 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:27:26 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 15:27:26 18.101.8.74 *start_loading
+23-Jul-2014 15:27:36 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 15:27:37 18.101.8.74 *start_loading
+23-Jul-2014 15:28:26 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 15:28:26 18.101.8.74 *start_loading
+23-Jul-2014 15:28:32 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 15:28:32 18.101.8.74 *start_loading
+23-Jul-2014 15:29:26 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:29:26 198.134.93.46 *start_loading
+23-Jul-2014 15:29:49 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:29:49 198.134.93.46 *start_loading
+23-Jul-2014 15:29:52 198.134.93.46 *start_polygon
+23-Jul-2014 15:30:55 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:30:55 198.134.93.46 *start_loading
+23-Jul-2014 15:31:24 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:31:24 198.134.93.46 *start_loading
+23-Jul-2014 15:31:38 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:31:38 198.134.93.46 *start_loading
+23-Jul-2014 15:32:13 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:32:13 198.134.93.46 *start_loading
+23-Jul-2014 15:32:13 198.134.93.46 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 15:32:24 198.134.93.46 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 15:32:24 198.134.93.46 *start_loading
+23-Jul-2014 15:32:25 198.134.93.46 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 15:43:43 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 15:43:43 18.101.8.74 *start_loading
+23-Jul-2014 15:43:44 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 18:20:56 18.101.8.74 *Opened_Edit_Popup
+23-Jul-2014 18:20:58 18.101.8.74 *Closed_Edit_Popup
+23-Jul-2014 18:21:03 18.101.8.74 *Opened_Edit_Popup
+23-Jul-2014 18:21:09 18.101.8.74 *Closed_Edit_Popup
+23-Jul-2014 18:21:09 example_folder img1 1 1 18.101.8.74  window->window 0 admin cpts_not_modified 0 0
+23-Jul-2014 20:34:54 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:34:54 18.101.8.74 *start_loading
+23-Jul-2014 20:34:54 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 20:45:51 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:45:51 18.101.8.74 *start_loading
+23-Jul-2014 20:45:52 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 20:46:11 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:46:11 18.101.8.74 *start_loading
+23-Jul-2014 20:46:15 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 20:46:52 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:46:52 18.101.8.74 *start_loading
+23-Jul-2014 20:46:52 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 20:48:45 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:48:45 18.101.8.74 *start_loading
+23-Jul-2014 20:48:46 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 20:50:48 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:50:48 18.101.8.74 *start_loading
+23-Jul-2014 20:50:49 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 20:54:00 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:54:00 18.101.8.74 *start_loading
+23-Jul-2014 20:54:01 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 20:57:08 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 20:57:08 18.101.8.74 *start_loading
+23-Jul-2014 20:57:08 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:02:45 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:02:45 18.101.8.74 *start_loading
+23-Jul-2014 21:02:46 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:05:24 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:05:24 18.101.8.74 *start_loading
+23-Jul-2014 21:05:25 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:06:23 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:06:23 18.101.8.74 *start_loading
+23-Jul-2014 21:06:23 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:08:13 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:08:13 18.101.8.74 *start_loading
+23-Jul-2014 21:08:13 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:10:19 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:10:19 18.101.8.74 *start_loading
+23-Jul-2014 21:10:20 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:12:12 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:12:12 18.101.8.74 *start_loading
+23-Jul-2014 21:12:12 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:13:44 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:13:44 18.101.8.74 *start_loading
+23-Jul-2014 21:13:44 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:14:13 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:14:13 18.101.8.74 *start_loading
+23-Jul-2014 21:14:13 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:14:41 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:14:41 18.101.8.74 *start_loading
+23-Jul-2014 21:14:41 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:15:24 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:15:24 18.101.8.74 *start_loading
+23-Jul-2014 21:15:24 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:17:00 18.101.8.74 *start_polygon
+23-Jul-2014 21:19:27 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:19:28 18.101.8.74 *start_loading
+23-Jul-2014 21:19:28 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:21:04 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:21:04 18.101.8.74 *start_loading
+23-Jul-2014 21:21:04 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:23:05 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:23:05 18.101.8.74 *start_loading
+23-Jul-2014 21:23:06 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:37:39 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:37:39 18.101.8.74 *start_loading
+23-Jul-2014 21:37:39 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:38:21 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 21:38:21 18.101.8.74 *start_loading
+23-Jul-2014 21:38:21 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:42:21 2.137.81.31 *Browser_Information Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53
+23-Jul-2014 21:42:21 2.137.81.31 *start_loading
+23-Jul-2014 21:42:23 2.137.81.31 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:42:40 67.164.75.148 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 21:42:40 67.164.75.148 *start_loading
+23-Jul-2014 21:42:41 67.164.75.148 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:42:56 67.164.75.148 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+23-Jul-2014 21:42:56 67.164.75.148 *start_loading
+23-Jul-2014 21:42:56 67.164.75.148 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:49:25 76.118.181.102 *Browser_Information Mozilla/5.0 (Linux; Android 4.4.4; Nexus 7 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.128 Safari/537.36
+23-Jul-2014 21:49:25 76.118.181.102 *start_loading
+23-Jul-2014 21:49:26 76.118.181.102 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 21:49:32 76.118.181.102 *start_polygon
+23-Jul-2014 22:03:20 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:03:21 18.101.8.74 *start_loading
+23-Jul-2014 22:03:21 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:10:53 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:10:53 18.101.8.74 *start_loading
+23-Jul-2014 22:10:54 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:45:23 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:45:23 18.101.8.74 *start_loading
+23-Jul-2014 22:45:23 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:46:25 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:46:25 18.101.8.74 *start_loading
+23-Jul-2014 22:46:26 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:46:46 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:46:46 18.101.8.74 *start_loading
+23-Jul-2014 22:46:46 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:48:26 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:48:26 18.101.8.74 *start_loading
+23-Jul-2014 22:48:26 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:49:31 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:49:31 18.101.8.74 *start_loading
+23-Jul-2014 22:49:32 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:49:59 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:49:59 18.101.8.74 *start_loading
+23-Jul-2014 22:50:00 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:50:26 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:50:26 18.101.8.74 *start_loading
+23-Jul-2014 22:50:26 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 22:52:32 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 22:52:32 18.101.8.74 *start_loading
+23-Jul-2014 22:52:32 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 23:06:39 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 23:06:39 18.101.8.74 *start_loading
+23-Jul-2014 23:06:40 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 23:06:44 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 23:06:44 18.101.8.74 *start_loading
+23-Jul-2014 23:06:44 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 23:06:48 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 23:06:48 18.101.8.74 *start_loading
+23-Jul-2014 23:06:48 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 23:06:54 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 23:06:54 18.101.8.74 *start_loading
+23-Jul-2014 23:06:54 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+23-Jul-2014 23:06:58 18.101.8.74 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+23-Jul-2014 23:06:58 18.101.8.74 *start_loading
+23-Jul-2014 23:06:58 18.101.8.74 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:12:21 81.45.54.149 *Browser_Information Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53
+24-Jul-2014 09:12:21 81.45.54.149 *start_loading
+24-Jul-2014 09:12:22 81.45.54.149 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:12:58 81.45.54.149 *Browser_Information Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53
+24-Jul-2014 09:12:58 81.45.54.149 *start_loading
+24-Jul-2014 09:12:59 81.45.54.149 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:13:06 81.45.54.149 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:13:22 81.45.54.149 *start_polygon
+24-Jul-2014 09:15:13 62.82.103.125 *Browser_Information Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+24-Jul-2014 09:15:13 62.82.103.125 *start_loading
+24-Jul-2014 09:15:15 62.82.103.125 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:16:38 62.82.103.125 *start_polygon
+24-Jul-2014 09:23:24 62.82.103.125 *Browser_Information Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+24-Jul-2014 09:23:24 62.82.103.125 *start_loading
+24-Jul-2014 09:23:24 62.82.103.125 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:43:54 83.49.16.255 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+24-Jul-2014 09:43:54 83.49.16.255 *start_loading
+24-Jul-2014 09:43:58 83.49.16.255 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:44:09 83.49.16.255 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+24-Jul-2014 09:44:09 83.49.16.255 *start_loading
+24-Jul-2014 09:44:09 83.49.16.255 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:47:01 83.49.16.255 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+24-Jul-2014 09:47:01 83.49.16.255 *start_loading
+24-Jul-2014 09:47:01 83.49.16.255 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 09:51:52 83.49.16.255 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+24-Jul-2014 09:51:52 83.49.16.255 *start_loading
+24-Jul-2014 15:51:49 108.245.184.78 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+24-Jul-2014 15:51:49 108.245.184.78 *start_loading
+24-Jul-2014 15:51:49 108.245.184.78 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 15:51:57 108.245.184.78 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+24-Jul-2014 15:51:57 108.245.184.78 *start_loading
+24-Jul-2014 15:51:57 108.245.184.78 *done_loading_Images/example_folder/img1.jpg
+24-Jul-2014 15:52:09 108.245.184.78 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+24-Jul-2014 15:52:09 108.245.184.78 *start_loading
+24-Jul-2014 15:52:09 108.245.184.78 *done_loading_Images/example_folder/img1.jpg
+25-Jul-2014 00:43:15 76.118.181.102 *start_loading
+25-Jul-2014 00:43:15 76.118.181.102 *Browser_Information Mozilla/5.0 (Linux; Android 4.4.4; Nexus 7 Build/KTU84P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.128 Safari/537.36
+25-Jul-2014 00:43:17 76.118.181.102 *done_loading_Images/example_folder/img1.jpg
+25-Jul-2014 06:44:41 81.45.54.96 *Browser_Information Mozilla/5.0 (iPhone; CPU iPhone OS 7_1_2 like Mac OS X) AppleWebKit/537.51.2 (KHTML, like Gecko) Version/7.0 Mobile/11D257 Safari/9537.53
+25-Jul-2014 06:44:41 81.45.54.96 *start_loading
+25-Jul-2014 08:40:26 90.175.104.23 *start_polygon
+25-Jul-2014 08:40:28 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 08:40:31 example_folder img1 1 2 90.175.104.23  a 1 torralba cpts_not_modified 0 0
+25-Jul-2014 08:40:31 90.175.104.23 *start_polygon
+25-Jul-2014 08:40:34 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 08:40:39 example_folder img1 2 3 90.175.104.23  bbbdfsfsd 2 torralba cpts_not_modified 0 0
+25-Jul-2014 08:40:40 90.175.104.23 *start_polygon
+25-Jul-2014 08:40:43 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 08:40:45 example_folder img1 3 4 90.175.104.23  djhdfsjhsdhjdfs 3 torralba cpts_not_modified 0 0
+25-Jul-2014 08:40:46 90.175.104.23 *start_polygon
+25-Jul-2014 08:40:49 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 08:40:55 example_folder img1 4 5 90.175.104.23  fdsfsdf 4 torralba cpts_not_modified 0 0
+25-Jul-2014 08:40:56 90.175.104.23 *start_polygon
+25-Jul-2014 08:40:59 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 08:41:11 example_folder img1 5 6 90.175.104.23  dsfdsf 5 torralba cpts_not_modified 0 0
+25-Jul-2014 08:41:13 90.175.104.23 *start_polygon
+25-Jul-2014 08:41:15 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 08:41:26 example_folder img1 6 7 90.175.104.23  dddd 6 torralba cpts_not_modified 0 0
+25-Jul-2014 09:12:44 example_folder img1 7 7 90.175.104.23  dddd 6 torralba cpts_not_modified 0 0
+25-Jul-2014 09:12:50 90.175.104.23 *start_polygon
+25-Jul-2014 09:12:51 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:12:55 example_folder img1 7 8 90.175.104.23  aaa 7 torralba cpts_not_modified 0 0
+25-Jul-2014 09:12:55 90.175.104.23 *start_polygon
+25-Jul-2014 09:12:57 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:13:00 example_folder img1 8 9 90.175.104.23  ssdsdsad 8 torralba cpts_not_modified 0 0
+25-Jul-2014 09:13:01 90.175.104.23 *start_polygon
+25-Jul-2014 09:13:02 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:13:06 example_folder img1 9 10 90.175.104.23  sdsdasd 9 torralba cpts_not_modified 0 0
+25-Jul-2014 09:13:06 90.175.104.23 *start_polygon
+25-Jul-2014 09:13:08 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:13:13 example_folder img1 10 11 90.175.104.23  dasdsad 10 torralba cpts_not_modified 0 0
+25-Jul-2014 09:13:14 90.175.104.23 *start_polygon
+25-Jul-2014 09:13:16 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:13:19 example_folder img1 11 12 90.175.104.23  sadasdsad 11 torralba cpts_not_modified 0 0
+25-Jul-2014 09:13:20 90.175.104.23 *start_polygon
+25-Jul-2014 09:13:22 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:13:26 example_folder img1 12 13 90.175.104.23  sadsasadsdadsasdsda 12 torralba cpts_not_modified 0 0
+25-Jul-2014 09:13:26 90.175.104.23 *start_polygon
+25-Jul-2014 09:13:28 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:13:32 example_folder img1 13 14 90.175.104.23  asdasdsad 13 torralba cpts_not_modified 0 0
+25-Jul-2014 09:13:32 90.175.104.23 *start_polygon
+25-Jul-2014 09:13:34 90.175.104.23 *What_is_this_object_query
+25-Jul-2014 09:13:38 example_folder img1 14 15 90.175.104.23  sadsdsd 14 torralba cpts_not_modified 0 0
+25-Jul-2014 09:13:48 90.175.104.23 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10.7; rv:30.0) Gecko/20100101 Firefox/30.0
+25-Jul-2014 09:13:48 90.175.104.23 *start_loading
+25-Jul-2014 09:13:49 90.175.104.23 *done_loading_Images/example_folder/img1.jpg
+25-Jul-2014 09:13:58 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:14:06 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:14:24 90.175.104.23 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+25-Jul-2014 09:14:24 90.175.104.23 *start_loading
+25-Jul-2014 09:14:32 90.175.104.23 *done_loading_Images/example_folder/img1.jpg
+25-Jul-2014 09:14:45 90.175.104.23 *Browser_Information Mozilla/5.0 (Macintosh; Intel Mac OS X 10_7_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/36.0.1985.125 Safari/537.36
+25-Jul-2014 09:14:45 90.175.104.23 *start_loading
+25-Jul-2014 09:14:46 90.175.104.23 *done_loading_Images/example_folder/img1.jpg
+25-Jul-2014 09:15:07 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:15:43 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:15:48 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:15:50 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:15:51 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:16:00 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:16:06 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:16:11 example_folder img1 15 15 90.175.104.23  *empty*    0 0
+25-Jul-2014 09:16:50 example_folder img1 15 15 90.175.104.23  *empty*    0 0
