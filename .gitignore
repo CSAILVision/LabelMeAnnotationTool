@@ -1,2 +1,8 @@
 *~
 annotationTools/perl/globalvariables.pl
+*.o
+*.a
+Masks
+Scribbles
+annotationTools/perl/segment.cgi
+
