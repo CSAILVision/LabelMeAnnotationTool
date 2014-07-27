@@ -63,7 +63,7 @@ function InitializeScribbleMode(tag_button, tag_canvas){
             <p> </p><div id="loadspinner" style="display: none;"><img src="Icons/segment_loader.gif"/> </div></div>';
   $('#'+tag_button).append(html_str);    
 
-  html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:getPackFile();"> \
+  html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:GetPackFile();"> \
         <img src="Icons/download_all.png" height="30" /> \
       </button>';
   html_str3 = '<form action="annotationTools/php/getpackfile.php" method="post" id="packform"> \
@@ -906,6 +906,14 @@ this.HTMLobjectBox = function(obj_name) {
     if(q) q.parentNode.removeChild(q);
   }
 
+  function GetPackFile(){
+
+    document.getElementById("folder").value = main_image.GetFileInfo().GetDirName();
+    document.getElementById("name").value = main_image.GetFileInfo().GetImName();
+    console.log(document.getElementById("packform"));
+    document.getElementById("packform").submit();
+
+}
 
 
 
