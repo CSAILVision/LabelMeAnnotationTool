@@ -2,7 +2,6 @@
 annotationTools/perl/globalvariables.pl
 *.o
 *.a
-Masks
-Scribbles
-annotationTools/perl/segment.cgi
-
+annotationTools/scribble/image.jpg
+annotationTools/scribble/mask.png
+annotationTools/scribble/scribble.png
