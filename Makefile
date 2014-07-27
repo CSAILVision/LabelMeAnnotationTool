@@ -4,7 +4,9 @@
 # Get path for perl scripts:
 SET_LM_HOME = $(shell pwd)/
 
-all: setpath write_permissions
+all: setpath scribble write_permissions
+
+basic: setpath write_permissions
 
 setpath:
 	@echo "Setting base href: $(SET_LM_HOME)";
@@ -15,3 +17,9 @@ write_permissions:
 	$(shell chmod -R 777 ./Annotations)
 	$(shell chmod -R 777 ./annotationCache/TmpAnnotations)
 	$(shell chmod -R 777 ./annotationCache/Logs/logfile.txt)
+	$(shell chmod -R 777 ./annotationTools/scribble)
+
+scribble:
+	cd ./annotationTools/scribble
+	make
+	cd ../../

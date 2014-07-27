@@ -274,7 +274,7 @@ function scribble_canvas(tag) {
         // Save the scribble for segmenting (this is done synchronously because we need to wait for the image to be saved in order to segment).
         var imagname = main_image.GetFileInfo().GetImName();
         imagname = imagname.substr(0, imagname.length-4);
-        scribble_canvas.resizeandsaveImage("../../Scribbles/"+main_image.GetFileInfo().GetDirName()+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', '../perl/', segment_ratio,fw,fh,0, 0, annotation_ended);
+        scribble_canvas.resizeandsaveImage("../../Scribbles/"+main_image.GetFileInfo().GetDirName()+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', '../scribble/', segment_ratio,fw,fh,0, 0, annotation_ended);
     });
   };
 
@@ -577,13 +577,13 @@ this.HTMLobjectBox = function(obj_name) {
         var Nobj = $(LM_xml).children("annotation").children("object").length;
         if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
         if (callback == 0){
-          scribble_canvas.resizeandsaveImage("../../Images/"+imagetoSegmentURL, 'image.jpg', '../perl/', scale,fwidth,fheight,0,1, annotation_ended);
+          scribble_canvas.resizeandsaveImage("../../Images/"+imagetoSegmentURL, 'image.jpg', '../scribble/', scale,fwidth,fheight,0,1, annotation_ended);
         }
         else if (callback == 1){
           scribble_canvas.createDir("../../Masks/"+main_image.GetFileInfo().GetDirName()+"/");
 
           // Execute the cgi to perform the segmentation
-          var url = 'annotationTools/perl/segment.cgi';
+          var url = 'annotationTools/scribble/segment.cgi';
 
           var req_submit;
           if (window.XMLHttpRequest) {
@@ -598,7 +598,7 @@ this.HTMLobjectBox = function(obj_name) {
             object_corners.push(poslx + (cadena[3]/scale)); 
             object_corners.push(posly + (cadena[4]/scale));
             // Save the segmentation result in the Maks folder
-            scribble_canvas.resizeandsaveImage('../perl/mask.png',resp,"../../Masks/"+main_image.GetFileInfo().GetDirName()+"/",1./scale,main_image.width_orig,main_image.height_orig,1,2, annotation_ended);
+            scribble_canvas.resizeandsaveImage('../scribble/mask.png',resp,"../../Masks/"+main_image.GetFileInfo().GetDirName()+"/",1./scale,main_image.width_orig,main_image.height_orig,1,2, annotation_ended);
             
 
           }
