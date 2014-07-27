@@ -9,7 +9,7 @@ function initUserName() {
     //   in the URL as it might come from the LabelMe browser.
     username = getQueryVariable("username");
 
-    if (username.length==0) {
+    if (!username || (username.length==0)) {
         username = getCookie("username");
         if (!username || (username.length==0)) {
             username = "anonymous";
