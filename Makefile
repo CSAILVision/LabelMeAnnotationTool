@@ -20,4 +20,4 @@ write_permissions:
 	$(shell chmod -R 777 ./annotationTools/scribble)
 
 scribble:
-	$(shell cd ./annotationTools/scribble; make)
+	$(shell cd ./annotationTools/scribble; make; cd ../../)
