@@ -1,16 +1,21 @@
 <?php    
 
+include 'globalvariables.php';
 
-
+$dir = $_POST['dir'];
 $ext = pathinfo($_POST["namedest"], PATHINFO_EXTENSION);
+$urlSource = $_POST["urlSource"];
 
-$img = file_get_contents($_POST["urlSource"]);
+if ($dir == -1) $urlSource = $HOMESCRIBBLES . "/" . $urlSource;
+if ($dir == 0) $urlSource = $HOMEIMAGES . "/" . $urlSource;
+
+$img = file_get_contents($urlSource);
 
 
 if ($ext == 'png') $im = imagecreatefrompng($_POST["urlSource"]); 
 else $im = imagecreatefromstring($img);
 
-$dir = $_POST['dir'];
+
 $posx = $_POST["posx"];
 $posy = $_POST["posy"];
 $finalwidth = $_POST["fwidth"];
@@ -24,7 +29,7 @@ $bheight = $_POST["bheight"];
 
 $scale = $_POST["scale"];
 
-if ($dir == 0){
+if ($dir < 1){
 	$newwidth = $finalwidth*$scale;
 	$newheight = $finalheight*$scale;
 }
@@ -35,12 +40,12 @@ else {
 
 
 
-if ($dir == 0) $thumb = imagecreatetruecolor($newwidth, $newheight);
+if ($dir < 1) $thumb = imagecreatetruecolor($newwidth, $newheight);
 else $thumb = imagecreatetruecolor($bwidth, $bheight);
 
-
-
-define('UPLOAD_DIR', $_POST["urlDest"]);
+$urlDest = $_POST["urlDest"];
+if ($dir == 1) $urlDest = $HOMEMASKS . "/" . $urlDest;
+define('UPLOAD_DIR', $urlDest);
 
 if ($ext == "png"){
 
@@ -54,7 +59,7 @@ if ($ext == "png"){
 	imagesavealpha($im, true);
 } 
 
-if ($dir == 0) imagecopyresampled($thumb, $im, 0, 0, $posx, $posy,  $newwidth, $newheight, $finalwidth, $finalheight); // crop i resize a la imatge final que es mes petita
+if ($dir < 1) imagecopyresampled($thumb, $im, 0, 0, $posx, $posy,  $newwidth, $newheight, $finalwidth, $finalheight); // crop i resize a la imatge final que es mes petita
 else imagecopyresampled($thumb, $im,  $posx, $posy, 0, 0, $newwidth, $newheight, $width, $height); // resize i ficar a imatge final
 
 if ($ext == "jpg") imagejpeg($thumb, UPLOAD_DIR . $_POST["namedest"]); 
