@@ -327,9 +327,11 @@ main(int argc, char **argv)
     string input = post.str();
     int valand = input.find("&");
     int valand2 = input.find("&", valand+1);
+    int valand3 = input.find("&", valand2+1);
     string imageURL = input.substr(0,valand);
     string objnumber = input.substr(valand+1, valand2 - valand - 1);
-    string randnum = input.substr(valand2+1, input.size()-valand2 -1 );
+    string randnum = input.substr(valand2+1, valand3-valand2 -1 );
+    string inputpath = input.substr(valand3+1, input.size()-valand3 -1 );
     int ran = atoi(randnum.c_str());
     
     int n;
@@ -344,10 +346,12 @@ main(int argc, char **argv)
     // We read the image
     // Read image
     //string inputim = "../../Images/"+imageURL;
-    string inputim = "image.jpg";
+    string inputim = inputpath+"/image.jpg";
     const char * inpc = inputim.c_str();
     R2Image *image = ReadImage(inpc);
-    R2Image *scribble = ReadImage("scribble.png");
+    inputim = inputpath+"/scribble.png";
+    inpc = inputim.c_str();
+    R2Image *scribble = ReadImage(inpc);
     
     n = image -> Height();
     m = image -> Width();
@@ -444,8 +448,8 @@ main(int argc, char **argv)
     }
     
     
-    //string output = "../../Masks/"+imagename+"_mask_"+objnumber+".png";
-    string output = "./mask.png";
+    //string output = "./mask.png";
+    string output = inputpath+"/mask.png";
     const char * coutp = output.c_str();
     if (!WriteImage(output_image, coutp)) exit(-1);
     // Delete image

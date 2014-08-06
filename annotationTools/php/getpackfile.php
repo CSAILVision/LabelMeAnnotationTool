@@ -1,15 +1,16 @@
     <?php
 
-     
+    include 'globalvariables.php';
+
 	$zip = new ZipArchive();
 	$folder = $_POST["folder"];
 
 	$imname = $_POST["name"];
-
-	$zipname = $folder."_".substr($imname,0,-4).".zip";
-	$imageurl = "../../Images/".$folder."/".$imname;
+    $collection = basename($folder);
+	$zipname = $collection."_".substr($imname,0,-4).".zip";
+	$imageurl = $TOOLHOME. "Images/" .$folder."/".$imname;
 	$xmlname = substr($imname,0,-4).".xml";
-	$xmlurl = "../../Annotations/".$folder."/".$xmlname;	
+	$xmlurl = $TOOLHOME. "Annotations/" .$folder."/".$xmlname;	
 
 
 	if ($zip->open($zipname, ZipArchive::CREATE )!==TRUE) {
@@ -23,9 +24,9 @@
 	$zip->addEmptyDir("Scribbles");
   
     // Add the masks
-    $maskurl = "../../Masks/".$folder."/".substr($imname,0,-4)."_mask_";
-    $scriburl = "../../Scribbles/".$folder."/".substr($imname,0,-4)."_scribble_";
-    $cont = 0;
+    $maskurl = $TOOLHOME. "Masks/".$folder."/".substr($imname,0,-4)."_mask_";
+    $scriburl = $TOOLHOME. "Scribbles/".$folder."/".substr($imname,0,-4)."_scribble_";
+    /*$cont = 0;
     while (file_exists($maskurl.strval($cont).".png")){
     	$zip->addFile($maskurl.strval($cont).".png", "Masks/".substr($imname,0,-4)."_".strval($cont).".png");
     	$cont++;
@@ -34,7 +35,16 @@
     while (file_exists($scriburl.strval($cont).".png")){
     	$zip->addFile($scriburl.strval($cont).".png", "Scribbles/".substr($imname,0,-4)."_".strval($cont).".png");
     	$cont++;
+    }*/
+    foreach (glob($maskurl."*") as $file) {
+        $cont = basename($file);
+        $zip->addFile($file, "Masks/".$cont);//substr($imname,0,-4)."_".strval($cont).".png");
     }
+    foreach (glob($scriburl."*") as $file) {
+        $cont = basename($file);
+        $zip->addFile($file, "Scribbles/".$cont);
+    }
+
     $zip->close();
     // download
     $zipped_size = filesize($zipname);

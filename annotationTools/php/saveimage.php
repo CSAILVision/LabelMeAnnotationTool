@@ -1,3 +1,4 @@
+<?php include('globalvariables.php'); ?>
 <?php
 
 // make sure the image-data exists and is not empty
@@ -16,7 +17,7 @@ if ( isset($_POST["image"]) && !empty($_POST["image"]) ) {
     $data = base64_decode($data);  
 
     // create a temporary unique file name
-    $file = UPLOAD_DIR . $_POST["name"];  
+    $file = $TOOLHOME. "Scribbles/" . UPLOAD_DIR . $_POST["name"];  
 
     // write the file to the upload directory
     $success = file_put_contents($file, $data);

@@ -71,8 +71,7 @@ function InitializeScribbleMode(tag_button, tag_canvas){
         <input type="hidden" id= "name" name="name" value="img2.jpg" /> \
        </form>';
   $('#tool_buttons').append(html_str3);
-  $('#help').before(html_str2);    
- console.log(tag_button);
+  $('#help').before(html_str2); 
   document.getElementById("segmDiv").setAttribute('style', 'opacity: 0.2');
   document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
 
@@ -257,7 +256,6 @@ function scribble_canvas(tag) {
   // Saves the resized scribbles into the server to create the segmentation
   this.saveImage = function(url, imname, dir, async, segment_ratio, fw, fh, annotation_ended) {
     var canvasData = url;
-    
   
    $.ajax({
     async: async,
@@ -274,21 +272,26 @@ function scribble_canvas(tag) {
         // Save the scribble for segmenting (this is done synchronously because we need to wait for the image to be saved in order to segment).
         var imagname = main_image.GetFileInfo().GetImName();
         imagname = imagname.substr(0, imagname.length-4);
-        scribble_canvas.resizeandsaveImage("../../Scribbles/"+main_image.GetFileInfo().GetDirName()+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', '../scribble/', segment_ratio,fw,fh,0, 0, annotation_ended);
+
+        var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+        console.log(collectionName);
+        scribble_canvas.resizeandsaveImage(collectionName+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', collectionName+"/", segment_ratio,fw,fh,-1, 0, annotation_ended);
     });
   };
 
 
   // General function to asynchronously create a directory from a given url
-  this.createDir = function(url){
+  this.createDir = function(url, dattype){
     $.ajax({
     async: true,
     type: "POST",
     url: "annotationTools/php/createdir.php",
     data: { 
-     urlData: url
+     urlData: url,
+     datatype: dattype
     }
     }).done(function(o) {
+      console.log(url);
     });
   };
 
@@ -531,7 +534,6 @@ this.HTMLobjectBox = function(obj_name) {
      $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("xmax").text(annot.GetPtsX()[1]);
      $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("ymax").text(annot.GetPtsY()[2]);
 
-     console.log(LM_xml);
       WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
   }
 
@@ -542,6 +544,7 @@ this.HTMLobjectBox = function(obj_name) {
   // 3. Creates the Masks directory and through an http requests calls a cgi that will perform the segmentation through GraphCuts. 
   // It saves the resulting mask in the new folder
   // 4. The final mask is drawn over the canvas, and the spinner that indicated the segmentation process is turned off.
+
   this.resizeandsaveImage = function(urlSource, namedest, urlDest, scale, fwidth, fheight, dir, callback, annotation_ended  ){
     
     var poslx = Math.max(0, this.minclicX-(this.maxclicX - this.minclicX)*0.25);
@@ -574,13 +577,16 @@ this.HTMLobjectBox = function(obj_name) {
     }).done(function(o) {
 
         var imagetoSegmentURL = main_image.GetFileInfo().GetFullName();
+        imagetoSegmentURL = imagetoSegmentURL.replace("///","/");
         var Nobj = $(LM_xml).children("annotation").children("object").length;
         if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
         if (callback == 0){
-          scribble_canvas.resizeandsaveImage("../../Images/"+imagetoSegmentURL, 'image.jpg', '../scribble/', scale,fwidth,fheight,0,1, annotation_ended);
+          var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+          scribble_canvas.resizeandsaveImage(imagetoSegmentURL, 'image.jpg', collectionName+"/", scale,fwidth,fheight,0,1, annotation_ended);
         }
         else if (callback == 1){
-          scribble_canvas.createDir("../../Masks/"+main_image.GetFileInfo().GetDirName()+"/");
+          var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+          scribble_canvas.createDir(collectionName+"/","mask");
 
           // Execute the cgi to perform the segmentation
           var url = 'annotationTools/scribble/segment.cgi';
@@ -589,7 +595,12 @@ this.HTMLobjectBox = function(obj_name) {
           if (window.XMLHttpRequest) {
             req_submit = new XMLHttpRequest();
             req_submit.open("POST", url, false);
-            req_submit.send(imagetoSegmentURL+"&"+Nobj+"&"+scribble_canvas.colorseg);
+            var path = document.location.pathname;
+            path.replace(/\/[^\/]*$/, '/annotationCache/TmpAnnotations/');
+            path = "/var/www"+path;
+            tmpPath = path+main_image.GetFileInfo().GetDirName().replace("///","/");
+           
+            req_submit.send(imagetoSegmentURL+"&"+Nobj+"&"+scribble_canvas.colorseg+"&"+tmpPath);
             var cadena = req_submit.responseText.split('&');
             resp = cadena[0];
             object_corners = new Array();
@@ -598,7 +609,8 @@ this.HTMLobjectBox = function(obj_name) {
             object_corners.push(poslx + (cadena[3]/scale)); 
             object_corners.push(posly + (cadena[4]/scale));
             // Save the segmentation result in the Maks folder
-            scribble_canvas.resizeandsaveImage('../scribble/mask.png',resp,"../../Masks/"+main_image.GetFileInfo().GetDirName()+"/",1./scale,main_image.width_orig,main_image.height_orig,1,2, annotation_ended);
+            console.log(collectionName);
+            scribble_canvas.resizeandsaveImage(collectionName+"/",resp,collectionName+"/",1./scale,main_image.width_orig,main_image.height_orig,1,2, annotation_ended);
             
 
           }
@@ -623,11 +635,11 @@ this.HTMLobjectBox = function(obj_name) {
     var loc = window.location.href;
     var   dir = loc.substring(0, loc.lastIndexOf('/tool.html'));
     ClearMask('aux_mask')
-    
     if (resp){
       this.cache_random_number = Math.random();
+      var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
 
-      DrawSegmentation('myCanvas_bg',dir+'/Masks/'+main_image.GetFileInfo().GetDirName()+"/"+resp, main_image.width_curr, main_image.height_curr, this.cache_random_number, 'aux_mask');
+      DrawSegmentation('myCanvas_bg','Masks/'+collectionName+"/"+resp, main_image.width_curr, main_image.height_curr, this.cache_random_number, 'aux_mask');
     } 
   };
 
@@ -688,11 +700,13 @@ this.HTMLobjectBox = function(obj_name) {
     var Nobj = $(LM_xml).children("annotation").children("object").length;
     if (this.annotationid > -1) Nobj = this.annotationid;
     // Save the scribble in the Scribbles folder
-    this.createDir("../../Scribbles/"+main_image.GetFileInfo().GetDirName()+"/");
+    var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+    this.createDir(collectionName+"/","scribble");
 
     var imagname = main_image.GetFileInfo().GetImName();
     imagname = imagname.substr(0, imagname.length-4);
-    this.saveImage(scribbledataURL, imagname+'_scribble_'+Nobj+'.png', "../../Scribbles/"+main_image.GetFileInfo().GetDirName()+"/", true, segment_ratio, fw, fh, annotation_ended);
+    
+    this.saveImage(scribbledataURL, imagname+'_scribble_'+Nobj+'.png', collectionName+"/", true, segment_ratio, fw, fh, annotation_ended);
 
   }
   // Creates the div elements to insert the scribble_canvas in the html
@@ -700,7 +714,6 @@ this.HTMLobjectBox = function(obj_name) {
       html_str = '<div id="canvasDiv" ';
       html_str+='style="position:absolute;left:0px;top:0px;z-index:1;width:100%;height:100%;background-color:rgba(128,64,0,0);">';
       html_str+='</div>';
-      console.log(html_str);
       $('#'+this.tagcanvasDiv).append(html_str);
       $(document).ready(function() {scribble_canvas.prepareDrawingCanvas();});
   };
@@ -907,10 +920,9 @@ this.HTMLobjectBox = function(obj_name) {
   }
 
   function GetPackFile(){
-
-    document.getElementById("folder").value = main_image.GetFileInfo().GetDirName();
+    document.getElementById("folder").value = main_image.GetFileInfo().GetDirName().replace("///","/");
     document.getElementById("name").value = main_image.GetFileInfo().GetImName();
-    console.log(document.getElementById("packform"));
+
     document.getElementById("packform").submit();
 
 }
