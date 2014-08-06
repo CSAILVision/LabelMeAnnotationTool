@@ -272,10 +272,14 @@ function scribble_canvas(tag) {
         // Save the scribble for segmenting (this is done synchronously because we need to wait for the image to be saved in order to segment).
         var imagname = main_image.GetFileInfo().GetImName();
         imagname = imagname.substr(0, imagname.length-4);
+<<<<<<< HEAD
 
         var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
         console.log(collectionName);
         scribble_canvas.resizeandsaveImage(collectionName+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', collectionName+"/", segment_ratio,fw,fh,-1, 0, annotation_ended);
+=======
+        scribble_canvas.resizeandsaveImage(main_image.GetFileInfo().GetDirName()+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', '../scribble/', segment_ratio,fw,fh,-1, 0, annotation_ended);
+>>>>>>> 5de3bad7949b2f6f4abd384b369f3a9067a22825
     });
   };
 
@@ -316,13 +320,13 @@ function scribble_canvas(tag) {
   document.getElementById('draw_canvas').style.zIndex = -2;
   document.getElementById('draw_canvas_div').style.zIndex = -2;
 
-	// Remove polygon from draw canvas:
-	var anno = null;
-	if(draw_anno) {
-	  draw_anno.DeletePolygon();
-	  anno = draw_anno;
-	  draw_anno = null;
-	}
+  // Remove polygon from draw canvas:
+  var anno = null;
+  if(draw_anno) {
+    draw_anno.DeletePolygon();
+    anno = draw_anno;
+    draw_anno = null;
+  }
 
   // Move query canvas to front:
   document.getElementById('query_canvas').style.zIndex = 0;
@@ -355,17 +359,17 @@ function scribble_canvas(tag) {
   // If annotation is point or line, then 
   if(doReset) object_choices = '...';
 
-	// Render annotation:
-	query_anno = anno;
-	query_anno.SetDivAttach('query_canvas');
-	var anno_id = query_anno.GetAnnoID();
-	query_anno.DrawPolygon(main_image.GetImRatio());
-	
-	// Set polygon actions:
-	query_anno.SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
-	query_anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
-	query_anno.SetAttribute('oncontextmenu','return false');
-	query_anno.SetCSS('cursor','pointer');
+  // Render annotation:
+  query_anno = anno;
+  query_anno.SetDivAttach('query_canvas');
+  var anno_id = query_anno.GetAnnoID();
+  query_anno.DrawPolygon(main_image.GetImRatio());
+  
+  // Set polygon actions:
+  query_anno.SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
+  query_anno.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
+  query_anno.SetAttribute('oncontextmenu','return false');
+  query_anno.SetCSS('cursor','pointer');
     };
 
 this.GetPopupFormDraw = function() {
@@ -577,6 +581,7 @@ this.HTMLobjectBox = function(obj_name) {
     }).done(function(o) {
 
         var imagetoSegmentURL = main_image.GetFileInfo().GetFullName();
+<<<<<<< HEAD
         imagetoSegmentURL = imagetoSegmentURL.replace("///","/");
         var Nobj = $(LM_xml).children("annotation").children("object").length;
         if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
@@ -587,6 +592,16 @@ this.HTMLobjectBox = function(obj_name) {
         else if (callback == 1){
           var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
           scribble_canvas.createDir(collectionName+"/","mask");
+=======
+        console.log(imagetoSegmentURL);
+        var Nobj = $(LM_xml).children("annotation").children("object").length;
+        if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
+        if (callback == 0){
+          scribble_canvas.resizeandsaveImage(imagetoSegmentURL, 'image.jpg', '../scribble/', scale,fwidth,fheight,0,1, annotation_ended);
+        }
+        else if (callback == 1){
+          scribble_canvas.createDir(main_image.GetFileInfo().GetDirName()+"/","mask");
+>>>>>>> 5de3bad7949b2f6f4abd384b369f3a9067a22825
 
           // Execute the cgi to perform the segmentation
           var url = 'annotationTools/scribble/segment.cgi';
@@ -609,8 +624,12 @@ this.HTMLobjectBox = function(obj_name) {
             object_corners.push(poslx + (cadena[3]/scale)); 
             object_corners.push(posly + (cadena[4]/scale));
             // Save the segmentation result in the Maks folder
+<<<<<<< HEAD
             console.log(collectionName);
             scribble_canvas.resizeandsaveImage(collectionName+"/",resp,collectionName+"/",1./scale,main_image.width_orig,main_image.height_orig,1,2, annotation_ended);
+=======
+            scribble_canvas.resizeandsaveImage('../scribble/mask.png',resp,main_image.GetFileInfo().GetDirName()+"/",1./scale,main_image.width_orig,main_image.height_orig,1,2, annotation_ended);
+>>>>>>> 5de3bad7949b2f6f4abd384b369f3a9067a22825
             
 
           }
@@ -700,6 +719,7 @@ this.HTMLobjectBox = function(obj_name) {
     var Nobj = $(LM_xml).children("annotation").children("object").length;
     if (this.annotationid > -1) Nobj = this.annotationid;
     // Save the scribble in the Scribbles folder
+<<<<<<< HEAD
     var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
     this.createDir(collectionName+"/","scribble");
 
@@ -707,6 +727,13 @@ this.HTMLobjectBox = function(obj_name) {
     imagname = imagname.substr(0, imagname.length-4);
     
     this.saveImage(scribbledataURL, imagname+'_scribble_'+Nobj+'.png', collectionName+"/", true, segment_ratio, fw, fh, annotation_ended);
+=======
+    this.createDir(main_image.GetFileInfo().GetDirName()+"/","scribble");
+
+    var imagname = main_image.GetFileInfo().GetImName();
+    imagname = imagname.substr(0, imagname.length-4);
+    this.saveImage(scribbledataURL, imagname+'_scribble_'+Nobj+'.png', main_image.GetFileInfo().GetDirName()+"/", true, segment_ratio, fw, fh, annotation_ended);
+>>>>>>> 5de3bad7949b2f6f4abd384b369f3a9067a22825
 
   }
   // Creates the div elements to insert the scribble_canvas in the html
@@ -802,9 +829,9 @@ this.HTMLobjectBox = function(obj_name) {
         document.getElementById('query_canvas_div').style.zIndex = -2;
         active_canvas = REST_CANVAS;
 
-	// Remove polygon from the query canvas:
-	query_anno.DeletePolygon();
-	query_anno = null;
+  // Remove polygon from the query canvas:
+  query_anno.DeletePolygon();
+  query_anno = null;
 
         CloseQueryPopup();
         main_image.ScrollbarsOn();
