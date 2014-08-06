@@ -596,7 +596,7 @@ this.HTMLobjectBox = function(obj_name) {
             req_submit = new XMLHttpRequest();
             req_submit.open("POST", url, false);
             var path = document.location.pathname;
-            path.replace(/\/[^\/]*$/, '/annotationCache/TmpAnnotations/');
+            path = path.replace(/\/[^\/]*$/, '/annotationCache/TmpAnnotations/');
             path = "/var/www"+path;
             tmpPath = path+main_image.GetFileInfo().GetDirName().replace("///","/");
            
