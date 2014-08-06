@@ -275,20 +275,20 @@ function scribble_canvas(tag) {
 
         var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
         console.log(collectionName);
+        scribble_canvas.createDir("annotationCache/TmpAnnotations/"+collectionName);
         scribble_canvas.resizeandsaveImage(collectionName+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', collectionName+"/", segment_ratio,fw,fh,-1, 0, annotation_ended);
     });
   };
 
 
-  // General function to asynchronously create a directory from a given url
-  this.createDir = function(url, dattype){
+  // General function to synchronously create a directory from a given url
+  this.createDir = function(url){
     $.ajax({
-    async: true,
+    async: false,
     type: "POST",
     url: "annotationTools/php/createdir.php",
     data: { 
-     urlData: url,
-     datatype: dattype
+     urlData: url
     }
     }).done(function(o) {
       console.log(url);
@@ -586,7 +586,7 @@ this.HTMLobjectBox = function(obj_name) {
         }
         else if (callback == 1){
           var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
-          scribble_canvas.createDir(collectionName+"/","mask");
+          scribble_canvas.createDir("Masks/"+collectionName+"/");
 
           // Execute the cgi to perform the segmentation
           var url = 'annotationTools/scribble/segment.cgi';
@@ -701,7 +701,7 @@ this.HTMLobjectBox = function(obj_name) {
     if (this.annotationid > -1) Nobj = this.annotationid;
     // Save the scribble in the Scribbles folder
     var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
-    this.createDir(collectionName+"/","scribble");
+    this.createDir("Scribbles/"+collectionName+"/");
 
     var imagname = main_image.GetFileInfo().GetImName();
     imagname = imagname.substr(0, imagname.length-4);

@@ -7,8 +7,7 @@ $dirURL = $_POST["urlData"];
 
 
 if ( isset($dirURL) && !empty($dirURL) ){    
-	if ($_POST["datatype"] == "mask")  $dirURL = $TOOLHOME. "Masks/" . $dirURL;	
-	else $dirURL = $TOOLHOME. "Scribbles/" . $dirURL;
+	$dirURL = $TOOLHOME. $dirURL;
 	
     if (!file_exists($dirURL)) {
         if (!mkdir($dirURL, 0777, true)){
