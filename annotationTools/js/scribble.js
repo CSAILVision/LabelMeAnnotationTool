@@ -19,8 +19,11 @@ function SetDrawingMode(mode){
             alert("You can't change drawing mode while editting scribbles.");
             return;
         }
-        document.getElementById("segmDiv").setAttribute('style', 'opacity: 0.2');
-        document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
+
+        document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
+        document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
+        //document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
+        //document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
         scribble_canvas.scribble_image = "";
         scribble_canvas.cleanscribbles();
         scribble_canvas.CloseCanvas();
@@ -31,8 +34,11 @@ function SetDrawingMode(mode){
             alert("Need to close current polygon first.");
             return;
         }
-        document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
-        document.getElementById("polygonDiv").setAttribute('style', 'opacity: 0.2');
+
+        document.getElementById("segmDiv").setAttribute('style', 'border-color: #f00');
+        document.getElementById("polygonDiv").setAttribute('style', 'border-color: #000');
+        //document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
+        //document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
         scribble_canvas.startSegmentationMode();
     }
     drawing_mode = mode;
@@ -72,8 +78,10 @@ function InitializeScribbleMode(tag_button, tag_canvas){
        </form>';
   $('#tool_buttons').append(html_str3);
   $('#help').before(html_str2); 
-  document.getElementById("segmDiv").setAttribute('style', 'opacity: 0.2');
+  document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
   document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
+  document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
+  document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
 
 }
 
