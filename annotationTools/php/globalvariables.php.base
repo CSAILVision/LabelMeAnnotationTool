@@ -6,16 +6,16 @@ if (!$username){
    $username = $_COOKIE["username"];
 }
 
-$TOOLHOME = "/var/www/developers/xavierpuigf/LabelMe3.0/";
-$URLHOME = "http://labelme2.csail.mit.edu/developers/xavierpuigf/LabelMe3.0/";
+$TOOLHOME = "LM_TOOL_HOME";
+$URLHOME = "LM_URL_HOME";
 
 if (!$public==true) {
    $HOMEIMAGES = $TOOLHOME."Images/users/$username/";
    $HOMEANNOTATIONS = $TOOLHOME."Annotations/users/$username/"; 
    $HOMETHUMBNAILS = $TOOLHOME."Thumbnails/users/$username/"; 
    $HOMEDOWNLOADS = $TOOLHOME."Downloads/users/$username/"; 
-   $HOMEMASKS = $TOOLHOME."Masks/users/$username/";
-   $HOMESCRIBBLES = $TOOLHOME."Scribbles/users/$username/";
+   $HOMEMASKS = $TOOLHOME."Masks/users/$username/"; 
+   $HOMESCRIBBLES = $TOOLHOME."Scribbles/users/$username/"; 
 
    // LabelMe annotation tool link
    $LABELMEtool = $URLHOME."tool.html?collection=LabelMe&mode=f&folder=users/$username/";
@@ -29,9 +29,8 @@ else {
    $HOMEANNOTATIONS = $TOOLHOME."Annotations/"; 
    $HOMETHUMBNAILS = $TOOLHOME."Thumbnails/"; 
    $HOMEDOWNLOADS = $TOOLHOME."Downloads/"; 
-   $HOMEMASKS = $TOOLHOME."Masks/";
+   $HOMEMASKS = $TOOLHOME."Masks/"; 
    $HOMESCRIBBLES = $TOOLHOME."Scribbles/";
-
    // LabelMe annotation tool link
    $LABELMEtool = $URLHOME."tool.html?collection=LabelMe&mode=f&folder=";
 
