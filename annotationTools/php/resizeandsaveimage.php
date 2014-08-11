@@ -66,6 +66,8 @@ else imagecopyresampled($thumb, $im,  $posx, $posy, 0, 0, $newwidth, $newheight,
 
 if ($ext == "jpg") imagejpeg($thumb, UPLOAD_DIR . $_POST["namedest"]); 
 else imagepng($thumb,UPLOAD_DIR . $_POST["namedest"]);
+$tmpPath = $TOOLHOME . "annotationCache/TmpAnnotations/";
+echo "$tmpPath";
 chmod(UPLOAD_DIR . $_POST["namedest"],0666);
 imagedestroy($thumb); 
 imagedestroy($im);

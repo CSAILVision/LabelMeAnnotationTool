@@ -582,7 +582,7 @@ this.HTMLobjectBox = function(obj_name) {
      bheight: main_image.height_orig,
 
     }
-    }).done(function(o) {
+    }).done(function(data_response) {
 
         var imagetoSegmentURL = main_image.GetFileInfo().GetFullName();
         imagetoSegmentURL = imagetoSegmentURL.replace("///","/");
@@ -593,6 +593,7 @@ this.HTMLobjectBox = function(obj_name) {
           scribble_canvas.resizeandsaveImage(imagetoSegmentURL, 'image.jpg', collectionName+"/", scale,fwidth,fheight,0,1, annotation_ended);
         }
         else if (callback == 1){
+          console.log(data_response);
           var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
           scribble_canvas.createDir("Masks/"+collectionName+"/");
 
@@ -601,12 +602,17 @@ this.HTMLobjectBox = function(obj_name) {
 
           var req_submit;
           if (window.XMLHttpRequest) {
-            req_submit = new XMLHttpRequest();
-            req_submit.open("POST", url, false);
+            /*
             var path = document.location.pathname;
             path = path.replace(/\/[^\/]*$/, '/annotationCache/TmpAnnotations/');
-            path = "/var/www"+path;
+            path = "/var/www"+path; */
+            path = data_response;
             tmpPath = path+main_image.GetFileInfo().GetDirName().replace("///","/");
+
+
+            req_submit = new XMLHttpRequest();
+            req_submit.open("POST", url, false);
+            
            
             req_submit.send(imagetoSegmentURL+"&"+Nobj+"&"+scribble_canvas.colorseg+"&"+tmpPath);
             var cadena = req_submit.responseText.split('&');
