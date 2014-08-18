@@ -21,7 +21,7 @@ CXXFLAGS=-Wall -I. -g
 #
 
 segment.cgi: example.o R2Image.o graph.o ../libjpeg/libjpeg.a ../libpng/libpng.a 
-	rm -f $@
+	rm -f $@;
 	$(CXX) $(CXXFLAGS) $^ -lm -o $@
 
 graph.o: graph.h
