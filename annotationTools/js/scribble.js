@@ -777,11 +777,11 @@ this.HTMLobjectBox = function(obj_name) {
     x = Math.round(x/ratio);
     y = Math.round(y/ratio);
     //console.log(OBJECT_DRAWING);
-    if (this.clickX.length == 0 && this.currently_drawing == OBJECT_DRAWING){
+    if (this.clickX.length == 0/* && this.currently_drawing == OBJECT_DRAWING*/){
       this.maxclicX = this.minclicX = x;
       this.maxclicY = this.minclicY = y;
     }
-    else if (this.currently_drawing == OBJECT_DRAWING){      
+    else /*if (this.currently_drawing == OBJECT_DRAWING*/{      
       this.maxclicY = Math.max(this.maxclicY, y); this.maxclicX = Math.max(this.maxclicX, x); 
       this.minclicY = Math.min(this.minclicY, y); this.minclicX = Math.min(this.minclicX, x);
     }

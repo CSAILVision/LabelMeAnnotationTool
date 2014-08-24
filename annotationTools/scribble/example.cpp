@@ -379,14 +379,14 @@ main(int argc, char **argv)
             else {
                 if (blue > red) color[i][k] = 2;
                 else {
-                    if (xmax == -1 or k > xmax) xmax = k;
+                    
+                    color[i][k] = 1;
+                }
+                if (xmax == -1 or k > xmax) xmax = k;
                     if (xmin == -1 or k < xmin) xmin = k;
                     if (ymax == -1 or i > ymax) ymax = i;
                     if (ymin == -1 or i < ymin) ymin = i;
-                    color[i][k] = 1;
                 }
-                
-            }
             
         }
     }
