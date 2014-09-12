@@ -115,18 +115,6 @@ function ShowNextImage() {
   if(s!=null) s.submit();
 }
 
-function ChangeLinkColorBG(idx) {
-  if(document.getElementById('Link'+idx)) {
-    var isDeleted = AllAnnotations[idx].GetDeleted();
-    if(isDeleted) document.getElementById('Link'+idx).style.color = '#888888';
-    else document.getElementById('Link'+idx).style.color = '#0000FF';
-  }
-}
-
-function ChangeLinkColorFG(idx) {
-  document.getElementById('Link'+idx).style.color = '#FF0000';
-}
-
 function XMLGet(fname) {
   var url = 'annotationTools/perl/get_anno_file.cgi';
   // branch for native XMLHttpRequest object

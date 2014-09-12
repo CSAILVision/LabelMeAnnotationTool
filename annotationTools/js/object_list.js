@@ -118,6 +118,20 @@ function RemoveAnnotationList() {
 }
 
 
+function ChangeLinkColorBG(idx) {
+  if(document.getElementById('Link'+idx)) {
+    var isDeleted = parseInt($(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text());
+    if(isDeleted) document.getElementById('Link'+idx).style.color = '#888888';
+    else document.getElementById('Link'+idx).style.color = '#0000FF';
+  }
+}
+
+
+function ChangeLinkColorFG(idx) {
+  document.getElementById('Link'+idx).style.color = '#FF0000';
+}
+
+
 // *******************************************
 // Private functions:
 // *******************************************
