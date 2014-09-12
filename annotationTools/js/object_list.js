@@ -14,10 +14,11 @@ function LoadAnnotationList() {
 
   // Count undeleted objects:
   for(var ii=0; ii < Npolygons; ii++) {
-    if(!AllAnnotations[ii].GetDeleted()) {
+    if(!parseInt($(LM_xml).children("annotation").children("object").eq(ii).children("deleted").text())) {
       NundeletedPolygons++;
     }
   }
+  console.log('undeleted: ',NundeletedPolygons);
   
   // Get parts tree
   var tree = getPartsTree();
@@ -41,7 +42,7 @@ function LoadAnnotationList() {
       var level = 0;
     }
     
-    var isDeleted = AllAnnotations[ii].GetDeleted();
+    var isDeleted = parseInt($(LM_xml).children("annotation").children("object").eq(ii).children("deleted").text());
     
     if(((ii<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || ((ii>=num_orig_anno)&&(!isDeleted||(isDeleted&&view_Deleted)))) {
       // change the left margin as a function of part level
@@ -86,18 +87,20 @@ function LoadAnnotationList() {
 	html_str += '>';
       }
       
-      if(AllAnnotations[ii].GetObjName().length==0 && !draw_anno) {
+      var obj_name = $(LM_xml).children("annotation").children("object").eq(ii).children("name").text();
+      if(obj_name.length==0 && !draw_anno) {
 	html_str += '<i>[ Please enter name ]</i>';
       }
       else {
-	html_str += AllAnnotations[ii].GetObjName();
+	html_str += obj_name;
       }
       
       if(isDeleted) html_str += '</b>';
       html_str += '</a>';
-      
-      if(AllAnnotations[ii].GetAttributes().length>0) {
-	html_str += ' (' + AllAnnotations[ii].GetAttributes() +')';
+
+      var attributes = $(LM_xml).children("annotation").children("object").eq(ii).children("attributes").text();
+      if(attributes.length>0) {
+	html_str += ' (' + attributes +')';
       }
       
       html_str += '</li></div>';
