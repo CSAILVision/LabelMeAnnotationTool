@@ -42,7 +42,7 @@ function StartDrawEvent(event) {
 
   // Set mousedown action to handle when user clicks on the drawing canvas:
   $('#draw_canvas_div').unbind();
-  $('#draw_canvas_div').mousedown({obj: this},function(e) {
+  $('#draw_canvas_div').mouseup({obj: this},function(e) {
       return DrawCanvasMouseDown(e.originalEvent);
     });
 

@@ -255,7 +255,7 @@ function annotation(anno_id) {
       $('#'+this.point_id).css('cursor','pointer');
 
       // Set actions for first point:
-      $('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
+      $('#'+this.point_id).attr('onmouseup','DrawCanvasClosePolygon();');
       $('#'+this.point_id).attr('onmouseover',"$('#'+draw_anno.point_id).attr('r',8,'stroke-width',4);");
       $('#'+this.point_id).attr('onmouseout',"if(draw_anno) {$('#'+draw_anno.point_id).attr('r',6,'stroke-width',3);}");
     };
