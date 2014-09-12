@@ -7,7 +7,7 @@
 
 // This function creates and populates the list 
 function RenderObjectList() {
-  // If object list has been rendered, the remove it:
+  // If object list has been rendered, then remove it:
   if($('#anno_list').length) {
     $('#anno_list').remove();
   }
