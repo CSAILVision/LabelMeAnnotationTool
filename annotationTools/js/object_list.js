@@ -18,7 +18,6 @@ function LoadAnnotationList() {
       NundeletedPolygons++;
     }
   }
-  console.log('undeleted: ',NundeletedPolygons);
   
   // Get parts tree
   var tree = getPartsTree();
