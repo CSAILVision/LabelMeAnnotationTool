@@ -6,7 +6,12 @@
 
 
 // This function creates and populates the list 
-function LoadAnnotationList() {
+function RenderObjectList() {
+  // If object list has been rendered, the remove it:
+  if($('#anno_list').length) {
+    $('#anno_list').remove();
+  }
+
   var html_str = '<div class="object_list" id="anno_list" style="border:0px solid black;z-index:0;" ondrop="drop(event, -1)" ondragenter="return dragEnter(event)" ondragover="return dragOver(event)">';
   
   var Npolygons = $(LM_xml).children("annotation").children("object").length;
@@ -113,7 +118,7 @@ function LoadAnnotationList() {
 }
 
 
-function RemoveAnnotationList() {
+function RemoveObjectList() {
   $('#anno_list').remove();
 }
 
@@ -169,7 +174,6 @@ function drop(event, object_id) {
     addPart(object_id, part_id);
     
     // redraw object list
-    RemoveAnnotationList();
-    LoadAnnotationList();
+    RenderObjectList();
   }
 }

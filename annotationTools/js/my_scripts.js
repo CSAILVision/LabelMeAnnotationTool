@@ -105,7 +105,7 @@ function loadXMLDoc() {
   var p = document.getElementById('main_image');
   p.parentNode.removeChild(p);
 
-  RemoveAnnotationList();
+  RemoveObjectList();
 
   main_image.GetNewImage();
 }
@@ -313,10 +313,7 @@ function DeleteSelectedPolygon() {
   
   // Unselect the object:
   unselectObjects();
-  if(view_ObjList) {
-    RemoveAnnotationList();
-    LoadAnnotationList();
-  }
+  if(view_ObjList) RenderObjectList();
   
   // Delete the polygon from the canvas:
   AllAnnotations[ndx].DeletePolygon();

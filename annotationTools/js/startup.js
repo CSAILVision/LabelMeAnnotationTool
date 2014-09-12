@@ -169,7 +169,7 @@ function LoadTemplateSuccess(xml) {
 // Finish the startup process:
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
-  if(view_ObjList) LoadAnnotationList();
+  if(view_ObjList) RenderObjectList();
 
   // Add actions:
   console.log('LabelMe: setting actions');
