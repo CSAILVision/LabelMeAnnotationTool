@@ -251,10 +251,13 @@ function annotation(anno_id) {
       if(this.point_id) $('#'+this.point_id).remove();
       this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',im_ratio);
 
+      // Set cursor to be pointer when user hovers over point:
+      $('#'+this.point_id).css('cursor','pointer');
 
       // Set actions for first point:
       $('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
-      $('#'+this.point_id).attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
+      $('#'+this.point_id).attr('onmouseover',"$('#'+draw_anno.point_id).attr('r',8,'stroke-width',4);");
+      $('#'+this.point_id).attr('onmouseout',"if(draw_anno) {$('#'+draw_anno.point_id).attr('r',6,'stroke-width',3);}");
     };
     
     // Deletes the annotation's polygon from the screen.
@@ -331,36 +334,6 @@ function annotation(anno_id) {
       }
       /*************************************************************/
       /*************************************************************/
-    };
-    
-    // When you move the mouse over the first control point, then make it
-    // bigger to indicate it should be clicked on.  Do this if two or more
-    // lines have been drawn.
-    this.MouseOverFirstPoint = function () {
-      if(this.pts_x.length > 0) {
-	var im_ratio = main_image.GetImRatio();
-	this.RemoveFirstPoint();
-	this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="8" fill="#00ff00" stroke="#ffffff" stroke-width="4"',im_ratio);
-
-	// Set actions for first point:
-	$('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
-	$('#'+this.point_id).attr('onmouseout','main_handler.MousedOutFirstControlPoint();');
-	$('#'+this.point_id).css('cursor','pointer');
-      }
-    };
-    
-    // When you move the mouse over the first control point, then make it
-    // bigger to indicate it should be clicked on.  Do this if two or more
-    // lines have been drawn.
-    this.MouseOutFirstPoint = function () {
-      var im_ratio = main_image.GetImRatio();
-      this.RemoveFirstPoint();
-      this.point_id = DrawPoint(this.div_attach,this.pts_x[0],this.pts_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',im_ratio);
-
-      // Set actions for first point:
-      $('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
-      $('#'+this.point_id).attr('onmouseover','main_handler.MousedOverFirstControlPoint();');
-      $('#'+this.point_id).css('cursor','pointer');
     };
     
     // Returns the closest point to (x,y) that lies along the boundary of

@@ -83,8 +83,7 @@ function mkPopup(left,top) {
   CreatePopupBubble(left,top,innerHTML,'main_section');
 
   // Focus the cursor inside the box
-  document.getElementById('objEnter').focus();
-  document.getElementById('objEnter').select();
+  $('#objEnter').focus();
 }
 
 function mkEditPopup(left,top,anno) {
@@ -94,20 +93,18 @@ function mkEditPopup(left,top,anno) {
   CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
 
   // Focus the cursor inside the box
-  document.getElementById('objEnter').focus();
-  document.getElementById('objEnter').select();
+  $('#objEnter').select();
+  $('#objEnter').focus();
 }
 
 function CloseQueryPopup() {
   wait_for_input = 0;
-  var p = document.getElementById('myPopup');
-  p.parentNode.removeChild(p);
+  $('#myPopup').remove();
 }
 
 function CloseEditPopup() {
   edit_popup_open = 0;
-  var p = document.getElementById('myPopup');
-  if(p) p.parentNode.removeChild(p);
+  $('#myPopup').remove();
 }
 
 // ****************************

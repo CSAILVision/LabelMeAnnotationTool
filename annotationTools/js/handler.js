@@ -349,17 +349,6 @@ function handler() {
         return draw_anno;
     };
     
-    // Handles when the user mouses over the first control point.
-    this.MousedOverFirstControlPoint = function () {
-        draw_anno.MouseOverFirstPoint();
-    };
-    
-    // Handles when the user mouses away from the first control point.
-    this.MousedOutFirstControlPoint = function () {
-        if(active_canvas!=DRAW_CANVAS) return;
-        draw_anno.MouseOutFirstPoint();
-    };
-    
     // *******************************************
     // Private methods:
     // *******************************************
