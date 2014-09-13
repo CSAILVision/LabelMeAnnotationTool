@@ -61,9 +61,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     // Show center of mass:
     this.ShowCenterOfMass();
     
-    // Set mousedown action to stop adjust event when user clicks on canvas:
+    // Set mouseup action to stop adjust event when user clicks on canvas:
     $('#'+this.dom_attach).unbind();
-    $('#'+this.dom_attach).mousedown({obj: this},function(e) {
+    $('#'+this.dom_attach).mouseup({obj: this},function(e) {
 	return e.data.obj.StopAdjustEvent();
       });
   };
@@ -176,7 +176,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
       // Set action:
       $('#'+this.dom_attach).unbind();
-      $('#'+this.dom_attach).mousedown({obj: this},function(e) {
+      $('#'+this.dom_attach).mouseup({obj: this},function(e) {
 	  return e.data.obj.StopAdjustEvent();
 	});
 
@@ -251,7 +251,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
       // Set action:
       $('#'+this.dom_attach).unbind();
-      $('#'+this.dom_attach).mousedown({obj: this},function(e) {
+      $('#'+this.dom_attach).mouseup({obj: this},function(e) {
 	  return e.data.obj.StopAdjustEvent();
 	});
 
