@@ -55,7 +55,7 @@ function CreatePopupBubbleCloseButton(dom_bubble,close_function) {
   }
   var html_str = '<img id="' + dom_bubble + '_closebutton" style="border: 0pt none; width:14px; height:14px; z-index:4; -moz-user-select:none; position:absolute; cursor:pointer; right:8px; top: 8px;" src="Icons/close.png" height="14" width="14" />';
   $('#'+dom_bubble).append(html_str);
-  $('#'+dom_bubble+'_closebutton').mouseup(function () {
+  $('#'+dom_bubble+'_closebutton').mousedown(function () {
       $('#'+dom_bubble).remove();
       close_function();
       return;

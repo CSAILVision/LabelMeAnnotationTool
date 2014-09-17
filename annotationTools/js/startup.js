@@ -183,7 +183,7 @@ function FinishStartup() {
   $('#fit').attr("onclick","javascript:main_image.Zoom('fitted')");
   $('#erase').attr("onclick","javascript:main_handler.EraseSegment()");
   $('#submitform').attr("action","javascript:loadXMLDoc();");
-  $('#myCanvas_bg_div').attr("onmouseup","javascript:StartDrawEvent(event);return false;");
+  $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
   $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
   $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
   $('#select_canvas_div').attr("oncontextmenu","javascript:return false;");
