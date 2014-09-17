@@ -83,7 +83,7 @@ function mkPopup(left,top) {
   CreatePopupBubble(left,top,innerHTML,'main_section');
 
   // Focus the cursor inside the box
-  $('#objEnter').focus();
+  setTimeout("$('#objEnter').focus();",1);
 }
 
 function mkEditPopup(left,top,anno) {
