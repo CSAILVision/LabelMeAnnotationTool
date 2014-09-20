@@ -143,10 +143,6 @@ function annotation(anno_id) {
         return parseInt($(LM_xml).children("annotation").children("object").eq(this.anno_id).children("verified").text());
     };
     
-    this.GetAttributes = function() {
-        return $(LM_xml).children("annotation").children("object").eq(this.anno_id).children("attributes").text();
-    };
-    
     this.GetParts = function() {
         parts = [];
         if ($(LM_xml).children("annotation").children("object").eq(this.anno_id).children("parts").length>0) {
