@@ -32,6 +32,17 @@ var mt_N = 'inf';
 
 var object_choices = '...';
 
+// Access LabelMe object field.
+// i - object index
+// fieldname - object field name, e.g. "name", "deleted"
+function LMgetObjectField(xml,i,fieldname) {
+  return xml.getElementsByTagName('object')[i].getElementsByTagName(fieldname)[0].innerHTML;
+}
+
+// Returns number of LabelMe objects.
+function LMnumberOfObjects(xml) {
+  return xml.getElementsByTagName('object').length;
+}
 
 // Get the x position of the mouse event.
 function GetEventPosX(event) {

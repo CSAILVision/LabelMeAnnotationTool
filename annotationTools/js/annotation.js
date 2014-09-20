@@ -206,27 +206,29 @@ function annotation(anno_id) {
     
     // Draw a polygon given this annotation's control points.
     this.DrawPolygon = function (im_ratio) {
+      var obj_name = LMgetObjectField(LM_xml,this.anno_id,'name');
+
       // Determine if an angle has been labeled:
-      var strtok = this.GetObjName().split(/ /);
+      var strtok = obj_name.split(/ /);
       var isAngle = 0;
       for(var i = 0; i < strtok.length; i++) if(strtok[i]=='angle') isAngle = 1;
       
       if(this.GetPtsX().length==1) {
-	this.polygon_id = DrawFlag(this.div_attach,this.GetPtsX()[0],this.GetPtsY()[0],this.GetObjName(),im_ratio);
+	this.polygon_id = DrawFlag(this.div_attach,this.GetPtsX()[0],this.GetPtsY()[0],obj_name,im_ratio);
       }
       else if((this.GetPtsX().length==3) && isAngle) {
-	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4"';
-	this.polygon_id = DrawPolyLine(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
+	var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4"';
+	this.polygon_id = DrawPolyLine(this.div_attach,this.GetPtsX(),this.GetPtsY(),obj_name,attr,im_ratio);
       }
       else if(this.GetAutomatic()==1) {
 	// Draw a dashed polygon:
-	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4" stroke-dasharray="9,5"';
-	this.polygon_id = DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
+	var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4" stroke-dasharray="9,5"';
+	this.polygon_id = DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),obj_name,attr,im_ratio);
       }
       else {
 	// Draw a polygon:
-	var attr = 'fill="none" stroke="' + HashObjectColor(this.GetObjName()) + '" stroke-width="4"';
-	this.polygon_id = DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),this.GetObjName(),attr,im_ratio);
+	var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4"';
+	this.polygon_id = DrawPolygon(this.div_attach,this.GetPtsX(),this.GetPtsY(),obj_name,attr,im_ratio);
       }
       return this.polygon_id;
     };
@@ -263,8 +265,8 @@ function annotation(anno_id) {
     // Deletes the annotation's polygon from the screen.
     this.DeletePolygon = function () {
       // Remove drawn polygon:
-      console.log(this.polygon_id);
       if(this.polygon_id) {
+	console.log('deleting polygon: ',this.polygon_id);
 	$('#'+this.polygon_id).remove();
 	this.polygon_id = null;
       }

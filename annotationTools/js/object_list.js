@@ -14,12 +14,12 @@ function RenderObjectList() {
 
   var html_str = '<div class="object_list" id="anno_list" style="border:0px solid black;z-index:0;" ondrop="drop(event, -1)" ondragenter="return dragEnter(event)" ondragover="return dragOver(event)">';
   
-  var Npolygons = $(LM_xml).children("annotation").children("object").length;
+  var Npolygons = LMnumberOfObjects(LM_xml);
   var NundeletedPolygons = 0;
 
   // Count undeleted objects:
   for(var ii=0; ii < Npolygons; ii++) {
-    if(!parseInt($(LM_xml).children("annotation").children("object").eq(ii).children("deleted").text())) {
+    if(!parseInt(LMgetObjectField(LM_xml,ii,'deleted'))) {
       NundeletedPolygons++;
     }
   }
@@ -46,7 +46,7 @@ function RenderObjectList() {
       var level = 0;
     }
     
-    var isDeleted = parseInt($(LM_xml).children("annotation").children("object").eq(ii).children("deleted").text());
+    var isDeleted = parseInt(LMgetObjectField(LM_xml,ii,'deleted'));
     
     if(((ii<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || ((ii>=num_orig_anno)&&(!isDeleted||(isDeleted&&view_Deleted)))) {
       // change the left margin as a function of part level
@@ -91,7 +91,7 @@ function RenderObjectList() {
 	html_str += '>';
       }
       
-      var obj_name = $(LM_xml).children("annotation").children("object").eq(ii).children("name").text();
+      var obj_name = LMgetObjectField(LM_xml,ii,'name');
       if(obj_name.length==0 && !draw_anno) {
 	html_str += '<i>[ Please enter name ]</i>';
       }
@@ -102,7 +102,7 @@ function RenderObjectList() {
       if(isDeleted) html_str += '</b>';
       html_str += '</a>';
 
-      var attributes = $(LM_xml).children("annotation").children("object").eq(ii).children("attributes").text();
+      var attributes = LMgetObjectField(LM_xml,ii,'attributes');
       if(attributes.length>0) {
 	html_str += ' (' + attributes +')';
       }

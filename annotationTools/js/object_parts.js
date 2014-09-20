@@ -239,7 +239,7 @@ function getNonParts() {
 function getParts(object_id){
     var parts = [];
     
-    var tmp = $(LM_xml).children("annotation").children("object").eq(object_id).children("parts").children("hasparts").text();
+    var tmp = LM_xml.getElementsByTagName('object')[object_id].getElementsByTagName('parts')[0].getElementsByTagName('hasparts')[0].innerHTML;
     if (tmp.length>0) {
         // if it is not empty, split and trasnform to numbers
         parts = tmp.split(",");
