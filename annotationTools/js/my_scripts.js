@@ -36,6 +36,7 @@ var object_choices = '...';
 // i - object index
 // fieldname - object field name, e.g. "name", "deleted"
 function LMgetObjectField(xml,i,fieldname) {
+  if(!xml.getElementsByTagName('object')[i]) return "";
   return xml.getElementsByTagName('object')[i].getElementsByTagName(fieldname)[0].innerHTML;
 }
 
