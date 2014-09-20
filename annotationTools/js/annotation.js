@@ -118,10 +118,6 @@ function annotation(anno_id) {
     /*************************************************************/
     /*************************************************************/
 
-    this.GetObjName = function () {
-        return $(LM_xml).children("annotation").children("object").eq(this.anno_id).children("name").text();
-    };
-    
     this.GetUsername = function () {
       /*************************************************************/
       /*************************************************************/

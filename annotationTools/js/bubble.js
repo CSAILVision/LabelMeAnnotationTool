@@ -141,7 +141,7 @@ function GetPopupFormDraw() {
 
 function GetPopupFormEdit(anno) {
   // get object name and attributes from 'anno'
-  var obj_name = anno.GetObjName();
+  var obj_name = LMgetObjectField(LM_xml,anno.anno_id,'name');
   if(obj_name=="") obj_name = "?";
   var attributes = anno.GetAttributes();
   var occluded = anno.GetOccluded();

@@ -18,7 +18,7 @@ function StartEditEvent(anno_id,event) {
   // Turn off automatic flag and write to XML file:
   if(AllAnnotations[anno_id].GetAutomatic()) {
     // Insert data for server logfile:
-    old_name = AllAnnotations[anno_id].GetObjName();
+    old_name = LMgetObjectField(LM_xml,AllAnnotations[anno_id].anno_id,'name');
     new_name = old_name;
     InsertServerLogData('cpts_not_modified');
     
@@ -120,7 +120,7 @@ function AdjustPolygonButton() {
   $('#'+anno.polygon_id).remove();
 
   // Create adjust event:
-  var adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,anno.GetObjName(),function(x,y,_editedControlPoints) {
+  var adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
       // Submit username:
       if(username_flag) submit_username();
 

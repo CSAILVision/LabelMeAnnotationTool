@@ -304,8 +304,8 @@ function DeleteSelectedPolygon() {
   }
   
   submission_edited = 0;
-  old_name = AllAnnotations[selected_poly].GetObjName();
-  new_name = AllAnnotations[selected_poly].GetObjName();
+  old_name = LMgetObjectField(LM_xml,AllAnnotations[selected_poly].anno_id,'name');
+  new_name = old_name;
   
   // Write to logfile:
   WriteLogMsg('*Deleting_object');

@@ -31,7 +31,7 @@ function handler() {
       var anno = select_anno;
       
       // object name
-      old_name = anno.GetObjName();
+      old_name = LMgetObjectField(LM_xml,anno.anno_id,'name');
       if(document.getElementById('objEnter')) new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
       else new_name = RemoveSpecialChars(adjust_objEnter);
       
@@ -108,8 +108,8 @@ function handler() {
         submission_edited = 0;
         
         // Insert data for server logfile:
-        old_name = select_anno.GetObjName();
-        new_name = select_anno.GetObjName();
+        old_name = LMgetObjectField(LM_xml,select_anno.anno_id,'name');
+        new_name = old_name;
         WriteLogMsg('*Deleting_object');
         InsertServerLogData('cpts_not_modified');
         
