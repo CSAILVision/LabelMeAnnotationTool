@@ -169,7 +169,9 @@ function image(id) {
         $("#query_canvas").width(this.width_curr).height(this.height_curr);
         
         // Redraw polygons.
-        main_canvas.RenderAnnotations();
+	if(!IsHidingAllPolygons) {
+	  main_canvas.RenderAnnotations();
+	}
 	if(anno) {
 	  // Draw polyline:
 	  draw_anno = anno;

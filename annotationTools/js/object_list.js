@@ -5,6 +5,8 @@
 // annotationTools/css/object_list.css
 
 
+var IsHidingAllPolygons = false;
+
 // This function creates and populates the list 
 function RenderObjectList() {
   // If object list has been rendered, then remove it:
@@ -31,6 +33,7 @@ function RenderObjectList() {
   html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
 
   // Create "hide all" button:
+  IsHidingAllPolygons = false;
   html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a></p>';
 
   // Add parts-of drag-and-drop functionality:
@@ -143,6 +146,9 @@ function ChangeLinkColorFG(idx) {
 
 function HideAllPolygons() {
   if(!edit_popup_open) {
+    // Set global variable:
+    IsHidingAllPolygons = true;
+    
     // Delete all polygons from the canvas:
     for(var i = 0; i < AllAnnotations.length; i++) {
       AllAnnotations[i].DeletePolygon();
@@ -157,6 +163,9 @@ function HideAllPolygons() {
 }
 
 function ShowAllPolygons() {
+  // Set global variable:
+  IsHidingAllPolygons = false;
+
   // Render the annotations:
   main_canvas.RenderAnnotations();
 
