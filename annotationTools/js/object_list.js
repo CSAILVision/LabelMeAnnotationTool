@@ -29,6 +29,11 @@ function RenderObjectList() {
   
   // Create DIV
   html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
+
+  // Create "hide all" button:
+  html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a></p>';
+
+  // Add parts-of drag-and-drop functionality:
   if(use_parts) {
     html_str += '<p style="font-size:10px;line-height:100%" ondrop="drop(event, -1)" ondragenter="return dragEnter(event)" ondragover="return dragOver(event)">Drag a tag on top of another one to create a part-of relationship.</p>';
   }
@@ -136,6 +141,28 @@ function ChangeLinkColorFG(idx) {
   document.getElementById('Link'+idx).style.color = '#FF0000';
 }
 
+function HideAllPolygons() {
+  if(!edit_popup_open) {
+    // Delete all polygons from the canvas:
+    for(var i = 0; i < AllAnnotations.length; i++) {
+      AllAnnotations[i].DeletePolygon();
+    }
+    
+    // Create "show all" button:
+    $('#hide_all_button').replaceWith('<a id="show_all_button" href="javascript:ShowAllPolygons();">Show all polygons</a>');
+  }
+  else {
+    alert('Close edit popup bubble first');
+  }
+}
+
+function ShowAllPolygons() {
+  // Render the annotations:
+  main_canvas.RenderAnnotations();
+
+  // Create "hide all" button:
+  $('#show_all_button').replaceWith('<a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a>');
+}
 
 // *******************************************
 // Private functions:
