@@ -136,12 +136,22 @@ function ChangeLinkColorBG(idx) {
     var isDeleted = parseInt($(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text());
     if(isDeleted) document.getElementById('Link'+idx).style.color = '#888888';
     else document.getElementById('Link'+idx).style.color = '#0000FF';
+
+    // If we're hiding all polygons, then remove rendered polygon from canvas:
+    if(IsHidingAllPolygons) {
+      AllAnnotations[idx].DeletePolygon();
+    }
   }
 }
 
 
 function ChangeLinkColorFG(idx) {
   document.getElementById('Link'+idx).style.color = '#FF0000';
+
+  // If we're hiding all polygons, then render polygon on canvas:
+  if(IsHidingAllPolygons) {
+    AllAnnotations[idx].DrawPolygon(main_image.GetImRatio());
+  }
 }
 
 function HideAllPolygons() {
