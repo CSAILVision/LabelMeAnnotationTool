@@ -73,6 +73,7 @@ function StartEditEvent(anno_id,event) {
 // (4) presses the delete button in the popup bubble, (5) clicks the 
 // object in the object list, (6) presses the ESC key.
 function StopEditEvent() {
+  // Update the global variables for the active canvas and edit popup bubble:
   active_canvas = REST_CANVAS;
   edit_popup_open = 0;
   
@@ -80,19 +81,34 @@ function StopEditEvent() {
   $('#select_canvas').css('z-index','-2');
   $('#select_canvas_div').css('z-index','-2');
   
-  // Remove polygon from the query canvas:
+  // Remove polygon from the select canvas:
   select_anno.DeletePolygon();
   var anno = select_anno;
   select_anno = null;
-  
+
+  // Write logfile message:
   WriteLogMsg('*Closed_Edit_Popup');
+
+  // Close the edit popup bubble:
   CloseEditPopup();
+
+  // Turn on the image scrollbars:
   main_image.ScrollbarsOn();
-  
+
+  // If the annotation is not deleted or we are in "view deleted" mode, 
+  // then attach the annotation to the main_canvas:
   if(!anno.GetDeleted()||view_Deleted) {
     main_canvas.AttachAnnotation(anno);
-    main_canvas.RenderAnnotations();
   }
+
+  // Render all the annotations:
+  main_canvas.RenderAnnotations();
+
+  // Render the object list:
+  if(view_ObjList) {
+    RenderObjectList();
+  }
+
   console.log('LabelMe: Stopped edit event.');
 }
 
