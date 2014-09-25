@@ -44,6 +44,13 @@ function canvas(div_attach) {
     return anno;
   };
 
+  // Unhide all annotations:
+  this.UnhideAllAnnotations = function () {
+    for(var pp=0; pp < this.annotations.length; pp++) {
+      this.annotations[pp].hidden = false;
+    }
+  };
+
   // Render all attached annotations:
   this.RenderAnnotations = function () {
     // Loop through all of the annotations and clear them from the canvas.
@@ -53,7 +60,9 @@ function canvas(div_attach) {
 
     // Render the annotations:
     for(var pp=0; pp < this.annotations.length; pp++) {
-      this.annotations[pp].RenderAnnotation('rest');
+      if(!this.annotations[pp].hidden) {
+	this.annotations[pp].RenderAnnotation('rest');
+      }
     }
   };
   

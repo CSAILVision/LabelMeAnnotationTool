@@ -45,7 +45,7 @@ function DrawPolygon(element_id,X,Y,obj_name,attr,scale) {
   for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
   
   // Get drawn object DOM element id:
-  var dom_id = element_id + '_obj' + $('#'+element_id).children().length;
+  var dom_id = element_id + '_obj' + $('#'+element_id).children().length + '_' + Math.floor(Math.random()*100000);
 
   // Draw polygon:
   $('#'+element_id).append('<a xmlns="http://www.w3.org/2000/svg"><polygon xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" points="' + poly_points + '" ' + attr + ' /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');

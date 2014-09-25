@@ -8,7 +8,10 @@
 var IsHidingAllPolygons = false;
 
 // This function creates and populates the list 
-function RenderObjectList() {
+function RenderObjectList(keep_hidden) {
+  // Default value of keep_hidden is false:
+  keep_hidden = typeof keep_hidden !== 'undefined' ? keep_hidden : false;
+
   // If object list has been rendered, then remove it:
   if($('#anno_list').length) {
     $('#anno_list').remove();
@@ -33,8 +36,13 @@ function RenderObjectList() {
   html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
 
   // Create "hide all" button:
-  IsHidingAllPolygons = false;
-  html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a></p>';
+  if(IsHidingAllPolygons && keep_hidden) {
+    html_str += '<p style="font-size:10px;line-height:100%"><a id="show_all_button" href="javascript:ShowAllPolygons();">Show all polygons</a></p>';
+  }
+  else {
+    IsHidingAllPolygons = false;
+    html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a></p>';
+  }
 
   // Add parts-of drag-and-drop functionality:
   if(use_parts) {
@@ -98,7 +106,7 @@ function RenderObjectList() {
       else {
 	html_str += '>';
       }
-      
+
       var obj_name = LMgetObjectField(LM_xml,ii,'name');
       if(obj_name.length==0 && !draw_anno) {
 	html_str += '<i>[ Please enter name ]</i>';
@@ -138,7 +146,7 @@ function ChangeLinkColorBG(idx) {
     else document.getElementById('Link'+idx).style.color = '#0000FF';
 
     // If we're hiding all polygons, then remove rendered polygon from canvas:
-    if(IsHidingAllPolygons) {
+    if(IsHidingAllPolygons && AllAnnotations[idx].hidden) {
       AllAnnotations[idx].DeletePolygon();
     }
   }
@@ -149,7 +157,7 @@ function ChangeLinkColorFG(idx) {
   document.getElementById('Link'+idx).style.color = '#FF0000';
 
   // If we're hiding all polygons, then render polygon on canvas:
-  if(IsHidingAllPolygons) {
+  if(IsHidingAllPolygons && AllAnnotations[idx].hidden) {
     AllAnnotations[idx].DrawPolygon(main_image.GetImRatio());
   }
 }
@@ -162,6 +170,7 @@ function HideAllPolygons() {
     // Delete all polygons from the canvas:
     for(var i = 0; i < AllAnnotations.length; i++) {
       AllAnnotations[i].DeletePolygon();
+      AllAnnotations[i].hidden = true;
     }
     
     // Create "show all" button:
@@ -177,6 +186,7 @@ function ShowAllPolygons() {
   IsHidingAllPolygons = false;
 
   // Render the annotations:
+  main_canvas.UnhideAllAnnotations();
   main_canvas.RenderAnnotations();
 
   // Create "hide all" button:
@@ -220,6 +230,6 @@ function drop(event, object_id) {
     addPart(object_id, part_id);
     
     // redraw object list
-    RenderObjectList();
+    RenderObjectList(true);
   }
 }

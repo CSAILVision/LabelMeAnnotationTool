@@ -99,14 +99,12 @@ function StopEditEvent() {
   // then attach the annotation to the main_canvas:
   if(!anno.GetDeleted()||view_Deleted) {
     main_canvas.AttachAnnotation(anno);
+    anno.RenderAnnotation('rest');
   }
-
-  // Render all the annotations:
-  main_canvas.RenderAnnotations();
 
   // Render the object list:
   if(view_ObjList) {
-    RenderObjectList();
+    RenderObjectList(true);
   }
 
   console.log('LabelMe: Stopped edit event.');
