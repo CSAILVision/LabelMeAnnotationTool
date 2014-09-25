@@ -130,7 +130,7 @@ function image(id) {
     // Zoom the image given a zoom level (amt) between 0 and inf (or 'fitted').
     this.Zoom = function(amt) {
         // if a new polygon is being added while the user press the zoom button then do nothing.
-        if(wait_for_input) return;// WaitForInput();
+        if(wait_for_input) return;
         
         // if an old polygon is being edited while the user press the zoom button then close the polygon and zoom.
         if(edit_popup_open) StopEditEvent();
@@ -169,9 +169,8 @@ function image(id) {
         $("#query_canvas").width(this.width_curr).height(this.height_curr);
         
         // Redraw polygons.
-	// if(!IsHidingAllPolygons) {
-	  main_canvas.RenderAnnotations();
-	// }
+	main_canvas.RenderAnnotations();
+
 	if(anno) {
 	  // Draw polyline:
 	  draw_anno = anno;
