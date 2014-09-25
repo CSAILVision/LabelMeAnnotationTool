@@ -191,7 +191,26 @@ function annotation(anno_id) {
     this.SetCSS = function(field,value) {
       $('#'+this.polygon_id).css(field,value);
     };
-    
+
+    // Render the annotation (shape + action) given the action_type (e.g. rest).
+    this.RenderAnnotation = function (action_type) {
+      // Render the shape:
+      this.DrawPolygon(main_image.GetImRatio());
+
+      // Set shape actions:
+      switch(action_type) {
+      case 'rest':
+	this.SetAttribute('onmousedown','StartEditEvent(' + this.anno_id + ',evt); return false;');
+	this.SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ this.anno_id +'); return false;');
+	this.SetAttribute('oncontextmenu','return false');
+	this.SetCSS('cursor','pointer');
+	break;
+      default:
+	alert('Unknown action_type');
+      }
+    };
+
+    // TO DO: Eventually rename this as "RenderShape()"
     // Draw a polygon given this annotation's control points.
     this.DrawPolygon = function (im_ratio) {
       var obj_name = LMgetObjectField(LM_xml,this.anno_id,'name');

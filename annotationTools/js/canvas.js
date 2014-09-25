@@ -51,16 +51,9 @@ function canvas(div_attach) {
       this.annotations[i].DeletePolygon();
     }
 
+    // Render the annotations:
     for(var pp=0; pp < this.annotations.length; pp++) {
-      // Render the annotation:
-      var anno_id = this.annotations[pp].GetAnnoID();
-      this.annotations[pp].DrawPolygon(main_image.GetImRatio());
-      
-      // Set polygon actions:
-      this.annotations[pp].SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
-      this.annotations[pp].SetAttribute('onmousemove','main_handler.CanvasMouseMove(evt,'+ anno_id +'); return false;');
-      this.annotations[pp].SetAttribute('oncontextmenu','return false');
-      this.annotations[pp].SetCSS('cursor','pointer');
+      this.annotations[pp].RenderAnnotation('rest');
     }
   };
   
