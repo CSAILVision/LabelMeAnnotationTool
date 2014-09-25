@@ -12,6 +12,14 @@ function StartDrawEvent(event) {
   // Write message to the console:
   console.log('LabelMe: Starting draw event...');
 
+  // If we are hiding all polygons, then clear the main canvas:
+  if(IsHidingAllPolygons) {
+    for(var i = 0; i < main_canvas.annotations.length; i++) {
+      main_canvas.annotations[i].hidden = true;
+      main_canvas.annotations[i].DeletePolygon();
+    }
+  }
+
   // Set active canvas:
   active_canvas = DRAW_CANVAS;
 

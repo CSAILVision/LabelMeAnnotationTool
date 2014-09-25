@@ -86,7 +86,7 @@ function handler() {
       
       // Refresh object list:
       if(view_ObjList) {
-	RenderObjectList(true);
+	RenderObjectList();
 	ChangeLinkColorFG(anno.GetAnnoID());
       }
     };
@@ -290,7 +290,7 @@ function handler() {
       // Write XML to server:
       WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
       
-      if(view_ObjList) RenderObjectList(true);
+      if(view_ObjList) RenderObjectList();
       
       var m = main_image.GetFileInfo().GetMode();
       if(m=='mt') {

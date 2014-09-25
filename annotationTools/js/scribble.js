@@ -747,6 +747,14 @@ this.HTMLobjectBox = function(obj_name) {
       }
       $('#scribble_canvas').mousedown(function(e){
         if (e.button > 1) return;
+	// If we are hiding all polygons, then clear the main canvas:
+	if(IsHidingAllPolygons) {
+	  for(var i = 0; i < main_canvas.annotations.length; i++) {
+	    main_canvas.annotations[i].hidden = true;
+	    main_canvas.annotations[i].DeletePolygon();
+	  }
+	}
+
         var mouseX = GetEventPosX(e.originalEvent);
         var mouseY = GetEventPosY(e.originalEvent);      
         this.paint = true;

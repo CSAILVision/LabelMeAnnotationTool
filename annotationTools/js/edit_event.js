@@ -104,7 +104,7 @@ function StopEditEvent() {
 
   // Render the object list:
   if(view_ObjList) {
-    RenderObjectList(true);
+    RenderObjectList();
   }
 
   console.log('LabelMe: Stopped edit event.');

@@ -8,10 +8,7 @@
 var IsHidingAllPolygons = false;
 
 // This function creates and populates the list 
-function RenderObjectList(keep_hidden) {
-  // Default value of keep_hidden is false:
-  keep_hidden = typeof keep_hidden !== 'undefined' ? keep_hidden : false;
-
+function RenderObjectList() {
   // If object list has been rendered, then remove it:
   if($('#anno_list').length) {
     $('#anno_list').remove();
@@ -36,7 +33,7 @@ function RenderObjectList(keep_hidden) {
   html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
 
   // Create "hide all" button:
-  if(IsHidingAllPolygons && keep_hidden) {
+  if(IsHidingAllPolygons) {
     html_str += '<p style="font-size:10px;line-height:100%"><a id="show_all_button" href="javascript:ShowAllPolygons();">Show all polygons</a></p>';
   }
   else {
@@ -230,6 +227,6 @@ function drop(event, object_id) {
     addPart(object_id, part_id);
     
     // redraw object list
-    RenderObjectList(true);
+    RenderObjectList();
   }
 }
