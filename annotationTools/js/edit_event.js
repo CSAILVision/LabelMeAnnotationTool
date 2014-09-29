@@ -135,6 +135,9 @@ function AdjustPolygonButton() {
   // Remove polygon from canvas:
   $('#'+anno.polygon_id).remove();
 
+  // Set to polygon drawing mode:
+  SetDrawingMode(0);
+
   // Create adjust event:
   var adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
       // Submit username:
