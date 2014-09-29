@@ -97,9 +97,11 @@ function StopEditEvent() {
 
   // If the annotation is not deleted or we are in "view deleted" mode, 
   // then attach the annotation to the main_canvas:
-  if(!anno.GetDeleted()||view_Deleted) {
+  if(!anno.GetDeleted() || view_Deleted) {
     main_canvas.AttachAnnotation(anno);
-    anno.RenderAnnotation('rest');
+    if(!anno.hidden) {
+      anno.RenderAnnotation('rest');
+    }
   }
 
   // Render the object list:

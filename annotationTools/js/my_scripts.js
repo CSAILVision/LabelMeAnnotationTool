@@ -269,6 +269,9 @@ function selectObject(idx) {
   // Select object parts:
   var selected_poly_parts = getPartChildrens(idx);
   for (var i=0; i<selected_poly_parts.length; i++) {
+    if((selected_poly_parts[i]!=selected_poly) && AllAnnotations[selected_poly_parts[i]].hidden) {
+      AllAnnotations[selected_poly_parts[i]].DrawPolygon(main_image.GetImRatio());
+    }
     AllAnnotations[selected_poly_parts[i]].FillPolygon();
   }
 }
@@ -282,6 +285,9 @@ function unselectObjects() {
   // Unselect object parts:
   var selected_poly_parts = getPartChildrens(selected_poly);
   for (var i=0; i<selected_poly_parts.length; i++) {
+    if((selected_poly_parts[i]!=selected_poly) && AllAnnotations[selected_poly_parts[i]].hidden) {
+      AllAnnotations[selected_poly_parts[i]].DeletePolygon();
+    }
     AllAnnotations[selected_poly_parts[i]].UnfillPolygon();
   }
   
