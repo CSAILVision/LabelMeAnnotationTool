@@ -3,7 +3,9 @@
 var LM_xml;
 var oVP;
 var fname_video = "video/MVI_2155.jsvid";
-var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "video/MVI_2155/";
+var fname_folder_root = "/var/www/LabelMeVideo/VLMFrames/"
+var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "unusual_clips/backing/";
+fname_folder = fname_folder_root + fname_folder;
 console.log(location.search.split('source=')[1]);
 var XHR = function(strURL, fncCallback, fncError) {
   var oHTTP = null;

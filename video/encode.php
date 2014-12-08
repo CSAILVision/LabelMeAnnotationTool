@@ -17,7 +17,7 @@ $outputfile = fopen('/var/www/developers/xavierpuigf/VideoTests/VideoPlayer/vide
 $width = intval($_POST['width']);
 $height = intval($_POST['height']);
 $framerate = floatval($_POST['rate']);
-$inpath = "./" . $_POST['input'];
+$inpath = $_POST['input'];
 $initframe = intval($_POST['frame']);
 $duration = floatval($_POST['duration']);
 
