@@ -2,7 +2,7 @@
 
 var LM_xml;
 var oVP;
-var fname_video = "video/MVI_2155.jsvid";
+var fname_video = "chunk.jsvid";
 var fname_folder_root = "/var/www/LabelMeVideo/VLMFrames/"
 var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "unusual_clips/backing/";
 fname_folder = fname_folder_root + fname_folder;
@@ -407,7 +407,7 @@ this.loadFile = function(strURL, frame, first_time, isbackground) {
            async: true,
            type: "POST", 
            url: "./encode.php",
-           data: {width: "640", height: "480", rate:"15", input: fname_folder, frame: frame.toString(), duration: duration},
+           data: {width: "640", height: "480", rate:"15", input: fname_folder, output: "./"+fname_video,frame: frame.toString(), duration: duration},
            success: function(response){
             last_frame = Math.min(frame + duration*15, ovP.getnumFrames());
             ovP.loadFile(strURL, frame, first_time, isbackground)

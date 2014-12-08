@@ -12,16 +12,17 @@ $duration = floatval($argv[6]);
 //"/var/www/developers/xavierpuigf/xpf/LabelMe3.0/"
 
 
-$outputfile = fopen('/var/www/developers/xavierpuigf/VideoTests/VideoPlayer/video/MVI_2155.jsvid', 'w+');
 
+$outputurl = $_POST['output'];
+$outputfile = fopen($outputurl, 'w+');
 $width = intval($_POST['width']);
 $height = intval($_POST['height']);
 $framerate = floatval($_POST['rate']);
 $inpath = $_POST['input'];
 $initframe = intval($_POST['frame']);
 $duration = floatval($_POST['duration']);
-
-
+$outputurl = $_POST['output'];
+$outputfile = fopen($outputurl, 'w+');
 if ($width < 1 || $height < 1) {
   die("Usage: php makevideo.php <width> <height> <framerate> [<input path>]\r\n");
 }
