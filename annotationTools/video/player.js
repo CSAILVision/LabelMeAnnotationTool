@@ -2,43 +2,11 @@
 
 var LM_xml;
 var oVP;
-var fname_video = "chunk.jsvid";
 var fname_folder_root = "/var/www/LabelMeVideo/VLMFrames/"
 var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "unusual_clips/backing/";
 fname_folder = fname_folder_root + fname_folder;
 console.log(location.search.split('source=')[1]);
-var XHR = function(strURL, fncCallback, fncError) {
-  var oHTTP = null;
-  if (window.XMLHttpRequest) {
-    oHTTP = new XMLHttpRequest();
-  }
-  else if (window.ActiveXObject) {
-    oHTTP = new ActiveXObject("Microsoft.XMLHTTP");
-  }
-  if (oHTTP) {
-    if (fncCallback) {
-      if (typeof(oHTTP.onload) != "undefined")
-    	oHTTP.onload = function() {
-    	  fncCallback(this);
-    	  oHTTP = null;
-      };
-      else {
-      	oHTTP.onreadystatechange = function() {
-      	  if (oHTTP.readyState == 4) {
-      	    fncCallback(this);
-      	    oHTTP = null;
-      	  }
-      	};
-      }
-    }
-    oHTTP.open("GET", strURL, true);
-    oHTTP.setRequestHeader("If-Modified-Since", "Sat, 1 Jan 2000 00:00:00 GMT");
-    oHTTP.send(null);
-  }
-  else {
-    if (fncError) fncError();
-  }
-}
+
 
 
 function JSVideo() {
@@ -87,15 +55,15 @@ function JSVideo() {
   this.getcurrentFrame = function (){
     return iFrameCtr;
   }
-this.loadFile = function(strURL, frame, first_time, isbackground) {
+this.loadFile = function(frame, first_time, isbackground, response) {
 
 
     if (first_time || frame == iFrameCtr) $('#oLoading').css('display',"block");
     
-    var fncLoad = function(oHTTP) {
+    var fncLoad = function() {
       try {
         console.timeEnd('Load video');
-        oVideoData = eval("(" + oHTTP.responseText + ")");
+        oVideoData = eval("(" + response + ")");
         
         if (first_time){ 
           oVP.imageWidth = oVideoData.width;
@@ -116,7 +84,8 @@ this.loadFile = function(strURL, frame, first_time, isbackground) {
     var fncError = function() {
       console.log("Error loading video file");
     }
-    XHR(strURL, fncLoad, fncError);
+    if (response) fncLoad();
+    else fncError();
   }
 
 
@@ -222,7 +191,7 @@ this.loadFile = function(strURL, frame, first_time, isbackground) {
 
     if (aFrameImages[i] == null){
       this.Pause();
-      ovP.loadChunk(fname_video, i, 2, false, false);
+      ovP.loadChunk(i, 2, false, false);
       return;
     }
     if($('#myframe').length) {
@@ -399,18 +368,18 @@ this.loadFile = function(strURL, frame, first_time, isbackground) {
   }
   this.seekChunkToDownload = function (frame){
     while (aFrameImages[frame] != null) frame++;
-    if (frame < oVideoData.frames) this.loadChunk(fname_video, frame, 1, false, true);
+    if (frame < oVideoData.frames) this.loadChunk(frame, 1, false, true);
   }
-  this.loadChunk = function(strURL, frame, duration, first_time, isbackground){
+  this.loadChunk = function(frame, duration, first_time, isbackground){
     ovP = this;
     $.ajax({
            async: true,
            type: "POST", 
            url: "./encode.php",
-           data: {width: "640", height: "480", rate:"15", input: fname_folder, output: "./"+fname_video,frame: frame.toString(), duration: duration},
+           data: {width: "640", height: "480", rate:"15", input: fname_folder,frame: frame.toString(), duration: duration},
            success: function(response){
             last_frame = Math.min(frame + duration*15, ovP.getnumFrames());
-            ovP.loadFile(strURL, frame, first_time, isbackground)
+            ovP.loadFile(frame, first_time, isbackground, response)
             if (ovP.getnumFrames() != 0 && ovP.getcurrentFrame() <= last_frame) ovP.UpdateLoadbar(last_frame/ovP.getnumFrames());
 
           }
@@ -423,5 +392,5 @@ $(document).ready(function() {
   console.time('Load LabelMe XML file');
 	oVP = new JSVideo();
 	console.time('Load video');
-  oVP.loadChunk(fname_video, 1, 1, true, false);
+  oVP.loadChunk(1, 1, true, false);
 });
