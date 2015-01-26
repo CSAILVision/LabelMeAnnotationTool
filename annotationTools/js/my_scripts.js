@@ -106,6 +106,7 @@ function WriteLogMsg(msg) {
   }
 }
 
+// This function gets called when the user clicks on the "Next image" button.
 function ShowNextImage() {
   if(wait_for_input) return WaitForInput();
   if(draw_anno) {
@@ -113,13 +114,14 @@ function ShowNextImage() {
     return;
   }
 
-  // Get a new image:
-  var p = document.getElementById('main_image');
-  p.parentNode.removeChild(p);
+  // Remove the image:
+  $('#main_image').remove();
 
+  // Remove the object list:
   RemoveObjectList();
 
-  main_image.GetNewImage();
+  // Get a new image and reset URL to reflect new image:
+  main_image.GetFileInfo().SetURL(document.URL);
 }
 
 function XMLGet(fname) {
