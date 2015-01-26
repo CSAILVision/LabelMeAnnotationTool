@@ -2,6 +2,8 @@
 
 // Main entry point for the annotation tool.
 function StartupLabelMe() {
+  console.time('startup');
+
   // Check browser:
   GetBrowserInfo();
   if(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome()) {
@@ -13,7 +15,7 @@ function StartupLabelMe() {
     main_handler = new handler();
     main_canvas = new canvas('myCanvas_bg');
     main_image = new image('im');
-    
+
     // This function gets run after image is loaded:
     function main_image_onload_helper() {
       // Set the image dimensions:
@@ -37,6 +39,8 @@ function StartupLabelMe() {
 
 // This function gets called if the annotation has been successfully loaded.
 function LoadAnnotationSuccess(xml) {
+  console.time('load success');
+
   // Set global variable:
   LM_xml = xml;
 
@@ -46,6 +50,7 @@ function LoadAnnotationSuccess(xml) {
   AllAnnotations = Array(num_obj);
   num_orig_anno = num_obj;
 
+  console.time('initialize XML');
   // Initialize any empty tags in the XML file:
   for(var pp = 0; pp < num_obj; pp++) {
     var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
@@ -71,10 +76,14 @@ function LoadAnnotationSuccess(xml) {
     /*************************************************************/
     /*************************************************************/
   }
-    
+  console.timeEnd('initialize XML');
+
+  console.time('addPartFields()');
   // Add part fields (this calls a funcion inside object_parts.js)
   addPartFields(); // makes sure all the annotations have all the fields.
-  
+  console.timeEnd('addPartFields()');
+
+  console.time('loop annotated');
   // Loop over annotated objects
   for(var pp = 0; pp < num_obj; pp++) {
     AllAnnotations[pp] = new annotation(pp);
@@ -114,7 +123,9 @@ function LoadAnnotationSuccess(xml) {
     /*************************************************************/
 
   }
+  console.timeEnd('loop annotated');
 
+  console.time('attach main_canvas');
   // Attach valid annotations to the main_canvas:
   for(var pp = 0; pp < num_obj; pp++) {
     var isDeleted = AllAnnotations[pp].GetDeleted();
@@ -123,9 +134,14 @@ function LoadAnnotationSuccess(xml) {
       main_canvas.AttachAnnotation(AllAnnotations[pp]);
     }
   }
+  console.timeEnd('attach main_canvas');
 
+  console.time('RenderAnnotations()');
   // Render the annotations:
   main_canvas.RenderAnnotations();
+  console.timeEnd('RenderAnnotations()');
+
+  console.timeEnd('load success');
 
   // Finish the startup scripts:
   FinishStartup();
@@ -182,7 +198,6 @@ function FinishStartup() {
   $('#zoomout').attr("onclick","javascript:main_image.Zoom(1.0/1.15)");
   $('#fit').attr("onclick","javascript:main_image.Zoom('fitted')");
   $('#erase').attr("onclick","javascript:main_handler.EraseSegment()");
-  $('#submitform').attr("action","javascript:loadXMLDoc();");
   $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
   $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
   $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
@@ -206,4 +221,6 @@ function FinishStartup() {
   // Write "finished" messages:
   WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
   console.log('LabelMe: finished loading');
+
+  console.timeEnd('startup');
 }

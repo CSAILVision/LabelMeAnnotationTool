@@ -106,7 +106,7 @@ function WriteLogMsg(msg) {
   }
 }
 
-function loadXMLDoc() {
+function ShowNextImage() {
   if(wait_for_input) return WaitForInput();
   if(draw_anno) {
     alert("Need to close current polygon first.");
@@ -120,11 +120,6 @@ function loadXMLDoc() {
   RemoveObjectList();
 
   main_image.GetNewImage();
-}
-
-function ShowNextImage() {
-  var s = document.getElementById("submitform");
-  if(s!=null) s.submit();
 }
 
 function XMLGet(fname) {
