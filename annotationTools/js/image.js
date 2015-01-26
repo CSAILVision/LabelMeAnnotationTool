@@ -4,11 +4,6 @@
 // Fetches and manipulates the main image that will be annotated.
 // From the HTML code, create a <img src...> tag with an id and pass
 // this id in as the argument when creating the class.
-//
-// Created: 04/12/2006
-// Updated: 04/12/2006
-// Updated: 06/13/2006 zoom added
-// Updated: 07/04/2013 Antonio: fixed the zoom bug
 
 function image(id) {
     
@@ -40,7 +35,6 @@ function image(id) {
         document.getElementById('loading').style.display = '';
         if(IsMicrosoft()) this.im.style.visibility = 'hidden';
         else this.im.style.display = 'none';
-        if(!this.file_info.ParseURL()) return;
         this.im.src = this.file_info.GetImagePath();
         this.im.onload = onload_helper;
         wait_for_input = 0;

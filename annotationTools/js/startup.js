@@ -16,19 +16,30 @@ function StartupLabelMe() {
     main_canvas = new canvas('myCanvas_bg');
     main_image = new image('im');
 
-    // This function gets run after image is loaded:
-    function main_image_onload_helper() {
-      // Set the image dimensions:
-      main_image.SetImageDimensions();
+    // Parse the input URL.  Returns false if the URL does not set the 
+    // annotation folder or image filename.  If false is returned, the 
+    // function fetches a new image and sets the URL to reflect the 
+    // fetched image.
+    if(!main_image.GetFileInfo().ParseURL()) return;
+
+    if(video_mode) {
+      console.log("Video mode...");
+    }
+    else {
+      // This function gets run after image is loaded:
+      function main_image_onload_helper() {
+	// Set the image dimensions:
+	main_image.SetImageDimensions();
       
-      // Read the XML annotation file:
-      var anno_file = main_image.GetFileInfo().GetFullName();
-      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
-      ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
-    };
-    
-    // Get the image:
-    main_image.GetNewImage(main_image_onload_helper);
+	// Read the XML annotation file:
+	var anno_file = main_image.GetFileInfo().GetFullName();
+	anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+	ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+      };
+
+      // Get the image:
+      main_image.GetNewImage(main_image_onload_helper);
+    }
   }
   else {
     // Invalid browser, so display error page.
