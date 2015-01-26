@@ -541,7 +541,7 @@ function scribble_canvas(tag) {
         dir: dir,
         bwidth: main_image.width_orig,
         bheight: main_image.height_orig,
-     `}
+      }
     }).done(function(data_response) {
       var imagetoSegmentURL = main_image.GetFileInfo().GetFullName();
       imagetoSegmentURL = imagetoSegmentURL.replace("///","/");
