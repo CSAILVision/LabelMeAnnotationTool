@@ -1,6 +1,3 @@
-// Created: 04/13/2006
-// Updated: 04/13/2006
-
 // file_info class
 // Keeps track of the information for the currently displayed image
 // and fetches the information via dirlists or from the URL.
@@ -13,8 +10,6 @@ function file_info() {
     this.page_in_use = 0; // Describes if we already see an image.
     this.dir_name = null;
     this.im_name = null;
-    //added mov_name to support video mode 12.12.06 jmejia
-    this.mov_name = null;
     this.collection = 'LabelMe';
     this.mode = 'i'; //initialize to picture mode
     this.hitId = null;
@@ -44,9 +39,6 @@ function file_info() {
                 else par_tag = par_str.substring(0,idx);
                 var par_field = this.GetURLField(par_tag);
                 var par_value = this.GetURLValue(par_tag);
-                if(par_field=='movie'){
-                    this.mov_name = par_value;
-                }
                 if(par_field=='mode'){
                     this.mode = par_value;
                     if(this.mode=='im' || this.mode=='mt') view_ObjList = false;
@@ -154,6 +146,9 @@ function file_info() {
                 if((par_field=='scribble')&&(par_value=='true')) {
 		  scribble_mode = true;
 		}
+                if((par_field=='video')&&(par_value=='true')) {
+		  video_mode = true;
+		}
                 par_str = par_str.substring(idx+1,par_str.length);
             } while(idx != -1);
             if((!this.dir_name) || (!this.im_name)) return this.SetURL(labelme_url);
@@ -163,16 +158,12 @@ function file_info() {
                 view_ObjList = default_view_ObjList;
             }
             
-            if((this.mode=='i') || (this.mode=='v') || (this.mode=='c') || (this.mode=='f')) {
+            if((this.mode=='i') || (this.mode=='c') || (this.mode=='f')) {
                 document.getElementById('body').style.visibility = 'visible';
             }
             else if((this.mode=='im') || (this.mode=='mt')) {
                 var p = document.getElementById('header');
                 p.parentNode.removeChild(p);
-                //var p = document.getElementById('username_main_div');
-                //p.parentNode.removeChild(p);
-                //var p = document.getElementById('counter_div');
-                //p.parentNode.removeChild(p);
                 var p = document.getElementById('tool_buttons');
                 p.parentNode.removeChild(p);
                 document.getElementById('body').style.visibility = 'visible';
@@ -213,11 +204,9 @@ function file_info() {
             return this.SetURL(labelme_url);
         }
         
-        
         return 1;
     };
     
-    //get video or picture mode 12.12.06 jmejia
     this.GetMode = function() {
         return this.mode;
     };
@@ -238,25 +227,16 @@ function file_info() {
         this.im_name = newImName;
     };
     
-    //get the movie name 12.12.06 jmejia
-    this.GetMovName = function () {
-        return this.mov_name;
-    };
-    
-    //change to support video mode
     this.GetImagePath = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'Images/' + this.dir_name + '/' + this.im_name;
-        if(this.mode == 'v') return 'Video/Frames/' + this.dir_name + '/' + this.mov_name + '/' + this.im_name;
     };
     
     this.GetAnnotationPath = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'Annotations/' + this.dir_name + '/' + this.im_name.substr(0,this.im_name.length-4) + '.xml';
-        if(this.mode =='v') return 'Video/Annotations/' + this.dir_name + '/' + this.mov_name + '.xml';
     };
     
     this.GetFullName = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return this.dir_name + '/' + this.im_name;
-        if(this.mode == 'v') return this.dir_name + '/' + this.mov_name;
     };
     
     this.GetTemplatePath = function () {
@@ -286,11 +266,10 @@ function file_info() {
     // name information.  Returns false.
     this.SetURL = function (url) {
         this.FetchImage();
-        
+
+	// Get base LabelMe URL:
         var idx = url.indexOf('?');
-        var tail = '';
         if(idx != -1) {
-            tail = url.substring(idx+1,url.length);
             url = url.substring(0,idx);
         }
         

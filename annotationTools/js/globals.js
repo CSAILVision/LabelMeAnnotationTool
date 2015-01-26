@@ -48,3 +48,5 @@ var xhtmlNS = 'http://www.w3.org/1999/xhtml';
 var ref;
 
 var scribble_mode = true;
+
+var video_mode = false;
