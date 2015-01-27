@@ -15,7 +15,6 @@ function StartupLabelMe() {
     main_handler = new handler();
     main_canvas = new canvas('myCanvas_bg');
     main_image = new image('im');
-
     // Parse the input URL.  Returns false if the URL does not set the 
     // annotation folder or image filename.  If false is returned, the 
     // function fetches a new image and sets the URL to reflect the 
@@ -23,7 +22,13 @@ function StartupLabelMe() {
     if(!main_image.GetFileInfo().ParseURL()) return;
 
     if(video_mode) {
+      main_image = new video('videoplayer');
+    
       console.log("Video mode...");
+      var anno_file = main_image.GetFileInfo().GetFullName();
+      main_image.GetNewVideo();
+      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+      ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
     }
     else {
       // This function gets run after image is loaded:

@@ -4,6 +4,9 @@ var LM_xml;
 var oVP;
 var fname_folder_root = "/var/www/LabelMeVideo/VLMFrames/"
 var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "unusual_clips/backing/";
+
+//var fname_folder_root = "/var/www/developers/xavierpuigf/LabelMeAnnotationTool/Videos"
+//var fname_folder = main_image.GetFileInfo().GetImagePath();
 fname_folder = fname_folder_root + fname_folder;
 console.log(location.search.split('source=')[1]);
 
@@ -64,7 +67,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       try {
         console.timeEnd('Load video');
         oVideoData = eval("(" + response + ")");
-        
+        console.log(oVideoData);
         if (first_time){ 
           oVP.imageWidth = oVideoData.width;
           oVP.imageHeight = oVideoData.height;
@@ -92,16 +95,18 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   // Create video canvas elements.
   this.CreateVideoCanvas = function() {
     // Create canvas:
-    var oCanvas = '<svg id="canvas" width="' + this.imageWidth + '" height="' + this.imageHeight + '" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position:absolute;left:8px;top:8px;z-index:1000;"></svg><div id="oCanvas" style="background-color:black;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;position:relative;" />';
+    var oCanvas = '<svg id="canvas" width="' + this.imageWidth + '" height="' + this.imageHeight + '" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position:absolute;left:8px;top:8px;z-index:-5;"></svg><div id="oCanvas" style="background-color:black;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;position:relative;z-index:-5;" />';
     $('#videoplayer').append(oCanvas);
   
     // Create "loading" message:
-    var oLoading = '<div id="oLoading" style="width:100%;height:30px;position:absolute;bottom:0px;padding-top:10px;color:white;text-align:center;display:none;font-family:verdana;font-size:12px;z-index:50" >Loading video file...</div>';
+    var oLoading = '<div id="oLoading" style="width:100%;height:30px;position:absolute;bottom:0px;padding-top:10px;color:white;text-align:center;display:none;font-family:verdana;font-size:12px;z-index:4" >Loading video file...</div>';
     $('#oCanvas').append(oLoading);
     
     // Create scroll bar:
     var oScroll = '<div id="oScroll" style="width:'+this.imageWidth+'px;"></div>'
     var oLoad = '<div id="oLoadBar" style="width:'+this.imageWidth+'px; z-index:0"></div>'
+
+          
     $('#videoplayer').append(oScroll);
     $('#oScroll').slider({
             range : "min",
@@ -109,7 +114,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
             max   : this.imageWidth,
             value : 0,
             slide : function (event, ui) {
-                console.log("QUEU");
                 //ovP.Pause(false);
                 pos = ui.value/ovP.imageWidth;
                 iFrameCtr = Math.floor(pos*(oVideoData.frames-1));
@@ -135,27 +139,27 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     $('#oLoadBar.ui-slider, #oLoadBar ui-slider-handler').off();
     //$('#oScroll.ui-slider, #oScroll ui-slider-handler').off();
     // Create controls:
-    var oControls = '<div id="oControls" style="width:' + this.imageWidth + 'px;height:30px;bottom:0px;text-align:center;padding-top:10px;z-index:100;" />';
+    var oControls = '<div id="oControls" style="width:' + this.imageWidth + 'px;height:30px;bottom:0px;text-align:center;padding-top:10px;z-index:10;" />';
     $('#videoplayer').append(oControls);
     
     // Step beginning button:
-    var oBtnStepBeginning = '<img id="stepbeginningbutton" src="icons/video_beginning.png" style="border-width:px;padding:10px;" onclick="oVP.StepBeginning();" title="Go to beginning" />';
+    var oBtnStepBeginning = '<img id="stepbeginningbutton" src="./annotationTools/video/icons/video_beginning.png" style="border-width:px;padding:10px;" onclick="oVP.StepBeginning();" title="Go to beginning" />';
     $('#oControls').append(oBtnStepBeginning);
     
     // Step backward button:
-    var oBtnStepBackward = '<img id="stepbackwardbutton" src="icons/video_stepback.png" style="border-width:px;padding:10px;" onclick="oVP.StepBackward();" title="Step backward" />';
+    var oBtnStepBackward = '<img id="stepbackwardbutton" src="./annotationTools/video/icons/video_stepback.png" style="border-width:px;padding:10px;" onclick="oVP.StepBackward();" title="Step backward" />';
     $('#oControls').append(oBtnStepBackward);
     
     // Pause button:
-    var oBtnPause = '<img id="playpausebutton" src="icons/video_pause.png" style="border-width:px;padding:10px;" onclick="oVP.Pause(true);" title="Pause" />';
+    var oBtnPause = '<img id="playpausebutton" src="./annotationTools/video/icons/video_pause.png" style="border-width:px;padding:10px;" onclick="oVP.Pause(true);" title="Pause" />';
     $('#oControls').append(oBtnPause);
     
     // Step forward button:
-    var oBtnStepForward = '<img id="stepforwardbutton" src="icons/video_stepforward.png" style="border-width:px;padding:10px;" onclick="oVP.StepForward();" title="Step forward" />';
+    var oBtnStepForward = '<img id="stepforwardbutton" src="./annotationTools/video/icons/video_stepforward.png" style="border-width:px;padding:10px;" onclick="oVP.StepForward();" title="Step forward" />';
     $('#oControls').append(oBtnStepForward);
 
     // Step end button:
-    var oBtnStepEnd = '<img id="stependbutton" src="icons/video_end.png" style="border-width:px;padding:10px;" onclick="oVP.StepEnd();" title="Go to end" />';
+    var oBtnStepEnd = '<img id="stependbutton" src="./annotationTools/video/icons/video_end.png" style="border-width:px;padding:10px;" onclick="oVP.StepEnd();" title="Go to end" />';
     $('#oControls').append(oBtnStepEnd);
     
     var frameNumber = '<div>Frame number: <p style="display: inline-block" id="framenum">0</p></div>';
@@ -173,13 +177,12 @@ this.loadFile = function(frame, first_time, isbackground, response) {
 
   this.GoToFrameButtonClicked = function(){
     var framevalue = Math.max(Math.min(this.getnumFrames()-1,$('#frameinput').val()),0);
-    console.log(framevalue);
     this.GoToFrame(parseInt(framevalue));
   }
   this.GenerateFrames = function() {
     var shift = oVideoData.firstframe;
     for(var i = 0; i < oVideoData.data.video.length; i++) {
-      var oImage = '<img src="' + oVideoData.data.video[i] + '" id="myframe" style="display:block;position:absolute;padding:0;border-width:0;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;" />';
+      var oImage = '<img src="' + oVideoData.data.video[i] + '" id="im" style="display:block;position:absolute;padding:0;border-width:0;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;z-index:-3;" />';
       aFrameImages[i+shift] = oImage;
     }
 
@@ -194,8 +197,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       ovP.loadChunk(i, 2, false, false);
       return;
     }
-    if($('#myframe').length) {
-      $('#myframe').replaceWith(aFrameImages[i]);
+    if($('#im').length) {
+      $('#im').replaceWith(aFrameImages[i]);
     }
     else {
       $('#oCanvas').append(aFrameImages[i]);
@@ -257,7 +260,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       if (bPaused) bPaused = false;
       
       // Replace with pause button:
-      $('#playpausebutton').attr('src','icons/video_pause.png');
+      $('#playpausebutton').attr('src','annotationTools/video/icons/video_pause.png');
       $('#playpausebutton').attr('title','Pause');
       $('#playpausebutton').attr('onclick','oVP.Pause(true);');
 
@@ -292,7 +295,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
 	this.Pause();
       }
       
-      // $('#myframe').replaceWith(aFrameImages[iFrameCtr]);
       this.DisplayFrame(iFrameCtr);
       this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
     }
@@ -308,7 +310,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     bPaused = true;
     
     // Replace with play button:
-    $('#playpausebutton').attr('src','icons/video_play.png');
+    $('#playpausebutton').attr('src','./annotationTools/video/icons/video_play.png');
     $('#playpausebutton').attr('title','Play');
     $('#playpausebutton').attr('onclick','oVP.Play();');
   }
@@ -323,7 +325,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       }
       
       // Render next frame:
-      // $('#myframe').replaceWith(aFrameImages[iFrameCtr]);
       this.DisplayFrame(iFrameCtr);
       this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
     }
@@ -339,7 +340,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       }
       
       // Render next frame:
-      // $('#myframe').replaceWith(aFrameImages[iFrameCtr]);
       this.DisplayFrame(iFrameCtr);
       this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
     }
@@ -351,7 +351,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     iFrameCtr = 0;
     
     // Render next frame:
-    // $('#myframe').replaceWith(aFrameImages[iFrameCtr]);
     this.DisplayFrame(iFrameCtr);
     this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
   }
@@ -362,7 +361,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     iFrameCtr = oVideoData.frames-1;
     
     // Render next frame:
-    // $('#myframe').replaceWith(aFrameImages[iFrameCtr]);
     this.DisplayFrame(iFrameCtr);
     this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
   }
@@ -375,9 +373,10 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     $.ajax({
            async: true,
            type: "POST", 
-           url: "./encode.php",
+           url: "./annotationTools/video/encode.php",
            data: {width: "640", height: "480", rate:"15", input: fname_folder,frame: frame.toString(), duration: duration},
            success: function(response){
+            console.log(response);
             last_frame = Math.min(frame + duration*15, ovP.getnumFrames());
             ovP.loadFile(frame, first_time, isbackground, response)
             if (ovP.getnumFrames() != 0 && ovP.getcurrentFrame() <= last_frame) ovP.UpdateLoadbar(last_frame/ovP.getnumFrames());
@@ -388,9 +387,9 @@ this.loadFile = function(frame, first_time, isbackground, response) {
 }
 
 
-$(document).ready(function() {
-  console.time('Load LabelMe XML file');
-	oVP = new JSVideo();
-	console.time('Load video');
-  oVP.loadChunk(1, 1, true, false);
-});
+// $(document).ready(function() {
+//   console.time('Load LabelMe XML file');
+// 	oVP = new JSVideo();
+// 	console.time('Load video');
+//   oVP.loadChunk(1, 1, true, false);
+// });
