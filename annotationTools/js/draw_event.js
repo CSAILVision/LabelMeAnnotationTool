@@ -41,8 +41,8 @@ function StartDrawEvent(event) {
   draw_anno = new annotation(AllAnnotations.length);
   
   // Add first control point:
-  draw_anno.pts_x.push(Math.round(x/main_image.GetImRatio()));
-  draw_anno.pts_y.push(Math.round(y/main_image.GetImRatio()));
+  draw_anno.pts_x.push(Math.round(x/main_media.GetImRatio()));
+  draw_anno.pts_y.push(Math.round(y/main_media.GetImRatio()));
   
   // Draw polyline:
   draw_anno.SetDivAttach('draw_canvas');
@@ -68,7 +68,7 @@ function DrawCanvasMouseDown(event) {
   if(username_flag) submit_username();
 
   // Get (x,y) mouse location:
-  var scale = main_image.GetImRatio();
+  var scale = main_media.GetImRatio();
   var x = Math.round(GetEventPosX(event)/scale);
   var y = Math.round(GetEventPosY(event)/scale);
 
@@ -124,10 +124,10 @@ function DrawCanvasClosePolygon() {
   var doReset = SetObjectChoicesPointLine(anno.GetPtsX().length);
 
   // Get location where popup bubble will appear:
-  var pt = main_image.SlideWindow(Math.round(anno.GetPtsX()[0]*main_image.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_image.GetImRatio()));
+  var pt = main_media.SlideWindow(Math.round(anno.GetPtsX()[0]*main_media.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_media.GetImRatio()));
 
   // Make query popup appear.
-  main_image.ScrollbarsOff();
+  main_media.ScrollbarsOff();
   WriteLogMsg('*What_is_this_object_query');
   mkPopup(pt[0],pt[1]);
   
@@ -137,7 +137,7 @@ function DrawCanvasClosePolygon() {
   // Render annotation:
   query_anno = anno;
   query_anno.SetDivAttach('query_canvas');
-  FillPolygon(query_anno.DrawPolygon(main_image.GetImRatio()));
+  FillPolygon(query_anno.DrawPolygon(main_media.GetImRatio()));
 }
 
 // Handles when the user presses the undo close button in response to
@@ -155,7 +155,7 @@ function UndoCloseButton() {
   query_anno = null;
   
   CloseQueryPopup();
-  main_image.ScrollbarsOn();
+  main_media.ScrollbarsOn();
   
   // Move draw_canvas to front:
   document.getElementById('draw_canvas').style.zIndex = 0;

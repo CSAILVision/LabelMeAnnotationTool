@@ -14,36 +14,36 @@ function StartupLabelMe() {
     // Initialize global variables:
     main_handler = new handler();
     main_canvas = new canvas('myCanvas_bg');
-    main_image = new image('im');
+    main_media = new image('im');
     // Parse the input URL.  Returns false if the URL does not set the 
     // annotation folder or image filename.  If false is returned, the 
     // function fetches a new image and sets the URL to reflect the 
     // fetched image.
-    if(!main_image.GetFileInfo().ParseURL()) return;
+    if(!main_media.GetFileInfo().ParseURL()) return;
 
     if(video_mode) {
-      main_image = new video('videoplayer');
-    
+      main_media = new video('videoplayer');
+      main_media.GetFileInfo().ParseURL();
       console.log("Video mode...");
-      var anno_file = main_image.GetFileInfo().GetFullName();
-      main_image.GetNewVideo();
-      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+      var anno_file = main_media.GetFileInfo().GetFullName();
+      main_media.GetNewVideo();
+      anno_file = 'VLMAnnotations/' + anno_file + '.xml' + '?' + Math.random();
       ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
     }
     else {
       // This function gets run after image is loaded:
-      function main_image_onload_helper() {
+      function main_media_onload_helper() {
 	// Set the image dimensions:
-	main_image.SetImageDimensions();
+	main_media.SetImageDimensions();
       
 	// Read the XML annotation file:
-	var anno_file = main_image.GetFileInfo().GetFullName();
+	var anno_file = main_media.GetFileInfo().GetFullName();
 	anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
 	ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
       };
 
       // Get the image:
-      main_image.GetNewImage(main_image_onload_helper);
+      main_media.GetNewImage(main_media_onload_helper);
     }
   }
   else {
@@ -59,7 +59,10 @@ function LoadAnnotationSuccess(xml) {
 
   // Set global variable:
   LM_xml = xml;
-
+  if (video_mode){
+    FinishStartup();
+    return;
+  }
   var obj_elts = LM_xml.getElementsByTagName("object");
   var num_obj = obj_elts.length;
   
@@ -166,7 +169,7 @@ function LoadAnnotationSuccess(xml) {
 // Annotation file does not exist, so load template:
 function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
   if(jqXHR.status==404) 
-    ReadXML(main_image.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
+    ReadXML(main_media.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
   else
     alert(jqXHR.status);
 }
@@ -188,8 +191,8 @@ function LoadTemplateSuccess(xml) {
   LM_xml = xml;
 
   // Set folder and image filename:
-  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
-  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
+  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_media.GetFileInfo().GetImName()+'\n';
+  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_media.GetFileInfo().GetDirName()+'\n';
 
   // Set global variable:
   num_orig_anno = 0;
@@ -201,18 +204,18 @@ function LoadTemplateSuccess(xml) {
 // Finish the startup process:
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
-  if(view_ObjList) RenderObjectList();
+  if(view_ObjList && !video_mode) RenderObjectList();
 
   // Add actions:
   console.log('LabelMe: setting actions');
-  if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_image.GetFileInfo().GetImagePath();');
+  if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_media.GetFileInfo().GetImagePath();');
   $('#changeuser').attr("onclick","javascript:show_enterUserNameDIV(); return false;");
   $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
   $('#xml_url').attr("onclick","javascript:GetXMLFile();");
   $('#nextImage').attr("onclick","javascript:ShowNextImage()");
-  $('#zoomin').attr("onclick","javascript:main_image.Zoom(1.15)");
-  $('#zoomout').attr("onclick","javascript:main_image.Zoom(1.0/1.15)");
-  $('#fit').attr("onclick","javascript:main_image.Zoom('fitted')");
+  $('#zoomin').attr("onclick","javascript:main_media.Zoom(1.15)");
+  $('#zoomout').attr("onclick","javascript:main_media.Zoom(1.0/1.15)");
+  $('#fit').attr("onclick","javascript:main_media.Zoom('fitted')");
   $('#erase').attr("onclick","javascript:main_handler.EraseSegment()");
   $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
   $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
@@ -226,7 +229,7 @@ function FinishStartup() {
   initUserName();
 
   // Enable scribble mode:
-  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_image');
+  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_media');
   
   // Set action when the user presses a key:
   document.onkeyup = main_handler.KeyPress;
@@ -235,7 +238,7 @@ function FinishStartup() {
   ref = document.referrer;
 
   // Write "finished" messages:
-  WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
+  WriteLogMsg('*done_loading_' + main_media.GetFileInfo().GetImagePath());
   console.log('LabelMe: finished loading');
 
   console.timeEnd('startup');

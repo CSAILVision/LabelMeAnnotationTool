@@ -39,7 +39,7 @@ var main_handler;
 var main_canvas;
 
 // Holds image.
-var main_image;
+var main_media;
 
 // URL of XHTML namespace. This is needed for generating SVG elements.
 var xhtmlNS = 'http://www.w3.org/1999/xhtml';

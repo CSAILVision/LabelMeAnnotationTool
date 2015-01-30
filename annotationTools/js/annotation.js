@@ -197,7 +197,7 @@ function annotation(anno_id) {
     // Render the annotation (shape + action) given the action_type (e.g. rest).
     this.RenderAnnotation = function (action_type) {
       // Render the shape:
-      this.DrawPolygon(main_image.GetImRatio());
+      this.DrawPolygon(main_media.GetImRatio());
 
       // Set shape actions:
       switch(action_type) {
@@ -248,7 +248,7 @@ function annotation(anno_id) {
     // or start a new polygon.
     this.DrawPolyLine = function (im_ratio) {
       // Draw line segments:
-      var im_ratio = main_image.GetImRatio();
+      var im_ratio = main_media.GetImRatio();
       this.line_ids = Array();
       for(var i = 0; i < this.pts_x.length-1; i++) {
 	// Draw line segment:
@@ -324,7 +324,7 @@ function annotation(anno_id) {
 	FillPolygon(this.polygon_id);
       }
       else { // It is a segmentation
-	DrawSegmentation('myCanvas_bg',this.GetMaskURL(), main_image.width_curr, main_image.height_curr, this.cache_random_number);
+	DrawSegmentation('myCanvas_bg',this.GetMaskURL(), main_media.width_curr, main_media.height_curr, this.cache_random_number);
       }
       /*************************************************************/
       /*************************************************************/

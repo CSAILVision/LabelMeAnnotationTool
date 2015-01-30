@@ -155,14 +155,14 @@ function scribble_canvas(tag) {
   // Draws the scribbles in the canvas according to the zoom parameter
   // The function loops over clickX, clickY to know the coordinates of the scribbles.
   this.redraw = function(){
-    this.scribblecanvas.setAttribute('width', main_image.width_curr);
-    this.scribblecanvas.setAttribute('height',main_image.height_curr);
+    this.scribblecanvas.setAttribute('width', main_media.width_curr);
+    this.scribblecanvas.setAttribute('height',main_media.height_curr);
     var context = this.scribblecanvas.getContext("2d");
     context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
-    var ratio = main_image.GetImRatio(); 
+    var ratio = main_media.GetImRatio(); 
     if (this.annotationid > -1){
       scribble_canvas.scribblecanvas.getContext("2d").globalCompositeOperation = "source-over";
-      scribble_canvas.scribblecanvas.getContext("2d").drawImage(scribble_canvas.scribble_image,0,0,main_image.width_curr, main_image.height_curr);
+      scribble_canvas.scribblecanvas.getContext("2d").drawImage(scribble_canvas.scribble_image,0,0,main_media.width_curr, main_media.height_curr);
     }
     context.lineJoin = "miter";
     context.lineCap = "round";
@@ -202,17 +202,17 @@ function scribble_canvas(tag) {
   // called when creating the segmentation to create save an image with 
   // the scribbles 
   this.redraw2 = function(ratio){
-    this.scribblecanvas.setAttribute('width', main_image.width_orig);
-    this.scribblecanvas.setAttribute('height',main_image.height_orig);
+    this.scribblecanvas.setAttribute('width', main_media.width_orig);
+    this.scribblecanvas.setAttribute('height',main_media.height_orig);
     var context = this.scribblecanvas.getContext("2d");
     context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
     context.lineJoin = "miter"; 
     context.lineCap = "round";      
     if (this.annotationid > -1){
       scribble_canvas.scribblecanvas.getContext("2d").globalCompositeOperation = "source-over";
-      scribble_canvas.scribblecanvas.getContext("2d").drawImage(scribble_canvas.scribble_image,0,0,main_image.width_orig, main_image.height_orig);      
+      scribble_canvas.scribblecanvas.getContext("2d").drawImage(scribble_canvas.scribble_image,0,0,main_media.width_orig, main_media.height_orig);      
     }
-    var width = 9;//(main_image.width_orig * main_image.height_orig)/327680.; // proportional to the size of the imag
+    var width = 9;//(main_media.width_orig * main_media.height_orig)/327680.; // proportional to the size of the imag
     for(var i=0; i < this.clickX.length; i++) { 
       context.beginPath();
       if(this.clickDrag[i] && i){
@@ -262,10 +262,10 @@ function scribble_canvas(tag) {
       // Save the scribble for segmenting (this is done synchronously 
       // because we need to wait for the image to be saved in order 
       // to segment).
-      var imagname = main_image.GetFileInfo().GetImName();
+      var imagname = main_media.GetFileInfo().GetImName();
       imagname = imagname.substr(0, imagname.length-4);
       
-      var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+      var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
       console.log(collectionName);
       scribble_canvas.createDir("annotationCache/TmpAnnotations/"+collectionName);
       scribble_canvas.resizeandsaveImage(collectionName+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', collectionName+"/", segment_ratio,fw,fh,-1, 0, annotation_ended);
@@ -320,11 +320,11 @@ function scribble_canvas(tag) {
     var doReset = SetObjectChoicesPointLine(anno.GetPtsX().length);
     
     // Get location where popup bubble will appear:
-    var im_ratio = main_image.GetImRatio();
-    var pt = main_image.SlideWindow((anno.GetPtsX()[0]*im_ratio + anno.GetPtsX()[1]*im_ratio)/2,(anno.GetPtsY()[0]*im_ratio + anno.GetPtsY()[2]*im_ratio)/2);
+    var im_ratio = main_media.GetImRatio();
+    var pt = main_media.SlideWindow((anno.GetPtsX()[0]*im_ratio + anno.GetPtsX()[1]*im_ratio)/2,(anno.GetPtsY()[0]*im_ratio + anno.GetPtsY()[2]*im_ratio)/2);
     
     // Make query popup appear.
-    main_image.ScrollbarsOff();
+    main_media.ScrollbarsOff();
     WriteLogMsg('*What_is_this_object_query');
 
     wait_for_input = 1;
@@ -343,7 +343,7 @@ function scribble_canvas(tag) {
     query_anno = anno;
     query_anno.SetDivAttach('query_canvas');
     var anno_id = query_anno.GetAnnoID();
-    query_anno.DrawPolygon(main_image.GetImRatio());
+    query_anno.DrawPolygon(main_media.GetImRatio());
     
     // Set polygon actions:
     query_anno.SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
@@ -431,14 +431,14 @@ function scribble_canvas(tag) {
     if (this.annotationid == -1){ // The segmentation was new
       var anno = new annotation(AllAnnotations.length);
       var Nobj = $(LM_xml).children("annotation").children("object").length;
-      var imagname = main_image.GetFileInfo().GetImName();
+      var imagname = main_media.GetFileInfo().GetImName();
       imagname = imagname.substr(0, imagname.length-4);
       anno.SetRandomCache(this.cache_random_number);
       anno.SetType(1);
       anno.SetImageCorners(Math.max(0, this.minclicX-(this.maxclicX - this.minclicX)*0.25), 
 			   Math.max(0, this.minclicY - (this.maxclicY - this.minclicY)*0.25),
-			   Math.min(main_image.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25), 
-			   Math.min(main_image.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25));
+			   Math.min(main_media.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25), 
+			   Math.min(main_media.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25));
       anno.SetCorners(object_corners[0], object_corners[1], object_corners[2], object_corners[3]);
       anno.SetImName(resp);
       anno.SetScribbleName(imagname+'_scribble_'+Nobj+'.png');
@@ -446,7 +446,7 @@ function scribble_canvas(tag) {
       // Draw polygon on draw canvas:
       draw_anno = anno;
       draw_anno.SetDivAttach('draw_canvas');
-      draw_anno.DrawPolygon(main_image.GetImRatio());
+      draw_anno.DrawPolygon(main_media.GetImRatio());
       
       // Set polygon actions:
       draw_anno.SetAttribute('onmousedown','StartEditEvent(' + draw_anno.GetAnnoID() + ',evt); return false;');
@@ -463,8 +463,8 @@ function scribble_canvas(tag) {
       if (scribble_canvas.clickX.length > 0){
 	var lx = Math.max(0, scribble_canvas.minclicX-(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
 	var ly = Math.max(0, scribble_canvas.minclicY -  (scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
-	var rx = Math.min(main_image.width_orig, scribble_canvas.maxclicX+(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
-	var ry = Math.min(main_image.height_orig, scribble_canvas.maxclicY+(scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
+	var rx = Math.min(main_media.width_orig, scribble_canvas.maxclicX+(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
+	var ry = Math.min(main_media.height_orig, scribble_canvas.maxclicY+(scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
 	anno.SetImageCorners(Math.min(lx, scribble_canvas.editborderlx), 
 			     Math.min(ly, scribble_canvas.editborderly),
 			     Math.max(rx, scribble_canvas.editborderrx), 
@@ -539,21 +539,21 @@ function scribble_canvas(tag) {
         fwidth: fwidth,
         fheight: fheight,
         dir: dir,
-        bwidth: main_image.width_orig,
-        bheight: main_image.height_orig,
+        bwidth: main_media.width_orig,
+        bheight: main_media.height_orig,
       }
     }).done(function(data_response) {
-      var imagetoSegmentURL = main_image.GetFileInfo().GetFullName();
+      var imagetoSegmentURL = main_media.GetFileInfo().GetFullName();
       imagetoSegmentURL = imagetoSegmentURL.replace("///","/");
       var Nobj = $(LM_xml).children("annotation").children("object").length;
       if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
       if (callback == 0){
-	var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+	var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
 	scribble_canvas.resizeandsaveImage(imagetoSegmentURL, 'image.jpg', collectionName+"/", scale,fwidth,fheight,0,1, annotation_ended);
       }
       else if (callback == 1){
 	console.log(data_response);
-	var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+	var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
 	scribble_canvas.createDir("Masks/"+collectionName+"/");
 	
 	// Execute the cgi to perform the segmentation
@@ -562,7 +562,7 @@ function scribble_canvas(tag) {
 	var req_submit;
 	if (window.XMLHttpRequest) {
 	  path = data_response;
-	  tmpPath = path+main_image.GetFileInfo().GetDirName().replace("///","/");
+	  tmpPath = path+main_media.GetFileInfo().GetDirName().replace("///","/");
 
 	  req_submit = new XMLHttpRequest();
 	  req_submit.open("POST", url, false);
@@ -578,7 +578,7 @@ function scribble_canvas(tag) {
           
 	  // Save the segmentation result in the Masks folder:
 	  console.log(collectionName);
-	  scribble_canvas.resizeandsaveImage(collectionName+"/",resp,collectionName+"/",1./scale,main_image.width_orig,main_image.height_orig,1,2, annotation_ended);
+	  scribble_canvas.resizeandsaveImage(collectionName+"/",resp,collectionName+"/",1./scale,main_media.width_orig,main_media.height_orig,1,2, annotation_ended);
 	}
       }
       else if (callback == 2){
@@ -600,9 +600,9 @@ function scribble_canvas(tag) {
     ClearMask('aux_mask')
     if (resp){
       this.cache_random_number = Math.random();
-      var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+      var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
       
-      DrawSegmentation('myCanvas_bg','Masks/'+collectionName+"/"+resp, main_image.width_curr, main_image.height_curr, this.cache_random_number, 'aux_mask');
+      DrawSegmentation('myCanvas_bg','Masks/'+collectionName+"/"+resp, main_media.width_curr, main_media.height_curr, this.cache_random_number, 'aux_mask');
     } 
   };
 
@@ -640,9 +640,9 @@ function scribble_canvas(tag) {
   // when the user annotates big objects.
   this.segmentAfterScribblesDone = function (annotation_ended){
     var clx = Math.max(0, this.minclicX-(this.maxclicX - this.minclicX)*0.25);
-    var crx = Math.min(main_image.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25);
+    var crx = Math.min(main_media.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25);
     var cly = Math.max(0, this.minclicY - (this.maxclicY - this.minclicY)*0.25);
-    var cry = Math.min(main_image.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25);
+    var cry = Math.min(main_media.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25);
     if (this.annotationid > -1){
       // ESTA MAL
       clx = Math.min(clx, this.editborderlx);
@@ -663,10 +663,10 @@ function scribble_canvas(tag) {
     if (this.annotationid > -1) Nobj = this.annotationid;
 
     // Save the scribble in the Scribbles folder
-    var collectionName = main_image.GetFileInfo().GetDirName().replace("///","/");
+    var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
     this.createDir("Scribbles/"+collectionName+"/");
     
-    var imagname = main_image.GetFileInfo().GetImName();
+    var imagname = main_media.GetFileInfo().GetImName();
     imagname = imagname.substr(0, imagname.length-4);
     
     this.saveImage(scribbledataURL, imagname+'_scribble_'+Nobj+'.png', collectionName+"/", true, segment_ratio, fw, fh, annotation_ended);
@@ -686,8 +686,8 @@ function scribble_canvas(tag) {
   this.prepareDrawingCanvas = function(){
     this.canvasDiv = document.getElementById('canvasDiv'); 
     this.scribblecanvas = document.createElement('canvas');
-    this.scribblecanvas.setAttribute('width', main_image.width_curr);
-    this.scribblecanvas.setAttribute('height', main_image.height_curr);
+    this.scribblecanvas.setAttribute('width', main_media.width_curr);
+    this.scribblecanvas.setAttribute('height', main_media.height_curr);
     this.scribblecanvas.setAttribute('id', 'scribble_canvas');
     this.scribblecanvas.setAttribute('style','cursor:url(Icons/red_pointer.cur), default');
     this.canvasDiv.appendChild(this.scribblecanvas);
@@ -732,7 +732,7 @@ function scribble_canvas(tag) {
   // Saves the coordinates of the clicks introduced by the user.
   this.addClick = function(x, y, dragging){
     this.flag_changed = 1;
-    var ratio = main_image.GetImRatio();  
+    var ratio = main_media.GetImRatio();  
     x-=1; 
     x = Math.round(x/ratio);
     y = Math.round(y/ratio);
@@ -774,7 +774,7 @@ function KeepEditingScribbles(){
   query_anno = null;
   
   CloseQueryPopup();
-  main_image.ScrollbarsOn();
+  main_media.ScrollbarsOn();
 }
 
 // Prepares the canvas to edit a segmentation. It loads the corresponding 
@@ -795,10 +795,10 @@ function EditBubbleEditScribble(){
   
   CloseEditPopup();
   this.SetDrawingMode(1);
-  main_image.ScrollbarsOn();
+  main_media.ScrollbarsOn();
   scribble_canvas.annotationid = anno.GetAnnoID();
   scribble_canvas.scribble_image = new Image();
-  scribble_canvas.scribble_image.src = "Scribbles/"+main_image.GetFileInfo().GetDirName()+"/"+anno.GetScribbleName()+"?t="+Math.random();
+  scribble_canvas.scribble_image.src = "Scribbles/"+main_media.GetFileInfo().GetDirName()+"/"+anno.GetScribbleName()+"?t="+Math.random();
   scribble_canvas.setCurrentDraw(OBJECT_DRAWING);
   scribble_canvas.editborderrx = anno.GetCornerRX(); 
   scribble_canvas.editborderlx = anno.GetCornerLX();
@@ -881,8 +881,8 @@ function ClearMask (id){
 }
 
 function GetPackFile(){
-  document.getElementById("folder").value = main_image.GetFileInfo().GetDirName().replace("///","/");
-  document.getElementById("name").value = main_image.GetFileInfo().GetImName();
+  document.getElementById("folder").value = main_media.GetFileInfo().GetDirName().replace("///","/");
+  document.getElementById("name").value = main_media.GetFileInfo().GetImName();
   
   document.getElementById("packform").submit();
 }

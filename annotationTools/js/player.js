@@ -1,18 +1,18 @@
 // retrieves a file via XMLHTTPRequest, calls fncCallback when done or fncError on error.
 
-var LM_xml;
-var oVP;
-var fname_folder_root = "/var/www/LabelMeVideo/VLMFrames/"
-var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "unusual_clips/backing/";
 
-//var fname_folder_root = "/var/www/developers/xavierpuigf/LabelMeAnnotationTool/Videos"
-//var fname_folder = main_image.GetFileInfo().GetImagePath();
-fname_folder = fname_folder_root + fname_folder;
-console.log(location.search.split('source=')[1]);
-
-
+ var oVP;
 
 function JSVideo() {
+
+
+
+// var fname_folder_root = "/var/www/LabelMeVideo/VLMFrames/"
+// var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "unusual_clips/backing/";
+
+  var fname_folder_root = "/var/www/developers/xavierpuigf/LabelMeAnnotationTool/"
+  var fname_folder = main_media.GetFileInfo().GetImagePath()+"/";
+  fname_folder = fname_folder_root + fname_folder;
 
   // *******************************************
   // Private variables:
@@ -67,7 +67,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       try {
         console.timeEnd('Load video');
         oVideoData = eval("(" + response + ")");
-        console.log(oVideoData);
         if (first_time){ 
           oVP.imageWidth = oVideoData.width;
           oVP.imageHeight = oVideoData.height;
@@ -77,7 +76,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
         oVP.GenerateFrames();
         if (first_time) ovP.GoToFrame(frame);
         ovP.seekChunkToDownload(frame);
-        console.log(uPaused);
         if ((first_time || frame == iFrameCtr ) && uPaused == false) oVP.Play();
       }
       catch(e) {
@@ -185,7 +183,30 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       var oImage = '<img src="' + oVideoData.data.video[i] + '" id="im" style="display:block;position:absolute;padding:0;border-width:0;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;z-index:-3;" />';
       aFrameImages[i+shift] = oImage;
     }
-
+  //   console.time('get all polygons');
+  //   // Get all polygons:
+  //   var allObjects = LM_xml.getElementsByTagName('object');
+  //   for(var objndx = 0; objndx < allObjects.length; objndx++) {
+  //     console.log(allObjects[objndx]);
+  //     this.display_polygon[objndx] = false;
+  //     if(!parseInt(allObjects[objndx].getElementsByTagName('deleted')[0].innerHTML)) {
+  // this.display_polygon[objndx] = true;
+  // this.X[objndx] = Array();
+  // this.Y[objndx] = Array();
+  // var allPolygons = allObjects[objndx].getElementsByTagName('polygon');
+  // for(var i = 0; i < allPolygons.length; i++) {
+  //   // Get points:
+  //   var allPoints = allPolygons[i].getElementsByTagName('pt');
+  //   this.X[objndx][i] = Array();
+  //   this.Y[objndx][i] = Array();
+  //   for(var j = 0; j < allPoints.length; j++) {
+  //     this.X[objndx][i][j] = parseInt(allPoints[j].getElementsByTagName('x')[0].innerHTML);
+  //     this.Y[objndx][i][j] = parseInt(allPoints[j].getElementsByTagName('y')[0].innerHTML);
+  //   }
+  // } 
+  //     }
+  //   }
+  //   console.timeEnd('get all polygons');
   }
   
   this.DisplayFrame = function(i) {
@@ -195,38 +216,53 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     if (aFrameImages[i] == null){
       this.Pause();
       ovP.loadChunk(i, 2, false, false);
-      return;
+      //return;
     }
     if($('#im').length) {
       $('#im').replaceWith(aFrameImages[i]);
     }
     else {
       $('#oCanvas').append(aFrameImages[i]);
-      console.log(aFrameImages[i]);
-      console.log(i);
     }
+    $('#myCanvas_bg').empty();
 
+    var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
+    var scale = 1;
+    
     // Plot polygons:
-    var name = "foo";
-    for(var objndx = 0; objndx < this.X.length; objndx++) {
-      if(this.display_polygon[objndx]) {
+    var xml = LM_xml
+    var N = $(xml).children("annotation").children("object").length;
+    for(var it = 0; it < N; it++) {
+      var obj = $(xml).children("annotation").children("object").eq(it);
+        // Get object name:
 
-	var X = Array();
-	var Y = Array();
-	var allPoints = LM_xml.getElementsByTagName('object')[objndx].getElementsByTagName('polygon')[i].getElementsByTagName('pt');
-	for(var j = 0; j < allPoints.length; j++) {
-	  X[j] = parseInt(allPoints[j].getElementsByTagName('x')[0].innerHTML);
-	  Y[j] = parseInt(allPoints[j].getElementsByTagName('y')[0].innerHTML);
-	}
+        // Get points:
+        var X = Array();
+        var Y = Array();
+        var framestamps = (obj.children("polygon").children("t").text()).split(',')
+        for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
+        var objectind = framestamps.indexOf(i);
+        
+        if (objectind >= 0){
+         var pointsx = (obj.children("polygon").children("x").text()).split(';')[objectind]
+         X = pointsx.split(',')
+         for(var ti=0; ti<X.length; ti++) { X[ti] = parseInt(X[ti], 10); } 
+         var pointsy = (obj.children("polygon").children("y").text()).split(';')[objectind]
+         Y = pointsy.split(',')
+         for(var ti=0; ti<Y.length; ti++) { Y[ti] = parseInt(Y[ti], 10); } 
 
+         DrawPolygon('myCanvas_bg',X,Y,"foo",attr,scale);
+        }
+    //     for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
+    // X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
+    // Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
+    //     }
 
-
-    	var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
-    	var scale = 1;
-    	if((objndx<this.poly_id.length) && this.poly_id[objndx]) $('#'+this.poly_id[objndx]).remove();
-    	this.poly_id[objndx] = DrawPolygon('canvas',X,Y,name,attr,scale);
-    	// this.poly_id[objndx] = DrawPolygon('canvas',this.X[objndx][i],this.Y[objndx][i],name,attr,scale);
-      }
+    //     // Draw polygon:
+    //     var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
+    //     var scale = 1;
+    //     DrawPolygon('canvas',X,Y,name,attr,scale);
+      
     }
 
   }
@@ -376,7 +412,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
            url: "./annotationTools/video/encode.php",
            data: {width: "640", height: "480", rate:"15", input: fname_folder,frame: frame.toString(), duration: duration},
            success: function(response){
-            console.log(response);
             last_frame = Math.min(frame + duration*15, ovP.getnumFrames());
             ovP.loadFile(frame, first_time, isbackground, response)
             if (ovP.getnumFrames() != 0 && ovP.getcurrentFrame() <= last_frame) ovP.UpdateLoadbar(last_frame/ovP.getnumFrames());

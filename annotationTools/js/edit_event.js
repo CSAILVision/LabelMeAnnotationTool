@@ -41,13 +41,13 @@ function StartEditEvent(anno_id,event) {
   
   select_anno = anno;
   select_anno.SetDivAttach('select_canvas');
-  FillPolygon(select_anno.DrawPolygon(main_image.GetImRatio()));
+  FillPolygon(select_anno.DrawPolygon(main_media.GetImRatio()));
   
   // Get location where popup bubble will appear:
-  var pt = main_image.SlideWindow(Math.round(anno.GetPtsX()[0]*main_image.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_image.GetImRatio()));
+  var pt = main_media.SlideWindow(Math.round(anno.GetPtsX()[0]*main_media.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_media.GetImRatio()));
 
   // Make edit popup appear.
-  main_image.ScrollbarsOff();
+  main_media.ScrollbarsOff();
   if(anno.GetVerified()) {
     edit_popup_open = 1;
     var innerHTML = "<b>This annotation has been blocked.</b><br />";
@@ -93,7 +93,7 @@ function StopEditEvent() {
   CloseEditPopup();
 
   // Turn on the image scrollbars:
-  main_image.ScrollbarsOn();
+  main_media.ScrollbarsOn();
 
   // If the annotation is not deleted or we are in "view deleted" mode, 
   // then attach the annotation to the main_canvas:
@@ -127,7 +127,7 @@ function AdjustPolygonButton() {
   CloseEditPopup();
 
   // Turn on image scrollbars:
-  main_image.ScrollbarsOn();
+  main_media.ScrollbarsOn();
   
   // Get annotation on the select canvas:
   var anno = select_anno;
@@ -145,7 +145,7 @@ function AdjustPolygonButton() {
 
       // Redraw polygon:
       anno = select_anno;
-      anno.DrawPolygon(main_image.GetImRatio());
+      anno.DrawPolygon(main_media.GetImRatio());
 
       // Set polygon (x,y) points:
       anno.pts_x = x;
@@ -156,7 +156,7 @@ function AdjustPolygonButton() {
       
       // Submit annotation:
       main_handler.SubmitEditLabel();
-    },main_image.GetImRatio());
+    },main_media.GetImRatio());
 
   // Start adjust event:
   adjust_event.StartEvent();

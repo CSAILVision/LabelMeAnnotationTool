@@ -155,7 +155,7 @@ function ChangeLinkColorFG(idx) {
 
   // If we're hiding all polygons, then render polygon on canvas:
   if(IsHidingAllPolygons && AllAnnotations[idx].hidden) {
-    AllAnnotations[idx].DrawPolygon(main_image.GetImRatio());
+    AllAnnotations[idx].DrawPolygon(main_media.GetImRatio());
   }
 }
 

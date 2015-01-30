@@ -154,8 +154,8 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       var y = GetEventPosY(event);
       
       // Set point:
-      this.x[this.selectedControlPoint] = Math.max(Math.min(Math.round(x/this.scale),main_image.width_orig),1);
-      this.y[this.selectedControlPoint] = Math.max(Math.min(Math.round(y/this.scale),main_image.height_orig),1);
+      this.x[this.selectedControlPoint] = Math.max(Math.min(Math.round(x/this.scale),main_media.width_orig),1);
+      this.y[this.selectedControlPoint] = Math.max(Math.min(Math.round(y/this.scale),main_media.height_orig),1);
       
       // Remove polygon and redraw:
       $('#'+this.polygon_id).remove();
@@ -213,8 +213,8 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       for(var i = 0; i < this.x.length; i++) {
 	dx = Math.max(this.x[i]+dx,1)-this.x[i];
 	dy = Math.max(this.y[i]+dy,1)-this.y[i];
-	dx = Math.min(this.x[i]+dx,main_image.width_orig)-this.x[i];
-	dy = Math.min(this.y[i]+dy,main_image.height_orig)-this.y[i];
+	dx = Math.min(this.x[i]+dx,main_media.width_orig)-this.x[i];
+	dy = Math.min(this.y[i]+dy,main_media.height_orig)-this.y[i];
       }
       
       // Adjust polygon and center point:
