@@ -124,24 +124,6 @@ function ShowNextImage() {
   main_media.GetFileInfo().SetURL(document.URL);
 }
 
-function XMLGet(fname) {
-  var url = 'annotationTools/perl/get_anno_file.cgi';
-  // branch for native XMLHttpRequest object
-  if (window.XMLHttpRequest) {
-    req_anno = new XMLHttpRequest();
-    req_anno.open("POST", url, false);
-    req_anno.send(fname);
-  } 
-  else if (window.ActiveXObject) {
-    req_anno = new ActiveXObject("Microsoft.XMLHTTP");
-    if (req_anno) {
-      req_anno.open("POST", url, false);
-      req_anno.send(fname);
-    }
-  }
-  return req_anno;
-}
-
 function InsertServerLogData(modifiedControlPoints) {
   var old_pri = LM_xml.getElementsByTagName("private");
   for(ii=0;ii<old_pri.length;ii++) {
