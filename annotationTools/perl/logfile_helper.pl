@@ -4,28 +4,8 @@ require 'globalvariables.pl';
 sub WriteLogfile {
     my($datestr2,$folder,$fname,$tot_before,$tot_after,$addr,$host,$objname,$global_count,$username,$modifiedControlPoints,$tot_del_before,$tot_del_after) = @_;
     open(FP,">>$LM_HOME/annotationCache/Logs/logfile.txt");
-#open(FP2,">>Logs/logfile.xml");
-#if($tot_after > $tot_before) {
-#    print FP2 "<entry><timestamp>$datestr2</timestamp><folder>$folder</folder><filename>$fname</filename>";
-#    print FP2 "<num_poly_before>$tot_before</num_poly_before><num_poly_after>$tot_after</num_poly_after>";
-#    print FP2 "<ipaddress>$addr</ipaddress><name_after>$objname</name_after>";
-#    print FP2 "<personal_count>$global_count</personal_count><username>$username</username>";
-#    print FP2 "<status>CREATED</status></entry>";
-#}
-#else if($tot_after==$tot_before) {
-#    
-#    ($objname,$junk) = split("</name>",@poly_split[$tot_after]);
-#    ($junk,$objname) = split("<name>",$objname);
-#    # Remove spaces from the name:
-#    $objname =~ s/\s/_/g;
-#    print FP "\n$datestr2 $folder $fname $tot_before $tot_after $addr $objname $global_count $username UPDATED_NAME";
-#}
-#else {
-#    print FP2 "\n$datestr2 $folder $fname $tot_before $tot_after $addr $global_count $username";
-#}
     print FP "\n$datestr2 $folder $fname $tot_before $tot_after $addr $host $objname $global_count $username $modifiedControlPoints $tot_del_before $tot_del_after"; #include $ref???
     close(FP);
-#close(FP2);
 }
 
 sub GetPrivateData {
@@ -91,7 +71,6 @@ sub IsSubmittedXmlOk {
     $isOK = ($stdin =~ m/<\/annotation>$/);
 
     return ($isOK);
-#    return (0);
 }
 
 sub InsertImageSize {
@@ -99,8 +78,6 @@ sub InsertImageSize {
 
     $_ = $stdin;
     if(m/<\s*imagesize\s*>/) {
-	# <imagesize>stuff</imagesize>
-	
 	# Separate out <imagesize>stuff</imagesize>:
 	@ss = split('<\s*imagesize\s*>',$stdin);
 	$anno1 = $ss[0];
@@ -151,11 +128,6 @@ sub InsertImageSize {
 	    else {
 		$imagesize = "$imagesize$field";
 	    }
-	    
-#	$imagesize = $field;
-#	$imagesize = $tagname;
-#	$imagesize = $_;
-#	$_ = "";
 	}
 	
 	if(!$isrow) {
@@ -169,7 +141,6 @@ sub InsertImageSize {
 	    $imagesize = "$imagesize<ncols>$ncols</ncols>";
 	}
 	
-#    $stdin = "$imagesize";
 	$stdin = "$anno1<imagesize>$imagesize</imagesize>$anno2";
     }
     elsif(m/<\s*imagesize\s*\/\s*>/) {
