@@ -12,7 +12,7 @@ function JSVideo() {
 
   var fname_folder_root = "/var/www/developers/xavierpuigf/LabelMeAnnotationTool/"
   var fname_folder = main_media.GetFileInfo().GetImagePath()+"/";
-  fname_folder = fname_folder_root + fname_folder;
+  fname_folder =  fname_folder;
 
   // *******************************************
   // Private variables:
@@ -409,7 +409,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     $.ajax({
            async: true,
            type: "POST", 
-           url: "./annotationTools/video/encode.php",
+           url: "./annotationTools/php/encode.php",
            data: {width: "640", height: "480", rate:"15", input: fname_folder,frame: frame.toString(), duration: duration},
            success: function(response){
             last_frame = Math.min(frame + duration*15, ovP.getnumFrames());

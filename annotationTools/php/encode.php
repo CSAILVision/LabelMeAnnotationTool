@@ -1,3 +1,4 @@
+<?php include('globalvariables.php'); ?>
 <?php
 /*
 $width = intval($argv[1]);
@@ -11,11 +12,10 @@ $duration = floatval($argv[6]);
 
 //"/var/www/developers/xavierpuigf/xpf/LabelMe3.0/"
 
-
 $width = intval($_POST['width']);
 $height = intval($_POST['height']);
 $framerate = floatval($_POST['rate']);
-$inpath = $_POST['input'];
+$inpath = $TOOLHOME . $_POST['input'];
 $initframe = intval($_POST['frame']);
 $duration = floatval($_POST['duration']);
 if ($width < 1 || $height < 1) {
@@ -29,14 +29,7 @@ $dir = dir($inpath);
 
 $files = Array();
 $count = 1;
-/*
-while ($file = $dir->read()) {
-  if (strtolower(substr($file, -4)) == ".jpg") {
-    if ($count >= $initframe and $count <=$last_frame) array_push($files, $inpath . "/" . $file);
-    $count++;
-  }
-}
-*/
+
 
 while ($file = $dir->read()) {
   if (strtolower(substr($file, -4)) == ".jpg") {

@@ -68,7 +68,7 @@ function video(id) {
     
     // Sets the dimensions of the image based on browser setup.
     this.SetImageDimensions = function() {
-        
+        this.im_ratio = 1.;
         this.width_curr = 640;
         this.height_curr = 480;
         
