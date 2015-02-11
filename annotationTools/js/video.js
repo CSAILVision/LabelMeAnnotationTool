@@ -71,6 +71,8 @@ function video(id) {
         this.im_ratio = 1.;
         this.width_curr = 640;
         this.height_curr = 480;
+        this.width_orig = 640;
+        this.height_orig = 480;
         
         
         
@@ -344,5 +346,249 @@ function video(id) {
         var idx = str.indexOf('=');
         return str.substring(idx+1,str.length);
     };
+    this.GetInterpolatedPoints = function (xinit, yinit, xend, yend, tinit, tend, tcurrent){
+        Xresp = Array(xinit.length);
+        Yresp = Array(xinit.length);
+        for (var i = 0; i <Xresp.length; i++){
+            alfa = (tend - tcurrent)/(tend-tinit);
+            Xresp[i] = alfa*xinit[i] + (1-alfa)*xend[i];
+            Yresp[i] = alfa*yinit[i] + (1-alfa)*yend[i];
+        }
+        return [Xresp, Yresp];
+    }
+    this.UpdateObjectPosition = function (anno){
+        // FALTA AFEGIR FRAMES <t> PER DAVANT QUAN EXTENEM EL POLIGON FRAMES A PRIORI
+      console.log(LM_xml);
+      var obj_ndx = anno.anno_id;
+      var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
+      var framestamps = (curr_obj.children("polygon").children("t").text()).split(',');
+      var userlabeledframes = (curr_obj.children("polygon").children("userlabeled").text()).split(',');
+      var pts_x = (curr_obj.children("polygon").children("x").text()).split(';');
+      var pts_y = (curr_obj.children("polygon").children("y").text()).split(';');
+
+      for(var ti=0; ti<framestamps.length; ti++) { 
+        framestamps[ti] = parseInt(framestamps[ti], 10); 
+      }
+      for (var ti = 0; ti < userlabeledframes.length; ti++){
+        userlabeledframes[ti] = parseInt(userlabeledframes[ti],10);
+      }
+      while (framestamps[0] > oVP.getcurrentFrame()){
+        framestamps.unshift(framestamps[0]-1);
+        pts_x.unshift(pts_x[0]);
+        pts_y.unshift(pts_y[0]);
+      }
+      var ti = 0;
+      while (ti < userlabeledframes.length && userlabeledframes[ti] <= oVP.getcurrentFrame()) ti++;
+      var ti2 = 0;
+      while (ti2 < userlabeledframes.length && userlabeledframes[ti2] < oVP.getcurrentFrame()) ti2++;
+      ti2--;//
+
+      var framenext = framestamps.length;
+      var frameprior = -1;
+      if (ti2 >= 0) frameprior = framestamps.indexOf(userlabeledframes[ti2]);
+      if (ti < userlabeledframes.length) framenext = framestamps.indexOf(userlabeledframes[ti]);
+      
+      console.log(framestamps, frameprior, framenext);
+      var objectind = framestamps.indexOf(oVP.getcurrentFrame());
+      // backward interpolation
+      for (var i = frameprior+1; i < objectind; i++){
+        var coords = [anno.pts_x, anno.pts_y];
+        if (frameprior > -1){
+            var Xref = pts_x[frameprior].split(',');
+            var Yref = pts_y[frameprior].split(',');
+            coords = this.GetInterpolatedPoints(Xref, Yref, anno.pts_x, anno.pts_y, framestamps[frameprior], framestamps[objectind], framestamps[i]);
+        }
+        
+        pts_x[i] = coords[0].join();
+        pts_y[i] = coords[1].join();
+      }
+      pts_y[objectind] = anno.pts_y;
+      pts_x[objectind] = anno.pts_x;
+      // forward interpolation
+      for (var i = objectind+1; i < framenext; i++){
+        var coords = [anno.pts_x, anno.pts_y];
+        if (framenext < framestamps.length){
+            var Xref = pts_x[framenext].split(',');
+            var Yref = pts_y[framenext].split(',');
+            coords = this.GetInterpolatedPoints(anno.pts_x, anno.pts_y, Xref, Yref, framestamps[objectind], framestamps[framenext], framestamps[i]);
+        }
+        pts_x[i] = coords[0].join();
+        pts_y[i] = coords[1].join();
+      }
+      userlabeledframes.push(oVP.getcurrentFrame());
+      jQuery.unique(userlabeledframes);
+      userlabeledframes.sort(function(a, b){return a-b});
+      new_x_str = pts_x.join(';');
+      new_y_str = pts_y.join(';');
+      curr_obj.children("polygon").children("t").text(framestamps.join(','));
+      curr_obj.children("polygon").children("x").text(new_x_str);
+      curr_obj.children("polygon").children("y").text(new_y_str);   
+      curr_obj.children("polygon").children("userlabeled").text(userlabeledframes.join());  
+        
+    }
+    this.SubmitEditObject = function (){
+        submission_edited = 1;
+        var anno = select_anno;
+      
+      // object name
+      old_name = LMgetObjectField(LM_xml,anno.anno_id,'name');
+      if(document.getElementById('objEnter')) new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
+      else new_name = RemoveSpecialChars(adjust_objEnter);
+      
+      var re = /[a-zA-Z0-9]/;
+      if(!re.test(new_name)) {
+        alert('Please enter an object name');
+        return;
+      }
+      
+      if (use_attributes) {
+        // occlusion field
+        if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+        else new_occluded = RemoveSpecialChars(adjust_occluded);
+        
+        // attributes field
+        if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+        else new_attributes = RemoveSpecialChars(adjust_attributes);
+      }
+      
+      StopEditEvent();
+      
+      // Object index:
+      var obj_ndx = anno.anno_id;
+      
+      // Pointer to object:
+      var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
+      
+      // Set fields:
+      curr_obj.children("name").text(new_name);
+      if(curr_obj.children("automatic").length > 0) curr_obj.children("automatic").text("0");
+      
+      // Insert attributes (and create field if it is not there):
+      if(curr_obj.children("attributes").length>0) curr_obj.children("attributes").text(new_attributes);
+      else curr_obj.append("<attributes>" + new_attributes + "</attributes>");
+        
+      if(curr_obj.children("occluded").length>0) curr_obj.children("occluded").text(new_occluded);
+      else curr_obj.append("<occluded>" + new_occluded + "</occluded>");
+      this.UpdateObjectPosition(anno);  
+      oVP.DisplayFrame(oVP.getcurrentFrame());    
+      
+    }
+    this.SubmitObject = function (){
+        var nn;
+        var anno;
+        if (use_attributes) {
+            // get attributes (is the field exists)
+            if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+            else new_attributes = "";
+            
+            // get occlusion field (is the field exists)
+            if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+            else new_occluded = "";
+        }
+        if((object_choices!='...') && (object_choices.length==1)) {
+            nn = RemoveSpecialChars(object_choices[0]);
+            active_canvas = REST_CANVAS;
+            // Move draw canvas to the back:
+            document.getElementById('draw_canvas').style.zIndex = -2;
+            document.getElementById('draw_canvas_div').style.zIndex = -2;
+            var anno = null;
+            if(draw_anno) {
+              anno = draw_anno;
+              draw_anno = null;
+            }
+            
+        }
+        else {
+            nn = RemoveSpecialChars(document.getElementById('objEnter').value);
+            anno = main_handler.QueryToRest();
+        }
+        var re = /[a-zA-Z0-9]/;
+        if(!re.test(nn)) {
+            alert('Please enter an object name');
+            return;
+        }
+        
+    
+        // Update old and new object names for logfile:
+        submission_edited = 0;
+        global_count++;
+      
+        // Insert data into XML:
+        var html_str = '<object>';
+        html_str += '<name>' + nn + '</name>';
+        if(use_attributes) {
+            html_str += '<occluded>' + new_occluded + '</occluded>';
+            html_str += '<attributes>' + new_attributes + '</attributes>';
+        }
+        html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
+        var ts = 0;//GetTimeStamp();
+        if(ts.length==20) html_str += '<date>' + ts + '</date>';
+        html_str += '<id>' + anno.anno_id + '</id>';
+        html_str += '<polygon>';
+        html_str += '<username>' + username + '</username>';
+        var t_str = '<t>';
+        var x_str = '<x>';
+        var y_str = '<y>';
+        for (var fr = oVP.getcurrentFrame(); fr < oVP.getnumFrames(); fr++){
+            if (fr > oVP.getcurrentFrame()){ 
+                t_str += ', ';
+                x_str += '; ';
+                y_str += '; ';
+            }
+            t_str += fr;
+            for(var jj=0; jj < anno.GetPtsX().length; jj++) {
+                if (jj > 0){
+                    x_str += ', ';
+                    y_str += ', ';
+                }
+                x_str += anno.GetPtsX()[jj];
+                y_str += anno.GetPtsY()[jj];
+            }
+        }
+        t_str += '</t>';
+        x_str += '</x>';
+        y_str += '</y>';
+        html_str += t_str;
+        html_str += x_str;
+        html_str += y_str;
+        html_str += '<userlabeled>'+oVP.getcurrentFrame()+'</userlabeled>';
+        html_str += '</polygon>';
+        html_str += '<parts>'
+        html_str += '<hasparts/>'
+        html_str += '<ispartof/>'
+        html_str += '</parts>'
+        html_str += '</object>';
+        $(LM_xml).children("annotation").append($(html_str));
+        //ChangeLinkColorFG(anno.GetAnnoID());
+        $('#select_canvas').css('z-index','0');
+        $('#select_canvas_div').css('z-index','0');
+        $('#'+this.polygon_id).remove();
+          select_anno = anno;
+          // var anno = main_canvas.DetachAnnotation(anno.anno_id);
+        adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
+          // Submit username:
+          if(username_flag) submit_username();
+
+          // Redraw polygon:
+          anno = select_anno;
+          anno.DrawPolygon(main_media.GetImRatio());
+
+          // Set polygon (x,y) points:
+          anno.pts_x = x;
+          anno.pts_y = y;
+
+          // Set global variable whether the control points have been edited:
+          editedControlPoints = _editedControlPoints;
+          // Submit annotation:
+          StopEditEvent();
+          oVP.DisplayFrame(oVP.getcurrentFrame());
+          //main_media.SubmitEditObject();
+        },main_media.GetImRatio());
+      // Start adjust event:
+      adjust_event.StartEvent();
+    };
+
+
+    
 }
 

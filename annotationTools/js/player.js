@@ -76,7 +76,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
         oVP.GenerateFrames();
         if (first_time) ovP.GoToFrame(frame);
         ovP.seekChunkToDownload(frame);
-        if ((first_time || frame == iFrameCtr ) && uPaused == false) oVP.Play();
+        if (first_time || frame == iFrameCtr ) oVP.Play();
       }
       catch(e) {
          console.log("Error parsing video data ", e);
@@ -108,13 +108,12 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     $('#videoplayer').append(oScroll);
     $('#oScroll').slider({
             range : "min",
-            min   : 0,
+            min   : 1,
             max   : this.imageWidth,
-            value : 0,
+            value : 1,
             slide : function (event, ui) {
-                //ovP.Pause(false);
                 pos = ui.value/ovP.imageWidth;
-                iFrameCtr = Math.floor(pos*(oVideoData.frames-1));
+                iFrameCtr = Math.max(Math.floor(pos*(oVideoData.frames-1)),1);
                 ovP.DisplayFrame(iFrameCtr);
             }
             
@@ -125,9 +124,9 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     $('#oScroll').append(oLoad);
     $('#oLoadBar').slider({
             range : "min",
-            min   : 0,
+            min   : 1,
             max   : this.imageWidth,
-            value : 0,
+            value : 1,
             
             
         });
@@ -183,30 +182,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       var oImage = '<img src="' + oVideoData.data.video[i] + '" id="im" style="display:block;position:absolute;padding:0;border-width:0;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;z-index:-3;" />';
       aFrameImages[i+shift] = oImage;
     }
-  //   console.time('get all polygons');
-  //   // Get all polygons:
-  //   var allObjects = LM_xml.getElementsByTagName('object');
-  //   for(var objndx = 0; objndx < allObjects.length; objndx++) {
-  //     console.log(allObjects[objndx]);
-  //     this.display_polygon[objndx] = false;
-  //     if(!parseInt(allObjects[objndx].getElementsByTagName('deleted')[0].innerHTML)) {
-  // this.display_polygon[objndx] = true;
-  // this.X[objndx] = Array();
-  // this.Y[objndx] = Array();
-  // var allPolygons = allObjects[objndx].getElementsByTagName('polygon');
-  // for(var i = 0; i < allPolygons.length; i++) {
-  //   // Get points:
-  //   var allPoints = allPolygons[i].getElementsByTagName('pt');
-  //   this.X[objndx][i] = Array();
-  //   this.Y[objndx][i] = Array();
-  //   for(var j = 0; j < allPoints.length; j++) {
-  //     this.X[objndx][i][j] = parseInt(allPoints[j].getElementsByTagName('x')[0].innerHTML);
-  //     this.Y[objndx][i][j] = parseInt(allPoints[j].getElementsByTagName('y')[0].innerHTML);
-  //   }
-  // } 
-  //     }
-  //   }
-  //   console.timeEnd('get all polygons');
+
   }
   
   this.DisplayFrame = function(i) {
@@ -237,34 +213,46 @@ this.loadFile = function(frame, first_time, isbackground, response) {
         // Get object name:
 
         // Get points:
-        var X = Array();
-        var Y = Array();
-        var framestamps = (obj.children("polygon").children("t").text()).split(',')
-        for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
-        var objectind = framestamps.indexOf(i);
-        
-        if (objectind >= 0){
-         var pointsx = (obj.children("polygon").children("x").text()).split(';')[objectind]
-         X = pointsx.split(',')
-         for(var ti=0; ti<X.length; ti++) { X[ti] = parseInt(X[ti], 10); } 
-         var pointsy = (obj.children("polygon").children("y").text()).split(';')[objectind]
-         Y = pointsy.split(',')
-         for(var ti=0; ti<Y.length; ti++) { Y[ti] = parseInt(Y[ti], 10); } 
+        var anno_id = obj.children("id").text();
+          var X = Array();
+          var Y = Array();
+          var framestamps = (obj.children("polygon").children("t").text()).split(',')
+          for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
+          var objectind = framestamps.indexOf(i);
+          
+          if (objectind >= 0){
+           var pointsx = (obj.children("polygon").children("x").text()).split(';')[objectind]
+           X = pointsx.split(',')
+           for(var ti=0; ti<X.length; ti++) { X[ti] = parseInt(X[ti], 10); } 
+           var pointsy = (obj.children("polygon").children("y").text()).split(';')[objectind]
+           Y = pointsy.split(',')
+           for(var ti=0; ti<Y.length; ti++) { Y[ti] = parseInt(Y[ti], 10); } 
+            var obj_name = "foo";
+           if (obj.children("name")) obj_name = obj.children("name").text();
+           if (select_anno == null || (select_anno && select_anno.anno_id != anno_id)){
+              polid = DrawPolygon('myCanvas_bg',X,Y,obj_name,attr,scale);
+              $('#'+polid).attr('onmousedown','StartEditVideoEvent("'+polid+'",' + it + ',evt); return false;');
+              //$('#'+polid).attr('onmousemove','main_handler.CanvasMouseMove(evt,'+ it +'); return false;');
+              $('#'+polid).attr('oncontextmenu','return false');
+              $('#'+polid).css('cursor','pointer');
+            }
+            else {
 
-         DrawPolygon('myCanvas_bg',X,Y,"foo",attr,scale);
+              $('#'+select_anno.polygon_id).parent().remove();
+              $('#'+select_anno.polygon_id).remove();
+              adjust_event.x  = X;
+              adjust_event.y = Y;
+              adjust_event.polygon_id = adjust_event.DrawPolygon(adjust_event.dom_attach,X,Y,obj_name,scale);
+              select_anno.polygon_id = adjust_event.polygon_id;
+              
+              adjust_event.RemoveControlPoints();
+              adjust_event.RemoveCenterOfMass();
+
+              adjust_event.ShowControlPoints();
+              adjust_event.ShowCenterOfMass();
+            }
+          }
         }
-    //     for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
-    // X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
-    // Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
-    //     }
-
-    //     // Draw polygon:
-    //     var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
-    //     var scale = 1;
-    //     DrawPolygon('canvas',X,Y,name,attr,scale);
-      
-    }
-
   }
   this.GoToFrame = function(frame){
     iFrameCtr = frame;
@@ -290,7 +278,9 @@ this.loadFile = function(frame, first_time, isbackground, response) {
 
   // Start playback.
   this.Play = function(buttonClicked) {
+    //if (active_canvas != REST_CANVAS) return;
     if (buttonClicked) uPaused = false;
+    else if (uPaused == true) return;
     if (aFrameImages[iFrameCtr] == null) return;
     if (bPlaying) {
       if (bPaused) bPaused = false;
@@ -348,7 +338,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     // Replace with play button:
     $('#playpausebutton').attr('src','./annotationTools/video/icons/video_play.png');
     $('#playpausebutton').attr('title','Play');
-    $('#playpausebutton').attr('onclick','oVP.Play();');
+    $('#playpausebutton').attr('onclick','oVP.Play(true);');
   }
   
   // Step forward one frame:
@@ -371,11 +361,11 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     if(!bPaused) this.Pause();
     else {
       iFrameCtr--;
-      if (iFrameCtr < 0) {
-	iFrameCtr = 0;
+      if (iFrameCtr <= 0) {
+	iFrameCtr = 1;
       }
       
-      // Render next frame:
+      // Render next frame:s
       this.DisplayFrame(iFrameCtr);
       this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
     }
@@ -384,7 +374,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   // Go to beginning of video:
   this.StepBeginning = function() {
     this.Pause();
-    iFrameCtr = 0;
+    iFrameCtr = 1;
     
     // Render next frame:
     this.DisplayFrame(iFrameCtr);
@@ -421,10 +411,3 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   }
 }
 
-
-// $(document).ready(function() {
-//   console.time('Load LabelMe XML file');
-// 	oVP = new JSVideo();
-// 	console.time('Load video');
-//   oVP.loadChunk(1, 1, true, false);
-// });

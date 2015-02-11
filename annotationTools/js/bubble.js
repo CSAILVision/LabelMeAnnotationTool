@@ -163,7 +163,9 @@ function GetPopupFormEdit(anno) {
   html_str += "<br />";
   
   // Done button:
-  html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
+  if (video_mode) html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_media.SubmitEditObject();" tabindex="0" />';
+  
+  else html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
   
   /*************************************************************/
   /*************************************************************/
@@ -200,11 +202,13 @@ function HTMLobjectBox(obj_name) {
   // if obj_name is empty it means that the box is being created
   if (obj_name=='') {
     // If press enter, then submit; if press ESC, then delete:
-    html_str += 'main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" ';
+    if (video_mode) html_str += 'main_media.SubmitObject();if(c==27) main_handler.WhatIsThisObjectDeleteButton();" ';
+    else html_str += 'main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" ';
   }
   else {
     // If press enter, then submit:
-    html_str += 'main_handler.SubmitEditLabel();" ';
+    if (video_mode) html_str += 'main_media.SubmitEditObject();" ';
+    else html_str += 'main_handler.SubmitEditLabel();" ';
   }
   
   // if there is a list of objects, we need to habilitate the list

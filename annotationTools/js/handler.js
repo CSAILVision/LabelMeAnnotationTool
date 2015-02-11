@@ -313,7 +313,7 @@ function handler() {
 	if(query_anno) query_anno.DeletePolygon();
 	var anno = query_anno;
 	query_anno = null;
-
+  
 	CloseQueryPopup();
 	main_media.ScrollbarsOn();
 

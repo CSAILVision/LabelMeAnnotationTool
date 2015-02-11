@@ -53,6 +53,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
     // Draw polygon:
     this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
+    select_anno.polygon_id = this.polygon_id;
     FillPolygon(this.polygon_id);
     
     // Show control points:
@@ -158,9 +159,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.y[this.selectedControlPoint] = Math.max(Math.min(Math.round(y/this.scale),main_media.height_orig),1);
       
       // Remove polygon and redraw:
+      $('#'+this.polygon_id).parent().remove();
       $('#'+this.polygon_id).remove();
       this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
-      
+      select_anno.polygon_id = this.polygon_id;
       // Adjust control points:
       this.RemoveControlPoints();
       this.ShowControlPoints();
@@ -174,6 +176,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.ShowCenterOfMass();
       this.isEditingControlPoint = false;
 
+      select_anno.pts_x = this.x;
+      select_anno.pts_y = this.y;
+      if (video_mode) main_media.UpdateObjectPosition(select_anno);
       // Set action:
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousedown({obj: this},function(e) {
@@ -201,6 +206,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
   };
 
   this.MoveCenterOfMass = function(event) {
+
     if(this.isMovingCenterOfMass) {
       var x = GetEventPosX(event);
       var y = GetEventPosY(event);
@@ -216,7 +222,6 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 	dx = Math.min(this.x[i]+dx,main_media.width_orig)-this.x[i];
 	dy = Math.min(this.y[i]+dy,main_media.height_orig)-this.y[i];
       }
-      
       // Adjust polygon and center point:
       for(var i = 0; i < this.x.length; i++) {
 	this.x[i] = Math.round(this.x[i]+dx);
@@ -226,9 +231,11 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.center_y = Math.round(this.scale*(dy+this.center_y));
       
       // Remove polygon and redraw:
+      $('#'+this.polygon_id).parent().remove();
       $('#'+this.polygon_id).remove();
       this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
-      
+      select_anno.polygon_id = this.polygon_id;
+
       // Redraw center of mass:
       this.RemoveCenterOfMass();
       this.ShowCenterOfMass();
@@ -249,6 +256,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       FillPolygon(this.polygon_id);
       this.isMovingCenterOfMass = false;
 
+      select_anno.pts_x = this.x;
+      select_anno.pts_y = this.y;
+      if (video_mode) main_media.UpdateObjectPosition(select_anno);
       // Set action:
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousedown({obj: this},function(e) {

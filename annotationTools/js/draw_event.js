@@ -8,7 +8,7 @@ var query_anno = null;
 function StartDrawEvent(event) {
   if(!action_CreatePolygon) return;
   if(active_canvas != REST_CANVAS) return;
-
+  
   // Write message to the console:
   console.log('LabelMe: Starting draw event...');
 
@@ -22,7 +22,7 @@ function StartDrawEvent(event) {
 
   // Set active canvas:
   active_canvas = DRAW_CANVAS;
-
+  if (video_mode) oVP.Pause();
   // Get (x,y) mouse click location and button.
   var x = GetEventPosX(event);
   var y = GetEventPosY(event);
@@ -38,7 +38,8 @@ function StartDrawEvent(event) {
   if(username_flag) submit_username();
   
   // Create new annotation structure:
-  draw_anno = new annotation(AllAnnotations.length);
+  var numItems = $(LM_xml).children('annotation').children('object').length;
+  draw_anno = new annotation(numItems);
   
   // Add first control point:
   draw_anno.pts_x.push(Math.round(x/main_media.GetImRatio()));
@@ -110,6 +111,7 @@ function DrawCanvasClosePolygon() {
   
   // Remove polygon from the draw canvas:
   var anno = null;
+
   if(draw_anno) {
     draw_anno.DeletePolygon();
     anno = draw_anno;
@@ -129,7 +131,35 @@ function DrawCanvasClosePolygon() {
   // Make query popup appear.
   main_media.ScrollbarsOff();
   WriteLogMsg('*What_is_this_object_query');
-  mkPopup(pt[0],pt[1]);
+  if (video_mode){
+    var html_str = "<b>Enter object name</b><br />";
+    html_str += HTMLobjectBox("");
+    
+    if(use_attributes) {
+      html_str += HTMLoccludedBox("");
+      html_str += "<b>Enter attributes</b><br />";
+      html_str += HTMLattributesBox("");
+    }
+    if(use_parts) {
+      html_str += HTMLpartsBox("");
+    }
+    html_str += "<br />";
+  
+    // Done button:
+    html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_media.SubmitObject();" tabindex="0" />';
+  
+    // Undo close button:
+    html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
+  
+    // Delete button:
+    html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="scribble_canvas.WhatIsThisObjectDeleteButton();" tabindex="0" />';
+    
+
+
+
+    CreatePopupBubble(pt[0],pt[1], html_str, 'main_section');
+  } 
+  else mkPopup(pt[0],pt[1]);
   
   // If annotation is point or line, then 
   if(doReset) object_choices = '...';
@@ -173,7 +203,7 @@ function UndoCloseButton() {
 function StopDrawEvent() {
   // Set active canvas:
   active_canvas = REST_CANVAS;
-  
+  if (video_mode) oVP.Play();
   // Move draw canvas to the back:
   $('#draw_canvas').css('z-index','-2');
   $('#draw_canvas_div').css('z-index','-2');
