@@ -204,10 +204,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
         pointy = Math.min.apply(Math, this.y);
       }
       if (this.selectedScalingPoint == 1){
-        origx = Math.max.apply(Math, this.x);
-        origy = Math.min.apply(Math, this.y);
-        pointx = Math.min.apply(Math, this.x);
-        pointy = Math.max.apply(Math, this.y);
+        origx = Math.min.apply(Math, this.x);
+        origy = Math.max.apply(Math, this.y);
+        pointx = Math.max.apply(Math, this.x);
+        pointy = Math.min.apply(Math, this.y);
       }
       if (this.selectedScalingPoint == 2){
         origx = Math.min.apply(Math, this.x);
@@ -216,10 +216,11 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
         pointy = Math.max.apply(Math, this.y); 
       }
       if (this.selectedScalingPoint == 3){
-        origx = Math.min.apply(Math, this.x);
-        origy = Math.max.apply(Math, this.y);
-        pointx = Math.max.apply(Math, this.x);
-        pointy = Math.min.apply(Math, this.y);
+        
+        origx = Math.max.apply(Math, this.x);
+        origy = Math.min.apply(Math, this.y);
+        pointx = Math.min.apply(Math, this.x);
+        pointy = Math.max.apply(Math, this.y);
       }
       prx = (x-origx)/(pointx-origx);
       pry = (y-origy)/(pointy-origy);
