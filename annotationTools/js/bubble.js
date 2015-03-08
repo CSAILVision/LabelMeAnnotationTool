@@ -120,11 +120,10 @@ function GetPopupFormDraw() {
     html_str += "<b>Enter attributes</b><br />";
     html_str += HTMLattributesBox("");
   }
-  
   if(use_parts) {
     html_str += HTMLpartsBox("");
   }
-  
+  console.log(html_str);
   html_str += "<br />";
   
   // Done button:

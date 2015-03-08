@@ -97,10 +97,15 @@ function StopEditEvent() {
 
   // If the annotation is not deleted or we are in "view deleted" mode, 
   // then attach the annotation to the main_canvas:
-  if(!anno.GetDeleted() || view_Deleted || !video_mode) {
-    main_canvas.AttachAnnotation(anno);
-    if(!anno.hidden) {
-      anno.RenderAnnotation('rest');
+  if(!anno.GetDeleted() || view_Deleted) {
+    if (!video_mode){
+      main_canvas.AttachAnnotation(anno);
+      if(!anno.hidden) {
+        anno.RenderAnnotation('rest');
+      }
+    }
+    else {
+      oVP.DisplayFrame(oVP.getcurrentFrame());
     }
   }
 

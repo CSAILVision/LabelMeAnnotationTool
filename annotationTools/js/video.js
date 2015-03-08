@@ -387,8 +387,6 @@ function video(id) {
       var frameprior = -1;
       if (ti2 >= 0) frameprior = framestamps.indexOf(userlabeledframes[ti2]);
       if (ti < userlabeledframes.length) framenext = framestamps.indexOf(userlabeledframes[ti]);
-      
-      console.log(framestamps, frameprior, framenext);
       var objectind = framestamps.indexOf(oVP.getcurrentFrame());
       // backward interpolation
       for (var i = frameprior+1; i < objectind; i++){
