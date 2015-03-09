@@ -579,8 +579,7 @@ function video(id) {
           editedControlPoints = _editedControlPoints;
           // Submit annotation:
           StopEditEvent();
-          oVP.DisplayFrame(oVP.getcurrentFrame());
-          //main_media.SubmitEditObject();
+          
         },main_media.GetImRatio());
       // Start adjust event:
       adjust_event.StartEvent();

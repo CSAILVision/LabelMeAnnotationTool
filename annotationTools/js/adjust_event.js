@@ -134,7 +134,6 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
   }
   // This function shows all control points for an annotation.
   this.ShowControlPoints = function() {
-    console.log(this.scalepoints_ids);
     if(!this.control_ids) this.control_ids = new Array();
     for(var i = 0; i < this.x.length; i++) {
       // Draw control point:

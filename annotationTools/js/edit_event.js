@@ -124,6 +124,20 @@ var adjust_occluded;
 function AdjustPolygonButton() {
   // We need to capture the data before closing the bubble 
   // (THIS IS AN UGLY HACK)
+  
+  // Get annotation on the select canvas:
+  var anno = select_anno;
+
+  // object name
+  old_name = LMgetObjectField(LM_xml,anno.anno_id,'name');
+  if(document.getElementById('objEnter')) new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
+  else new_name = RemoveSpecialChars(adjust_objEnter);
+  
+  var re = /[a-zA-Z0-9]/;
+  if(!re.test(new_name)) {
+    alert('Please enter an object name');
+    return;
+  }
   adjust_objEnter = document.getElementById('objEnter').value;
   adjust_attributes = document.getElementById('attributes').value;
   adjust_occluded = document.getElementById('occluded').value;
@@ -134,8 +148,7 @@ function AdjustPolygonButton() {
   // Turn on image scrollbars:
   main_media.ScrollbarsOn();
   
-  // Get annotation on the select canvas:
-  var anno = select_anno;
+  
 
   // Remove polygon from canvas:
   $('#'+anno.polygon_id).remove();
@@ -175,8 +188,6 @@ function StartEditVideoEvent(polygon_id, anno_id,event) {
   framestamps = framestamps.split(',');
   for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
   var objectind = framestamps.indexOf(oVP.getcurrentFrame());
-
-  console.log(objectind);
   var x_pts = (((obj.children("polygon").children("x").text()).split(';'))[objectind]).split(',');
   var y_pts = (((obj.children("polygon").children("y").text()).split(';'))[objectind]).split(',');
   for(var ti=0; ti<x_pts.length; ti++) { 
