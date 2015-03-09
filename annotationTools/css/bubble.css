@@ -91,5 +91,22 @@
 	border-color:transparent #f00;
 }
 
+.bubble fieldset {
+	border: 3px solid #f00;
+	-webkit-border-radius:10px;
+	-moz-border-radius:10px;
+	border-radius:10px;
+}
+
+.bubble legend {
+	margin-left: 10px; 
+	padding: 0.1em 0.4em;
+	background: red;
+	color: white;
+	-webkit-border-radius:5px;
+	-moz-border-radius:5px;
+	border-radius:5px;
+	font-weight: bold;
+}
 
 

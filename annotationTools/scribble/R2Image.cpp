@@ -903,7 +903,8 @@ int R2Image::
 ReadPNG(const char *filename)
 {
   // Open file
-  FILE *fp = fopen(filename, "rb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "rb" );
   if (!fp) {
     fprintf(stderr, "Unable to open PNG file %s\n", filename);
     return 0;
@@ -990,7 +991,8 @@ int R2Image::
 WritePNG(const char *filename) const
 {
   // Open the file 
-  FILE *fp = fopen(filename, "wb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "wb" );
   if (fp == NULL) {
     fprintf(stderr, "Unable to open PNG file %s\n", filename);
     return 0;
@@ -1188,7 +1190,8 @@ int R2Image::
 ReadBMP(const char *filename)
 {
   // Open file
-  FILE *fp = fopen(filename, "rb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "rb" );
   if (!fp) {
     fprintf(stderr, "Unable to open image file: %s\n", filename);
     return 0;
@@ -1291,7 +1294,8 @@ int R2Image::
 WriteBMP(const char *filename) const
 {
   // Open file
-  FILE *fp = fopen(filename, "wb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "wb" );
   if (!fp) {
     fprintf(stderr, "Unable to open image file: %s\n", filename);
     return 0;
@@ -1375,7 +1379,8 @@ int R2Image::
 ReadPPM(const char *filename)
 {
   // Open file
-  FILE *fp = fopen(filename, "rb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "rb" );
   if (!fp) {
     fprintf(stderr, "Unable to open image file: %s\n", filename);
     return 0;
@@ -1398,7 +1403,8 @@ ReadPPM(const char *filename)
   ungetc(c, fp);
 
   // Read width and height
-  if (fscanf(fp, "%d%d", &width, &height) != 2) {
+  if( fscanf_s( fp, "%d%d", &width, &height ) != 2 )
+  {
     fprintf(stderr, "Unable to read width and height in PPM file");
     fclose(fp);
     return 0;
@@ -1407,7 +1413,8 @@ ReadPPM(const char *filename)
 	
   // Read max value
   double max_value;
-  if (fscanf(fp, "%lf", &max_value) != 1) {
+  if( fscanf_s( fp, "%lf", &max_value ) != 1 )
+  {
     fprintf(stderr, "Unable to read max_value in PPM file");
     fclose(fp);
     return 0;
@@ -1446,7 +1453,8 @@ ReadPPM(const char *filename)
       for (int i = 0; i < width; i++) {
 	// Read pixel values
 	int red, green, blue;
-	if (fscanf(fp, "%d%d%d", &red, &green, &blue) != 3) {
+	if( fscanf_s( fp, "%d%d%d", &red, &green, &blue ) != 3 )
+	{
 	  fprintf(stderr, "Unable to read data at (%d,%d) in PPM file", i, j);
 	  fclose(fp);
 	  return 0;
@@ -1476,7 +1484,8 @@ WritePPM(const char *filename, int ascii) const
   // Check type
   if (ascii) {
     // Open file
-    FILE *fp = fopen(filename, "w");
+	  FILE *fp = NULL;
+	  fopen_s( &fp, filename, "w" );
     if (!fp) {
       fprintf(stderr, "Unable to open image file: %s\n", filename);
       return 0;
@@ -1504,7 +1513,8 @@ WritePPM(const char *filename, int ascii) const
   }
   else {
     // Open file
-    FILE *fp = fopen(filename, "wb");
+	  FILE *fp = NULL;
+	  fopen_s( &fp, filename, "wb" );
     if (!fp) {
       fprintf(stderr, "Unable to open image file: %s\n", filename);
       return 0;
@@ -1542,7 +1552,8 @@ int R2Image::
 ReadPGM(const char *filename)
 {
   // Open file
-  FILE *fp = fopen(filename, "rb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "rb" );
   if (!fp) {
     fprintf(stderr, "Unable to open image file: %s\n", filename);
     return 0;
@@ -1566,7 +1577,8 @@ ReadPGM(const char *filename)
 
   // Read width and height
   nchannels = 1;
-  if (fscanf(fp, "%d%d", &width, &height) != 2) {
+  if( fscanf_s( fp, "%d%d", &width, &height ) != 2 )
+  {
     fprintf(stderr, "Unable to read width and height in PPM file");
     fclose(fp);
     return 0;
@@ -1574,7 +1586,8 @@ ReadPGM(const char *filename)
 	
   // Read max value
   double max_value;
-  if (fscanf(fp, "%lf", &max_value) != 1) {
+  if( fscanf_s( fp, "%lf", &max_value ) != 1 )
+  {
     fprintf(stderr, "Unable to read max_value in PPM file");
     fclose(fp);
     return 0;
@@ -1609,7 +1622,7 @@ ReadPGM(const char *filename)
       for (int i = 0; i < width; i++) {
 	// Read pixel values
 	int value;
-	if (fscanf(fp, "%d", &value) != 1) {
+	if (fscanf_s(fp, "%d", &value) != 1) {
 	  fprintf(stderr, "Unable to read data at (%d,%d) in PPM file", i, j);
 	  fclose(fp);
 	  return 0;
@@ -1636,7 +1649,8 @@ WritePGM(const char *filename, int ascii) const
   // Check type
   if (ascii) {
     // Open file
-    FILE *fp = fopen(filename, "w");
+	  FILE *fp = NULL;
+	  fopen_s( &fp, filename, "w" );
     if (!fp) {
       fprintf(stderr, "Unable to open image file: %s\n", filename);
       return 0;
@@ -1661,7 +1675,8 @@ WritePGM(const char *filename, int ascii) const
   }
   else {
     // Open file
-    FILE *fp = fopen(filename, "wb");
+	  FILE *fp = NULL;
+	  fopen_s( &fp, filename, "wb" );
     if (!fp) {
       fprintf(stderr, "Unable to open image file: %s\n", filename);
       return 0;
@@ -1697,7 +1712,8 @@ int R2Image::
 ReadPFM(const char *filename)
 {
   // Open file
-  FILE *fp = fopen(filename, "rb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "rb" );
   if (!fp) {
     fprintf(stderr, "Unable to open image: %s\n", filename);
     return 0;
@@ -1805,7 +1821,8 @@ int R2Image::
 WritePFM(const char *filename) const
 {
   // Open file
-  FILE *fp = fopen(filename, "wb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "wb" );
   if (!fp) {
     fprintf(stderr, "Unable to open pfm image file %s", filename);
     return 0;
@@ -1854,7 +1871,8 @@ int R2Image::
 ReadJPEG(const char *filename)
 {
   // Open file
-  FILE *fp = fopen(filename, "rb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "rb" );
   if (!fp) {
     fprintf(stderr, "Unable to open image file: %s\n", filename);
     return 0;
@@ -1932,7 +1950,8 @@ int R2Image::
 WriteJPEG(const char *filename) const
 {
   // Open file
-  FILE *fp = fopen(filename, "wb");
+	FILE *fp = NULL;
+	fopen_s( &fp, filename, "wb" );
   if (!fp) {
     fprintf(stderr, "Unable to open image file: %s\n", filename);
     return 0;

@@ -42,13 +42,13 @@ function handler() {
       }
       
       if (use_attributes) {
-	// occlusion field
-	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
-	else new_occluded = RemoveSpecialChars(adjust_occluded);
-	
-	// attributes field
-	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-	else new_attributes = RemoveSpecialChars(adjust_attributes);
+		// occlusion field
+		if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+		else new_occluded = RemoveSpecialChars(adjust_occluded);
+		
+		new_attributes = this.GenerateAttribs();
+		
+console.log( "New attributes = " + new_attributes );
       }
       
       StopEditEvent();
@@ -96,7 +96,7 @@ function handler() {
     this.EditBubbleDeleteButton = function () {
         var idx = select_anno.GetAnnoID();
 
-        if((IsUserAnonymous() || (!IsCreator(select_anno.GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
+        if(((!IsCreator(select_anno.GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
             return;
         }
@@ -153,10 +153,37 @@ function handler() {
     this.CanvasMouseMove = function (event,pp) {
         var x = GetEventPosX(event);
         var y = GetEventPosY(event);
-        if(IsNearPolygon(x,y,pp)) selectObject(pp);
+	    // -0.5 to adjust since we will do +0.5 after, to write ON the pixels, not BETWEEN the pixels.
+        if(IsNearPolygon(x-0.5,y-0.5,pp)) selectObject(pp);
         else unselectObjects();
     };
     
+	this.GenerateAttribs = function () {
+	
+		// attributes field
+		// construct the attributes according to the fields in pos, type and shape
+		var attribs = "";
+		var out = "";
+		if(document.getElementById('position'))
+		{
+			attribs += document.getElementById('position').value;
+			attribs += " ";
+		}
+		if(document.getElementById('type'))
+		{
+			attribs += document.getElementById('type').value;
+			attribs += " ";
+		}
+		if(document.getElementById('shape'))
+		{
+			attribs += document.getElementById('shape').value;
+		}
+			
+		if(attribs!='') out = attribs;
+		else out = adjust_attributes;
+		return out;
+	}
+	
     // Submits the object label in response to the "What is this object?"
     // popup bubble. THIS FUNCTION IS A MESS!!!!
     this.SubmitQuery = function () {
@@ -165,9 +192,13 @@ function handler() {
       
       // If the attributes are active, read the fields.
       if (use_attributes) {
+	  
+	  
 	// get attributes (is the field exists)
-	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-	else new_attributes = "";
+	//if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+	//else new_attributes = "";
+	new_attributes = this.GenerateAttribs();
+
 	
 	// get occlusion field (is the field exists)
 	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);

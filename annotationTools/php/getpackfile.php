@@ -1,50 +1,78 @@
     <?php
 
     include 'globalvariables.php';
+	
+	$DOZipImages = false;
+	$DOZipXML = true;
+	$DOZipMasks = true;
+	$DOZipScribbles = false;
 
 	$zip = new ZipArchive();
 	$folder = $_POST["folder"];
-
+			
 	$imname = $_POST["name"];
-    $collection = basename($folder);
-	$zipname = $collection."_".substr($imname,0,-4).".zip";
-	$imageurl = $TOOLHOME. "Images/" .$folder."/".$imname;
-	$xmlname = substr($imname,0,-4).".xml";
-	$xmlurl = $TOOLHOME. "Annotations/" .$folder."/".$xmlname;	
-
-
+    $collection = str_replace('/', '_', $folder);//basename($folder);
+    $collection = str_replace('\\', '_', $collection);//basename($folder);
+	$zipname = $collection.".zip";//."_".substr($imname,0,-4).".zip";
+	
 	if ($zip->open($zipname, ZipArchive::CREATE )!==TRUE) {
-        exit("cannot open\n");	
-    }
-
-    // Add the image and the xml
-    $zip->addFile($imageurl, $imname);
-    $zip->addFile($xmlurl, $xmlname);
-    $zip->addEmptyDir("Masks");
-	$zip->addEmptyDir("Scribbles");
-  
-    // Add the masks
-    $maskurl = $TOOLHOME. "Masks/".$folder."/".substr($imname,0,-4)."_mask_";
-    $scriburl = $TOOLHOME. "Scribbles/".$folder."/".substr($imname,0,-4)."_scribble_";
-    /*$cont = 0;
-    while (file_exists($maskurl.strval($cont).".png")){
-    	$zip->addFile($maskurl.strval($cont).".png", "Masks/".substr($imname,0,-4)."_".strval($cont).".png");
-    	$cont++;
-    }
-    $cont = 0;
-    while (file_exists($scriburl.strval($cont).".png")){
-    	$zip->addFile($scriburl.strval($cont).".png", "Scribbles/".substr($imname,0,-4)."_".strval($cont).".png");
-    	$cont++;
-    }*/
-    foreach (glob($maskurl."*") as $file) {
-        $cont = basename($file);
-        $zip->addFile($file, "Masks/".$cont);//substr($imname,0,-4)."_".strval($cont).".png");
-    }
-    foreach (glob($scriburl."*") as $file) {
-        $cont = basename($file);
-        $zip->addFile($file, "Scribbles/".$cont);
-    }
-
+		exit("cannot open\n");	
+	}
+	
+	if( $DOZipMasks == true ) {
+		$zip->addEmptyDir("Masks");
+	}
+	if( $DOZipScribbles == true ) {
+		$zip->addEmptyDir("Scribbles");
+	}
+	
+	
+	$imagesUrl = $TOOLHOME. "Images/" .$folder."/";//.$imname;
+	$images = scandir($imagesUrl);
+	foreach ($images as $img)
+	{
+		if (!in_array($img, array('.', '..')) && !is_dir($imagesUrl.$img)) 
+		{
+			if( $DOZipImages == true ) {
+				// Add the image
+				$zip->addFile($imagesUrl."/".$img, $img);
+			}
+			if( $DOZipMasks == true )
+			{
+				// Add the masks
+				$maskurl = $TOOLHOME. "Masks/".$folder."/".substr($img,0,-4)."_mask_";//imname
+				foreach (glob($maskurl."*") as $file) {
+					$cont = basename($file);
+					$zip->addFile($file, "Masks/".$cont);
+				}
+			
+			}
+			if( $DOZipScribbles == true )
+			{
+				$scriburl = $TOOLHOME. "Scribbles/".$folder."/".substr($img,0,-4)."_scribble_";//imname
+			
+				foreach (glob($scriburl."*") as $file) {
+					$cont = basename($file);
+					$zip->addFile($file, "Scribbles/".$cont);
+				}
+			}			
+		}
+	}
+	
+	if( $DOZipXML == true )
+	{
+		$xmlsUrl = $TOOLHOME. "Annotations/" .$folder."/";//.$xmlname;
+		$xmls = scandir($xmlsUrl);
+		foreach ($xmls as $xmlFile)
+		{
+			if (!in_array($xmlFile, array('.', '..')) && !is_dir($xmlsUrl.$xmlFile)) 
+			{
+				// Add the image
+				$zip->addFile($xmlsUrl."/".$xmlFile, $xmlFile);
+			}
+		}
+	}		
+	
     $zip->close();
     // download
     $zipped_size = filesize($zipname);

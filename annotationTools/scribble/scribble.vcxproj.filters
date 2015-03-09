@@ -1,0 +1,422 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Source\libjpeg">
+      <UniqueIdentifier>{63592b56-c0ae-48ee-a6dd-b2e9ecaecc3a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source\libpng">
+      <UniqueIdentifier>{78fa8cbd-7473-4bd9-a9c8-6d61b4f077fa}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="block.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="graph.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="R2Image.h">
+      <Filter>Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\cderror.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\cdjpeg.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jchuff.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jconfig.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jdct.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jdhuff.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jerror.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jinclude.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jmemsys.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jmorecfg.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jpegint.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jpeglib.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\jversion.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libjpeg\transupp.h">
+      <Filter>Source\libjpeg</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\config.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\crc32.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\deflate.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\gzguts.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\inffast.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\inffixed.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\inflate.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\inftrees.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\png.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\pngconf.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\pngpriv.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\trees.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\zconf.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\zlib.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\zutil.h">
+      <Filter>Source\libpng</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="example.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="graph.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="R2Image.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\cdjpeg.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcapimin.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcapistd.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jccoefct.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jccolor.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcdctmgr.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jchuff.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcinit.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcmainct.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcmarker.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcmaster.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcomapi.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcparam.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcphuff.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcprepct.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jcsample.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jctrans.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdapimin.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdapistd.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdatadst.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdatasrc.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdcoefct.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdcolor.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jddctmgr.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdhuff.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdinput.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdmainct.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdmarker.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdmaster.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdmerge.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdphuff.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdpostct.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdsample.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jdtrans.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jerror.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jfdctflt.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jfdctfst.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jfdctint.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jidctflt.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jidctfst.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jidctint.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jidctred.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jmemansi.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jmemmgr.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jquant1.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jquant2.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\jutils.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\rdbmp.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\rdcolmap.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\rdgif.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\rdppm.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\rdrle.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\rdswitch.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\rdtarga.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\transupp.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\wrbmp.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\wrgif.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\wrppm.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\wrrle.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libjpeg\wrtarga.c">
+      <Filter>Source\libjpeg</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\adler32.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\compress.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\crc32.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\deflate.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\gzclose.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\gzlib.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\gzread.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\gzwrite.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\infback.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\inffast.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\inflate.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\inftrees.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\png.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngerror.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngget.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngmem.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngpread.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngread.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngrio.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngrtran.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngrutil.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngset.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngtrans.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngwio.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngwrite.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngwtran.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\pngwutil.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\trees.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\uncompr.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+    <ClCompile Include="..\libpng\zutil.c">
+      <Filter>Source\libpng</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="instances.inc">
+      <Filter>Source</Filter>
+    </None>
+    <None Include="..\libjpeg\jmemdosa.asm">
+      <Filter>Source\libjpeg</Filter>
+    </None>
+    <None Include="..\libpng\Makefile">
+      <Filter>Source\libpng</Filter>
+    </None>
+    <None Include="..\libpng\png.vcxproj">
+      <Filter>Source\libpng</Filter>
+    </None>
+    <None Include="..\libpng\png.vcxproj.filters">
+      <Filter>Source\libpng</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\libpng\PNG-LICENSE.txt">
+      <Filter>Source\libpng</Filter>
+    </Text>
+    <Text Include="..\libpng\PNG-README.txt">
+      <Filter>Source\libpng</Filter>
+    </Text>
+    <Text Include="..\libpng\ZLIB_README.txt">
+      <Filter>Source\libpng</Filter>
+    </Text>
+  </ItemGroup>
+</Project>

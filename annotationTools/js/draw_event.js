@@ -42,8 +42,9 @@ function StartDrawEvent(event) {
   draw_anno = new annotation(numItems);
   
   // Add first control point:
-  draw_anno.pts_x.push(Math.round(x/main_media.GetImRatio()));
-  draw_anno.pts_y.push(Math.round(y/main_media.GetImRatio()));
+  // -0.5 to adjust since we will do +0.5 after, to write ON the pixels, not BETWEEN the pixels.
+  draw_anno.pts_x.push(Math.round(x/main_media.GetImRatio()-0.5));
+  draw_anno.pts_y.push(Math.round(y/main_media.GetImRatio()-0.5));
   
   // Draw polyline:
   draw_anno.SetDivAttach('draw_canvas');
@@ -70,8 +71,9 @@ function DrawCanvasMouseDown(event) {
 
   // Get (x,y) mouse location:
   var scale = main_media.GetImRatio();
-  var x = Math.round(GetEventPosX(event)/scale);
-  var y = Math.round(GetEventPosY(event)/scale);
+  // -0.5 to adjust since we will do +0.5 after, to write ON the pixels, not BETWEEN the pixels.
+  var x = Math.round(GetEventPosX(event)/scale-0.5);
+  var y = Math.round(GetEventPosY(event)/scale-0.5);
 
   // Add point to polygon:
   draw_anno.pts_x.push(x);
@@ -84,7 +86,7 @@ function DrawCanvasMouseDown(event) {
   var n = draw_anno.pts_x.length-1;
   
   // Draw line segment:
-  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_anno.pts_x[n-1],draw_anno.pts_y[n-1],draw_anno.pts_x[n],draw_anno.pts_y[n],'stroke="#0000ff" stroke-width="4"',scale));
+  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_anno.pts_x[n-1],draw_anno.pts_y[n-1],draw_anno.pts_x[n],draw_anno.pts_y[n],'stroke="#0000ff" stroke-width="1"',scale));
 
   // Set cursor to be crosshair on line segment:
   $('#'+draw_anno.line_ids[line_idx]).css('cursor','crosshair');

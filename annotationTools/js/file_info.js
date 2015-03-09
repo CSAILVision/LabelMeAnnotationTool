@@ -10,7 +10,7 @@ function file_info() {
     this.page_in_use = 0; // Describes if we already see an image.
     this.dir_name = null;
     this.im_name = null;
-    this.collection = 'LabelMe';
+    this.collection = 'MMXTestSets';
     this.mode = 'i'; //initialize to picture mode
     this.hitId = null;
     this.assignmentId = null;
@@ -24,7 +24,10 @@ function file_info() {
     // Parses the URL and gets the collection, directory, and filename
     // information of the image to be annotated.  Returns true if the
     // URL has collection, directory, and filename information.
-    this.ParseURL = function () {
+	// Adds offset to the current frame.
+    this.ParseURL = function ( offset ) {
+		if (typeof(offset)==='undefined') offset = 1;//default argument
+		
         var labelme_url = document.URL;
         var idx = labelme_url.indexOf('?');
         if((idx != -1) && (this.page_in_use == 0)) {
@@ -55,7 +58,7 @@ function file_info() {
                 }
                 if(par_field=='image') {
                     this.im_name = par_value;
-                    if(this.im_name.indexOf('.jpg')==-1 && this.im_name.indexOf('.png')==-1) {
+                    if(this.im_name.indexOf('.jpg')==-1 && this.im_name.indexOf('.png')==-1 && this.im_name.indexOf('.bmp')==-1) {
                         this.im_name = this.im_name + '.jpg';
                     }
                 }
@@ -151,7 +154,7 @@ function file_info() {
 		}
                 par_str = par_str.substring(idx+1,par_str.length);
             } while(idx != -1);
-            if((!this.dir_name) || (!this.im_name)) return this.SetURL(labelme_url);
+            if((!this.dir_name) || (!this.im_name)) return this.SetURL(labelme_url, offset);
             
             if(isMT) {
                 this.mode='mt'; // Ensure that we are in MT mode
@@ -201,7 +204,7 @@ function file_info() {
             }
         }
         else {
-            return this.SetURL(labelme_url);
+            return this.SetURL(labelme_url, offset);
         }
         
         return 1;
@@ -264,8 +267,9 @@ function file_info() {
     
     // Changes current URL to include collection, directory, and image
     // name information.  Returns false.
-    this.SetURL = function (url) {
-        this.FetchImage();
+    this.SetURL = function (url, offset) {
+		if (typeof(offset)==='undefined') offset = 1;//default argument
+        this.FetchImage( offset );
 
 	// Get base LabelMe URL:
         var idx = url.indexOf('?');
@@ -286,8 +290,11 @@ function file_info() {
     };
     
     // Fetch next image.
-    this.FetchImage = function () {
-        var url = 'annotationTools/perl/fetch_image.cgi?mode=' + this.mode + '&username=' + username + '&collection=' + this.collection.toLowerCase() + '&folder=' + this.dir_name + '&image=' + this.im_name;
+    this.FetchImage = function ( offset ) {	
+		if (typeof(offset)==='undefined') offset = 1;//default argument	
+		
+        var url = 'annotationTools/perl/fetch_image.cgi?mode=' + this.mode + '&username=' + username + '&collection=' + 
+			this.collection.toLowerCase() + '&folder=' + this.dir_name + '&image=' + this.im_name + '&offset=' + offset;
         var im_req;
         // branch for native XMLHttpRequest object
         if (window.XMLHttpRequest) {
@@ -306,9 +313,14 @@ function file_info() {
         if(im_req.status==200) {
             this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+			console.log( "Directory: " + this.dir_name );
+			console.log( "Filename: " + this.im_name );
+			return true;
         }
         else {
-            alert('Fatal: there are problems with fetch_image.cgi');
-        }
+			alert("TEST MG::!!!!Fatal: URL NOT WORKING. CHECK CONSOLE!!");
+            console.log("TEST MG:: " + url + "........STATUS=" + im_req.status + "!!");
+			return false;
+       }
     };
 }

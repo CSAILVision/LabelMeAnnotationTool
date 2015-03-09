@@ -8,7 +8,7 @@ var adjust_event = null;
 function StartEditEvent(anno_id,event) {
   console.log('LabelMe: Starting edit event...');
   if(event) event.stopPropagation();
-  if((IsUserAnonymous() || (!IsCreator(AllAnnotations[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
+  if(((!IsCreator(AllAnnotations[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
     PermissionError();
     return;
   }
@@ -120,6 +120,9 @@ function StopEditEvent() {
 var adjust_objEnter = '';
 var adjust_attributes;
 var adjust_occluded;
+var adjust_position;
+var adjust_type;
+var adjust_shape;
 
 function AdjustPolygonButton() {
   // We need to capture the data before closing the bubble 
@@ -139,7 +142,9 @@ function AdjustPolygonButton() {
     return;
   }
   adjust_objEnter = document.getElementById('objEnter').value;
-  adjust_attributes = document.getElementById('attributes').value;
+  adjust_position = document.getElementById('position').value;
+  adjust_type = document.getElementById('type').value;
+  adjust_shape = document.getElementById('shape').value;
   adjust_occluded = document.getElementById('occluded').value;
   
   // Close the edit popup bubble:

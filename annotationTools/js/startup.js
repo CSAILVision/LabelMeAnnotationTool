@@ -19,7 +19,7 @@ function StartupLabelMe() {
     // annotation folder or image filename.  If false is returned, the 
     // function fetches a new image and sets the URL to reflect the 
     // fetched image.
-    if(!main_media.GetFileInfo().ParseURL()) return;
+    //if(!main_media.GetFileInfo().ParseURL()) return;
 
     if(video_mode) {
       main_media = new video('videoplayer');
@@ -59,6 +59,7 @@ function LoadAnnotationSuccess(xml) {
 
   // Set global variable:
   LM_xml = xml;
+console.log( "LoadAnnotationSuccess CALLED SUCCESS!!!!" );
   if (video_mode){
     FinishStartup();
     return;
@@ -144,6 +145,10 @@ function LoadAnnotationSuccess(xml) {
   }
   console.timeEnd('loop annotated');
 
+  // Remove all current annotations before showing the new ones
+  // (in case we're reading the last frame, see CopyPreviousAnnotations())
+  main_canvas.RemoveAllAnnotations();
+  
   console.time('attach main_canvas');
   // Attach valid annotations to the main_canvas:
   for(var pp = 0; pp < num_obj; pp++) {
@@ -168,7 +173,9 @@ function LoadAnnotationSuccess(xml) {
 
 // Annotation file does not exist, so load template:
 function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
-  if(jqXHR.status==404) 
+console.log( "Startup.js::LoadAnnotation404 CALLED FAILED.... will call ReadXML with template xml!!!!" );
+ 
+ if(jqXHR.status==404) 
     ReadXML(main_media.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
   else
     alert(jqXHR.status);
@@ -204,42 +211,52 @@ function LoadTemplateSuccess(xml) {
 // Finish the startup process:
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
-  if(view_ObjList && !video_mode) RenderObjectList();
-
-  // Add actions:
-  console.log('LabelMe: setting actions');
-  if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_media.GetFileInfo().GetImagePath();');
-  $('#changeuser').attr("onclick","javascript:show_enterUserNameDIV(); return false;");
-  $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
-  $('#xml_url').attr("onclick","javascript:GetXMLFile();");
-  $('#nextImage').attr("onclick","javascript:ShowNextImage()");
-  $('#zoomin').attr("onclick","javascript:main_media.Zoom(1.15)");
-  $('#zoomout').attr("onclick","javascript:main_media.Zoom(1.0/1.15)");
-  $('#fit').attr("onclick","javascript:main_media.Zoom('fitted')");
-  $('#erase').attr("onclick","javascript:main_handler.EraseSegment()");
-  $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
-  $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
-  $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
-  $('#select_canvas_div').attr("oncontextmenu","javascript:return false;");
-  $('#query_canvas_div').attr("onmousedown","javascript:event.preventDefault();WaitForInput();return false;");
-  $('#query_canvas_div').attr("onmouseup","javascript:event.preventDefault();");
-  $('#query_canvas_div').attr("oncontextmenu","javascript:return false;");
-
-  // Initialize the username:
-  initUserName();
-
-  // Enable scribble mode:
-  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_media');
+  if(view_ObjList) RenderObjectList();
   
-  // Set action when the user presses a key:
-  document.onkeyup = main_handler.KeyPress;
-  
-  // Collect statistics:
-  ref = document.referrer;
+  // We only want to do the following once.
+  // It can be called after loading the last frame.  
+  if (typeof(ref)==='undefined')
+  {		
+	  // Add actions:
+	  console.log('LabelMe: setting actions');
+	  if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_media.GetFileInfo().GetImagePath();');
+	  $('#changeuser').attr("onclick","javascript:show_enterUserNameDIV(); return false;");
+	  $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
+	  $('#xml_url').attr("onclick","javascript:GetXMLFile();");
+	  $('#nextImage').attr("onclick","javascript:ShowNextImage()");
+	  $('#prevImage').attr("onclick","javascript:ShowPreviousImage()");	
+	  $('#copyPrevious').attr("onclick","javascript:CopyPreviousAnnotations()");
+	  $('#copyLastValid').attr("onclick","javascript:CopyLastValid()");	  
+	  $('#zoomin').attr("onclick","javascript:main_media.Zoom(1.5)");
+	  $('#zoomout').attr("onclick","javascript:main_media.Zoom(1.0/1.5)");
+	  $('#fit').attr("onclick","javascript:main_media.Zoom('fitted')");
+	  $('#erase').attr("onclick","javascript:main_handler.EraseSegment()");
+	  $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
+	  $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
+	  $('#myCanvas_bg_div').attr("onmouseover","javascript:unselectObjects();");
+	  $('#select_canvas_div').attr("oncontextmenu","javascript:return false;");
+	  $('#query_canvas_div').attr("onmousedown","javascript:event.preventDefault();WaitForInput();return false;");
+	  $('#query_canvas_div').attr("onmouseup","javascript:event.preventDefault();");
+	  $('#query_canvas_div').attr("oncontextmenu","javascript:return false;");
 
-  // Write "finished" messages:
-  WriteLogMsg('*done_loading_' + main_media.GetFileInfo().GetImagePath());
-  console.log('LabelMe: finished loading');
+	  // Initialize the username:
+	  initUserName();
+	  
+	  // Enable scribble mode:
+	  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_media');
+	  
+	  // Set action when the user presses a key:
+	  document.onkeyup = main_handler.KeyPress;
+	  
+	  // Collect statistics:
+	  ref = document.referrer;
 
-  console.timeEnd('startup');
+	  // Write "finished" messages:
+	  WriteLogMsg('*done_loading_' +  main_media.GetFileInfo().GetImagePath());
+	  console.log('LabelMe: finished loading');
+  }
+  else{
+	  WriteLogMsg('*done_loading_last_frame_' +  main_media.GetFileInfo().GetImagePath());
+	  console.log('LabelMe: finished loading last frame');	  
+  }
 }

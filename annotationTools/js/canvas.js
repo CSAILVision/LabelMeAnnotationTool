@@ -12,6 +12,14 @@ function canvas(div_attach) {
   // Public methods:
   // *******************************************
   
+  this.RemoveAllAnnotations = function() {  
+    // Loop through all of the annotations and clear them from the canvas.
+    for(var i=0;i<this.annotations.length;i++) {
+      this.annotations[i].DeletePolygon();
+    }
+	this.annotations = Array();
+  }
+  
   // Attach the annotation to the canvas.
   this.AttachAnnotation = function (anno) {
     this.annotations.push(anno);

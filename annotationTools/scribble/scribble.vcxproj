@@ -1,0 +1,218 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A1EDEBFE-8C2B-4E77-BD50-84DD5F6F52D3}</ProjectGuid>
+    <RootNamespace>scribble</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v120</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>segment</TargetName>
+    <TargetExt>.cgi</TargetExt>
+    <OutDir>$(SolutionDir)$\</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <TargetName>segment</TargetName>
+    <TargetExt>.cgi</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="..\libjpeg\cderror.h" />
+    <ClInclude Include="..\libjpeg\cdjpeg.h" />
+    <ClInclude Include="..\libjpeg\jchuff.h" />
+    <ClInclude Include="..\libjpeg\jconfig.h" />
+    <ClInclude Include="..\libjpeg\jdct.h" />
+    <ClInclude Include="..\libjpeg\jdhuff.h" />
+    <ClInclude Include="..\libjpeg\jerror.h" />
+    <ClInclude Include="..\libjpeg\jinclude.h" />
+    <ClInclude Include="..\libjpeg\jmemsys.h" />
+    <ClInclude Include="..\libjpeg\jmorecfg.h" />
+    <ClInclude Include="..\libjpeg\jpegint.h" />
+    <ClInclude Include="..\libjpeg\jpeglib.h" />
+    <ClInclude Include="..\libjpeg\jversion.h" />
+    <ClInclude Include="..\libjpeg\transupp.h" />
+    <ClInclude Include="..\libpng\config.h" />
+    <ClInclude Include="..\libpng\crc32.h" />
+    <ClInclude Include="..\libpng\deflate.h" />
+    <ClInclude Include="..\libpng\gzguts.h" />
+    <ClInclude Include="..\libpng\inffast.h" />
+    <ClInclude Include="..\libpng\inffixed.h" />
+    <ClInclude Include="..\libpng\inflate.h" />
+    <ClInclude Include="..\libpng\inftrees.h" />
+    <ClInclude Include="..\libpng\png.h" />
+    <ClInclude Include="..\libpng\pngconf.h" />
+    <ClInclude Include="..\libpng\pngpriv.h" />
+    <ClInclude Include="..\libpng\trees.h" />
+    <ClInclude Include="..\libpng\zconf.h" />
+    <ClInclude Include="..\libpng\zlib.h" />
+    <ClInclude Include="..\libpng\zutil.h" />
+    <ClInclude Include="block.h" />
+    <ClInclude Include="graph.h" />
+    <ClInclude Include="R2Image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\libjpeg\cdjpeg.c" />
+    <ClCompile Include="..\libjpeg\jcapimin.c" />
+    <ClCompile Include="..\libjpeg\jcapistd.c" />
+    <ClCompile Include="..\libjpeg\jccoefct.c" />
+    <ClCompile Include="..\libjpeg\jccolor.c" />
+    <ClCompile Include="..\libjpeg\jcdctmgr.c" />
+    <ClCompile Include="..\libjpeg\jchuff.c" />
+    <ClCompile Include="..\libjpeg\jcinit.c" />
+    <ClCompile Include="..\libjpeg\jcmainct.c" />
+    <ClCompile Include="..\libjpeg\jcmarker.c" />
+    <ClCompile Include="..\libjpeg\jcmaster.c" />
+    <ClCompile Include="..\libjpeg\jcomapi.c" />
+    <ClCompile Include="..\libjpeg\jcparam.c" />
+    <ClCompile Include="..\libjpeg\jcphuff.c" />
+    <ClCompile Include="..\libjpeg\jcprepct.c" />
+    <ClCompile Include="..\libjpeg\jcsample.c" />
+    <ClCompile Include="..\libjpeg\jctrans.c" />
+    <ClCompile Include="..\libjpeg\jdapimin.c" />
+    <ClCompile Include="..\libjpeg\jdapistd.c" />
+    <ClCompile Include="..\libjpeg\jdatadst.c" />
+    <ClCompile Include="..\libjpeg\jdatasrc.c" />
+    <ClCompile Include="..\libjpeg\jdcoefct.c" />
+    <ClCompile Include="..\libjpeg\jdcolor.c" />
+    <ClCompile Include="..\libjpeg\jddctmgr.c" />
+    <ClCompile Include="..\libjpeg\jdhuff.c" />
+    <ClCompile Include="..\libjpeg\jdinput.c" />
+    <ClCompile Include="..\libjpeg\jdmainct.c" />
+    <ClCompile Include="..\libjpeg\jdmarker.c" />
+    <ClCompile Include="..\libjpeg\jdmaster.c" />
+    <ClCompile Include="..\libjpeg\jdmerge.c" />
+    <ClCompile Include="..\libjpeg\jdphuff.c" />
+    <ClCompile Include="..\libjpeg\jdpostct.c" />
+    <ClCompile Include="..\libjpeg\jdsample.c" />
+    <ClCompile Include="..\libjpeg\jdtrans.c" />
+    <ClCompile Include="..\libjpeg\jerror.c" />
+    <ClCompile Include="..\libjpeg\jfdctflt.c" />
+    <ClCompile Include="..\libjpeg\jfdctfst.c" />
+    <ClCompile Include="..\libjpeg\jfdctint.c" />
+    <ClCompile Include="..\libjpeg\jidctflt.c" />
+    <ClCompile Include="..\libjpeg\jidctfst.c" />
+    <ClCompile Include="..\libjpeg\jidctint.c" />
+    <ClCompile Include="..\libjpeg\jidctred.c" />
+    <ClCompile Include="..\libjpeg\jmemansi.c" />
+    <ClCompile Include="..\libjpeg\jmemmgr.c" />
+    <ClCompile Include="..\libjpeg\jquant1.c" />
+    <ClCompile Include="..\libjpeg\jquant2.c" />
+    <ClCompile Include="..\libjpeg\jutils.c" />
+    <ClCompile Include="..\libjpeg\rdbmp.c" />
+    <ClCompile Include="..\libjpeg\rdcolmap.c" />
+    <ClCompile Include="..\libjpeg\rdgif.c" />
+    <ClCompile Include="..\libjpeg\rdppm.c" />
+    <ClCompile Include="..\libjpeg\rdrle.c" />
+    <ClCompile Include="..\libjpeg\rdswitch.c" />
+    <ClCompile Include="..\libjpeg\rdtarga.c" />
+    <ClCompile Include="..\libjpeg\transupp.c" />
+    <ClCompile Include="..\libjpeg\wrbmp.c" />
+    <ClCompile Include="..\libjpeg\wrgif.c" />
+    <ClCompile Include="..\libjpeg\wrppm.c" />
+    <ClCompile Include="..\libjpeg\wrrle.c" />
+    <ClCompile Include="..\libjpeg\wrtarga.c" />
+    <ClCompile Include="..\libpng\adler32.c" />
+    <ClCompile Include="..\libpng\compress.c" />
+    <ClCompile Include="..\libpng\crc32.c" />
+    <ClCompile Include="..\libpng\deflate.c" />
+    <ClCompile Include="..\libpng\gzclose.c" />
+    <ClCompile Include="..\libpng\gzlib.c" />
+    <ClCompile Include="..\libpng\gzread.c" />
+    <ClCompile Include="..\libpng\gzwrite.c" />
+    <ClCompile Include="..\libpng\infback.c" />
+    <ClCompile Include="..\libpng\inffast.c" />
+    <ClCompile Include="..\libpng\inflate.c" />
+    <ClCompile Include="..\libpng\inftrees.c" />
+    <ClCompile Include="..\libpng\png.c" />
+    <ClCompile Include="..\libpng\pngerror.c" />
+    <ClCompile Include="..\libpng\pngget.c" />
+    <ClCompile Include="..\libpng\pngmem.c" />
+    <ClCompile Include="..\libpng\pngpread.c" />
+    <ClCompile Include="..\libpng\pngread.c" />
+    <ClCompile Include="..\libpng\pngrio.c" />
+    <ClCompile Include="..\libpng\pngrtran.c" />
+    <ClCompile Include="..\libpng\pngrutil.c" />
+    <ClCompile Include="..\libpng\pngset.c" />
+    <ClCompile Include="..\libpng\pngtrans.c" />
+    <ClCompile Include="..\libpng\pngwio.c" />
+    <ClCompile Include="..\libpng\pngwrite.c" />
+    <ClCompile Include="..\libpng\pngwtran.c" />
+    <ClCompile Include="..\libpng\pngwutil.c" />
+    <ClCompile Include="..\libpng\trees.c" />
+    <ClCompile Include="..\libpng\uncompr.c" />
+    <ClCompile Include="..\libpng\zutil.c" />
+    <ClCompile Include="example.cpp" />
+    <ClCompile Include="graph.cpp" />
+    <ClCompile Include="R2Image.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\libjpeg\jmemdosa.asm" />
+    <None Include="..\libpng\Makefile" />
+    <None Include="..\libpng\png.vcxproj" />
+    <None Include="..\libpng\png.vcxproj.filters" />
+    <None Include="instances.inc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\libpng\PNG-LICENSE.txt" />
+    <Text Include="..\libpng\PNG-README.txt" />
+    <Text Include="..\libpng\ZLIB_README.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

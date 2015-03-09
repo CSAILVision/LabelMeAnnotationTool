@@ -112,29 +112,36 @@ function CloseEditPopup() {
 // ****************************
 
 function GetPopupFormDraw() {
-  html_str = "<b>Enter object name</b><br />";
+	
+  html_str = GetPopupFormDrawButtons();
+  
+  html_str += "<b>Enter object name</b><br />";
   html_str += HTMLobjectBox("");
   
   if(use_attributes) {
-    html_str += HTMLoccludedBox("");
     html_str += "<b>Enter attributes</b><br />";
     html_str += HTMLattributesBox("");
+    html_str += HTMLoccludedBox("");
   }
   if(use_parts) {
     html_str += HTMLpartsBox("");
   }
-  console.log(html_str);
-  html_str += "<br />";
-  
+  //console.log(html_str);
+  html_str += GetPopupFormDrawButtons();
+    
+  return html_str;
+}
+
+function GetPopupFormDrawButtons() {
+  html_str = "<div style='text-align: center;'>";
   // Done button:
   html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
-  
   // Undo close button:
   html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
-  
   // Delete button:
   html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
   
+  html_str += "</div>";
   return html_str;
 }
 
@@ -146,30 +153,33 @@ function GetPopupFormEdit(anno) {
   var occluded = LMgetObjectField(LM_xml,anno.anno_id,'occluded');
   var parts = anno.GetParts();
   
-  html_str = "<b>Enter object name</b><br />";
+  html_str = GetPopupFormEditButtons(anno);
+  html_str += "<b>Enter object name</b><br />";
   html_str += HTMLobjectBox(obj_name);
   
   if(use_attributes) {
-    html_str += HTMLoccludedBox(occluded);
     html_str += "<b>Enter attributes</b><br />";
     html_str += HTMLattributesBox(attributes);
+    html_str += HTMLoccludedBox(occluded);
   }
   
   if(use_parts) {
     html_str += HTMLpartsBox(parts);
   }
+    
+  html_str += GetPopupFormEditButtons(anno);
+  return html_str;
+}
+
+function GetPopupFormEditButtons(anno) {
   
-  html_str += "<br />";
-  
+  html_str = "<div style='text-align: center;'>";
   // Done button:
   if (video_mode) html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_media.SubmitEditObject();" tabindex="0" />';
   
   else html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
-  
-  /*************************************************************/
-  /*************************************************************/
+ 
   // Scribble: if anno.GetType() != 0 then scribble mode:
-
   // Adjust polygon button:
   if (anno.GetType() == 0) {
     html_str += '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
@@ -177,12 +187,11 @@ function GetPopupFormEdit(anno) {
   else {
     html_str += '<input type="button" value="Edit Scribbles" title="Press this button if you wish to update the segmentation." onclick="javascript:EditBubbleEditScribble();" />';  
   }
-  /*************************************************************/
-  /*************************************************************/
 
   // Delete button:
   html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" />';
   
+  html_str += "</div>";
   return html_str;
 }
 
@@ -190,11 +199,27 @@ function GetPopupFormEdit(anno) {
 // Simple building blocks:
 // ****************************
 
+var obj_name_gen = 0;
+
 // Shows the box to enter the object name
 function HTMLobjectBox(obj_name) {
   var html_str="";
   
-  html_str += '<input name="objEnter" id="objEnter" type="text" style="width:220px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
+  var the_name = obj_name;
+  
+  if (the_name=='') {
+	obj_name_gen++;
+	if( obj_name_gen > 9 )
+	{
+		the_name = '00' + obj_name_gen;
+	}
+	else
+	{
+		the_name = '000' + obj_name_gen;
+	}
+  }
+  
+  html_str += '<input name="objEnter" id="objEnter" type="text" style="width:345px;" tabindex="0" value="'+the_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
   
   html_str += ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)';
         
@@ -244,7 +269,7 @@ function HTMLoccludedBox(occluded) {
   
   // the value of the selection is inside a hidden field:
   html_str += 'Is occluded? <input type="hidden" name="occluded" id="occluded" value="'+occluded+'"/>';
-  
+
   // generate radio button
   if (occluded=='yes') {
     html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="yes" checked="yes" onclick="document.getElementById(\'occluded\').value=\'yes\';" />yes';
@@ -259,10 +284,129 @@ function HTMLoccludedBox(occluded) {
   return html_str;
 }
 
-// Boxes to enter attributes
-function HTMLattributesBox(attList) {    
-  return '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
+// Attributes of polygon as a list of radio buttons
+function HTMLattributesBox(attList) {
+	var html_str="";
+	if( attList == "" ) {
+		attList = "le eye roi";
+	}
+	var attribs = attList.split(' ');
+
+	// Useful value for radio buttons
+	var checked="checked='true'";
+	
+	// check valid tags, as of spec TestBenchPluginsFunctionalSpecs
+	// positionning
+	var valid = true;
+	var indexLe = attribs.indexOf( 'le' );
+	var indexRi = attribs.indexOf( 'ri' );
+	var pos = 0; // def value
+	var posChecked = new Array( "", "" );
+	if( indexLe != -1 ) {
+		pos = 0;
+	}
+	if( indexRi != -1 ) {
+		pos = 1;
+	}
+
+	var posVal = attribs[0];
+	if( pos != -1 ) {
+		posChecked[pos] = checked;
+	}
+
+	// object type 
+	var indexEye = attribs.indexOf( 'eye' );
+	var indexULid = attribs.indexOf( 'upperelid' );
+	var indexLLid = attribs.indexOf( 'lowerelid' );
+	var indexGli = attribs.indexOf( 'glint' );
+	var indexPup = attribs.indexOf( 'pupil' );
+	var indexLim = attribs.indexOf( 'limbus' );
+	var type = 0; //def val
+	var typeChecked = new Array( "", "", "", "", "", "" );
+	if( indexEye != -1 ) {
+		type = 0;
+	}
+	if( indexULid != -1 ) {
+		type = 1;
+	}
+	if( indexLLid != -1 ) {
+		type = 2;
+	}
+	if( indexGli != -1 ) {
+		type = 3;
+	}
+	if( indexPup != -1 ) {
+		type = 4;
+	}
+	if( indexLim != -1 ) {
+		type = 5;
+	}
+	var typeVal = attribs[1];
+	if( type != -1 ) {
+		typeChecked[type] = checked;
+	}
+	
+	// object shape
+	var indexRoi = attribs.indexOf( 'roi' );
+	var indexCon = attribs.indexOf( 'contour' );
+	var indexOco = attribs.indexOf( 'outercorner' );
+	var indexIco = attribs.indexOf( 'innercorner' );
+	var shape = 0; //def value
+	var shapeChecked = new Array( "", "", "", "" );
+	if( indexRoi != -1 ) {
+		shape = 0;
+	}
+	if( indexCon != -1 ) {
+		shape = 1;
+	}
+	if( indexOco != -1 ) {
+		shape = 2;
+	}
+	if( indexIco != -1 ) {
+		shape = 3;
+	}
+	var shapeVal = attribs[2];
+	if( shape != -1 ) {
+		shapeChecked[shape] = checked;
+	}
+
+	// Position: the value of the selection is inside a hidden field:
+	// generate radio button
+	html_str += '<fieldset><legend>Position:</legend>';
+	html_str += '<input type="hidden" name="position" id="position" value="'+posVal+'"/>';
+	html_str += '<input type="radio" name="pos" id="pos" value="le" '+posChecked[0]+' onclick="document.getElementById(\'position\').value=\'le\';" />left';
+	html_str += '<input type="radio" name="pos" id="pos" value="ri" '+posChecked[1]+' onclick="document.getElementById(\'position\').value=\'ri\';" />right';
+	html_str += '</fieldset>';
+
+	// Type: the value of the selection is inside a hidden field:
+	// generate radio button
+	html_str += '<fieldset><legend>Type:</legend>';
+	html_str += '<input type="hidden" name="type" id="type" value="'+typeVal+'"/>';
+	html_str += '<input type="radio" name="typ" id="typ" value="eye" '+typeChecked[0]+' onclick="document.getElementById(\'type\').value=\'eye\';" />Eye';
+	html_str += '<input type="radio" name="typ" id="typ" value="upperelid" '+typeChecked[1]+' onclick="document.getElementById(\'type\').value=\'upperelid\';" />Upper Eyelid';
+	html_str += '<input type="radio" name="typ" id="typ" value="lowerelid" '+typeChecked[2]+' onclick="document.getElementById(\'type\').value=\'lowerelid\';" />Lower Eyelid';
+	html_str += '<input type="radio" name="typ" id="typ" value="glint" '+typeChecked[3]+' onclick="document.getElementById(\'type\').value=\'glint\';" />Glint';
+	html_str += '<input type="radio" name="typ" id="typ" value="pupil" '+typeChecked[4]+' onclick="document.getElementById(\'type\').value=\'pupil\';" />Pupil';
+	html_str += '<input type="radio" name="typ" id="typ" value="limbus" '+typeChecked[5]+' onclick="document.getElementById(\'type\').value=\'limbus\';" />Limbus';
+	html_str += '</fieldset>';
+
+	// Shape: the value of the selection is inside a hidden field:
+	// generate radio button
+	html_str += '<fieldset><legend>Shape:</legend>';
+	html_str += '<input type="hidden" name="shape" id="shape" value="'+shapeVal+'"/>';
+	html_str += '<input type="radio" name="sha" id="sha" value="roi" '+shapeChecked[0]+' onclick="document.getElementById(\'shape\').value=\'roi\';" />ROI';
+	html_str += '<input type="radio" name="sha" id="sha" value="contour" '+shapeChecked[1]+' onclick="document.getElementById(\'shape\').value=\'contour\';" />Contour';
+	html_str += '<input type="radio" name="sha" id="sha" value="outercorner" '+shapeChecked[2]+' onclick="document.getElementById(\'shape\').value=\'outercorner\';" />OuterCorner';
+	html_str += '<input type="radio" name="sha" id="sha" value="innercorner" '+shapeChecked[3]+' onclick="document.getElementById(\'shape\').value=\'innercorner\';" />InnerCorner';
+	html_str += '</fieldset>';
+  
+	return html_str;
 }
+
+// Boxes to enter attributes
+/*function HTMLattributesBox(attList) {
+  return '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
+}*/
 
 
 // ****************************
@@ -277,9 +421,6 @@ function HTMLpartsBox(parts) {
     else {
       html_str = 'Object has '+parts.length+' parts.';
     }
-  }
-  else {
-    html_str = 'Object has no parts (you can add parts using the right panel).';
   }
   
   return html_str;

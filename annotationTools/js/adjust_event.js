@@ -278,12 +278,13 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       var y = GetEventPosY(event);
       
       // Set point:
-      this.x[this.selectedControlPoint] = Math.max(Math.min(Math.round(x/this.scale),main_media.width_orig),1);
-      this.y[this.selectedControlPoint] = Math.max(Math.min(Math.round(y/this.scale),main_media.height_orig),1);
-
+	  // -0.5 to adjust since we will do +0.5 after, to write ON the pixels, not BETWEEN the pixels.
+      this.x[this.selectedControlPoint] = Math.max(Math.min(Math.round(x/this.scale-0.5),main_media.width_orig),1);
+      this.y[this.selectedControlPoint] = Math.max(Math.min(Math.round(y/this.scale-0.5),main_media.height_orig),1);
+      
       this.originalx = this.x;
       this.originaly = this.y;
-      
+
       // Remove polygon and redraw:
       $('#'+this.polygon_id).parent().remove();
       $('#'+this.polygon_id).remove();
@@ -338,8 +339,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       var y = GetEventPosY(event);
       
       // Get displacement:
-      var dx = Math.round(x/this.scale)-this.center_x;
-      var dy = Math.round(y/this.scale)-this.center_y;
+	  // -0.5 to adjust since we will do +0.5 after, to write ON the pixels, not BETWEEN the pixels.
+      var dx = Math.round(x/this.scale-0.5)-this.center_x;
+      var dy = Math.round(y/this.scale-0.5)-this.center_y;
       
       // Adjust dx,dy to make sure we don't go outside of the image:
       for(var i = 0; i < this.x.length; i++) {
