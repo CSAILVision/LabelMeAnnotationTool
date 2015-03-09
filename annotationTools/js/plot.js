@@ -42,7 +42,7 @@ function LMplot(xml,imagename) {
 function DrawPolygon(element_id,X,Y,obj_name,attr,scale) {
   // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
   var poly_points = "";
-  for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
+  for(var i = 0; i < X.length; i++) poly_points += (scale*(X[i]+0.5)) + "," + (scale*(Y[i]+0.5)) + " ";
   
   // Get drawn object DOM element id:
   var dom_id = element_id + '_obj' + $('#'+element_id).children().length + '_' + Math.floor(Math.random()*100000);
@@ -85,7 +85,7 @@ function DrawFlag(element_id,x,y,obj_name,scale) {
 function DrawPolyLine(element_id,X,Y,obj_name,attr,scale) {
   // Create string of the points ("x1,y1 x2,y2 x3,y3 ..."):
   var poly_points = "";
-  for(var i = 0; i < X.length; i++) poly_points += (scale*X[i]) + "," + (scale*Y[i]) + " ";
+  for(var i = 0; i < X.length; i++) poly_points += (scale*(X[i]+0.5)) + "," + (scale*(Y[i]+0.5)) + " ";
   
   // Get drawn object DOM element id:
   var dom_id = element_id + '_obj' + $('#'+element_id).children().length;
@@ -101,8 +101,13 @@ function DrawLineSegment(element_id,x1,y1,x2,y2,attr,scale) {
   // Get drawn object DOM element id:
   var dom_id = element_id + '_line' + $('#'+element_id).children().length;
 
+  var x1Adj = (x1+0.5)*scale;
+  var y1Adj = (y1+0.5)*scale;
+  var x2Adj = (x2+0.5)*scale;
+  var y2Adj = (y2+0.5)*scale;
+  
   // Draw line segment:
-  $('#'+element_id).append('<line xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" x1="' + x1*scale + '" x2="' + x2*scale + '" y1="' + y1*scale + '" y2="' + y2*scale + '" ' + attr + ' />');
+  $('#'+element_id).append('<line xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" x1="' + x1Adj + '" x2="' + x2Adj + '" y1="' + y1Adj + '" y2="' + y2Adj + '" ' + attr + ' />');
 
   return dom_id;
 }
@@ -112,8 +117,10 @@ function DrawPoint(element_id,x,y,attr,scale) {
   // Get drawn object DOM element id:
   var dom_id = element_id + '_point' + $('#'+element_id).children().length;
 
+  var xAdj = (x+0.5)*scale;
+  var yAdj = (y+0.5)*scale;
   // Draw point:
-  $('#'+element_id).append('<circle xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" cx="' + x*scale + '" cy="' + y*scale + '" ' + attr + ' />');
+  $('#'+element_id).append('<circle xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" cx="' + xAdj + '" cy="' + yAdj + '" ' + attr + ' />');
 
   return dom_id;
 }

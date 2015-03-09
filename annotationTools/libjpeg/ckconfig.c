@@ -32,6 +32,8 @@
  * undefine the corresponding HAVE_xxx symbol.
  */
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #define HAVE_STDDEF_H		/* replace 'define' by 'undef' if error here */
 #ifdef HAVE_STDDEF_H		/* next line will be skipped if you undef... */
 #include <stddef.h>

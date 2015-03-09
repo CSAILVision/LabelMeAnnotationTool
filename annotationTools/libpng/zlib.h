@@ -31,6 +31,8 @@
 #ifndef ZLIB_H
 #define ZLIB_H
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "zconf.h"
 
 #ifdef __cplusplus

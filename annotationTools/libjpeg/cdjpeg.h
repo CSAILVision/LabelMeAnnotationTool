@@ -11,6 +11,9 @@
 
 #define JPEG_CJPEG_DJPEG	/* define proper options in jconfig.h */
 #define JPEG_INTERNAL_OPTIONS	/* cjpeg.c,djpeg.c need to see xxx_SUPPORTED */
+
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "jinclude.h"
 #include "jpeglib.h"
 #include "jerror.h"		/* get library error codes too */

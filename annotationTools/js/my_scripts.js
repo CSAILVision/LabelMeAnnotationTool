@@ -106,7 +106,8 @@ function WriteLogMsg(msg) {
   }
 }
 
-function loadXMLDoc() {
+function loadXMLDoc(offset) {
+  if (typeof(offset)==='undefined') offset = 1;//default argument
   if(wait_for_input) return WaitForInput();
   if(draw_anno) {
     alert("Need to close current polygon first.");
@@ -119,13 +120,167 @@ function loadXMLDoc() {
 
   RemoveObjectList();
 
-  main_image.GetNewImage();
+  main_image.GetNewImage(undefined, offset);
 }
 
-function ShowNextImage() {
+// Shows the previous image in the sequence
+function ShowPreviousImage() {
   var s = document.getElementById("submitform");
+  $('#submitform').attr("action","javascript:loadXMLDoc(-1);");
   if(s!=null) s.submit();
 }
+
+// Shows the next image in the sequence
+function ShowNextImage() {
+  var s = document.getElementById("submitform");
+  $('#submitform').attr("action","javascript:loadXMLDoc(1);");
+  if(s!=null) s.submit();
+}
+
+// Read the last xml frame
+function CopyPreviousAnnotations() {
+	if(wait_for_input) return WaitForInput();
+	if(draw_anno) {
+		alert("Need to close current polygon first.");
+		return;
+	}
+
+	if (window.confirm("Are you sure? This will delete the current annotations (if any)")) {	
+			
+		// Clean up scribble, if any
+		SetDrawingMode( 0 );
+		$("#copyPrevious").children("img").attr("src", "Icons/segment_loader.gif")
+	
+		// Get last image path
+		var anno_file = main_image.GetImagePath(-1);  
+		
+        anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+        ReadXML(anno_file,LoadLastFrameSuccess,LoadLastFrame404);
+	}
+}
+
+// Read the last xml frame with valid annotations (skipping empty frames)
+function CopyLastValid() {
+	if(wait_for_input) return WaitForInput();
+	if(draw_anno) {
+		alert("Need to close current polygon first.");
+		return;
+	}
+
+	if (window.confirm("Are you sure? This will delete the current annotations (if any)")) {			
+	
+		var imageOffset = -1;
+
+		var currentImName = main_image.GetFileInfo().GetFullName();
+		// Annotation file of the last frame does not exist, so do nothing ... (alert user)
+		this.LoadFrameFailed = function (jqXHR,textStatus,errorThrown) { 
+			if(jqXHR.status==404 ) {
+				imageOffset -= 1;
+				var anno_file = main_image.GetImagePath( imageOffset );
+				if( currentImName == anno_file ) {
+					$("#copyLastValid").children("img").attr("src", "Icons/CopyLastValid.png");
+					alert( "There are no annotations the whole sequence. Annotate at least one frame before using this." );
+				} else {
+					anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+					ReadXML(anno_file, LoadLastFrameSuccess, LoadFrameFailed);	
+				}
+			}
+			else {
+				alert(jqXHR.status);
+			}
+		}
+		// Clean up scribble, if any
+		SetDrawingMode( 0 );
+		$("#copyLastValid").children("img").attr("src", "Icons/segment_loader.gif");
+	
+		// Get last image path
+		var anno_file = main_image.GetImagePath( imageOffset );		
+        anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+        ReadXML(anno_file, LoadLastFrameSuccess, this.LoadFrameFailed);
+	
+	}
+}
+
+
+// After reading the last frame to duplicate, we don't want to immediately call
+// LoadAnnotationSuccess(), like when we're reading an actual frame, since we
+// want to change some paths and copy images before loading the annotations
+function LoadLastFrameSuccess(xml) {
+	var imName = main_image.GetFileInfo().GetImName();
+	var dirName = main_image.GetFileInfo().GetDirName();
+	
+	// Set folder and image's correct filename (switch from last frame to current frame)
+	xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+imName+'\n';
+
+	// Update all images (copy to new name according to the current frame name)
+	var N = $(xml).children("annotation").children("object").length;
+	for(var i = 0; i < N; i++) {
+		var obj = $(xml).children("annotation").children("object").eq(i);
+		if(!parseInt(obj.children("deleted").text())) {
+			// Get object name:
+			var name = obj.children("name").text();
+			if( obj.children("segm").length > 0 ) {
+									
+				var maskName =  obj.children("segm").children("mask").text();//ex: 'image_00000_mask_0.png
+				var scribbleName =  obj.children("segm").children("scribbles").children("scribble_name").text();
+								
+				if( imName.length > 4 ) {		
+					var imBaseName = imName.substring(0,imName.length-4);// ex: 'image_00001.bmp' to 'image_00001'
+		
+					// Copy mask images
+					var newMaskName = ReplaceImage( imBaseName, maskName, "Masks/" + dirName );
+					obj.children("segm").children("mask").text(newMaskName);
+					
+					// Copy scribbles images
+					var newScribbleName = ReplaceImage( imBaseName, scribbleName, "Scribbles/" + dirName );
+					obj.children("segm").children("scribbles").children("scribble_name").text(newScribbleName);
+				}
+			}
+		}
+	}
+	$("#copyPrevious").children("img").attr("src", "Icons/CopyPrevious.png");
+	$("#copyLastValid").children("img").attr("src", "Icons/CopyLastValid.png");
+	LoadAnnotationSuccess(xml);//sets LM_xml to xml and updates the page
+	
+	// Save changes
+	WriteXML(SubmitXmlUrl,LM_xml,function(){return;});		
+}
+
+// Annotation file of the last frame does not exist, so do nothing ... (alert user)
+function LoadLastFrame404(jqXHR,textStatus,errorThrown) { 
+	if(jqXHR.status==404) {
+		$("#copyPrevious").children("img").attr("src", "Icons/CopyPrevious.png");
+		alert( "There are no annotations in the last frame, keeping current annotations." );
+	}
+	else {
+		alert(jqXHR.status);
+	}
+}
+
+// Returns the name of imName with the current baseName (imBaseName)
+function ReplaceImage( imBaseName, imName, dir ){
+	if( imName.length > imBaseName.length ) {
+		var imNameEnd = imName.substring(imBaseName.length, imName.length);//ex: '_mask_0.png
+		var newImName = imBaseName + imNameEnd;
+		copyImage( imName, newImName, dir);
+		return newImName;
+	}
+}
+
+// Copies a file into the server
+function copyImage(src, dst, dir) {
+
+	$.ajax({
+		async: true,
+		type: "POST",
+		url: "annotationTools/php/copyImage.php",
+		data: {
+			src: src,
+			dst: dst,
+			dir: dir,
+		}
+	});
+};
 
 function XMLGet(fname) {
   var url = 'annotationTools/perl/get_anno_file.cgi';
@@ -299,7 +454,7 @@ function unselectObjects() {
 function DeleteSelectedPolygon() {
   if(selected_poly == -1) return;
   
-  if((IsUserAnonymous() || (!IsCreator(AllAnnotations[selected_poly].GetUsername()))) && (!IsUserAdmin()) && (selected_poly<num_orig_anno) && !action_DeleteExistingObjects) {
+  if(((!IsCreator(AllAnnotations[selected_poly].GetUsername()))) && (!IsUserAdmin()) && (selected_poly<num_orig_anno) && !action_DeleteExistingObjects) {
     alert('You do not have permission to delete this polygon');
     return;
   }

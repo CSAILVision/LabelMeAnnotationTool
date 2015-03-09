@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!c:\perl\bin\perl.exe
 require 'globalvariables.pl';
 
 sub WriteLogfile {

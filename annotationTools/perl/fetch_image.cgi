@@ -1,4 +1,6 @@
-#!/usr/bin/perl
+#!c:\perl\bin\perl.exe
+
+BEGIN{ unshift( @INC, "$ENV{TLT_SRC_DIR}/Dev/Next/WebServers/LabelMe/Web/annotationTools/perl" ) };
 
 use strict;
 use CGI;
@@ -13,17 +15,19 @@ my $username = $query->param("username");
 my $collection = $query->param("collection");
 my $folder = $query->param("folder");
 my $image = $query->param("image");
-
+my $offset = $query->param("offset");
+	
 my $im_dir;
 my $im_file;
-if($mode eq "i") {
+if( $mode eq "i" ) {
     my $fname = $LM_HOME . "annotationCache/DirLists/$collection.txt";
     
-    if(!open(FP,$fname)) {
-	print "Status: 404\n\n";
-	return;
+	my $fp;
+    if(!open($fp,$fname)) {
+		print "Status: 404\n\n";
+		return;
     }
-    
+	
     open(NUMLINES,"wc -l $fname |");
     my $numlines = <NUMLINES>;
     ($numlines,my $bar) = split(" DirLists",$numlines);
@@ -32,14 +36,14 @@ if($mode eq "i") {
     my $line = int(rand($numlines))+1;
     
     for(my $i=1; $i < $line; $i++) {
-	my $garbage = readline(FP);
+	my $garbage = readline($fp);
     }
     
-    my $fileinfo = readline(FP);
+    my $fileinfo = readline($fp);
     ($im_dir,$im_file) = split(",",$fileinfo);
     $im_file =~ tr/"\n"//d; # remove trailing newline
     
-    close(FP);
+    close($fp);
 }
 elsif($mode eq "c") {
     opendir(DIR,$LM_HOME . "Images/users/$username/$collection") || die("Cannot read collections");
@@ -67,29 +71,29 @@ elsif($mode eq "f") {
 
     my $do_rand = 1;
     my $i = 0;
-    if($image =~ m/\.jpg$/) {
-	$do_rand = 0;
+    if($image =~ m/\.(jpg|bmp)$/) {
+		$do_rand = 0;
 
-	# Get location of image in array:
-	for(my $j = 0; $j < scalar(@all_images); $j++) {
-	    if($all_images[$j] =~ m/$image/) {
-		$i = $j;
-		last;
-	    }
-	}
+		# Get location of image in array:
+		for(my $j = 0; $j < scalar(@all_images); $j++) {
+			if($all_images[$j] =~ m/$image/) {
+			$i = $j;
+			last;
+			}
+		}
     }
 
     do {
-	if($do_rand) {
-	    $i = int(rand(scalar(@all_images)));
-	}
-	else {
-	    $i = ($i + 1) % scalar(@all_images);
-	}
-	$im_dir = $folder;
-	$im_file = $all_images[$i];
+		if($do_rand) {
+			$i = int(rand(scalar(@all_images)));
+		}
+		else {
+			$i = ($i + $offset) % scalar(@all_images);
+		}
+		$im_dir = $folder;
+		$im_file = $all_images[$i];
     }
-    while(!($im_file =~ m/\.jpg$/))
+    while(!($im_file =~ m/\.(jpg|bmp)$/))
 
 #    my $fname = "DirLists/$collection.txt";
 #    

@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!c:\perl\bin\perl.exe
 require 'globalvariables.pl';
 require 'logfile_helper.pl';
 
@@ -125,7 +125,9 @@ open(FP,">$tmpPath/$folder/$fname.xml");
 print FP $stdin;
 close(FP);
 
-system("cp $tmpPath/$folder/$fname.xml $path/$folder/$fname.xml");
+$cmdline = "cp $tmpPath/$folder/$fname.xml $path/$folder/$fname.xml";
+$cmdline =~ s/\//\\/g;		
+system($cmdline);
 #system("rm $tmpPath/$folder/$fname.xml");
 
 #open(FP,">$path/$folder/$fname.xml");

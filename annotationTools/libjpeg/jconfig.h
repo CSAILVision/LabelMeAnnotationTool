@@ -2,11 +2,13 @@
 /* jconfig.cfg --- source file edited by configure script */
 /* see jconfig.doc for explanations */
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #define HAVE_PROTOTYPES 
 #define HAVE_UNSIGNED_CHAR 
 #define HAVE_UNSIGNED_SHORT 
-#undef void
-#undef const
+//#undef void
+//#undef const
 #undef CHAR_IS_UNSIGNED
 #define HAVE_STDDEF_H 
 #define HAVE_STDLIB_H 

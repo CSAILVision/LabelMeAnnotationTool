@@ -2,6 +2,17 @@
 annotationTools/perl/globalvariables.pl
 *.o
 *.a
+*.bak
+*.obj
+*.tlog
+*jquery-ui-*
+*.idb
+*.pdb
+*.log
+*.ilk
+*.suo
+*.sdf
+Thumbs.db
 annotationTools/scribble/image.jpg
 annotationTools/scribble/mask.png
 annotationTools/scribble/scribble.png

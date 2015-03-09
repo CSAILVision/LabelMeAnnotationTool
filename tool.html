@@ -25,7 +25,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 <script type="text/javascript">
 // <![CDATA[
-<!--#include virtual="./annotationTools/js/jquery-1.9.1.js" -->
+<!--#include virtual="./annotationTools/js/jquery-2.1.3.min.js" -->
 <!--#include virtual="./annotationTools/js/browser.js" -->  
 <!--#include virtual="./annotationTools/js/globals.js" -->
 <!--#include virtual="./annotationTools/js/io.js" -->
@@ -90,6 +90,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <div id="tool_buttons">
     <!-- NAVIGATION BUTTONS  -->
     <div id="label_buttons_navigation">
+      
       <!-- DOWNLOAD IMAGE BUTTON -->
       <button id="img_url" class="labelBtn" type="button" title="Download image">
         <img src="Icons/download_img.png"  height="30" />
@@ -105,9 +106,24 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <img src="Icons/help_new.png"  height="30" />
       </button>
       
+      <!-- PREVIOUS IMAGE BUTTON -->
+      <button id="prevImage" class="labelBtn" type="button" title="Previous Image">
+        <img src="Icons/previous_2.png" height="30" />
+      </button>
+	  
       <!-- NEXT IMAGE BUTTON -->
       <button id="nextImage" class="labelBtn" type="button" title="Next Image">
         <img src="Icons/next_2.png" height="30" />
+      </button>
+	  
+      <!-- COPY PREVIOUS BUTTON -->
+      <button id="copyPrevious" class="labelBtn" type="button" title="Copy Previous Frame Annotations">
+        <img src="Icons/CopyPrevious.png" height="30" />
+      </button>
+	  
+      <!-- COPY LAST VALID BUTTON -->
+      <button id="copyLastValid" class="labelBtn" type="button" title="Copy Last Frame With Annotations">
+        <img src="Icons/CopyLastValid.png" height="30" />
       </button>
     </div>
     
@@ -142,8 +158,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <form name="submitform" id="submitform" method="post" style="margin-bottom:0px;" />
       </div>
       
-      <img id="im" style="vertical-align:bottom;z-index:-3;" />
-      
+		<img id="im" style="vertical-align:bottom;z-index:-3;" />
+	  
       <div id="myCanvas_bg_div" style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
         <svg:svg 
            id="myCanvas_bg"

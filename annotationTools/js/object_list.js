@@ -40,6 +40,10 @@ function RenderObjectList() {
     IsHidingAllPolygons = false;
     html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a></p>';
   }
+  
+  html_str += 'Opacity:<input type="number" class="segbut" id="maskOpacitybtn" name="maskOpacitybtn" min="0" max="100" value="' + (MASK_OPACITY_DEFAULT * 100) + '" style="height: 10px;" onchange="maskOpacityChanged()" \
+				title="Change the opacity of the masks. Hover over the mask to see it in the image."/>'
+			
 
   // Add parts-of drag-and-drop functionality:
   if(use_parts) {
@@ -130,6 +134,12 @@ function RenderObjectList() {
   $('#anno_anchor').append(html_str);
 }
 
+function maskOpacityChanged(){
+
+	scribble_canvas.maskAlpha = document.getElementById("maskOpacitybtn").value/100;
+	scribble_canvas.drawMask(1);
+  
+}
 
 function RemoveObjectList() {
   $('#anno_list').remove();
@@ -185,7 +195,7 @@ function ShowAllPolygons() {
   // Render the annotations:
   main_canvas.UnhideAllAnnotations();
   main_canvas.RenderAnnotations();
-
+  
   // Create "hide all" button:
   $('#show_all_button').replaceWith('<a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a>');
 }

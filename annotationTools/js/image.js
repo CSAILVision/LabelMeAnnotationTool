@@ -15,6 +15,8 @@ function image(id) {
     // *******************************************
     // Private variables:
     // *******************************************
+	
+	var SMALLEST_RATIO = 1.0;
     
     this.file_info = new file_info();
     this.id = id;
@@ -36,16 +38,30 @@ function image(id) {
     // random from the dirlist.  onload_helper is a pointer to a helper
     // function that is called when the image is loaded.  Typically, this
     // will call obj.SetImageDimensions().
-    this.GetNewImage = function(onload_helper) {
+    this.GetNewImage = function(onload_helper, offset) {
+		if (typeof(offset)==='undefined') offset = 1;//default argument
         document.getElementById('loading').style.display = '';
         if(IsMicrosoft()) this.im.style.visibility = 'hidden';
         else this.im.style.display = 'none';
-        if(!this.file_info.ParseURL()) return;
+        if(!this.file_info.ParseURL(offset)) return;
         this.im.src = this.file_info.GetImagePath();
         this.im.onload = onload_helper;
         wait_for_input = 0;
         edit_popup_open = 0;
     };
+	
+	// Returns the full name of a frame with the specified offset	
+    this.GetImagePath = function(offset) {
+		if (typeof(offset)==='undefined') offset = 1;//default argument
+				
+        if( this.file_info.FetchImage( offset ) ) {	
+			var retVal = this.file_info.GetFullName();			
+			this.file_info.FetchImage( -offset );//revert to previous image
+			return retVal;
+		}
+		return "";
+    };
+    
     
     // Returns the ratio of the available width/height to the original
     // width/height.
@@ -71,22 +87,14 @@ function image(id) {
         
         if(width_ratio<height_ratio) this.im_ratio = width_ratio;
         else this.im_ratio = height_ratio;
-        this.browser_im_ratio = this.im_ratio;
         
-        this.width_curr = Math.round(this.im_ratio*this.width_orig);
-        this.height_curr = Math.round(this.im_ratio*this.height_orig);
-        
-        this.im.width = this.width_curr;
-        this.im.height = this.height_curr;
-        
-        $("#myCanvas_bg").width(this.width_curr).height(this.height_curr);
-        $("#select_canvas").width(this.width_curr).height(this.height_curr);
-        $("#draw_canvas").width(this.width_curr).height(this.height_curr);
-        $("#query_canvas").width(this.width_curr).height(this.height_curr);
-        
-        
-        this.curr_frame_width = this.width_curr;
-        this.curr_frame_height = this.height_curr;
+        // Do not start with a smaller image than it should be!
+        if(this.im_ratio < SMALLEST_RATIO) { 
+        	this.im_ratio = SMALLEST_RATIO; 
+        }
+		
+        this.browser_im_ratio = this.im_ratio;		
+		this.Zoom( 1.0 );
         
         document.getElementById('loading').style.visibility = 'hidden';
         document.getElementById('main_image').style.visibility = 'visible';
@@ -116,14 +124,14 @@ function image(id) {
     // Turn off image scrollbars if zoomed in.
     this.ScrollbarsOff = function () {
         if(!this.IsFitImage()) {
-            document.getElementById('main_image').style.overflow = 'hidden';
+           document.getElementById('main_image').style.overflow = 'hidden';
         }
     };
     
     // Turn on image scrollbars if zoomed in.
     this.ScrollbarsOn = function () {
         if(!this.IsFitImage()) {
-            document.getElementById('main_image').style.overflow = 'auto';
+           document.getElementById('main_image').style.overflow = 'auto';
         }
     };
     
@@ -135,28 +143,32 @@ function image(id) {
         // if an old polygon is being edited while the user press the zoom button then close the polygon and zoom.
         if(edit_popup_open) StopEditEvent();
         
+		var im_ratio = this.im_ratio;
         if(amt=='fitted') {
-                this.im_ratio = this.browser_im_ratio;
+                im_ratio = this.browser_im_ratio;
         } else {
-                this.im_ratio = this.im_ratio * amt;
+                im_ratio = im_ratio * amt;
         }
         
         // if the scale factor is bellow the original scale, then do nothing (do not make the image too small)
-        if(this.im_ratio < this.browser_im_ratio) {this.im_ratio=this.browser_im_ratio; return;}
+        if(im_ratio < this.browser_im_ratio) {
+			this.im_ratio=this.browser_im_ratio; return;
+		}
+		this.im_ratio = im_ratio;
         
         // New width and height of the rescaled picture
         this.width_curr = Math.round(this.im_ratio*this.width_orig);
         this.height_curr = Math.round(this.im_ratio*this.height_orig);
-        
+		
         // Scale and scroll the image so that the center stays in the center of the visible area
         this.ScaleFrame(amt);
-        
-	// Remove polygon from draw canvas:
-	var anno = null;
-	if(draw_anno) {
-	  draw_anno.DeletePolygon();
-	  anno = draw_anno;
-	  draw_anno = null;
+			
+		// Remove polygon from draw canvas:
+		var anno = null;
+		if(draw_anno) {
+		  draw_anno.DeletePolygon();
+		  anno = draw_anno;
+		  draw_anno = null;
         }
 
         // set the size of the image (this.im is the image object)
@@ -182,8 +194,9 @@ function image(id) {
 	/*************************************************************/
 	// Scribble: 
 	if (drawing_mode == 1){
-	  scribble_canvas.redraw();
-	  scribble_canvas.drawMask();
+	    scribble_canvas.UpdateSize(true);
+		scribble_canvas.redraw();
+		scribble_canvas.drawMask();
         }
 	/*************************************************************/
 	/*************************************************************/
