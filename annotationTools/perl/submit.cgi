@@ -14,25 +14,10 @@ $host = $ENV{'REMOTE_HOST'};
 ##############################
 # Get STDIN:
 read(STDIN, $stdin, $ENV{'CONTENT_LENGTH'});
-#$stdin = <STDIN>;
-
-# Write to tmp file:
-#open(FP,">Logs/tmpfile.xml");
-#printf FP $stdin;
-#close(FP);
 
 ##############################
 # Remove newlines from annotation information:
 $stdin =~ s/\n//g;
-
-##############################
-# Dump raw stdin to file:
-#$raw_fname = $datestr2;
-#$raw_fname =~ s/\s/-/g;
-#$raw_fname =~ s/:/-/g;
-#open(FP,">Logs/RawTransactions/$raw_fname.txt");
-#printf FP $stdin;
-#close(FP);
 
 # Remove ^M from stdin:
 $stdin =~ tr/\t//d;
@@ -58,8 +43,6 @@ $fname = substr($fname,0,length($fname)-4);
 ($left_side,$stdin) = split("<private>",$stdin);
 ($junk,$stdin) = split("</private>",$stdin);
 $stdin = "$left_side$stdin";
-#$stdin =~ s/<private>.*<\/private>//g;
-#$stdin =~ s/<\/private>//g;
 
 ##############################
 # Insert the time into the new polygons:
@@ -100,13 +83,6 @@ $tot_del_after = scalar(@del_split)-1;
 ##############################
 # Add image dimension information if it does not exist:
 ($stdin) = &InsertImageSize($stdin,$folder,$fname);
-#@imagesize = split("<imagesize>",$stdin);
-#if(scalar(@imagesize)==1) {
-#    $ncols = `identify -format \"%w\" $LM_HOME/Images/$folder/$fname.jpg`;
-#    $nrows = `identify -format \"%h\" $LM_HOME/Images/$folder/$fname.jpg`;
-#    $stdin =~ s/<\/annotation>/<imagesize><nrows>$nrows<\/nrows><ncols>$ncols<\/ncols><\/imagesize><\/annotation>/g;
-##    $stdin =~ s/<\/annotation>/<imagesize><\/imagesize><\/annotation>/g;
-#}
 
 ##############################
 # Write to annotation XML file:
@@ -130,10 +106,6 @@ $cmdline =~ s/\//\\/g;
 system($cmdline);
 #system("rm $tmpPath/$folder/$fname.xml");
 
-#open(FP,">$path/$folder/$fname.xml");
-#print FP $stdin;
-#close(FP);
-
 ##############################
 # Get object name information:
 if($edited) {
@@ -154,4 +126,3 @@ $username =~ s/\s/_/g;
 &WriteLogfile($datestr2,$folder,$fname,$tot_before,$tot_after,$addr,$host,$objname,$global_count,$username,$modifiedControlPoints,$tot_del_before,$tot_del_after);
 
 print "Content-type: text/xml\n\n" ;
-#print "<nop/>" ;

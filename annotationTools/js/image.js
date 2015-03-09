@@ -4,11 +4,6 @@
 // Fetches and manipulates the main image that will be annotated.
 // From the HTML code, create a <img src...> tag with an id and pass
 // this id in as the argument when creating the class.
-//
-// Created: 04/12/2006
-// Updated: 04/12/2006
-// Updated: 06/13/2006 zoom added
-// Updated: 07/04/2013 Antonio: fixed the zoom bug
 
 function image(id) {
     
@@ -27,8 +22,8 @@ function image(id) {
     this.height_curr;
     this.im_ratio; // Ratio of (displayed image dims) / (orig image dims)
     this.browser_im_ratio; // Initial im_ratio; this should not get changed!!
-    this.curr_frame_width;  // Current width of main_image.
-    this.curr_frame_height; // Current height of main_image.
+    this.curr_frame_width;  // Current width of main_media.
+    this.curr_frame_height; // Current height of main_media.
     
     // *******************************************
     // Public methods:
@@ -97,11 +92,11 @@ function image(id) {
 		this.Zoom( 1.0 );
         
         document.getElementById('loading').style.visibility = 'hidden';
-        document.getElementById('main_image').style.visibility = 'visible';
+        document.getElementById('main_media').style.visibility = 'visible';
         
         if(IsMicrosoft()) {
             this.im.style.visibility = '';
-            document.getElementById('main_image').style.overflow = 'visible';
+            document.getElementById('main_media').style.overflow = 'visible';
             this.ScaleFrame();
         }
         else this.im.style.display = '';
@@ -113,25 +108,25 @@ function image(id) {
     this.SlideWindow = function (x,y) {
         var pt = Array(2);
         if(!this.IsPointVisible(x,y)) {
-            document.getElementById('main_image').scrollLeft = x-100;
-            document.getElementById('main_image').scrollTop = y-100;
+            document.getElementById('main_media').scrollLeft = x-100;
+            document.getElementById('main_media').scrollTop = y-100;
         }
-        pt[0] = x-$("#main_image").scrollLeft();
-        pt[1] = y-$("#main_image").scrollTop();
+        pt[0] = x-$("#main_media").scrollLeft();
+        pt[1] = y-$("#main_media").scrollTop();
         return pt;
     };
     
     // Turn off image scrollbars if zoomed in.
     this.ScrollbarsOff = function () {
         if(!this.IsFitImage()) {
-           document.getElementById('main_image').style.overflow = 'hidden';
+            document.getElementById('main_media').style.overflow = 'hidden';
         }
     };
     
     // Turn on image scrollbars if zoomed in.
     this.ScrollbarsOn = function () {
         if(!this.IsFitImage()) {
-           document.getElementById('main_image').style.overflow = 'auto';
+            document.getElementById('main_media').style.overflow = 'auto';
         }
     };
     
@@ -212,7 +207,7 @@ function image(id) {
     //space in the browser, if it needs it. 6.29.06
     this.ScaleFrame = function(amt) {
         // Look at the available browser (height,width) and the image (height,width),
-        // and use the smaller of the two for the main_image (height,width).
+        // and use the smaller of the two for the main_media (height,width).
         // also center the image so that after rescaling, the center pixels visible stays at the same location
         //var avail_height = this.GetAvailHeight();
         this.curr_frame_height = Math.min(this.GetAvailHeight(), this.height_curr);
@@ -221,14 +216,14 @@ function image(id) {
         this.curr_frame_width = Math.min(this.GetAvailWidth(), this.width_curr);
         
         // also center the image so that after rescaling, the center pixels visible stays at the same location
-        cx = $("#main_image").scrollLeft()+this.curr_frame_width/2.0; // current center
-        cy = $("#main_image").scrollTop()+this.curr_frame_height/2.0;
-        Dx = Math.max(0, $("#main_image").scrollLeft()+(amt-1.0)*cx); // displacement needed
-        Dy = Math.max(0, $("#main_image").scrollTop()+(amt-1.0)*cy);
+        cx = $("#main_media").scrollLeft()+this.curr_frame_width/2.0; // current center
+        cy = $("#main_media").scrollTop()+this.curr_frame_height/2.0;
+        Dx = Math.max(0, $("#main_media").scrollLeft()+(amt-1.0)*cx); // displacement needed
+        Dy = Math.max(0, $("#main_media").scrollTop()+(amt-1.0)*cy);
         
         // set the width and height and scrolls
-        $("#main_image").scrollLeft(Dx).scrollTop(Dy);
-        $("#main_image").width(this.curr_frame_width).height(this.curr_frame_height);
+        $("#main_media").scrollLeft(Dx).scrollTop(Dy);
+        $("#main_media").width(this.curr_frame_width).height(this.curr_frame_height);
         
     };
     
@@ -242,17 +237,17 @@ function image(id) {
     
     //gets available width (6.14.06)
     this.GetAvailWidth = function() {
-        return $(window).width() - $("#main_image").offset().left -10 - 200;
+        return $(window).width() - $("#main_media").offset().left -10 - 200;
         // we could include information about the size of the object box using $("#anno_list").offset().left
     };
     
     //gets available height (6.14.06)
     this.GetAvailHeight = function() {
-        var m = main_image.GetFileInfo().GetMode();
+        var m = main_media.GetFileInfo().GetMode();
         if(m=='mt') {
-            return $(window).height() - $("#main_image").offset().top -75;
+            return $(window).height() - $("#main_media").offset().top -75;
         }
-        return $(window).height() - $("#main_image").offset().top -10;
+        return $(window).height() - $("#main_media").offset().top -10;
     };
     
     
@@ -264,8 +259,8 @@ function image(id) {
     
     // Returns true if (x,y) is viewable.
     this.IsPointVisible = function (x,y) {        
-        var scrollLeft = $("#main_image").scrollLeft();
-        var scrollTop = $("#main_image").scrollTop();
+        var scrollLeft = $("#main_media").scrollLeft();
+        var scrollTop = $("#main_media").scrollTop();
         
         if(((x*this.im_ratio < scrollLeft) ||
             (x*this.im_ratio - scrollLeft > this.curr_frame_width - 160)) || 

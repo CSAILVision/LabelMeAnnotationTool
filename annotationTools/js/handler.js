@@ -323,11 +323,11 @@ console.log( "New attributes = " + new_attributes );
       
       if(view_ObjList) RenderObjectList();
       
-      var m = main_image.GetFileInfo().GetMode();
+      var m = main_media.GetFileInfo().GetMode();
       if(m=='mt') {
 	document.getElementById('object_name').value=new_name;
 	document.getElementById('number_objects').value=global_count;
-	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_image.GetFileInfo().GetDirName() + '&image=' + main_image.GetFileInfo().GetImName();
+	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_media.GetFileInfo().GetDirName() + '&image=' + main_media.GetFileInfo().GetImName();
 	if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
       }
     };
@@ -344,9 +344,9 @@ console.log( "New attributes = " + new_attributes );
 	if(query_anno) query_anno.DeletePolygon();
 	var anno = query_anno;
 	query_anno = null;
-
+  
 	CloseQueryPopup();
-	main_image.ScrollbarsOn();
+	main_media.ScrollbarsOn();
 
         return anno;
     };

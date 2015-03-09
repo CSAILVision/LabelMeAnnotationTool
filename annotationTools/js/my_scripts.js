@@ -73,7 +73,7 @@ function IsUserAnonymous() {
 
 function IsUserAdmin() {
   var is_admin = false;
-  var folder = main_image.GetFileInfo().GetDirName();
+  var folder = main_media.GetFileInfo().GetDirName();
   var idx = folder.indexOf('/');
   if((idx != -1) && (folder.substring(0,idx)=='users')) {
     folder = folder.substring(idx+1,folder.length);
@@ -106,6 +106,7 @@ function WriteLogMsg(msg) {
   }
 }
 
+// This function gets called when the user clicks on the "Next image" button.
 function loadXMLDoc(offset) {
   if (typeof(offset)==='undefined') offset = 1;//default argument
   if(wait_for_input) return WaitForInput();
@@ -114,13 +115,15 @@ function loadXMLDoc(offset) {
     return;
   }
 
-  // Get a new image:
-  var p = document.getElementById('main_image');
-  p.parentNode.removeChild(p);
+  // Remove the image:
+  $('#main_media').remove();
 
+  // Remove the object list:
   RemoveObjectList();
 
   main_image.GetNewImage(undefined, offset);
+  // Get a new image and reset URL to reflect new image:
+  //TODO? : main_media.GetFileInfo().SetURL(document.URL);
 }
 
 // Shows the previous image in the sequence
@@ -282,24 +285,6 @@ function copyImage(src, dst, dir) {
 	});
 };
 
-function XMLGet(fname) {
-  var url = 'annotationTools/perl/get_anno_file.cgi';
-  // branch for native XMLHttpRequest object
-  if (window.XMLHttpRequest) {
-    req_anno = new XMLHttpRequest();
-    req_anno.open("POST", url, false);
-    req_anno.send(fname);
-  } 
-  else if (window.ActiveXObject) {
-    req_anno = new ActiveXObject("Microsoft.XMLHTTP");
-    if (req_anno) {
-      req_anno.open("POST", url, false);
-      req_anno.send(fname);
-    }
-  }
-  return req_anno;
-}
-
 function InsertServerLogData(modifiedControlPoints) {
   var old_pri = LM_xml.getElementsByTagName("private");
   for(ii=0;ii<old_pri.length;ii++) {
@@ -341,7 +326,7 @@ function InsertServerLogData(modifiedControlPoints) {
 }
 
 function PermissionError() {
-  var m = main_image.GetFileInfo().GetMode();
+  var m = main_media.GetFileInfo().GetMode();
   if((m=='im') || (m=='mt')) {
     alert('This polygon was entered by another user.  You can only modify polygons that you have entered.');
   }
@@ -396,8 +381,8 @@ function SetObjectChoicesPointLine(num_control_points) {
 
 // Returns true if the point (x,y) is close to polygon p.
 function IsNearPolygon(x,y,p) {
-  var sx = x / main_image.GetImRatio();
-  var sy = y / main_image.GetImRatio();
+  var sx = x / main_media.GetImRatio();
+  var sy = y / main_media.GetImRatio();
   
   var pt = AllAnnotations[p].ClosestPoint(sx,sy);
   var minDist = pt[2];
@@ -410,7 +395,7 @@ function IsNearPolygon(x,y,p) {
   
   // Note: need to multiply by im_ratio so that the sensitivity area 
   // is not huge when you're zoomed in. 
-  return ((minDist*main_image.GetImRatio()) < buffer);
+  return ((minDist*main_media.GetImRatio()) < buffer);
 }
     
 // Render filled polygons for selected objects:
@@ -425,7 +410,7 @@ function selectObject(idx) {
   var selected_poly_parts = getPartChildrens(idx);
   for (var i=0; i<selected_poly_parts.length; i++) {
     if((selected_poly_parts[i]!=selected_poly) && AllAnnotations[selected_poly_parts[i]].hidden) {
-      AllAnnotations[selected_poly_parts[i]].DrawPolygon(main_image.GetImRatio());
+      AllAnnotations[selected_poly_parts[i]].DrawPolygon(main_media.GetImRatio());
     }
     AllAnnotations[selected_poly_parts[i]].FillPolygon();
   }
@@ -500,13 +485,13 @@ function CheckXMLExists() {
       alert("The XML annotation file does not exist yet.  Please label an object and try again");
     }
     else {
-      window.open(main_image.GetFileInfo().GetAnnotationPath());
+      window.open(main_media.GetFileInfo().GetAnnotationPath());
     }
   }
 }
 
 function GetXMLFile() {
-  var xml_url = main_image.GetFileInfo().GetAnnotationPath();
+  var xml_url = main_media.GetFileInfo().GetAnnotationPath();
 
   // Check if VRML file exists:
   if (window.XMLHttpRequest) {

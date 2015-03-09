@@ -2,6 +2,8 @@
 
 // Main entry point for the annotation tool.
 function StartupLabelMe() {
+  console.time('startup');
+
   // Check browser:
   GetBrowserInfo();
   if(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome()) {
@@ -12,21 +14,37 @@ function StartupLabelMe() {
     // Initialize global variables:
     main_handler = new handler();
     main_canvas = new canvas('myCanvas_bg');
-    main_image = new image('im');
-    
-    // This function gets run after image is loaded:
-    function main_image_onload_helper() {
-      // Set the image dimensions:
-      main_image.SetImageDimensions();
-      
-      // Read the XML annotation file:
-      var anno_file = main_image.GetFileInfo().GetFullName();
-      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+    main_media = new image('im');
+    // Parse the input URL.  Returns false if the URL does not set the 
+    // annotation folder or image filename.  If false is returned, the 
+    // function fetches a new image and sets the URL to reflect the 
+    // fetched image.
+    if(!main_media.GetFileInfo().ParseURL()) return;
+
+    if(video_mode) {
+      main_media = new video('videoplayer');
+      main_media.GetFileInfo().ParseURL();
+      console.log("Video mode...");
+      var anno_file = main_media.GetFileInfo().GetFullName();
+      main_media.GetNewVideo();
+      anno_file = 'VLMAnnotations/' + anno_file + '.xml' + '?' + Math.random();
       ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
-    };
-    
-    // Get the image:
-    main_image.GetNewImage(main_image_onload_helper);
+    }
+    else {
+      // This function gets run after image is loaded:
+      function main_media_onload_helper() {
+	// Set the image dimensions:
+	main_media.SetImageDimensions();
+      
+	// Read the XML annotation file:
+	var anno_file = main_media.GetFileInfo().GetFullName();
+	anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+	ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+      };
+
+      // Get the image:
+      main_media.GetNewImage(main_media_onload_helper);
+    }
   }
   else {
     // Invalid browser, so display error page.
@@ -37,15 +55,22 @@ function StartupLabelMe() {
 
 // This function gets called if the annotation has been successfully loaded.
 function LoadAnnotationSuccess(xml) {
+  console.time('load success');
+
   // Set global variable:
   LM_xml = xml;
 console.log( "LoadAnnotationSuccess CALLED SUCCESS!!!!" );
+  if (video_mode){
+    FinishStartup();
+    return;
+  }
   var obj_elts = LM_xml.getElementsByTagName("object");
   var num_obj = obj_elts.length;
   
   AllAnnotations = Array(num_obj);
   num_orig_anno = num_obj;
 
+  console.time('initialize XML');
   // Initialize any empty tags in the XML file:
   for(var pp = 0; pp < num_obj; pp++) {
     var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
@@ -71,10 +96,14 @@ console.log( "LoadAnnotationSuccess CALLED SUCCESS!!!!" );
     /*************************************************************/
     /*************************************************************/
   }
-    
+  console.timeEnd('initialize XML');
+
+  console.time('addPartFields()');
   // Add part fields (this calls a funcion inside object_parts.js)
   addPartFields(); // makes sure all the annotations have all the fields.
-  
+  console.timeEnd('addPartFields()');
+
+  console.time('loop annotated');
   // Loop over annotated objects
   for(var pp = 0; pp < num_obj; pp++) {
     AllAnnotations[pp] = new annotation(pp);
@@ -114,11 +143,13 @@ console.log( "LoadAnnotationSuccess CALLED SUCCESS!!!!" );
     /*************************************************************/
 
   }
+  console.timeEnd('loop annotated');
 
   // Remove all current annotations before showing the new ones
   // (in case we're reading the last frame, see CopyPreviousAnnotations())
   main_canvas.RemoveAllAnnotations();
   
+  console.time('attach main_canvas');
   // Attach valid annotations to the main_canvas:
   for(var pp = 0; pp < num_obj; pp++) {
     var isDeleted = AllAnnotations[pp].GetDeleted();
@@ -127,9 +158,14 @@ console.log( "LoadAnnotationSuccess CALLED SUCCESS!!!!" );
       main_canvas.AttachAnnotation(AllAnnotations[pp]);
     }
   }
+  console.timeEnd('attach main_canvas');
 
+  console.time('RenderAnnotations()');
   // Render the annotations:
   main_canvas.RenderAnnotations();
+  console.timeEnd('RenderAnnotations()');
+
+  console.timeEnd('load success');
 
   // Finish the startup scripts:
   FinishStartup();
@@ -140,7 +176,7 @@ function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
 console.log( "Startup.js::LoadAnnotation404 CALLED FAILED.... will call ReadXML with template xml!!!!" );
  
  if(jqXHR.status==404) 
-    ReadXML(main_image.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
+    ReadXML(main_media.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
   else
     alert(jqXHR.status);
 }
@@ -162,8 +198,8 @@ function LoadTemplateSuccess(xml) {
   LM_xml = xml;
 
   // Set folder and image filename:
-  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetImName()+'\n';
-  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_image.GetFileInfo().GetDirName()+'\n';
+  LM_xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+main_media.GetFileInfo().GetImName()+'\n';
+  LM_xml.getElementsByTagName("folder")[0].firstChild.nodeValue = '\n'+main_media.GetFileInfo().GetDirName()+'\n';
 
   // Set global variable:
   num_orig_anno = 0;
@@ -207,7 +243,7 @@ function FinishStartup() {
 	  initUserName();
 	  
 	  // Enable scribble mode:
-	  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_image');
+	  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing',' main_media');
 	  
 	  // Set action when the user presses a key:
 	  document.onkeyup = main_handler.KeyPress;
@@ -216,11 +252,11 @@ function FinishStartup() {
 	  ref = document.referrer;
 
 	  // Write "finished" messages:
-	  WriteLogMsg('*done_loading_' + main_image.GetFileInfo().GetImagePath());
+	  WriteLogMsg('*done_loading_' +  main_media.GetFileInfo().GetImagePath());
 	  console.log('LabelMe: finished loading');
   }
   else{
-	  WriteLogMsg('*done_loading_last_frame_' + main_image.GetFileInfo().GetImagePath());
+	  WriteLogMsg('*done_loading_last_frame_' +  main_media.GetFileInfo().GetImagePath());
 	  console.log('LabelMe: finished loading last frame');	  
   }
 }
