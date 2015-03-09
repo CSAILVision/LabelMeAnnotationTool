@@ -7,10 +7,10 @@ mydir
 </folder>
 <source>
 <sourceImage>
-Mirametrix data collection
+The MIT-CSAIL database of objects and scenes
 </sourceImage>
 <sourceAnnotation>
-Mirametrix LabelMe Webtool
+LabelMe Webtool
 </sourceAnnotation>
 </source>
 </annotation>
