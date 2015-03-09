@@ -121,23 +121,21 @@ function loadXMLDoc(offset) {
   // Remove the object list:
   RemoveObjectList();
 
-  main_image.GetNewImage(undefined, offset);
+  console.log("loadXMLDoc " + offset);
+  main_media.GetNewImage(undefined, offset);
   // Get a new image and reset URL to reflect new image:
   //TODO? : main_media.GetFileInfo().SetURL(document.URL);
 }
 
 // Shows the previous image in the sequence
 function ShowPreviousImage() {
-  var s = document.getElementById("submitform");
-  $('#submitform').attr("action","javascript:loadXMLDoc(-1);");
-  if(s!=null) s.submit();
+  loadXMLDoc(-1);
 }
 
 // Shows the next image in the sequence
 function ShowNextImage() {
-  var s = document.getElementById("submitform");
-  $('#submitform').attr("action","javascript:loadXMLDoc(1);");
-  if(s!=null) s.submit();
+  console.log("ShowNextImage ");
+  loadXMLDoc(1);
 }
 
 // Read the last xml frame
@@ -155,7 +153,7 @@ function CopyPreviousAnnotations() {
 		$("#copyPrevious").children("img").attr("src", "Icons/segment_loader.gif")
 	
 		// Get last image path
-		var anno_file = main_image.GetImagePath(-1);  
+		var anno_file = main_media.GetImagePath(-1);  
 		
         anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
         ReadXML(anno_file,LoadLastFrameSuccess,LoadLastFrame404);
@@ -174,12 +172,12 @@ function CopyLastValid() {
 	
 		var imageOffset = -1;
 
-		var currentImName = main_image.GetFileInfo().GetFullName();
+		var currentImName = main_media.GetFileInfo().GetFullName();
 		// Annotation file of the last frame does not exist, so do nothing ... (alert user)
 		this.LoadFrameFailed = function (jqXHR,textStatus,errorThrown) { 
 			if(jqXHR.status==404 ) {
 				imageOffset -= 1;
-				var anno_file = main_image.GetImagePath( imageOffset );
+				var anno_file = main_media.GetImagePath( imageOffset );
 				if( currentImName == anno_file ) {
 					$("#copyLastValid").children("img").attr("src", "Icons/CopyLastValid.png");
 					alert( "There are no annotations the whole sequence. Annotate at least one frame before using this." );
@@ -197,7 +195,7 @@ function CopyLastValid() {
 		$("#copyLastValid").children("img").attr("src", "Icons/segment_loader.gif");
 	
 		// Get last image path
-		var anno_file = main_image.GetImagePath( imageOffset );		
+		var anno_file = main_media.GetImagePath( imageOffset );		
         anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
         ReadXML(anno_file, LoadLastFrameSuccess, this.LoadFrameFailed);
 	
@@ -209,8 +207,8 @@ function CopyLastValid() {
 // LoadAnnotationSuccess(), like when we're reading an actual frame, since we
 // want to change some paths and copy images before loading the annotations
 function LoadLastFrameSuccess(xml) {
-	var imName = main_image.GetFileInfo().GetImName();
-	var dirName = main_image.GetFileInfo().GetDirName();
+	var imName = main_media.GetFileInfo().GetImName();
+	var dirName = main_media.GetFileInfo().GetDirName();
 	
 	// Set folder and image's correct filename (switch from last frame to current frame)
 	xml.getElementsByTagName("filename")[0].firstChild.nodeValue = '\n'+imName+'\n';

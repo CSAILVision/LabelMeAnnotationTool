@@ -19,7 +19,7 @@ function StartupLabelMe() {
     // annotation folder or image filename.  If false is returned, the 
     // function fetches a new image and sets the URL to reflect the 
     // fetched image.
-    if(!main_media.GetFileInfo().ParseURL()) return;
+    //if(!main_media.GetFileInfo().ParseURL()) return;
 
     if(video_mode) {
       main_media = new video('videoplayer');
@@ -219,7 +219,7 @@ function FinishStartup() {
   {		
 	  // Add actions:
 	  console.log('LabelMe: setting actions');
-	  if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_image.GetFileInfo().GetImagePath();');
+	  if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_media.GetFileInfo().GetImagePath();');
 	  $('#changeuser').attr("onclick","javascript:show_enterUserNameDIV(); return false;");
 	  $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
 	  $('#xml_url').attr("onclick","javascript:GetXMLFile();");
@@ -227,9 +227,9 @@ function FinishStartup() {
 	  $('#prevImage').attr("onclick","javascript:ShowPreviousImage()");	
 	  $('#copyPrevious').attr("onclick","javascript:CopyPreviousAnnotations()");
 	  $('#copyLastValid').attr("onclick","javascript:CopyLastValid()");	  
-	  $('#zoomin').attr("onclick","javascript:main_image.Zoom(1.5)");
-	  $('#zoomout').attr("onclick","javascript:main_image.Zoom(1.0/1.5)");
-	  $('#fit').attr("onclick","javascript:main_image.Zoom('fitted')");
+	  $('#zoomin').attr("onclick","javascript:main_media.Zoom(1.5)");
+	  $('#zoomout').attr("onclick","javascript:main_media.Zoom(1.0/1.5)");
+	  $('#fit').attr("onclick","javascript:main_media.Zoom('fitted')");
 	  $('#erase').attr("onclick","javascript:main_handler.EraseSegment()");
 	  $('#myCanvas_bg_div').attr("onmousedown","javascript:StartDrawEvent(event);return false;");
 	  $('#myCanvas_bg_div').attr("oncontextmenu","javascript:return false;");
@@ -243,7 +243,7 @@ function FinishStartup() {
 	  initUserName();
 	  
 	  // Enable scribble mode:
-	  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing',' main_media');
+	  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_media');
 	  
 	  // Set action when the user presses a key:
 	  document.onkeyup = main_handler.KeyPress;

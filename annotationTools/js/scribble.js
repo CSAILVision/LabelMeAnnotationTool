@@ -366,7 +366,7 @@ function scribble_canvas(tag) {
     // Draws the scribbles in the canvas according to the zoom parameter
     // The function loops over clickX, clickY to know the coordinates of the scribbles.
     this.redraw = function () {
-        this.drawScribbles(main_image.GetImRatio(), true);
+        this.drawScribbles(main_media.GetImRatio(), true);
   };
 
   // similar to redraw() but to set the scribbles to the same size than 
@@ -379,12 +379,12 @@ function scribble_canvas(tag) {
 	
 	this.UpdateSize = function(drawForUI) {
 		
-		this.scribblecanvas.setAttribute('width', main_image.width_orig);
-		this.scribblecanvas.setAttribute('height', main_image.height_orig);
+		this.scribblecanvas.setAttribute('width', main_media.width_orig);
+		this.scribblecanvas.setAttribute('height', main_media.height_orig);
 		
 		// DON'T change the canvas size! only how it's shown! (css). So instead of changing canvas width/height, change 'style' attribute
 		// Also, setting scribblecanvas.style.width doesn't seem to work, we need oto set the whole string.
-		this.scribblecanvas.setAttribute('style', 'width:' + main_image.width_curr + 'px;height:' + main_image.height_curr + 'px;');
+		this.scribblecanvas.setAttribute('style', 'width:' + main_media.width_curr + 'px;height:' + main_media.height_curr + 'px;');
 		
 		// We need to set this everytime, since setting the style overrides it.
 		this.scribblecanvas.style.cursor = 'none'
@@ -928,7 +928,7 @@ this.HTMLobjectBox = function(obj_name) {
 
     this.setHover = function (x, y) {
         this.flag_changed = 1;
-        var ratio = main_image.GetImRatio();
+        var ratio = main_media.GetImRatio();
         x -= 1;
         x = Math.round(x / ratio);
         y = Math.round(y / ratio);

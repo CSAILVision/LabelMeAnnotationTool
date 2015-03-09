@@ -100,7 +100,7 @@ height:100%; z-index:0;}
 #anno_list {font-size:small;}
 
 /* We want to "pixelize" the image (we don't want antialiasing) */
-#main_image, #scribble_canvas {
+#main_media, #scribble_canvas {
   image-rendering:optimizeSpeed;             /* Legal fallback */
   image-rendering:-moz-crisp-edges;          /* Firefox        */
   image-rendering:-o-crisp-edges;            /* Opera          */

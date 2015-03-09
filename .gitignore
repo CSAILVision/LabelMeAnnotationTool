@@ -12,6 +12,11 @@ annotationTools/perl/globalvariables.pl
 *.ilk
 *.suo
 *.sdf
+Annotations/*
+annotationCache/*
+Images/*
+Masks/*
+Scribbles/*
 Thumbs.db
 annotationTools/scribble/image.jpg
 annotationTools/scribble/mask.png
