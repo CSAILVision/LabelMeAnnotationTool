@@ -124,6 +124,18 @@ a2enmod rewrite
   DirectoryIndex index.shtml
 </Directory>
 
+For Ubuntu 14.04 with Apache 2.4:
+
+<Directory "REPLACE_WITH_YOUR_LOCATION">
+    Options Indexes FollowSymLinks MultiViews Includes ExecCGI
+    AddHandler cgi-script .cgi
+    AllowOverride all
+    Require all granted
+    AddType text/html .shtml
+    AddOutputFilter INCLUDES .shtml
+    DirectoryIndex index.shtml
+</Directory>
+
 
 WINDOWS CONFIGURATION:
 
