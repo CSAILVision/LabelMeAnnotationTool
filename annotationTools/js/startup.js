@@ -65,6 +65,34 @@ function LoadAnnotationSuccess(xml) {
     FinishStartup();
     return;
   }
+
+  // Set AllAnnotations array:
+  SetAllAnnotationsArray();
+
+  console.time('attach main_canvas');
+  // Attach valid annotations to the main_canvas:
+  for(var pp = 0; pp < AllAnnotations.length; pp++) {
+    var isDeleted = AllAnnotations[pp].GetDeleted();
+    if((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted)) {
+      // Attach to main_canvas:
+      main_canvas.AttachAnnotation(AllAnnotations[pp]);
+    }
+  }
+  console.timeEnd('attach main_canvas');
+
+  console.time('RenderAnnotations()');
+  // Render the annotations:
+  main_canvas.RenderAnnotations();
+  console.timeEnd('RenderAnnotations()');
+
+  console.timeEnd('load success');
+
+  // Finish the startup scripts:
+  FinishStartup();
+}
+
+/** Sets AllAnnotations array from LM_xml */
+function SetAllAnnotationsArray() {
   var obj_elts = LM_xml.getElementsByTagName("object");
   var num_obj = obj_elts.length;
   
@@ -145,27 +173,6 @@ function LoadAnnotationSuccess(xml) {
 
   }
   console.timeEnd('loop annotated');
-
-  console.time('attach main_canvas');
-  // Attach valid annotations to the main_canvas:
-  for(var pp = 0; pp < num_obj; pp++) {
-    var isDeleted = AllAnnotations[pp].GetDeleted();
-    if((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted)) {
-      // Attach to main_canvas:
-      main_canvas.AttachAnnotation(AllAnnotations[pp]);
-    }
-  }
-  console.timeEnd('attach main_canvas');
-
-  console.time('RenderAnnotations()');
-  // Render the annotations:
-  main_canvas.RenderAnnotations();
-  console.timeEnd('RenderAnnotations()');
-
-  console.timeEnd('load success');
-
-  // Finish the startup scripts:
-  FinishStartup();
 }
 
 /** Annotation file does not exist, so load template. */
