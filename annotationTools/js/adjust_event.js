@@ -1,4 +1,16 @@
-// Adjust control points of polygon.
+/** @file This file contains the functions to adjust an existing polygon. */
+/**
+ * Creates the adjusting event
+ * @constructor
+
+ 
+ * @param {string} dom_attach - The html element where the polygon lives
+ * @param {array} x - The x coordinates for the polygon points
+ * @param {array} y - The y coordinates for the polygon points
+ * @param {string} obj_name - The name of the adjusted_polygon
+ * @param {function} ExitFunction - the_function to execute once adjusting is done
+ * @param {float} scale - Scaling factor for polygon points
+*/
 function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
   /****************** Private variables ************************/
@@ -55,7 +67,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
   /****************** Public functions ************************/
 
-  // This function starts the event:
+  /** This function starts the adjusting event: */
   this.StartEvent = function() {
     console.log('LabelMe: Starting adjust event...');
 
@@ -97,7 +109,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     });
   };
   
-  // Stop polygon adjust event:
+  /** This function stops the adjusting event and calls the ExitFunction: */
   this.StopAdjustEvent = function() {
     // Remove polygon:
     $('#'+this.polygon_id).remove();
@@ -115,7 +127,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     this.ExitFunction(this.x,this.y,this.editedControlPoints);
   };
 
-  // This function shows the scaling points for an annotation
+  /** This function shows the scaling points for a polygon */
   this.ShowScalingPoints = function (){
     if(!this.scalepoints_ids) this.scalepoints_ids = new Array();
     for (var i = 0; i < this.x.length; i++){
@@ -126,13 +138,16 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
   });
 
   }
+
+  /** This function removes the displayed scaling points for a polygon */
   this.RemoveScalingPoints = function (){
     if(this.scalepoints_ids) {
       for(var i = 0; i < this.scalepoints_ids.length; i++) $('#'+this.scalepoints_ids[i]).remove();
       this.scalepoints_ids = null;
     }
   }
-  // This function shows all control points for an annotation.
+
+  /** This function shows the control points for a polygon */
   this.ShowControlPoints = function() {
     if(!this.control_ids) this.control_ids = new Array();
     for(var i = 0; i < this.x.length; i++) {
@@ -146,7 +161,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
-  // This function removes all displayed control points from an annotation
+  /** This function removes the displayed control points for a polygon */
   this.RemoveControlPoints = function() {
     if(this.control_ids) {
       for(var i = 0; i < this.control_ids.length; i++) $('#'+this.control_ids[i]).remove();
@@ -154,7 +169,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
-  // This function shows the middle grab point for a polygon.
+  /** This function shows the middle grab point for a polygon. */
   this.ShowCenterOfMass = function() {
     var MarkerSize = 8;
     if(this.x.length==1) MarkerSize = 6;
@@ -171,7 +186,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       });
   };
 
-  // This function removes the middle grab point for a polygon
+  /** This function removes the middle grab point for a polygon */
   this.RemoveCenterOfMass = function() {
     if(this.center_id) {
       $('#'+this.center_id).remove();
@@ -179,6 +194,11 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
   
+
+  /** This function is called when one scaling point is clicked
+   * It prepares the polygon for scaling.
+   * @param {int} i - the index of the scaling point being modified
+  */
   this.StartMoveScalingPoint = function(i) {
     if(!this.isEditingScalingPoint) {
       $('#'+this.dom_attach).unbind();
@@ -193,7 +213,11 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.editedControlPoints = true;
     }
   };
-
+  /** This function is called when one scaling point is being moved
+   * It computes the position of the scaling point in relation to the polygon's center of mass
+   * and resizes the polygon accordingly
+   * @param {event} event - Indicates a point is being moved and the index of such point
+  */
   this.MoveScalingPoint = function(event) {
     var x = GetEventPosX(event);
     var y = GetEventPosY(event);
@@ -233,6 +257,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
+  /** This function is called when one scaling point stops being moved
+   * It updates the xml with the new coordinates of the polygon.
+   * @param {event} event - Indicates a point is being moved and the index of such point
+   */
   this.StopMoveScalingPoint = function(event) {
     console.log('Moving scaling point');
     if(this.isEditingScalingPoint) {
@@ -252,7 +280,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
-
+  /** This function is called when one control point is clicked
+   * @param {int} i - the index of the control point being modified
+  */  
 
   this.StartMoveControlPoint = function(i) {
     if(!this.isEditingControlPoint) {
@@ -272,6 +302,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
+  /** This function is called when one control point is being moved
+   * @param {event} event - Indicates a point is being moved and the index of such point
+  */
   this.MoveControlPoint = function(event) {
     if(this.isEditingControlPoint) {
       var x = GetEventPosX(event);
@@ -295,6 +328,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
+  /** This function is called when one control point stops being moved
+   * It updates the xml with the new coordinates of the polygon.
+   * @param {event} event - Indicates a point is being moved and the index of such point
+   */
   this.StopMoveControlPoint = function(event) {
     console.log('Moving control point');
     if(this.isEditingControlPoint) {
@@ -315,6 +352,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
+  /** This function is called when the middle grab point is clicked
+   * It prepares the polygon for moving.
+  */
   this.StartMoveCenterOfMass = function() {
     if(!this.isMovingCenterOfMass) {
       $('#'+this.dom_attach).unbind();
@@ -332,6 +372,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     }
   };
 
+  /** This function is called when the middle grab point is being moved
+   * @param {event} event - Indicates the middle grab point is moving
+   * It modifies the control points to be consistent with the polygon shift
+  */
   this.MoveCenterOfMass = function(event) {
     if(this.isMovingCenterOfMass) {
       var x = GetEventPosX(event);
@@ -367,7 +411,12 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.ShowCenterOfMass();
     }
   };
-    
+
+
+  /** This function is called when the middle grab point stops being moved
+   * It updates the xml with the new coordinates of the polygon.
+   * @param {event} event - Indicates the middle grab point is being moved and the index of such point
+   */
   this.StopMoveCenterOfMass = function(event) {
     if(this.isMovingCenterOfMass) {
       // Move to final position:
@@ -396,7 +445,9 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
   /*************** Helper functions ****************/
 
-  // Compute center of mass for a polygon given array of points (x,y):
+  /** Compute center of mass for a polygon given array of points (x,y):
+
+  */
   this.CenterOfMass = function(x,y) {
     var N = x.length;
     
@@ -420,6 +471,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     this.center_x /= perimeter;
     this.center_y /= perimeter;
   };
+
 
   this.DrawPolygon = function(dom_id,x,y,obj_name,scale) {
     if(x.length==1) return DrawFlag(dom_id,x[0],y[0],obj_name,scale);

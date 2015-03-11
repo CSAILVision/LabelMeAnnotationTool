@@ -1,6 +1,6 @@
-// This file contains the scripts used when LabelMe starts up.
+/** @file This file contains the scripts used when LabelMe starts up. */
 
-// Main entry point for the annotation tool.
+/** Main entry point for the annotation tool. */
 function StartupLabelMe() {
   console.time('startup');
 
@@ -53,7 +53,9 @@ function StartupLabelMe() {
   }
 }
 
-// This function gets called if the annotation has been successfully loaded.
+/** This function gets called if the annotation has been successfully loaded.
+  * @param {string} xml - the xml regarding the current file
+*/
 function LoadAnnotationSuccess(xml) {
   console.time('load success');
 
@@ -166,7 +168,7 @@ function LoadAnnotationSuccess(xml) {
   FinishStartup();
 }
 
-// Annotation file does not exist, so load template:
+/** Annotation file does not exist, so load template. */
 function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
   if(jqXHR.status==404) 
     ReadXML(main_media.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
@@ -174,8 +176,7 @@ function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
     alert(jqXHR.status);
 }
 
-// Annotation template does not exist for this folder, so load default 
-// LabelMe template:
+/** Annotation template does not exist for this folder, so load default */
 function LoadTemplate404(jqXHR,textStatus,errorThrown) {
   if(jqXHR.status==404)
     ReadXML('annotationCache/XMLTemplates/labelme.xml',LoadTemplateSuccess,function(jqXHR) {
@@ -185,7 +186,9 @@ function LoadTemplate404(jqXHR,textStatus,errorThrown) {
     alert(jqXHR.status);
 }
 
-// Actions after template load success:
+/** Actions after template load success 
+  * @param {string} xml - the xml regarding the current file
+*/
 function LoadTemplateSuccess(xml) {
   // Set global variable:
   LM_xml = xml;
@@ -201,7 +204,7 @@ function LoadTemplateSuccess(xml) {
   FinishStartup();
 }
 
-// Finish the startup process:
+/** Finish the startup process: */
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
   if(view_ObjList && !video_mode) RenderObjectList();

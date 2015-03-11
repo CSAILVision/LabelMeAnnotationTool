@@ -1,10 +1,15 @@
+/** @file File containing the image class 
 
-// IMAGE CLASS
-///////////////////////////////////////////////////////////////////////
-// Fetches and manipulates the main image that will be annotated.
-// From the HTML code, create a <img src...> tag with an id and pass
-// this id in as the argument when creating the class.
+* Fetches and manipulates the main image that will be annotated.
+* From the HTML code, create a <img src...> tag with an id and pass
+* this id in as the argument when creating the class.
 
+*/
+/**
+ * Creates an image object
+ * @constructor
+ * @param {string} id - The id of the dom element containing the image
+*/
 function image(id) {
     
     // *******************************************
@@ -27,10 +32,11 @@ function image(id) {
     // Public methods:
     // *******************************************
     
-    // Fetches a new image based on the URL string or gets a new one at
-    // random from the dirlist.  onload_helper is a pointer to a helper
-    // function that is called when the image is loaded.  Typically, this
-    // will call obj.SetImageDimensions().
+    /** Fetches a new image based on the URL string or gets a new one at
+     * @param {function} onload_helper - pointer to a helper function that 
+     * is called when the image is loaded.  Typically, this
+     * will call obj.SetImageDimensions().
+    */
     this.GetNewImage = function(onload_helper) {
         document.getElementById('loading').style.display = '';
         if(IsMicrosoft()) this.im.style.visibility = 'hidden';
@@ -41,20 +47,22 @@ function image(id) {
         edit_popup_open = 0;
     };
     
-    // Returns the ratio of the available width/height to the original
-    // width/height.
+    /** Returns the ratio of the available width/height to the original
+     width/height.
+     */
     this.GetImRatio = function() {
         return this.im_ratio;
     };
     
-    // Returns file_info object that contains information about the
-    // displayed image.
+    /** Returns file_info object that contains information about the
+      * displayed image.
+     */
     this.GetFileInfo = function() {
         return this.file_info;
     };
     
     
-    // Sets the dimensions of the image based on browser setup.
+    /** Sets the dimensions of the image based on browser setup. */
     this.SetImageDimensions = function() {
         
         this.SetOrigImDims(this.im);
@@ -94,8 +102,12 @@ function image(id) {
     };
     
     
-    // If (x,y) is not in view, then scroll it into view.  Return adjusted
-    // (x,y) point that takes into account the slide offset.
+    /** If (x,y) is not in view, then scroll it into view.  Return adjusted
+     * (x,y) point that takes into account the slide offset.
+     * @param {int} x
+     * @param {int} y
+     * @returns {intarray}
+    */
     this.SlideWindow = function (x,y) {
         var pt = Array(2);
         if(!this.IsPointVisible(x,y)) {
@@ -107,21 +119,23 @@ function image(id) {
         return pt;
     };
     
-    // Turn off image scrollbars if zoomed in.
+    /** Turn off image scrollbars if zoomed in. */
     this.ScrollbarsOff = function () {
         if(!this.IsFitImage()) {
             document.getElementById('main_media').style.overflow = 'hidden';
         }
     };
     
-    // Turn on image scrollbars if zoomed in.
+    /** Turn on image scrollbars if zoomed in. */
     this.ScrollbarsOn = function () {
         if(!this.IsFitImage()) {
             document.getElementById('main_media').style.overflow = 'auto';
         }
     };
     
-    // Zoom the image given a zoom level (amt) between 0 and inf (or 'fitted').
+    /** Zoom the image given a zoom level (amt) between 0 and inf (or 'fitted'). 
+     * @param {float} amt - amount of zoom
+    */
     this.Zoom = function(amt) {
         // if a new polygon is being added while the user press the zoom button then do nothing.
         if(wait_for_input) return;
@@ -189,8 +203,7 @@ function image(id) {
     // Private methods:
     // *******************************************
     
-    //Tells the picture to take up the available
-    //space in the browser, if it needs it. 6.29.06
+    /** Tells the picture to take up the available space in the browser, if it needs it. 6.29.06*/
     this.ScaleFrame = function(amt) {
         // Look at the available browser (height,width) and the image (height,width),
         // and use the smaller of the two for the main_media (height,width).
@@ -214,20 +227,22 @@ function image(id) {
     };
     
     
-    // Retrieves and sets the original image's dimensions (width/height).
+    /** Retrieves and sets the original image's dimensions (width/height).
+     * @param {image} im
+    */
     this.SetOrigImDims = function (im) {
         this.width_orig = im.width;
         this.height_orig = im.height;
         return;
     };
     
-    //gets available width (6.14.06)
+    /** gets available width (6.14.06) */
     this.GetAvailWidth = function() {
         return $(window).width() - $("#main_media").offset().left -10 - 200;
         // we could include information about the size of the object box using $("#anno_list").offset().left
     };
     
-    //gets available height (6.14.06)
+    /** gets available height (6.14.06) */
     this.GetAvailHeight = function() {
         var m = main_media.GetFileInfo().GetMode();
         if(m=='mt') {
@@ -238,12 +253,12 @@ function image(id) {
     
     
     
-    // Returns true if the image is zoomed to the original (fitted) resolution.
+    /** Returns true if the image is zoomed to the original (fitted) resolution. */
     this.IsFitImage = function () {
         return (this.im_ratio < 0.01+this.browser_im_ratio);
     };
     
-    // Returns true if (x,y) is viewable.
+    /** Returns true if (x,y) is viewable. */
     this.IsPointVisible = function (x,y) {        
         var scrollLeft = $("#main_media").scrollLeft();
         var scrollTop = $("#main_media").scrollTop();

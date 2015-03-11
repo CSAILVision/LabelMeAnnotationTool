@@ -1,4 +1,4 @@
-// This file contains functions for interacting with the browser type.
+/** @file This file contains functions for interacting with the browser type. */
 
 var bname;
 var bversion;
@@ -61,8 +61,11 @@ function setCookie(c_name,value,expiredays) {
     ((expiredays==null) ? "" : "; expires="+exdate);
 }
 
-// This function gets a variable from the URL (or the COOKIES)
-// example: var username = getQueryVariable("username");
+/** This function gets a variable from the URL (or the COOKIES)
+ * @example: 
+ * // returns the username
+ * var username = getQueryVariable("username");
+ */
 function getQueryVariable(variable) {
     var query = window.location.search.substring(1);
     var vars = query.split("&");

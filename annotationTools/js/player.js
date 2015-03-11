@@ -1,16 +1,18 @@
-// retrieves a file via XMLHTTPRequest, calls fncCallback when done or fncError on error.
 
+/** @file This file the information about the video player. */
 
- var oVP;
+/** Global reference to the video player 
+ * @global 
+ 
+ */
+var oVP;
 
+/** 
+ * Creates a video player pointing to files specified by the url
+ * @constructor
+*/
 function JSVideo() {
 
-
-
-// var fname_folder_root = "/var/www/LabelMeVideo/VLMFrames/"
-// var fname_folder = location.search.split('source=')[1] ? location.search.split('source=')[1] : "unusual_clips/backing/";
-
-  var fname_folder_root = "/var/www/developers/xavierpuigf/LabelMeAnnotationTool/"
   var fname_folder = main_media.GetFileInfo().GetImagePath()+"/";
   fname_folder =  fname_folder;
 
@@ -58,6 +60,13 @@ function JSVideo() {
   this.getcurrentFrame = function (){
     return iFrameCtr;
   }
+
+/** This function checks that the loaded frames are correct, stores them in the video structure
+   * It prepares the polygon for scaling.
+   * @param {int} frame - the position corresponding to the first frame in the set
+   * @param {bool} first_time - boolean indicating whether it was the first frame load of the video
+   * @param {json} response - json with the set of jpg frames being loaded
+*/
 this.loadFile = function(frame, first_time, isbackground, response) {
 
 
@@ -89,7 +98,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     else fncError();
   }
 
-
+  /** This function creates the html elements (display, scroll bar and buttons) for the video player */
   // Create video canvas elements.
   this.CreateVideoCanvas = function() {
     // Create canvas:
@@ -171,11 +180,13 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   this.X = Array();
   this.Y = Array();
   this.display_polygon = Array();
-
+  /** This function is called when the user clicks the Go to frame button. It displays the frame indicated by the text field */
   this.GoToFrameButtonClicked = function(){
     var framevalue = Math.max(Math.min(this.getnumFrames()-1,$('#frameinput').val()),0);
     this.GoToFrame(parseInt(framevalue));
   }
+
+  /** This function generates the html <img> elements that contain the loaded frames */
   this.GenerateFrames = function() {
     var shift = oVideoData.firstframe;
     for(var i = 0; i < oVideoData.data.video.length; i++) {
@@ -184,7 +195,10 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     }
 
   }
-  
+  /** This function displays the frame at position i, as well as the annotations corresponding to such frame. 
+   * If such frame is not available, it pauses the player, loads a chunk of frames starting from i and replays.
+   * @param {int} i - the index of the frame to be displayed
+  */
   this.DisplayFrame = function(i) {
     // Show frame:
     $('#framenum').html(i);
@@ -254,29 +268,44 @@ this.loadFile = function(frame, first_time, isbackground, response) {
           }
         }
   }
+
+  /** This function sets the player to frame 'frame'. 
+   * @param {int} frame - the index of the frame of interest
+  */  
   this.GoToFrame = function(frame){
     iFrameCtr = frame;
     this.DisplayFrame(iFrameCtr);
     this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
   }
+
+
+  
   this.ShowFirstFrame = function() {
     // $('#oCanvas').append(aFrameImages[0]);
     this.DisplayFrame(0);
     this.UpdateScrollbar(0);
   }
   
-  // Update location of scrollbar:
+  /** This function updates the position of the scroll bar. 
+    * @param {float} pos - float from 0 to 1 indicating the position of the scroll bar 
+  */
   this.UpdateScrollbar = function(pos) {
     $('#oScroll').slider('value',  pos*this.imageWidth);
     //$('#scrollbutton').css('left',pos*this.imageWidth);
     //$('#oProgress').css('width',pos*this.imageWidth);
   }
+
+  /** This function updates the position of the load bar. 
+    * @param {float} pos - float from 0 to 1 indicating the position of the load bar 
+  */
   this.UpdateLoadbar = function(pos){
     //$('#oLoadBar').css('width',pos*this.imageWidth);
     $('#oLoadBar').slider('value',  pos*this.imageWidth);
   }
 
-  // Start playback.
+  /** This function sets the player to play. It can be called when a chunk of needed frames is loaded or when the user hits the play button. 
+    * @param {bool} buttonClicked - boolean indicating whether the user clicked the play button or the video was played because the chunks got loaded
+  */
   this.Play = function(buttonClicked) {
     //if (active_canvas != REST_CANVAS) return;
     if (buttonClicked) uPaused = false;
@@ -298,7 +327,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     this.NextFrame();
   }
   
-  // render next frame
+  /** Displays the next frame in a video file according to the video rate. 
+  */
   this.NextFrame = function() {
     if (!bPlaying) return;
     
@@ -341,7 +371,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     $('#playpausebutton').attr('onclick','oVP.Play(true);');
   }
   
-  // Step forward one frame:
+  /** This function forces to go to the next frame, regardless of frame rate. 
+  */
   this.StepForward = function() {
     if(!bPaused) this.Pause();
     else {
@@ -356,7 +387,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     }
   }
   
-  // Step backward one frame:
+  /** This function goes to the previous frame. 
+  */
   this.StepBackward = function() {
     if(!bPaused) this.Pause();
     else {
@@ -371,7 +403,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     }
   }
 
-  // Go to beginning of video:
+  /** This function goes to the start of the video. 
+  */
   this.StepBeginning = function() {
     this.Pause();
     iFrameCtr = 1;
@@ -381,7 +414,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
   }
 
-  // Go to end of video:
+  /** This function goes to the end of the video. 
+  */
   this.StepEnd = function() {
     this.Pause();
     iFrameCtr = oVideoData.frames-1;
@@ -390,10 +424,18 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     this.DisplayFrame(iFrameCtr);
     this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
   }
+  /** This function looks for future frames that haven't been loaded yet and loads them into the player. 
+    * @param {int} frame - the frame index from which to start seeking
+  */
   this.seekChunkToDownload = function (frame){
     while (aFrameImages[frame] != null) frame++;
     if (frame < oVideoData.frames) this.loadChunk(frame, 1, false, true);
   }
+  /** This function loads a set of frames to the player. 
+    * @param {int} frame - the first frame to load
+    * @param {int} duration - the duration of the chunk to be loaded
+    * @param {bool} first_time - boolean indicating whether the function is called for the first time
+  */
   this.loadChunk = function(frame, duration, first_time, isbackground){
     ovP = this;
     $.ajax({

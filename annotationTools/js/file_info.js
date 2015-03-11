@@ -1,6 +1,12 @@
+/** @file File containing the file_info class - only works for still images  */
+
 // file_info class
-// Keeps track of the information for the currently displayed image
-// and fetches the information via dirlists or from the URL.
+
+/**
+ * Keeps track of the information for the currently displayed image
+ * and fetches the information via dirlists or from the URL.
+ * @constructor
+*/
 function file_info() {
     
     // *******************************************
@@ -21,9 +27,10 @@ function file_info() {
     // Public methods:
     // *******************************************
     
-    // Parses the URL and gets the collection, directory, and filename
-    // information of the image to be annotated.  Returns true if the
-    // URL has collection, directory, and filename information.
+    /** Parses the URL and gets the collection, directory, and filename
+     * information of the image to be annotated.  Returns true if the
+     * URL has collection, directory, and filename information.
+    */
     this.ParseURL = function () {
         var labelme_url = document.URL;
         var idx = labelme_url.indexOf('?');
@@ -207,38 +214,47 @@ function file_info() {
         return 1;
     };
     
+    /** Gets mode */
     this.GetMode = function() {
         return this.mode;
     };
     
+    /** Gets collection name */
     this.GetCollection = function () {
         return this.collection;
     };
     
+    /** Gets directory name */
     this.GetDirName = function () {
         return this.dir_name;
     };
     
+    /** Gets image name */
     this.GetImName = function () {
         return this.im_name;
     };
     
+    /** Sets image name */
     this.SetImName = function (newImName){
         this.im_name = newImName;
     };
     
+    /** Gets image path */
     this.GetImagePath = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'Images/' + this.dir_name + '/' + this.im_name;
     };
     
+    /** Gets annotation path */
     this.GetAnnotationPath = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'Annotations/' + this.dir_name + '/' + this.im_name.substr(0,this.im_name.length-4) + '.xml';
     };
     
+    /** Gets full image name */
     this.GetFullName = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return this.dir_name + '/' + this.im_name;
     };
     
+    /** Gets template path */
     this.GetTemplatePath = function () {
         if(!this.dir_name) return 'annotationCache/XMLTemplates/labelme.xml';
         return 'annotationCache/XMLTemplates/' + this.dir_name + '.xml';
@@ -248,22 +264,22 @@ function file_info() {
     // Private methods:
     // *******************************************
     
-    // String is assumed to have field=value form.  Parses string to
-    // return the field.
+    /** String is assumed to have field=value form.  Parses string to
+    return the field. */
     this.GetURLField = function (str) {
         var idx = str.indexOf('=');
         return str.substring(0,idx);
     };
     
-    // String is assumed to have field=value form.  Parses string to
-    // return the value.
+    /** String is assumed to have field=value form.  Parses string to
+     return the value. */
     this.GetURLValue = function (str) {
         var idx = str.indexOf('=');
         return str.substring(idx+1,str.length);
     };
     
-    // Changes current URL to include collection, directory, and image
-    // name information.  Returns false.
+    /** Changes current URL to include collection, directory, and image
+    name information.  Returns false. */
     this.SetURL = function (url) {
         this.FetchImage();
 
@@ -285,7 +301,7 @@ function file_info() {
         return false;
     };
     
-    // Fetch next image.
+    /** Fetch next image. */
     this.FetchImage = function () {
         var url = 'annotationTools/perl/fetch_image.cgi?mode=' + this.mode + '&username=' + username + '&collection=' + this.collection.toLowerCase() + '&folder=' + this.dir_name + '&image=' + this.im_name;
         var im_req;

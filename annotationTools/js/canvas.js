@@ -1,4 +1,9 @@
-// Generic rendering canvas.
+/** @file Generic rendering canvas */
+/**
+ * Creates the rendering canvas
+ * @constructor
+ * @param {string} div_attach - The div element where the canvas lives
+*/
 function canvas(div_attach) {
     
   // *******************************************
@@ -12,14 +17,19 @@ function canvas(div_attach) {
   // Public methods:
   // *******************************************
   
-  // Attach the annotation to the canvas.
+  /** Attach the annotation to the canvas. 
+    * @param {annotation} anno - The annotation to attach
+
+  */
   this.AttachAnnotation = function (anno) {
     this.annotations.push(anno);
     anno.SetDivAttach(this.div_attach);
   };
   
-  // Detach annotation from the canvas. Given the annotation ID, the 
-  // corresponding annotation is located, detached, and returned.
+  /** Detach annotation from the canvas. Given the annotation ID, the 
+   corresponding annotation is located, detached, and returned.
+    * @param {integer} anno_id - id of the annotation to dettach
+   */
   this.DetachAnnotation = function(anno_id) {
     var i;
 
@@ -44,14 +54,14 @@ function canvas(div_attach) {
     return anno;
   };
 
-  // Unhide all annotations:
+  /** Unhide all annotations: */
   this.UnhideAllAnnotations = function () {
     for(var pp=0; pp < this.annotations.length; pp++) {
       this.annotations[pp].hidden = false;
     }
   };
 
-  // Render all attached annotations:
+  /* Render all attached annotations: */
   this.RenderAnnotations = function () {
     // Loop through all of the annotations and clear them from the canvas.
     for(var i=0;i<this.annotations.length;i++) {

@@ -1,13 +1,17 @@
-// THIS CODE TAKES CARE OF THE BUBBLE THAT APPEARS ON THE ANNOTATION TOOL
-// WHEN EDITING OBJECT PROPERTIES
+/** @file This file contains functions managing the bubble that appears in the annotation tool. */
+
 
 // *******************************************
 // Public methods:
 // *******************************************
 
-// This function creates the popup bubble.  Takes as input (x,y) location,
-// the html to include inside the popup bubble, and the dom element to 
-// attach to. Returns the dom element name for the popup bubble.
+/** This function creates the popup bubble.  
+ * @param {float} left - xlocation of the bubble
+ * @param {float} top - ylocation of the bubble
+ * @param {string} innerhtml - extra html content for the bubble
+ * @param {string} dom_attach - id of the html element where it should be attached
+ * @returns {string} bubble_name - dom element name for the popup bubble
+*/
 function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   var html_str;
   var bubble_name = 'myPopup';
@@ -45,10 +49,10 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   return bubble_name;
 }
 
-// This function creates the close button at the top-right corner of the 
-// popup bubble. Inputs are the dom_bubble name (returned from 
-// CreatePopupBubble()) and (optionally) a function to run when the close
-// button is pressed.
+/** This function creates the close button at the top-right corner of the popup bubble
+ * @param {string} dom_bubble - dom_bubble name
+ * @param {function} close_button - function to run when the close button is pressed
+*/
 function CreatePopupBubbleCloseButton(dom_bubble,close_function) {
   if(arguments.length==1) {
     close_function = function() {return;};

@@ -1,10 +1,10 @@
-// This file contains the scripts for when the draw event is activated.
+/** @file This file contains the scripts for when the draw event is activated. */
 
 var draw_anno = null;
 var query_anno = null;
 
-// This function is called with the draw event is started.  It can be 
-// triggered when the user (1) clicks on the base canvas.
+/** This function is called with the draw event is started.  It can be 
+ triggered when the user (1) clicks on the base canvas. */
 function StartDrawEvent(event) {
   if(!action_CreatePolygon) return;
   if(active_canvas != REST_CANVAS) return;
@@ -58,8 +58,8 @@ function StartDrawEvent(event) {
   WriteLogMsg('*start_polygon');
 }
 
-// Handles when the user presses the mouse button down on the drawing
-// canvas.
+/** Handles when the user presses the mouse button down on the drawing
+canvas. */
 function DrawCanvasMouseDown(event) {
   // User right-clicked mouse, so close polygon and return:
   if(event.button > 1) return DrawCanvasClosePolygon();
@@ -93,8 +93,9 @@ function DrawCanvasMouseDown(event) {
   $('#'+draw_anno.div_attach).append($('#'+draw_anno.point_id));
 }    
 
-// Handles when the user closes the polygon by right-clicking or clicking 
-// on the first control point.
+/** Handles when the user closes the polygon by right-clicking or clicking 
+ on the first control point. For video events the bubble is slightly different
+*/
 function DrawCanvasClosePolygon() {
   if(active_canvas!=DRAW_CANVAS) return;
   if(username_flag) submit_username();
@@ -170,8 +171,8 @@ function DrawCanvasClosePolygon() {
   FillPolygon(query_anno.DrawPolygon(main_media.GetImRatio()));
 }
 
-// Handles when the user presses the undo close button in response to
-// the "What is this object?" popup bubble.
+/** Handles when the user presses the undo close button in response to
+ the "What is this object?" popup bubble. */
 function UndoCloseButton() {
   active_canvas = DRAW_CANVAS;
   
@@ -197,9 +198,10 @@ function UndoCloseButton() {
   draw_anno.DrawPolyLine();
 }
 
-// This function is called when the draw event is finished.  It can be
-// triggered when the user (1) closes the polygon and only one option is
-// valid in the drop-down list (2) erases the last control point.
+/** This function is called when the draw event is finished.  It can be
+ triggered when the user (1) closes the polygon and only one option is
+ valid in the drop-down list (2) erases the last control point.
+*/
 function StopDrawEvent() {
   // Set active canvas:
   active_canvas = REST_CANVAS;

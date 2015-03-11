@@ -1,10 +1,16 @@
-// This file contains the scripts for when the edit event is activated.
+/** @file This file contains the scripts for when the edit event is activated. */
+
 
 var select_anno = null;
 var adjust_event = null;
-// This function is called with the edit event is started.  It can be 
-// triggered when the user (1) clicks a polygon, (2) clicks the object in
-// the object list, (3) deletes a verified polygon.
+
+/**
+  * This function is called with the edit event is started.  It can be
+  * triggered when the user (1) clicks a polygon, (2) clicks the object in
+  * the object list, (3) deletes a verified polygon.
+  * @param {int} anno_id - the id of the annotation being edited
+
+*/
 function StartEditEvent(anno_id,event) {
   console.log('LabelMe: Starting edit event...');
   if(event) event.stopPropagation();
@@ -67,11 +73,12 @@ function StartEditEvent(anno_id,event) {
   }
 }
 
-// This function is called when the edit event is finished.  It can be
-// triggered when the user (1) clicks the close edit bubble button, 
-// (2) zooms, (3) submits an object label in the popup bubble, 
-// (4) presses the delete button in the popup bubble, (5) clicks the 
-// object in the object list, (6) presses the ESC key.
+/** This function is called when the edit event is finished.  It can be
+ * triggered when the user (1) clicks the close edit bubble button, 
+ * (2) zooms, (3) submits an object label in the popup bubble, 
+ * (4) presses the delete button in the popup bubble, (5) clicks the 
+ * object in the object list, (6) presses the ESC key.
+ */
 function StopEditEvent() {
   // Update the global variables for the active canvas and edit popup bubble:
 
@@ -121,6 +128,7 @@ var adjust_objEnter = '';
 var adjust_attributes;
 var adjust_occluded;
 
+/** This function is called when the user clicks 'Adjust Polygon' button */
 function AdjustPolygonButton() {
   // We need to capture the data before closing the bubble 
   // (THIS IS AN UGLY HACK)
@@ -180,6 +188,13 @@ function AdjustPolygonButton() {
   adjust_event.StartEvent();
 }
 
+/**
+  * Mirror function of StartEditEvent for video
+  * It creates an aux annotation so that the code is compliant
+  * @param {int} anno_id - the id of the annotation being edited
+  * @param {string} polygon_id - the id of the html polygon element
+
+*/
 function StartEditVideoEvent(polygon_id, anno_id,event) {
 
   object_annotation = new annotation(anno_id);
