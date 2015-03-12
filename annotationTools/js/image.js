@@ -1,5 +1,4 @@
-/** @file File containing the image class 
-
+/** @file File containing the image class. 
 * Fetches and manipulates the main image that will be annotated.
 * From the HTML code, create a <img src...> tag with an id and pass
 * this id in as the argument when creating the class.

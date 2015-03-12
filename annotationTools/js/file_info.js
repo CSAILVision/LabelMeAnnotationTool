@@ -1,6 +1,7 @@
-/** @file File containing the file_info class - only works for still images  */
+/** @file Contains the file_info class, which parses the URL and
+ * keeps track of the URL variables.  */
 
-// file_info class
+// file_info class - only works for still images at the moment
 
 /**
  * Keeps track of the information for the currently displayed image

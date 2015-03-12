@@ -1,4 +1,4 @@
-// This file contains global variables used in LabelMe.
+/** @file Contains the global variables used in LabelMe. */
 
 // Parsed LabelMe XML file. Manipulate this variable with jquery.
 var LM_xml;
