@@ -7,11 +7,11 @@
   * @param {string} name - name of the field to return.
   * @param {int} frame - frame of interest
 */
-// TO DO: Perhaps call this function "LMgetObjectField"...
-function LMgetfield(xml,ind_object, name, frame) {
+function LMgetObjectField(xml,ind_object, name, frame) {
 	var obj = $(xml).children("annotation").children("object").eq(ind_object);
-	if (obj.length == 0) return null;
-	if (name == 'name' || name == 'deleted'){
+	if (obj.length == 0) return "";
+	if (name == 'name' || name == 'deleted' || name == 'attributes' || name == 'occluded'){
+		if (!obj.children(name)) return "";
 		return obj.children(name).text();
 	}
 	if (name == 'x' || name == 'y'){
@@ -37,7 +37,7 @@ function LMgetfield(xml,ind_object, name, frame) {
 			}
 		}
 	}
-	return null;
+	return "";
 
 
 }
@@ -47,13 +47,4 @@ function LMnumberOfObjects(xml) {
     return xml.getElementsByTagName('object').length;
 }
 
-// TO DO: This function should be replaced with the top one above.  
-// Maybe call the top one above "LMgetObjectField".
-// Access LabelMe object field.
-// i - object index
-// fieldname - object field name, e.g. "name", "deleted"
-function LMgetObjectField(xml,i,fieldname) {
-  if(!xml.getElementsByTagName('object')[i] || !xml.getElementsByTagName('object')[i].getElementsByTagName(fieldname)[0]) return "";
-  return xml.getElementsByTagName('object')[i].getElementsByTagName(fieldname)[0].innerHTML;
-}
 
