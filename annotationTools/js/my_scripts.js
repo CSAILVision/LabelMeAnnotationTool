@@ -3,35 +3,6 @@
 // best to refrain from adding new variables/functions to this
 // file.
 
-var wait_for_input;
-var edit_popup_open = 0;
-var num_orig_anno;
-var global_count = 0;
-var req_submit;
-var submission_edited = 0; // If polygon has been edited.
-
-// Allowable user actions:
-var action_CreatePolygon = 1;
-var action_RenameExistingObjects = 0;
-var action_ModifyControlExistingObjects = 0;
-var action_DeleteExistingObjects = 0;
-
-// Which polygons are visible:
-var view_Existing = 1;
-var view_Deleted = 0;
-
-// Flag for right-hand object list:
-var view_ObjList = true;
-
-// MT variables:
-var LMbaseurl = 'http://' + window.location.host + window.location.pathname;
-var MThelpPage = 'annotationTools/html/mt_instructions.html';
-var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
-var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
-var mt_N = 'inf';
-
-var object_choices = '...';
-
 // Access LabelMe object field.
 // i - object index
 // fieldname - object field name, e.g. "name", "deleted"

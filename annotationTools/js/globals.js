@@ -47,6 +47,39 @@ var xhtmlNS = 'http://www.w3.org/1999/xhtml';
 // Website that refers to LabelMe:
 var ref;
 
+// Scribble mode:
 var scribble_mode = true;
 
 var video_mode = false;
+
+var wait_for_input;
+var edit_popup_open = 0;
+var num_orig_anno;
+var global_count = 0;
+var req_submit;
+
+// Indicates if polygon has been edited.
+var submission_edited = 0;
+
+// Allowable user actions:
+var action_CreatePolygon = 1;
+var action_RenameExistingObjects = 0;
+var action_ModifyControlExistingObjects = 0;
+var action_DeleteExistingObjects = 0;
+
+// Which polygons are visible:
+var view_Existing = 1;
+var view_Deleted = 0;
+
+// Flag for right-hand object list:
+var view_ObjList = true;
+
+// Mechanical Turk variables:
+var LMbaseurl = 'http://' + window.location.host + window.location.pathname;
+var MThelpPage = 'annotationTools/html/mt_instructions.html';
+var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
+var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
+var mt_N = 'inf';
+
+var object_choices = '...';
+
