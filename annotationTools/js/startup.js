@@ -72,7 +72,7 @@ function LoadAnnotationSuccess(xml) {
   console.time('attach main_canvas');
   // Attach valid annotations to the main_canvas:
   for(var pp = 0; pp < AllAnnotations.length; pp++) {
-    var isDeleted = AllAnnotations[pp].GetDeleted();
+    var isDeleted = LMgetObjectField(LM_xml, pp, 'deleted');
     if((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted)) {
       // Attach to main_canvas:
       main_canvas.AttachAnnotation(AllAnnotations[pp]);

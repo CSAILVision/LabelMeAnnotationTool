@@ -148,7 +148,7 @@ function GetPopupFormEdit(anno) {
   if(obj_name=="") obj_name = "?";
   var attributes = LMgetObjectField(LM_xml,anno.anno_id,'attributes');
   var occluded = LMgetObjectField(LM_xml,anno.anno_id,'occluded');
-  var parts = anno.GetParts();
+  var parts = LMgetObjectField(LM_xml, anno.anno_id, 'parts');
   
   html_str = "<b>Enter object name</b><br />";
   html_str += HTMLobjectBox(obj_name);

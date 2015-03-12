@@ -96,7 +96,7 @@ function handler() {
     this.EditBubbleDeleteButton = function () {
         var idx = select_anno.GetAnnoID();
 
-        if((IsUserAnonymous() || (!IsCreator(select_anno.GetUsername()))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
+        if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, idx, 'username')))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
             return;
         }
@@ -271,7 +271,7 @@ function handler() {
       
       AllAnnotations.push(anno);
       
-      if(!anno.GetDeleted()||view_Deleted) {
+      if(!LMgetObjectField(LM_xml, LMnumberOfObjects(LM_xml)-1, 'deleted') ||view_Deleted) {
 	main_canvas.AttachAnnotation(anno);
 	anno.RenderAnnotation('rest');
       }

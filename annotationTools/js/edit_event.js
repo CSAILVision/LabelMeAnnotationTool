@@ -14,7 +14,7 @@ var adjust_event = null;
 function StartEditEvent(anno_id,event) {
   console.log('LabelMe: Starting edit event...');
   if(event) event.stopPropagation();
-  if((IsUserAnonymous() || (!IsCreator(AllAnnotations[anno_id].GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
+  if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, anno_id, 'username')))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
     PermissionError();
     return;
   }
@@ -22,7 +22,7 @@ function StartEditEvent(anno_id,event) {
   edit_popup_open = 1;
   
   // Turn off automatic flag and write to XML file:
-  if(AllAnnotations[anno_id].GetAutomatic()) {
+  if(LMgetObjectField(LM_xml, anno_id, 'automatic')) {
     // Insert data for server logfile:
     old_name = LMgetObjectField(LM_xml,AllAnnotations[anno_id].anno_id,'name');
     new_name = old_name;
@@ -54,7 +54,7 @@ function StartEditEvent(anno_id,event) {
 
   // Make edit popup appear.
   main_media.ScrollbarsOff();
-  if(anno.GetVerified()) {
+  if(LMgetObjectField(LM_xml, anno, 'verified')) {
     edit_popup_open = 1;
     var innerHTML = "<b>This annotation has been blocked.</b><br />";
     var dom_bubble = CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');
@@ -104,7 +104,7 @@ function StopEditEvent() {
 
   // If the annotation is not deleted or we are in "view deleted" mode, 
   // then attach the annotation to the main_canvas:
-  if(!anno.GetDeleted() || view_Deleted) {
+  if(!LMgetObjectField(LM_xml, anno.anno_id, 'deleted') || view_Deleted) {
     if (!video_mode){
       main_canvas.AttachAnnotation(anno);
       if(!anno.hidden) {
@@ -214,7 +214,7 @@ function StartEditVideoEvent(polygon_id, anno_id,event) {
   object_annotation.polygon_id = polygon_id;
   console.log('LabelMe: Starting edit event...');
   if(event) event.stopPropagation();
-  if((IsUserAnonymous() || (!IsCreator(object_annotation.GetUsername()))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
+  if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, anno_id, 'username')))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
     PermissionError();
     return;
   }
@@ -222,7 +222,7 @@ function StartEditVideoEvent(polygon_id, anno_id,event) {
   edit_popup_open = 1;
   
   // Turn off automatic flag and write to XML file:
-  if(object_annotation.GetAutomatic()) {
+  if(LMgetObjectField(LM_xml, anno_id, 'automatic')) {
     // Insert data for server logfile:
     old_name = LMgetObjectField(LM_xml,object_annotation.anno_id,'name');
     new_name = old_name;
@@ -242,7 +242,7 @@ function StartEditVideoEvent(polygon_id, anno_id,event) {
   FillPolygon(anno_id);
   var pt = main_media.SlideWindow(Math.round(object_annotation.GetPtsX()[0]*main_media.GetImRatio()),Math.round(object_annotation.GetPtsY()[0]*main_media.GetImRatio()));
   main_media.ScrollbarsOff();
-  if(object_annotation.GetVerified()) {
+  if(LMgetObjectField(LM_xml, object_annotation.anno_id, 'verified')) {
     edit_popup_open = 1;
     var innerHTML = "<b>This annotation has been blocked.</b><br />";
     var dom_bubble = CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');

@@ -10,10 +10,31 @@
 function LMgetObjectField(xml,ind_object, name, frame) {
 	var obj = $(xml).children("annotation").children("object").eq(ind_object);
 	if (obj.length == 0) return "";
-	if (name == 'name' || name == 'deleted' || name == 'attributes' || name == 'occluded'){
+	if (name == 'name' ||  name == 'attributes' || name == 'occluded'){
 		if (!obj.children(name)) return "";
-		return obj.children(name).text();
+		else return obj.children(name).text();
 	}
+	if (name == 'deleted' || name == 'verified' || name == 'automatic'){
+		if (!obj.children(name)) return "";
+		else return parseInt(obj.children(name).text());
+	}
+    if (name == 'username'){
+        if (obj.children("segm").length > 0 && obj.children("segm").children("username")) obj.children("segm").children("username").text();
+        else if (obj.children("polygon").children("username")) return obj.children("polygon").children("username").text();
+        return "";
+    }
+    if (name == 'parts'){
+        parts = [];
+        if (obj.children("parts").length>0) {
+            tmp = obj.children("parts").children("hasparts").text();
+            if (tmp.length>0) {
+                // if it is not empty, split and trasnform to numbers
+                parts = tmp.split(",");
+                for (var j=0; j<parts.length; j++) {parts[j] = parseInt(parts[j], 10);}
+            }
+        }
+        return parts;
+    }
 	if (name == 'x' || name == 'y'){
 		if (frame){
 			var framestamps = (obj.children("polygon").children("t").text()).split(',')
@@ -37,7 +58,7 @@ function LMgetObjectField(xml,ind_object, name, frame) {
 			}
 		}
 	}
-	return "";
+	return null;
 
 
 }

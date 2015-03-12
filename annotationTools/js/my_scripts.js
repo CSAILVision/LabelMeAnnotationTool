@@ -234,12 +234,12 @@ function unselectObjects() {
 function DeleteSelectedPolygon() {
   if(selected_poly == -1) return;
   
-  if((IsUserAnonymous() || (!IsCreator(AllAnnotations[selected_poly].GetUsername()))) && (!IsUserAdmin()) && (selected_poly<num_orig_anno) && !action_DeleteExistingObjects) {
+  if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, selected_poly, 'username')))) && (!IsUserAdmin()) && (selected_poly<num_orig_anno) && !action_DeleteExistingObjects) {
     alert('You do not have permission to delete this polygon');
     return;
   }
   
-  if(AllAnnotations[selected_poly].GetVerified()) {
+  if(LMgetObjectField(LM_xml, selected_poly, 'verified')) {
     StartEditEvent(selected_poly,null);
     return;
   }
