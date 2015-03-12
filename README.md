@@ -180,23 +180,27 @@ and folders in the "Annotations" folder have write permissions. Also,
 
 ### CODE API
 
-* ./tool.html - This is the entry point for the annotation tool.  The main
+The following is a brief overview of the source code.  Please see the
+[Javascript code API](https://cdn.rawgit.com/CSAILVision/LabelMeAnnotationTool/master/annotationTools/js/api/index.html)
+for more details.
+
+* tool.html - This is the entry point for the annotation tool.  The main
 functionality is to insert all of the javascript code and lay down the
 drawing canvases.
 
-* ./annotationTools/js/ - This folder contains all of the javascript
+* annotationTools/js/ - This folder contains all of the javascript
 code for the annotation tool functionalities.
 We provide the [code API](https://cdn.rawgit.com/CSAILVision/LabelMeAnnotationTool/master/annotationTools/js/api/index.html)
 for the Javascript source code, which has been automatically extracted
 from the source code comments.
 
-* ./annotationTools/perl/ - This folder contains all of the Perl
+* annotationTools/perl/ - This folder contains all of the Perl
 scripts used for communication with the server back-end.
 
-* ./annotationTools/css/ - This folder contains all of the CSS style
+* annotationTools/css/ - This folder contains all of the CSS style
 definitions.
 
-* ./annotationTools/html/ - This folder contains auxillary HTML files
+* annotationTools/html/ - This folder contains auxillary HTML files
 (e.g. for Mechanical Turk instructions, etc.).
 
 
