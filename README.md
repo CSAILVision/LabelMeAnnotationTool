@@ -103,30 +103,20 @@ and folders in the "Annotations" folder have write permissions. Also,
 "annotationCache/TmpAnnotations" needs to have write permissions.
 
 
-### ADDITIONAL FEATURES OF THE ANNOTATION TOOL:
+### FEATURES OF THE ANNOTATION TOOL:
 
 * The following are URL variables you can pass to the annotation tool:
 
    * mode=im - Only show the image and drawing canvas (do not show anything outside of the image.
-
    * mode=mt - Mechanical Turk mode.
-
    * mode=f - Pressing "next image" button goes to next image in the folder.
-
    * mode=i - Pressing "next image" button goes to random image in the default LabelMe collection.
-
    * mode=c - Go to next image in the collection (set via the dirlist).
-
    * username=johndoe - Sets username for labeling session.
-
    * collection=LabelMe - Uses the default LabelMe collection list. See below for setting up a new collection list.
-
    * folder=MyLabelMeFolder - LabelMe folder where the image lives.
-
    * image=image.jpg - LabelMe image to annotate.
-
    * objects=car,person,building - When popup bubble appears asking the user for the object name, the user selects one of these objects appearing as a drop-down list.
-
    * scribble=false - Turns off scribble mode.
 
 * You can create a collection of images to label by running the
