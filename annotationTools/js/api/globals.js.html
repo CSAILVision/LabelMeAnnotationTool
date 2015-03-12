@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: globals.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: globals.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @file Contains the global variables used in LabelMe. */
+
+// Parsed LabelMe XML file. Manipulate this variable with jquery.
+var LM_xml;
+
+// URL of CGI script to submit XML annotation:
+var SubmitXmlUrl = 'annotationTools/perl/submit.cgi';
+
+// LabelMe username:
+var username = 'anonymous';
+
+// Boolean indicating whether user is currently signing in (this should be abstracted into class):
+var username_flag = 0;
+
+// Boolean indicating if we will use attributes. This should be read from the URL and set to 0 by default.
+var use_attributes = 1; // if this is 0, then it will remove all the attributes from the bubble.
+var use_parts = 1; // if this is 0 disapears the message from the bubble
+
+// for now, let's remove the attributes in MT mode. Just in case anybody is trying this.
+if (getQueryVariable('mode')=='mt'){
+    use_attributes=0;
+    use_parts = 0;
+}
+
+// Boolean indicating whether the control points were edited:
+var editedControlPoints = 0;
+
+// Scalar indicating which polygon is selected; -1 means no polygon is selected
+var selected_poly = -1;
+
+// Array storing all of the annotation structures.  Eventually this will be 
+// removed since we should read directly from LM_xml.
+var AllAnnotations = Array(0);
+
+// Class with functions to handle actions/events.
+var main_handler;
+
+// Canvas that renders polygons at rest state.
+var main_canvas;
+
+// Holds image.
+var main_media;
+
+// URL of XHTML namespace. This is needed for generating SVG elements.
+var xhtmlNS = 'http://www.w3.org/1999/xhtml';
+
+// Website that refers to LabelMe:
+var ref;
+
+// Scribble mode:
+var scribble_mode = true;
+
+var video_mode = false;
+
+var wait_for_input;
+var edit_popup_open = 0;
+var num_orig_anno;
+var global_count = 0;
+var req_submit;
+
+// Indicates if polygon has been edited.
+var submission_edited = 0;
+
+// Allowable user actions:
+var action_CreatePolygon = 1;
+var action_RenameExistingObjects = 0;
+var action_ModifyControlExistingObjects = 0;
+var action_DeleteExistingObjects = 0;
+
+// Which polygons are visible:
+var view_Existing = 1;
+var view_Deleted = 0;
+
+// Flag for right-hand object list:
+var view_ObjList = true;
+
+// Mechanical Turk variables:
+var LMbaseurl = 'http://' + window.location.host + window.location.pathname;
+var MThelpPage = 'annotationTools/html/mt_instructions.html';
+var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
+var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
+var mt_N = 'inf';
+
+var object_choices = '...';
+
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AdjustEvent.html">AdjustEvent</a></li><li><a href="canvas.html">canvas</a></li><li><a href="file_info.html">file_info</a></li><li><a href="image.html">image</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AdjustPolygonButton">AdjustPolygonButton</a></li><li><a href="global.html#CreatePopupBubble">CreatePopupBubble</a></li><li><a href="global.html#CreatePopupBubbleCloseButton">CreatePopupBubbleCloseButton</a></li><li><a href="global.html#DrawCanvasClosePolygon">DrawCanvasClosePolygon</a></li><li><a href="global.html#DrawCanvasMouseDown">DrawCanvasMouseDown</a></li><li><a href="global.html#FinishStartup">FinishStartup</a></li><li><a href="global.html#getQueryVariable">getQueryVariable</a></li><li><a href="global.html#LMgetfield">LMgetfield</a></li><li><a href="global.html#LMnumberOfObjects">LMnumberOfObjects</a></li><li><a href="global.html#LoadAnnotation404">LoadAnnotation404</a></li><li><a href="global.html#LoadAnnotationSuccess">LoadAnnotationSuccess</a></li><li><a href="global.html#LoadTemplate404">LoadTemplate404</a></li><li><a href="global.html#LoadTemplateSuccess">LoadTemplateSuccess</a></li><li><a href="global.html#SetAllAnnotationsArray">SetAllAnnotationsArray</a></li><li><a href="global.html#StartDrawEvent">StartDrawEvent</a></li><li><a href="global.html#StartEditEvent">StartEditEvent</a></li><li><a href="global.html#StartEditVideoEvent">StartEditVideoEvent</a></li><li><a href="global.html#StartupLabelMe">StartupLabelMe</a></li><li><a href="global.html#StopDrawEvent">StopDrawEvent</a></li><li><a href="global.html#StopEditEvent">StopEditEvent</a></li><li><a href="global.html#UndoCloseButton">UndoCloseButton</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Thu Mar 12 2015 11:43:12 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

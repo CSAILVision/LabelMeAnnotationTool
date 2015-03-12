@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: edit_event.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: edit_event.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @file This file contains the scripts for when the edit event is activated. */
+
+
+var select_anno = null;
+var adjust_event = null;
+
+/**
+  * This function is called with the edit event is started.  It can be
+  * triggered when the user (1) clicks a polygon, (2) clicks the object in
+  * the object list, (3) deletes a verified polygon.
+  * @param {int} anno_id - the id of the annotation being edited
+
+*/
+function StartEditEvent(anno_id,event) {
+  console.log('LabelMe: Starting edit event...');
+  if(event) event.stopPropagation();
+  if((IsUserAnonymous() || (!IsCreator(AllAnnotations[anno_id].GetUsername()))) &amp;&amp; (!IsUserAdmin()) &amp;&amp; (anno_id&lt;num_orig_anno) &amp;&amp; !action_RenameExistingObjects &amp;&amp; !action_ModifyControlExistingObjects &amp;&amp; !action_DeleteExistingObjects) {
+    PermissionError();
+    return;
+  }
+  active_canvas = SELECTED_CANVAS;
+  edit_popup_open = 1;
+  
+  // Turn off automatic flag and write to XML file:
+  if(AllAnnotations[anno_id].GetAutomatic()) {
+    // Insert data for server logfile:
+    old_name = LMgetObjectField(LM_xml,AllAnnotations[anno_id].anno_id,'name');
+    new_name = old_name;
+    InsertServerLogData('cpts_not_modified');
+    
+    // Set &lt;automatic> in XML:
+    $(LM_xml).children("annotation").children("object").eq(anno_id).children("automatic").text('0');
+    
+    // Write XML to server:
+    WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+  }
+  
+  // Move select_canvas to front:
+  $('#select_canvas').css('z-index','0');
+  $('#select_canvas_div').css('z-index','0');
+  
+  var anno = main_canvas.DetachAnnotation(anno_id);
+  
+  editedControlPoints = 0;
+    
+  if(username_flag) submit_username();
+  
+  select_anno = anno;
+  select_anno.SetDivAttach('select_canvas');
+  FillPolygon(select_anno.DrawPolygon(main_media.GetImRatio()));
+  
+  // Get location where popup bubble will appear:
+  var pt = main_media.SlideWindow(Math.round(anno.GetPtsX()[0]*main_media.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_media.GetImRatio()));
+
+  // Make edit popup appear.
+  main_media.ScrollbarsOff();
+  if(anno.GetVerified()) {
+    edit_popup_open = 1;
+    var innerHTML = "&lt;b>This annotation has been blocked.&lt;/b>&lt;br />";
+    var dom_bubble = CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');
+    CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
+  }
+  else {
+    // Set object list choices for points and lines:
+    var doReset = SetObjectChoicesPointLine(anno.GetPtsX().length);
+    
+    // Popup edit bubble:
+    WriteLogMsg('*Opened_Edit_Popup');
+    mkEditPopup(pt[0],pt[1],anno);
+    
+    // If annotation is point or line, then 
+    if(doReset) object_choices = '...';
+  }
+}
+
+/** This function is called when the edit event is finished.  It can be
+ * triggered when the user (1) clicks the close edit bubble button, 
+ * (2) zooms, (3) submits an object label in the popup bubble, 
+ * (4) presses the delete button in the popup bubble, (5) clicks the 
+ * object in the object list, (6) presses the ESC key.
+ */
+function StopEditEvent() {
+  // Update the global variables for the active canvas and edit popup bubble:
+
+  active_canvas = REST_CANVAS;
+  edit_popup_open = 0;
+  // Move select_canvas to back:
+  $('#select_canvas').css('z-index','-2');
+  $('#select_canvas_div').css('z-index','-2');
+  
+  // Remove polygon from the select canvas:
+  if (!video_mode) select_anno.DeletePolygon();
+  else $('#'+select_anno.polygon_id).remove();
+  var anno = select_anno;
+  select_anno = null;
+
+  // Write logfile message:
+  WriteLogMsg('*Closed_Edit_Popup');
+
+  // Close the edit popup bubble:
+  CloseEditPopup();
+  // Turn on the image scrollbars:
+  main_media.ScrollbarsOn();
+
+  // If the annotation is not deleted or we are in "view deleted" mode, 
+  // then attach the annotation to the main_canvas:
+  if(!anno.GetDeleted() || view_Deleted) {
+    if (!video_mode){
+      main_canvas.AttachAnnotation(anno);
+      if(!anno.hidden) {
+        anno.RenderAnnotation('rest');
+      }
+    }
+    else {
+      oVP.DisplayFrame(oVP.getcurrentFrame());
+    }
+  }
+
+  // Render the object list:
+  if(view_ObjList) {
+    if (!video_mode) RenderObjectList();
+  }
+
+  console.log('LabelMe: Stopped edit event.');
+}
+
+var adjust_objEnter = '';
+var adjust_attributes;
+var adjust_occluded;
+
+/** This function is called when the user clicks 'Adjust Polygon' button */
+function AdjustPolygonButton() {
+  // We need to capture the data before closing the bubble 
+  // (THIS IS AN UGLY HACK)
+  
+  // Get annotation on the select canvas:
+  var anno = select_anno;
+
+  // object name
+  old_name = LMgetObjectField(LM_xml,anno.anno_id,'name');
+  if(document.getElementById('objEnter')) new_name = RemoveSpecialChars(document.getElementById('objEnter').value);
+  else new_name = RemoveSpecialChars(adjust_objEnter);
+  
+  var re = /[a-zA-Z0-9]/;
+  if(!re.test(new_name)) {
+    alert('Please enter an object name');
+    return;
+  }
+  adjust_objEnter = document.getElementById('objEnter').value;
+  adjust_attributes = document.getElementById('attributes').value;
+  adjust_occluded = document.getElementById('occluded').value;
+  
+  // Close the edit popup bubble:
+  CloseEditPopup();
+
+  // Turn on image scrollbars:
+  main_media.ScrollbarsOn();
+  
+  
+
+  // Remove polygon from canvas:
+  $('#'+anno.polygon_id).remove();
+
+  // Set to polygon drawing mode:
+  SetDrawingMode(0);
+
+  // Create adjust event:
+  adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
+      // Submit username:
+      if(username_flag) submit_username();
+
+      // Redraw polygon:
+      anno.DrawPolygon(main_media.GetImRatio());
+
+      // Set polygon (x,y) points:
+      anno.pts_x = x;
+      anno.pts_y = y;
+
+      // Set global variable whether the control points have been edited:
+      editedControlPoints = _editedControlPoints;
+      
+      // Submit annotation:
+      if (video_mode) main_media.SubmitEditObject();
+      else main_handler.SubmitEditLabel();
+    },main_media.GetImRatio());
+
+  // Start adjust event:
+  adjust_event.StartEvent();
+}
+
+/**
+  * Mirror function of StartEditEvent for video
+  * It creates an aux annotation so that the code is compliant
+  * @param {int} anno_id - the id of the annotation being edited
+  * @param {string} polygon_id - the id of the html polygon element
+
+*/
+function StartEditVideoEvent(polygon_id, anno_id,event) {
+
+  object_annotation = new annotation(anno_id);
+  var obj = $(LM_xml).children("annotation").children("object").eq(anno_id);
+  var framestamps = (obj.children("polygon").children("t").text());
+  framestamps = framestamps.split(',');
+  for(var ti=0; ti&lt;framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
+  var objectind = framestamps.indexOf(oVP.getcurrentFrame());
+  var x_pts = (((obj.children("polygon").children("x").text()).split(';'))[objectind]).split(',');
+  var y_pts = (((obj.children("polygon").children("y").text()).split(';'))[objectind]).split(',');
+  for(var ti=0; ti&lt;x_pts.length; ti++) { 
+    x_pts[ti] = parseInt(x_pts[ti], 10);
+    y_pts[ti] = parseInt(y_pts[ti], 10); 
+  } 
+  object_annotation.pts_x = x_pts;
+  object_annotation.pts_y = y_pts;
+  object_annotation.polygon_id = polygon_id;
+  console.log('LabelMe: Starting edit event...');
+  if(event) event.stopPropagation();
+  if((IsUserAnonymous() || (!IsCreator(object_annotation.GetUsername()))) &amp;&amp; (!IsUserAdmin()) &amp;&amp; (anno_id&lt;num_orig_anno) &amp;&amp; !action_RenameExistingObjects &amp;&amp; !action_ModifyControlExistingObjects &amp;&amp; !action_DeleteExistingObjects) {
+    PermissionError();
+    return;
+  }
+  active_canvas = SELECTED_CANVAS;
+  edit_popup_open = 1;
+  
+  // Turn off automatic flag and write to XML file:
+  if(object_annotation.GetAutomatic()) {
+    // Insert data for server logfile:
+    old_name = LMgetObjectField(LM_xml,object_annotation.anno_id,'name');
+    new_name = old_name;
+    
+  }
+  
+  // Move select_canvas to front:
+  $('#select_canvas').css('z-index','0');
+  $('#select_canvas_div').css('z-index','0');
+  
+  
+  editedControlPoints = 0;
+  
+  if(username_flag) submit_username();
+  select_anno = object_annotation;
+
+  FillPolygon(anno_id);
+  var pt = main_media.SlideWindow(Math.round(object_annotation.GetPtsX()[0]*main_media.GetImRatio()),Math.round(object_annotation.GetPtsY()[0]*main_media.GetImRatio()));
+  main_media.ScrollbarsOff();
+  if(object_annotation.GetVerified()) {
+    edit_popup_open = 1;
+    var innerHTML = "&lt;b>This annotation has been blocked.&lt;/b>&lt;br />";
+    var dom_bubble = CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');
+    CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
+  }
+  else {
+    // Set object list choices for points and lines:
+    var doReset = SetObjectChoicesPointLine(object_annotation.GetPtsX().length);
+    
+    // Popup edit bubble:
+    mkEditPopup(pt[0],pt[1],object_annotation);
+    
+    // If annotation is point or line, then 
+    if(doReset) object_choices = '...';
+  }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AdjustEvent.html">AdjustEvent</a></li><li><a href="canvas.html">canvas</a></li><li><a href="file_info.html">file_info</a></li><li><a href="image.html">image</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AdjustPolygonButton">AdjustPolygonButton</a></li><li><a href="global.html#CreatePopupBubble">CreatePopupBubble</a></li><li><a href="global.html#CreatePopupBubbleCloseButton">CreatePopupBubbleCloseButton</a></li><li><a href="global.html#DrawCanvasClosePolygon">DrawCanvasClosePolygon</a></li><li><a href="global.html#DrawCanvasMouseDown">DrawCanvasMouseDown</a></li><li><a href="global.html#FinishStartup">FinishStartup</a></li><li><a href="global.html#getQueryVariable">getQueryVariable</a></li><li><a href="global.html#LMgetfield">LMgetfield</a></li><li><a href="global.html#LMnumberOfObjects">LMnumberOfObjects</a></li><li><a href="global.html#LoadAnnotation404">LoadAnnotation404</a></li><li><a href="global.html#LoadAnnotationSuccess">LoadAnnotationSuccess</a></li><li><a href="global.html#LoadTemplate404">LoadTemplate404</a></li><li><a href="global.html#LoadTemplateSuccess">LoadTemplateSuccess</a></li><li><a href="global.html#SetAllAnnotationsArray">SetAllAnnotationsArray</a></li><li><a href="global.html#StartDrawEvent">StartDrawEvent</a></li><li><a href="global.html#StartEditEvent">StartEditEvent</a></li><li><a href="global.html#StartEditVideoEvent">StartEditVideoEvent</a></li><li><a href="global.html#StartupLabelMe">StartupLabelMe</a></li><li><a href="global.html#StopDrawEvent">StopDrawEvent</a></li><li><a href="global.html#StopEditEvent">StopEditEvent</a></li><li><a href="global.html#UndoCloseButton">UndoCloseButton</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Thu Mar 12 2015 11:43:11 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
