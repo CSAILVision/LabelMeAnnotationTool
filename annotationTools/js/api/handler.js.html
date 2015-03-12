@@ -1,4 +1,32 @@
-/** @file 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: handler.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: handler.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** @file 
 This contains the high-level commands for transitioning between the different annotation tool states.  They are: REST, DRAW, SELECTED, QUERY.
 */
 
@@ -69,13 +97,13 @@ function handler() {
       
       // Insert attributes (and create field if it is not there):
       if(curr_obj.children("attributes").length>0) curr_obj.children("attributes").text(new_attributes);
-      else curr_obj.append("<attributes>" + new_attributes + "</attributes>");
+      else curr_obj.append("&lt;attributes>" + new_attributes + "&lt;/attributes>");
         
       if(curr_obj.children("occluded").length>0) curr_obj.children("occluded").text(new_occluded);
-      else curr_obj.append("<occluded>" + new_occluded + "</occluded>");
+      else curr_obj.append("&lt;occluded>" + new_occluded + "&lt;/occluded>");
         
       if(editedControlPoints) {
-	for(var jj=0; jj < AllAnnotations[obj_ndx].GetPtsX().length; jj++) {
+	for(var jj=0; jj &lt; AllAnnotations[obj_ndx].GetPtsX().length; jj++) {
 	  curr_obj.children("polygon").children("pt").eq(jj).children("x").text(AllAnnotations[obj_ndx].GetPtsX()[jj]);
 	  curr_obj.children("polygon").children("pt").eq(jj).children("y").text(AllAnnotations[obj_ndx].GetPtsY()[jj]);
 	}
@@ -96,7 +124,7 @@ function handler() {
     this.EditBubbleDeleteButton = function () {
         var idx = select_anno.GetAnnoID();
 
-        if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, idx, 'username')))) && (!IsUserAdmin()) && (idx<num_orig_anno) && !action_DeleteExistingObjects) {
+        if((IsUserAnonymous() || (!IsCreator(select_anno.GetUsername()))) &amp;&amp; (!IsUserAdmin()) &amp;&amp; (idx&lt;num_orig_anno) &amp;&amp; !action_DeleteExistingObjects) {
             alert('You do not have permission to delete this polygon');
             return;
         }
@@ -113,7 +141,7 @@ function handler() {
         WriteLogMsg('*Deleting_object');
         InsertServerLogData('cpts_not_modified');
         
-        // Set <deleted> in LM_xml:
+        // Set &lt;deleted> in LM_xml:
         $(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text('1');
         
         // Remove all the part dependencies for the deleted object
@@ -134,7 +162,7 @@ function handler() {
       if(active_canvas==REST_CANVAS) StartEditEvent(idx,null);
       else if(active_canvas==SELECTED_CANVAS) {
 	var anno_id = select_anno.GetAnnoID();
-	if(edit_popup_open && (idx==anno_id)) StopEditEvent();
+	if(edit_popup_open &amp;&amp; (idx==anno_id)) StopEditEvent();
       }
     };
     
@@ -174,7 +202,7 @@ function handler() {
 	else new_occluded = "";
       }
       
-      if((object_choices!='...') && (object_choices.length==1)) {
+      if((object_choices!='...') &amp;&amp; (object_choices.length==1)) {
 	nn = RemoveSpecialChars(object_choices[0]);
 	active_canvas = REST_CANVAS;
 	
@@ -212,66 +240,66 @@ function handler() {
       InsertServerLogData('cpts_not_modified');
       
       // Insert data into XML:
-      var html_str = '<object>';
-      html_str += '<name>' + new_name + '</name>';
-      html_str += '<deleted>0</deleted>';
-      html_str += '<verified>0</verified>';
+      var html_str = '&lt;object>';
+      html_str += '&lt;name>' + new_name + '&lt;/name>';
+      html_str += '&lt;deleted>0&lt;/deleted>';
+      html_str += '&lt;verified>0&lt;/verified>';
       if(use_attributes) {
-	html_str += '<occluded>' + new_occluded + '</occluded>';
-	html_str += '<attributes>' + new_attributes + '</attributes>';
+	html_str += '&lt;occluded>' + new_occluded + '&lt;/occluded>';
+	html_str += '&lt;attributes>' + new_attributes + '&lt;/attributes>';
       }
-      html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
+      html_str += '&lt;parts>&lt;hasparts>&lt;/hasparts>&lt;ispartof>&lt;/ispartof>&lt;/parts>';
       var ts = GetTimeStamp();
-      if(ts.length==20) html_str += '<date>' + ts + '</date>';
-      html_str += '<id>' + anno.anno_id + '</id>';
+      if(ts.length==20) html_str += '&lt;date>' + ts + '&lt;/date>';
+      html_str += '&lt;id>' + anno.anno_id + '&lt;/id>';
       
       if(anno.GetType() == 1) {
 	/*************************************************************/
 	/*************************************************************/
 	// Scribble: Add annotation to LM_xml:
-	html_str += '<segm>';
-	html_str += '<username>' + username + '</username>';
+	html_str += '&lt;segm>';
+	html_str += '&lt;username>' + username + '&lt;/username>';
 	
-	html_str += '<box>';
-	html_str += '<xmin>' + anno.GetPtsX()[0] + '</xmin>'; 
-	html_str += '<ymin>' + anno.GetPtsY()[0] + '</ymin>';
-	html_str += '<xmax>' + anno.GetPtsX()[1] + '</xmax>'; 
-	html_str += '<ymax>' + anno.GetPtsY()[2] + '</ymax>';
-	html_str += '</box>';
+	html_str += '&lt;box>';
+	html_str += '&lt;xmin>' + anno.GetPtsX()[0] + '&lt;/xmin>'; 
+	html_str += '&lt;ymin>' + anno.GetPtsY()[0] + '&lt;/ymin>';
+	html_str += '&lt;xmax>' + anno.GetPtsX()[1] + '&lt;/xmax>'; 
+	html_str += '&lt;ymax>' + anno.GetPtsY()[2] + '&lt;/ymax>';
+	html_str += '&lt;/box>';
 	
-	html_str += '<mask>'+ anno.GetImName()+'</mask>';
+	html_str += '&lt;mask>'+ anno.GetImName()+'&lt;/mask>';
 	
-	html_str += '<scribbles>';
-	html_str += '<xmin>' + anno.GetCornerLX() + '</xmin>'; 
-	html_str += '<ymin>' + anno.GetCornerLY() + '</ymin>';
-	html_str += '<xmax>' + anno.GetCornerRX() + '</xmax>'; 
-	html_str += '<ymax>' + anno.GetCornerRY() + '</ymax>';
-	html_str += '<scribble_name>'+ anno.GetScribbleName()+'</scribble_name>'; 
-	html_str += '</scribbles>';
+	html_str += '&lt;scribbles>';
+	html_str += '&lt;xmin>' + anno.GetCornerLX() + '&lt;/xmin>'; 
+	html_str += '&lt;ymin>' + anno.GetCornerLY() + '&lt;/ymin>';
+	html_str += '&lt;xmax>' + anno.GetCornerRX() + '&lt;/xmax>'; 
+	html_str += '&lt;ymax>' + anno.GetCornerRY() + '&lt;/ymax>';
+	html_str += '&lt;scribble_name>'+ anno.GetScribbleName()+'&lt;/scribble_name>'; 
+	html_str += '&lt;/scribbles>';
 	
-	html_str += '</segm>';
-	html_str += '</object>';
+	html_str += '&lt;/segm>';
+	html_str += '&lt;/object>';
 	$(LM_xml).children("annotation").append($(html_str));
 	/*************************************************************/
 	/*************************************************************/
       }
       else {
-	html_str += '<polygon>';
-	html_str += '<username>' + username + '</username>';
-	for(var jj=0; jj < anno.GetPtsX().length; jj++) {
-	  html_str += '<pt>';
-	  html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
-	  html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
-	  html_str += '</pt>';
+	html_str += '&lt;polygon>';
+	html_str += '&lt;username>' + username + '&lt;/username>';
+	for(var jj=0; jj &lt; anno.GetPtsX().length; jj++) {
+	  html_str += '&lt;pt>';
+	  html_str += '&lt;x>' + anno.GetPtsX()[jj] + '&lt;/x>';
+	  html_str += '&lt;y>' + anno.GetPtsY()[jj] + '&lt;/y>';
+	  html_str += '&lt;/pt>';
 	}
-	html_str += '</polygon>';
-	html_str += '</object>';
+	html_str += '&lt;/polygon>';
+	html_str += '&lt;/object>';
 	$(LM_xml).children("annotation").append($(html_str));
       }
       
       AllAnnotations.push(anno);
       
-      if(!LMgetObjectField(LM_xml, LMnumberOfObjects(LM_xml)-1, 'deleted') ||view_Deleted) {
+      if(!anno.GetDeleted()||view_Deleted) {
 	main_canvas.AttachAnnotation(anno);
 	anno.RenderAnnotation('rest');
       }
@@ -296,7 +324,7 @@ function handler() {
       if(m=='mt') {
 	document.getElementById('object_name').value=new_name;
 	document.getElementById('number_objects').value=global_count;
-	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_media.GetFileInfo().GetDirName() + '&image=' + main_media.GetFileInfo().GetImName();
+	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&amp;mode=i&amp;folder=' + main_media.GetFileInfo().GetDirName() + '&amp;image=' + main_media.GetFileInfo().GetImName();
 	if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
       }
     };
@@ -323,19 +351,19 @@ function handler() {
     // Handles when the user presses a key while interacting with the tool.
     this.KeyPress = function (event) {
         // Delete event: 46 - delete key; 8 - backspace key
-        if(((event.keyCode==46) || (event.keyCode==8)) && !wait_for_input && !edit_popup_open && !username_flag) {
+        if(((event.keyCode==46) || (event.keyCode==8)) &amp;&amp; !wait_for_input &amp;&amp; !edit_popup_open &amp;&amp; !username_flag) {
             // Determine whether we are deleting a complete or partially
             // complete polygon.
             if(!main_handler.EraseSegment()) DeleteSelectedPolygon();
         }
         // 27 - Esc key
         // Close edit popup if it is open.
-        if(event.keyCode==27 && edit_popup_open) StopEditEvent();
+        if(event.keyCode==27 &amp;&amp; edit_popup_open) StopEditEvent();
     };
     
     // Handles when the user erases a segment.
     this.EraseSegment = function () {
-        if(draw_anno && !draw_anno.DeleteLastControlPoint()) {
+        if(draw_anno &amp;&amp; !draw_anno.DeleteLastControlPoint()) {
             submission_edited = 0;
             StopDrawEvent();
         }
@@ -347,3 +375,26 @@ function handler() {
     // *******************************************
     
 }
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AdjustEvent.html">AdjustEvent</a></li><li><a href="canvas.html">canvas</a></li><li><a href="file_info.html">file_info</a></li><li><a href="image.html">image</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AdjustPolygonButton">AdjustPolygonButton</a></li><li><a href="global.html#CreatePopupBubble">CreatePopupBubble</a></li><li><a href="global.html#CreatePopupBubbleCloseButton">CreatePopupBubbleCloseButton</a></li><li><a href="global.html#DrawCanvasClosePolygon">DrawCanvasClosePolygon</a></li><li><a href="global.html#DrawCanvasMouseDown">DrawCanvasMouseDown</a></li><li><a href="global.html#FinishStartup">FinishStartup</a></li><li><a href="global.html#getQueryVariable">getQueryVariable</a></li><li><a href="global.html#LMgetObjectField">LMgetObjectField</a></li><li><a href="global.html#LMnumberOfObjects">LMnumberOfObjects</a></li><li><a href="global.html#LoadAnnotation404">LoadAnnotation404</a></li><li><a href="global.html#LoadAnnotationSuccess">LoadAnnotationSuccess</a></li><li><a href="global.html#LoadTemplate404">LoadTemplate404</a></li><li><a href="global.html#LoadTemplateSuccess">LoadTemplateSuccess</a></li><li><a href="global.html#SetAllAnnotationsArray">SetAllAnnotationsArray</a></li><li><a href="global.html#StartDrawEvent">StartDrawEvent</a></li><li><a href="global.html#StartEditEvent">StartEditEvent</a></li><li><a href="global.html#StartEditVideoEvent">StartEditVideoEvent</a></li><li><a href="global.html#StartupLabelMe">StartupLabelMe</a></li><li><a href="global.html#StopDrawEvent">StopDrawEvent</a></li><li><a href="global.html#StopEditEvent">StopEditEvent</a></li><li><a href="global.html#UndoCloseButton">UndoCloseButton</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Thu Mar 12 2015 16:00:31 GMT-0700 (PDT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

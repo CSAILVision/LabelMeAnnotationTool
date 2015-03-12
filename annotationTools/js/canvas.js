@@ -1,4 +1,6 @@
-/** @file Generic rendering canvas */
+/** @file Generic rendering canvas.
+At a high-level, there are 4 canvases that are laid out.  They correspond to the: (i) main canvas, (ii) drawing canvas, (iii) query canvas, (iv) polygon selection canvas.  At any moment, one canvas is at the front and accepts mouse functions.  The other canvases are hidden below and do not accept mouse functions.  All canvases are transparent, meaning that their contents are always visible.  The task of the tool is to switch between these canvases and to refresh their contents.
+ */
 /**
  * Creates the rendering canvas
  * @constructor

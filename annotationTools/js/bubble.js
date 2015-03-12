@@ -1,4 +1,4 @@
-/** @file This file contains functions managing the bubble that appears in the annotation tool. */
+/** @file This file contains functions that draw the popup bubble during labeling or editing an object. */
 
 
 // *******************************************

@@ -158,7 +158,7 @@
     <div class="container-overview">
     
         
-            <div class="description">This file contains functions for interacting with the browser type.</div>
+            <div class="description">This file contains functions for detecting and interacting with the different browser types.</div>
         
 
         
@@ -251,7 +251,7 @@
     <div class="container-overview">
     
         
-            <div class="description">This file contains functions managing the bubble that appears in the annotation tool.</div>
+            <div class="description">This file contains functions that draw the popup bubble during labeling or editing an object.</div>
         
 
         
@@ -344,7 +344,8 @@
     <div class="container-overview">
     
         
-            <div class="description">Generic rendering canvas</div>
+            <div class="description">Generic rendering canvas.
+At a high-level, there are 4 canvases that are laid out.  They correspond to the: (i) main canvas, (ii) drawing canvas, (iii) query canvas, (iv) polygon selection canvas.  At any moment, one canvas is at the front and accepts mouse functions.  The other canvases are hidden below and do not accept mouse functions.  All canvases are transparent, meaning that their contents are always visible.  The task of the tool is to switch between these canvases and to refresh their contents.</div>
         
 
         
@@ -624,7 +625,7 @@
     
         
             <div class="description">Contains the file_info class, which parses the URL and
-keeps track of the URL variables.</div>
+sets global variables based on the URL.</div>
         
 
         
@@ -800,6 +801,99 @@ keeps track of the URL variables.</div>
 <header>
     
         <h2>
+        handler.js
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">This contains the high-level commands for transitioning between the different annotation tool states.  They are: REST, DRAW, SELECTED, QUERY.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="handler.js.html">handler.js</a>, <a href="handler.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
         image.js
         </h2>
         
@@ -849,6 +943,192 @@ this id in as the argument when creating the class.</div>
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
         <a href="image.js.html">image.js</a>, <a href="image.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        io.js
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Input/output functions for writing annotation files to the LabelMe server.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="io.js.html">io.js</a>, <a href="io.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+
+
+
+<section>
+
+<header>
+    
+        <h2>
+        sign_in.js
+        </h2>
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Sign in form for a user to enter their LabelMe username.</div>
+        
+
+        
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="sign_in.js.html">sign_in.js</a>, <a href="sign_in.js.html#line1">line 1</a>
     </li></ul></dd>
     
 
@@ -1077,13 +1357,13 @@ this id in as the argument when creating the class.</div>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AdjustEvent.html">AdjustEvent</a></li><li><a href="canvas.html">canvas</a></li><li><a href="file_info.html">file_info</a></li><li><a href="image.html">image</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AdjustPolygonButton">AdjustPolygonButton</a></li><li><a href="global.html#CreatePopupBubble">CreatePopupBubble</a></li><li><a href="global.html#CreatePopupBubbleCloseButton">CreatePopupBubbleCloseButton</a></li><li><a href="global.html#DrawCanvasClosePolygon">DrawCanvasClosePolygon</a></li><li><a href="global.html#DrawCanvasMouseDown">DrawCanvasMouseDown</a></li><li><a href="global.html#FinishStartup">FinishStartup</a></li><li><a href="global.html#getQueryVariable">getQueryVariable</a></li><li><a href="global.html#LMgetfield">LMgetfield</a></li><li><a href="global.html#LMnumberOfObjects">LMnumberOfObjects</a></li><li><a href="global.html#LoadAnnotation404">LoadAnnotation404</a></li><li><a href="global.html#LoadAnnotationSuccess">LoadAnnotationSuccess</a></li><li><a href="global.html#LoadTemplate404">LoadTemplate404</a></li><li><a href="global.html#LoadTemplateSuccess">LoadTemplateSuccess</a></li><li><a href="global.html#SetAllAnnotationsArray">SetAllAnnotationsArray</a></li><li><a href="global.html#StartDrawEvent">StartDrawEvent</a></li><li><a href="global.html#StartEditEvent">StartEditEvent</a></li><li><a href="global.html#StartEditVideoEvent">StartEditVideoEvent</a></li><li><a href="global.html#StartupLabelMe">StartupLabelMe</a></li><li><a href="global.html#StopDrawEvent">StopDrawEvent</a></li><li><a href="global.html#StopEditEvent">StopEditEvent</a></li><li><a href="global.html#UndoCloseButton">UndoCloseButton</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="AdjustEvent.html">AdjustEvent</a></li><li><a href="canvas.html">canvas</a></li><li><a href="file_info.html">file_info</a></li><li><a href="image.html">image</a></li></ul><h3>Global</h3><ul><li><a href="global.html#AdjustPolygonButton">AdjustPolygonButton</a></li><li><a href="global.html#CreatePopupBubble">CreatePopupBubble</a></li><li><a href="global.html#CreatePopupBubbleCloseButton">CreatePopupBubbleCloseButton</a></li><li><a href="global.html#DrawCanvasClosePolygon">DrawCanvasClosePolygon</a></li><li><a href="global.html#DrawCanvasMouseDown">DrawCanvasMouseDown</a></li><li><a href="global.html#FinishStartup">FinishStartup</a></li><li><a href="global.html#getQueryVariable">getQueryVariable</a></li><li><a href="global.html#LMgetObjectField">LMgetObjectField</a></li><li><a href="global.html#LMnumberOfObjects">LMnumberOfObjects</a></li><li><a href="global.html#LoadAnnotation404">LoadAnnotation404</a></li><li><a href="global.html#LoadAnnotationSuccess">LoadAnnotationSuccess</a></li><li><a href="global.html#LoadTemplate404">LoadTemplate404</a></li><li><a href="global.html#LoadTemplateSuccess">LoadTemplateSuccess</a></li><li><a href="global.html#SetAllAnnotationsArray">SetAllAnnotationsArray</a></li><li><a href="global.html#StartDrawEvent">StartDrawEvent</a></li><li><a href="global.html#StartEditEvent">StartEditEvent</a></li><li><a href="global.html#StartEditVideoEvent">StartEditVideoEvent</a></li><li><a href="global.html#StartupLabelMe">StartupLabelMe</a></li><li><a href="global.html#StopDrawEvent">StopDrawEvent</a></li><li><a href="global.html#StopEditEvent">StopEditEvent</a></li><li><a href="global.html#UndoCloseButton">UndoCloseButton</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Thu Mar 12 2015 11:43:12 GMT-0700 (PDT)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0-dev</a> on Thu Mar 12 2015 16:00:31 GMT-0700 (PDT)
 </footer>
 
 <script> prettyPrint(); </script>
