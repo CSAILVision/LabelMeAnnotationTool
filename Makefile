@@ -32,4 +32,4 @@ write_permissions:
 	$(shell chmod -R 777 ./annotationTools/php)
 
 scribble:
-	$(shell rm ./annotationTools/scribble/segment.cgi; cd ./annotationTools/scribble; make; cd ../../)
+	rm ./annotationTools/scribble/segment.cgi; cd ./annotationTools/scribble; make; cd ../../
