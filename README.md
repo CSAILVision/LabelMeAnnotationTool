@@ -118,6 +118,26 @@ and folders in the "Annotations" folder have write permissions. Also,
    * image=image.jpg - LabelMe image to annotate.
    * objects=car,person,building - When popup bubble appears asking the user for the object name, the user selects one of these objects appearing as a drop-down list.
    * scribble=false - Turns off scribble mode.
+   * objlist=visible - This controls whether the object list on the right side is visible or not. Use "objlist=hidden" to make it hidden.
+   * actions=n - Control what actions the user is allowed to do. To set the desired actions, use any combination of the letters below. For example, to allow renaming, modify control points, and delete actions, then set "actions=rmd". By default, "actions=n". The following are possible actions:
+      * n - create and edit new polygons
+      * r - rename existing objects
+      * m - modify control points on existing objects
+      * d - delete existing objects
+      * a - allow all actions
+      * v - view polygons only (do not allow any editing)
+   * viewobj=e - Control which objects the user sees. Use one of the following possible options below. By default, "viewobj=e". Note that for deleted objects, these will be shown in gray and the object name in the object list will be italicized.
+      * e - view new and previously labeled objects
+      * n - view new objects only
+      * d - view new and deleted objects
+      * a - view all objects (new, existing, deleted)
+
+   The following are for Mechanical Turk mode:
+
+   * mt_sandbox=true - Use Mechanical Turk sandbox mode. This mode is used for debugging on Mechanical Turk. You may want to start with this variable set to make sure everything works.
+   * N=5 - The worker is required to label at least 5 polygons. Use N=inf to allow the worker to label as many as they want.
+   * mt_intro=http://yourpage.com - You may customize the instructions that the worker sees. By default, the following [instructions](http://labelme2.csail.mit.edu/Release3.0/annotationTools/html/mt_instructions.html) are given to the workers.
+   * mt_instructions=Place your instructions here - You may customize the one-line instructions that the worker sees at the top of the labeling task. By default, the instructions are: Please label as many objects as you want in this image.
 
 * You can create a collection of images to label by running the
   following on the command line:
