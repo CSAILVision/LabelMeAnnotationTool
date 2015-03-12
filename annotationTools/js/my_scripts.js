@@ -1,20 +1,5 @@
-// This file contains global variables and functions.  This file
-// should be minimized and abstracted whenever possible.  It is 
-// best to refrain from adding new variables/functions to this
-// file.
-
-// Access LabelMe object field.
-// i - object index
-// fieldname - object field name, e.g. "name", "deleted"
-function LMgetObjectField(xml,i,fieldname) {
-  if(!xml.getElementsByTagName('object')[i] || !xml.getElementsByTagName('object')[i].getElementsByTagName(fieldname)[0]) return "";
-  return xml.getElementsByTagName('object')[i].getElementsByTagName(fieldname)[0].innerHTML;
-}
-
-// Returns number of LabelMe objects.
-function LMnumberOfObjects(xml) {
-  return xml.getElementsByTagName('object').length;
-}
+// This file should be minimized and abstracted whenever possible.  
+// It is best to refrain from adding new variables/functions to this file.
 
 // Get the x position of the mouse event.
 function GetEventPosX(event) {
