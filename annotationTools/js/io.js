@@ -1,3 +1,5 @@
+/** @file Input/output functions for writing annotation files to the LabelMe server. */
+
 function ReadXML(xml_file,SuccessFunction,ErrorFunction) {
   $.ajax({
     type: "GET",

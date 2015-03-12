@@ -1,4 +1,4 @@
-/** @file This file contains functions for interacting with the browser type. */
+/** @file This file contains functions for detecting and interacting with the different browser types. */
 
 var bname;
 var bversion;

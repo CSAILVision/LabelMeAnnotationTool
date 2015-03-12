@@ -1,7 +1,7 @@
-// Created: 10/07/2006
-// Updated: 10/19/2006
+/** @file 
+This contains the high-level commands for transitioning between the different annotation tool states.  They are: REST, DRAW, SELECTED, QUERY.
+*/
 
-// handler
 // Handles all of the user's actions and delegates tasks to other classes.
 // Also keeps track of global information.
 var REST_CANVAS = 1;

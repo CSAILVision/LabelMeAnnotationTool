@@ -1,5 +1,5 @@
 /** @file Contains the file_info class, which parses the URL and
- * keeps track of the URL variables.  */
+ * sets global variables based on the URL.  */
 
 // file_info class - only works for still images at the moment
 

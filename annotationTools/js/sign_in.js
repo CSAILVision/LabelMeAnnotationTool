@@ -1,3 +1,5 @@
+/** @file  Sign in form for a user to enter their LabelMe username. */
+
 // This code is very complex for what it is doing.
 // Needs optimization
 //
