@@ -54,7 +54,7 @@ function StartEditEvent(anno_id,event) {
 
   // Make edit popup appear.
   main_media.ScrollbarsOff();
-  if(LMgetObjectField(LM_xml, anno, 'verified')) {
+  if(LMgetObjectField(LM_xml, anno.anno_id, 'verified')) {
     edit_popup_open = 1;
     var innerHTML = "<b>This annotation has been blocked.</b><br />";
     var dom_bubble = CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');
