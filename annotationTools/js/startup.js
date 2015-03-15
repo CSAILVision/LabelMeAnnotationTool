@@ -105,11 +105,11 @@ function SetAllAnnotationsArray() {
     var curr_obj = $(LM_xml).children("annotation").children("object").eq(pp);
 
     // Initialize object name if empty in the XML file:
-    if(curr_obj.children("name").length == 0) curr_obj.append($("<name></name>"));
+    if(curr_obj.children("name").length == 0) LMsetObjectField(LM_xml, pp, "name","");
 
     // Set object IDs:
-    if(curr_obj.children("id").length > 0) curr_obj.children("id").text(""+pp);
-    else curr_obj.append($("<id>" + pp + "</id>"));
+    LMsetObjectField(LM_xml, pp, "id", pp.toString());
+
 
     /*************************************************************/
     /*************************************************************/

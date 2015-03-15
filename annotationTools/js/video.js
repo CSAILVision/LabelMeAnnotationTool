@@ -453,10 +453,10 @@ function video(id) {
       userlabeledframes.sort(function(a, b){return a-b});
       new_x_str = pts_x.join(';');
       new_y_str = pts_y.join(';');
-      curr_obj.children("polygon").children("t").text(framestamps.join(','));
-      curr_obj.children("polygon").children("x").text(new_x_str);
-      curr_obj.children("polygon").children("y").text(new_y_str);   
-      curr_obj.children("polygon").children("userlabeled").text(userlabeledframes.join());  
+      LMsetObjectField(LM_xml, obj_ndx, "t", framestamps.join(','));
+      LMsetObjectField(LM_xml, obj_ndx, "x", new_x_str);
+      LMsetObjectField(LM_xml, obj_ndx, "y", new_y_str);
+      LMsetObjectField(LM_xml, obj_ndx, "userlabeled", userlabeledframes.join());
         
     }
 
@@ -491,19 +491,15 @@ function video(id) {
       // Object index:
       var obj_ndx = anno.anno_id;
       
-      // Pointer to object:
-      var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
-      
       // Set fields:
-      curr_obj.children("name").text(new_name);
-      if(curr_obj.children("automatic").length > 0) curr_obj.children("automatic").text("0");
+      LMsetObjectField(LM_xml, obj_ndx, "name", new_name);
+      LMsetObjectField(LM_xml, obj_ndx, "automatic", "0");
       
       // Insert attributes (and create field if it is not there):
-      if(curr_obj.children("attributes").length>0) curr_obj.children("attributes").text(new_attributes);
-      else curr_obj.append("<attributes>" + new_attributes + "</attributes>");
-        
-      if(curr_obj.children("occluded").length>0) curr_obj.children("occluded").text(new_occluded);
-      else curr_obj.append("<occluded>" + new_occluded + "</occluded>");
+
+      LMsetObjectField(LM_xml, obj_ndx, "attributes", new_attributes);
+      LMsetObjectField(LM_xml, obj_ndx, "occluded", new_occluded);
+
       this.UpdateObjectPosition(anno);  
       oVP.DisplayFrame(oVP.getcurrentFrame());    
       

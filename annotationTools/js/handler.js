@@ -61,24 +61,21 @@ function handler() {
       var obj_ndx = anno.anno_id;
       
       // Pointer to object:
-      var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
       
       // Set fields:
-      curr_obj.children("name").text(new_name);
-      if(curr_obj.children("automatic").length > 0) curr_obj.children("automatic").text("0");
+      LMsetObjectField(LM_xml, obj_ndx, "name", new_name);
+      LMsetObjectField(LM_xml, obj_ndx, "automatic", "0");
       
       // Insert attributes (and create field if it is not there):
-      if(curr_obj.children("attributes").length>0) curr_obj.children("attributes").text(new_attributes);
-      else curr_obj.append("<attributes>" + new_attributes + "</attributes>");
+      LMsetObjectField(LM_xml, obj_ndx, "attributes", new_attributes);
         
-      if(curr_obj.children("occluded").length>0) curr_obj.children("occluded").text(new_occluded);
-      else curr_obj.append("<occluded>" + new_occluded + "</occluded>");
+      
+      LMsetObjectField(LM_xml, obj_ndx, "occluded", new_occluded);
         
       if(editedControlPoints) {
-	for(var jj=0; jj < AllAnnotations[obj_ndx].GetPtsX().length; jj++) {
-	  curr_obj.children("polygon").children("pt").eq(jj).children("x").text(AllAnnotations[obj_ndx].GetPtsX()[jj]);
-	  curr_obj.children("polygon").children("pt").eq(jj).children("y").text(AllAnnotations[obj_ndx].GetPtsY()[jj]);
-	}
+        LMsetObjectField(LM_xml, obj_ndx, 'x', AllAnnotations[obj_ndx].GetPtsX());
+        LMsetObjectField(LM_xml, obj_ndx, 'y', AllAnnotations[obj_ndx].GetPtsY());
+
       }
       
       // Write XML to server:
@@ -114,7 +111,7 @@ function handler() {
         InsertServerLogData('cpts_not_modified');
         
         // Set <deleted> in LM_xml:
-        $(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text('1');
+        LMsetObjectField(LM_xml, idx, "deleted", "1");
         
         // Remove all the part dependencies for the deleted object
         removeAllParts(idx);

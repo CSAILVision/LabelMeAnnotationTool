@@ -237,15 +237,15 @@ function getNonParts() {
 
 
 function getParts(object_id){
-    var parts = [];
+    // var parts = [];
     
-    var tmp = LM_xml.getElementsByTagName('object')[object_id].getElementsByTagName('parts')[0].getElementsByTagName('hasparts')[0].innerHTML;
-    if (tmp.length>0) {
-        // if it is not empty, split and trasnform to numbers
-        parts = tmp.split(",");
-        for (var j=0; j<parts.length; j++) {parts[j] = parseInt(parts[j], 10);}
-    }
-    return parts;
+    // var tmp = LM_xml.getElementsByTagName('object')[object_id].getElementsByTagName('parts')[0].getElementsByTagName('hasparts')[0].innerHTML;
+    // if (tmp.length>0) {
+    //     // if it is not empty, split and trasnform to numbers
+    //     parts = tmp.split(",");
+    //     for (var j=0; j<parts.length; j++) {parts[j] = parseInt(parts[j], 10);}
+    // }
+    return LMgetObjectField(LM_xml, object_id, "parts");
 }
 
 
@@ -272,7 +272,7 @@ function alertParts(title) {
     
     for (var i=0; i < Npolygons; i++) {
         parts = getParts(i);
-        name = $(LM_xml).children("annotation").children("object").eq(i).children("name").text();
+        name = LMgetObjectField(LM_xml, i,"name");
         message += "object = "+name+" ("+i+") has parts = ["+parts.toString()+"]\n";
     }
         
