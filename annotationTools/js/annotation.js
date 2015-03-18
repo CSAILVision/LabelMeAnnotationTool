@@ -6,7 +6,8 @@ function annotation(anno_id) {
     // *******************************************
     // Private variables:
     // *******************************************
-    
+    this.draw_x = new Array();
+    this.draw_y = new Array();
     this.pts_x = new Array();
     this.pts_y = new Array();
     
@@ -22,7 +23,7 @@ function annotation(anno_id) {
     // 0 means that it is a polygon. 1 means it is a mask.
     // mask URL indicates, in case we have a mask, the URL of its image
     this.anno_type = 0;
-    
+    this.bounding_box = false;
     // Info about the image in case of being a segm annotation
     this.cache_random_number = Math.random(); // This avoids cache loading - there must be a better solution
     this.imname;

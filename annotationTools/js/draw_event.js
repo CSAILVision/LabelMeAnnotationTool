@@ -48,21 +48,42 @@ function StartDrawEvent(event) {
   // Draw polyline:
   draw_anno.SetDivAttach('draw_canvas');
   draw_anno.DrawPolyLine();
-
+ 
   // Set mousedown action to handle when user clicks on the drawing canvas:
   $('#draw_canvas_div').unbind();
   $('#draw_canvas_div').mousedown({obj: this},function(e) {
       return DrawCanvasMouseDown(e.originalEvent);
     });
+  if (bounding_box){
+    draw_anno.bounding_box = true;  
+    $('#draw_canvas_div').mousemove({obj: this},function(e) {
+      return DrawCanvasMouseMove(e.originalEvent);
+    });
+    
+  }
 
   WriteLogMsg('*start_polygon');
 }
 
+function DrawCanvasMouseMove(event){
+  $('#draw_canvas').find("a").remove();
+  $('#draw_canvas').find("circle").remove();
+  var xb = GetEventPosX(event);
+  var yb = GetEventPosY(event);
+  var scale = main_media.GetImRatio();
+  var xarr = [draw_anno.pts_x[0], Math.round(xb/scale), Math.round(xb/scale), draw_anno.pts_x[0]];
+  var yarr = [draw_anno.pts_y[0],draw_anno.pts_y[0], Math.round(yb/scale), Math.round(yb/scale)];
+  DrawPolygon(draw_anno.div_attach,xarr, yarr,'drawing_bounding_box','stroke="#0000ff" stroke-width="4" fill-opacity="0.0"',scale);
+  DrawPoint(draw_anno.div_attach,draw_anno.pts_x[0],draw_anno.pts_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',scale);
+
+}
 /** Handles when the user presses the mouse button down on the drawing
 canvas. */
 function DrawCanvasMouseDown(event) {
+
   // User right-clicked mouse, so close polygon and return:
-  if(event.button > 1) return DrawCanvasClosePolygon();
+
+  if(event.button > 1 && !bounding_box) return DrawCanvasClosePolygon();
 
   // Else, the user left-clicked the mouse.
   if(active_canvas!=DRAW_CANVAS) return;
@@ -74,9 +95,24 @@ function DrawCanvasMouseDown(event) {
   var y = Math.round(GetEventPosY(event)/scale);
 
   // Add point to polygon:
-  draw_anno.pts_x.push(x);
-  draw_anno.pts_y.push(y);
+  
+  if (bounding_box){
 
+    $('#draw_canvas').find("a").remove();
+    draw_anno.pts_x.push(x);
+    draw_anno.pts_y.push(draw_anno.pts_y[0]);
+    draw_anno.pts_x.push(x);
+    draw_anno.pts_y.push(y);
+    draw_anno.pts_x.push(draw_anno.pts_x[0]);
+    draw_anno.pts_y.push(y);
+    $('#draw_canvas_div').unbind("mousemove");
+    DrawCanvasClosePolygon();
+    return;
+  } 
+  else {
+    draw_anno.pts_x.push(x);
+    draw_anno.pts_y.push(y);
+  }
   // Create array of line IDs if it is null:
   if(!draw_anno.line_ids) draw_anno.line_ids = Array();
   
@@ -91,6 +127,8 @@ function DrawCanvasMouseDown(event) {
   
   // Move the first control point to be on top of any drawn lines.
   $('#'+draw_anno.div_attach).append($('#'+draw_anno.point_id));
+
+  
 }    
 
 /** Handles when the user closes the polygon by right-clicking or clicking 
@@ -124,10 +162,10 @@ function DrawCanvasClosePolygon() {
   document.getElementById('query_canvas_div').style.zIndex = 0;
   
   // Set object list choices for points and lines:
-  var doReset = SetObjectChoicesPointLine(anno.GetPtsX().length);
+  var doReset = SetObjectChoicesPointLine(anno.pts_x.length);
 
   // Get location where popup bubble will appear:
-  var pt = main_media.SlideWindow(Math.round(anno.GetPtsX()[0]*main_media.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_media.GetImRatio()));
+  var pt = main_media.SlideWindow(Math.round(anno.pts_x[0]*main_media.GetImRatio()),Math.round(anno.pts_y[0]*main_media.GetImRatio()));
 
   // Make query popup appear.
   main_media.ScrollbarsOff();

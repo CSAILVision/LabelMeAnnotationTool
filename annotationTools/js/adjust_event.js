@@ -219,6 +219,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
    * @param {event} event - Indicates a point is being moved and the index of such point
   */
   this.MoveScalingPoint = function(event) {
+
     var x = GetEventPosX(event);
     var y = GetEventPosY(event);
     if(this.isEditingScalingPoint && this.scale_button_pressed) {
@@ -226,15 +227,15 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       pointx = this.x[this.selectedScalingPoint];
       pointy = this.y[this.selectedScalingPoint];
       this.CenterOfMass(this.x,this.y);
+      
       var sx = pointx - this.center_x;
       var sy = pointy - this.center_y;
       if (sx < 0) origx = Math.max.apply(Math, this.x);
       else origx = Math.min.apply(Math, this.x);
       if (sy < 0) origy = Math.max.apply(Math, this.y);
       else origy = Math.min.apply(Math, this.y);
-      prx = (x-origx)/(pointx-origx);
-      pry = (y-origy)/(pointy-origy);
-
+      prx = (Math.round(x/this.scale)-origx)/(pointx-origx);
+      pry = (Math.round(y/this.scale)-origy)/(pointy-origy);
       pry = prx;
       if (prx <= 0 || pry  <= 0 ) return;
       for (var i = 0; i < this.x.length; i++){
@@ -243,8 +244,8 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
         var dy = (this.y[i] - origy)*pry;
         x = origx + dx;
         y = origy + dy;
-        this.x[i] = Math.max(Math.min((x/this.scale),main_media.width_orig),1);
-        this.y[i] = Math.max(Math.min((y/this.scale),main_media.height_orig),1);
+        this.x[i] = Math.max(Math.min(x,main_media.width_orig),1);
+        this.y[i] = Math.max(Math.min(y,main_media.height_orig),1);
       }
       // Remove polygon and redraw:
       $('#'+this.polygon_id).parent().remove();
@@ -457,7 +458,6 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.center_y = y[0];
       return;
     }
-    
     // The center of mass is the average polygon edge midpoint weighted by 
     // edge length:
     this.center_x = 0; this.center_y = 0;

@@ -7,6 +7,20 @@ var resp;
 drawing_mode = 0;
 
 
+function SetPolygonDrawingMode(bounding){
+  if (active_canvas == QUERY_CANVAS) return;
+  if(draw_anno) {
+      alert("Need to close current polygon first.");
+      return;
+  }
+  var buttons = document.getElementsByClassName("labelBtnDraw");
+  for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute('style', 'background-color: #fff');
+  if (!bounding) document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
+  else document.getElementById("bounding_box").setAttribute('style', 'background-color: #faa');
+  bounding_box = bounding;
+  SetDrawingMode(0);
+}
+
 // Switch between polygon and scribble mode. If a polygon is open or the user 
 // is in the middle of the segmentation an alert appears to indicate so.
 function SetDrawingMode(mode){
@@ -42,11 +56,14 @@ function SetDrawingMode(mode){
 function InitializeScribbleMode(tag_button, tag_canvas){
   scribble_canvas = new scribble_canvas(tag_canvas);
   var html_str = '<div id= "polygonDiv" class="annotatemenu">Polygon<br></br>Tool \
-             <button id="polygon" class="labelBtnDraw" type="button" title="Start Polygon" onclick="SetDrawingMode(0)" > \
+             <button id="polygon" class="labelBtnDraw" type="button" title="Start Polygon" onclick="SetPolygonDrawingMode(false)" > \
                  <img id="polygonModeImg" src="Icons/polygon.png"  width="28" height="38" /> \
              </button> \
              <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegment()" > \
               <img src="Icons/erase.png"  width="28" height="38" /> \
+              </button> \
+              <button id="bounding_box" class="labelBtnDraw" type="button" title="Delete last segment" onclick="SetPolygonDrawingMode(true)" > \
+              <img src="Icons/bounding.png"  width="28" height="38" /> \
               </button> \
           </div>';
 
@@ -73,6 +90,7 @@ function InitializeScribbleMode(tag_button, tag_canvas){
 
   $('#tool_buttons').append(html_str3);
   $('#help').before(html_str2); 
+  document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
   document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
   document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
   document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
@@ -756,10 +774,22 @@ function scribble_canvas(tag) {
       SetDrawingMode(1);
       if(draw_anno) return;
     }
+    var buttons = document.getElementsByClassName("labelBtnDraw");
+    console.log(buttons);
+    for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute('style', 'background-color: #fff');
     if (val != OBJECT_DRAWING && val != BG_DRAWING && val != RUBBER_DRAWING) return;
-    if (val == OBJECT_DRAWING) this.scribblecanvas.setAttribute('style','cursor:url(Icons/red_pointer.cur), default');
-    else if (val == BG_DRAWING) this.scribblecanvas.setAttribute('style','cursor:url(Icons/blue_pointer.cur), default');
-    else  this.scribblecanvas.setAttribute('style','cursor:url(Icons/rubber_pointer.cur), default');
+    if (val == OBJECT_DRAWING){
+      this.scribblecanvas.setAttribute('style','cursor:url(Icons/red_pointer.cur), default');
+      document.getElementById("ScribbleObj").setAttribute('style', 'background-color: #faa');
+    } 
+    else if (val == BG_DRAWING){
+     this.scribblecanvas.setAttribute('style','cursor:url(Icons/blue_pointer.cur), default');
+     document.getElementById("ScribbleBg").setAttribute('style', 'background-color: #faa');
+    }
+    else {
+      this.scribblecanvas.setAttribute('style','cursor:url(Icons/rubber_pointer.cur), default');
+      document.getElementById("ScribbleRubber").setAttribute('style', 'background-color: #faa');
+    } 
     this.currently_drawing = val;
   };
 }

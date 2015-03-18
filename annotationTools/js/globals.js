@@ -52,6 +52,8 @@ var scribble_mode = true;
 
 var video_mode = false;
 
+var bounding_box = false;
+
 var wait_for_input;
 var edit_popup_open = 0;
 var num_orig_anno;
