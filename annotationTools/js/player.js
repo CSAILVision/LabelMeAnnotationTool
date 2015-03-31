@@ -222,31 +222,23 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     // Plot polygons:
     var xml = LM_xml
     var N = $(xml).children("annotation").children("object").length;
+    
     for(var it = 0; it < N; it++) {
       var obj = $(xml).children("annotation").children("object").eq(it);
         // Get object name:
 
         // Get points:
         var anno_id = obj.children("id").text();
-          var X = Array();
-          var Y = Array();
-          var framestamps = (obj.children("polygon").children("t").text()).split(',')
-          for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
-          var objectind = framestamps.indexOf(i);
-          
-          if (objectind >= 0){
-           var pointsx = (obj.children("polygon").children("x").text()).split(';')[objectind]
-           X = pointsx.split(',')
-           for(var ti=0; ti<X.length; ti++) { X[ti] = parseInt(X[ti], 10); } 
-           var pointsy = (obj.children("polygon").children("y").text()).split(';')[objectind]
-           Y = pointsy.split(',')
-           for(var ti=0; ti<Y.length; ti++) { Y[ti] = parseInt(Y[ti], 10); } 
+          var X = LMgetObjectField(LM_xml,it, 'x',i);
+          var Y = LMgetObjectField(LM_xml,it, 'y', i);
+          if (X == null) continue;
             var obj_name = "foo";
            if (obj.children("name")) obj_name = obj.children("name").text();
            if (select_anno == null || (select_anno && select_anno.anno_id != anno_id)){
-              polid = DrawPolygon('myCanvas_bg',X,Y,obj_name,attr,scale);
-              $('#'+polid).attr('onmousedown','StartEditVideoEvent("'+polid+'",' + it + ',evt); return false;');
-              //$('#'+polid).attr('onmousemove','main_handler.CanvasMouseMove(evt,'+ it +'); return false;');
+              var anoindex = main_canvas.GetAnnoIndex(it);
+              polid = main_canvas.annotations[anoindex].DrawPolygon(scale, X,Y);
+              $('#'+polid).attr('onmousedown','StartEditEvent('+ it + ',evt); return false;');
+              $('#'+polid).attr('onmousemove','main_handler.CanvasMouseMove(evt,'+ it +'); return false;');
               $('#'+polid).attr('oncontextmenu','return false');
               $('#'+polid).css('cursor','pointer');
             }
@@ -265,8 +257,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
               adjust_event.ShowControlPoints();
               adjust_event.ShowCenterOfMass();
             }
-          }
         }
+        RenderObjectList();
   }
 
   /** This function sets the player to frame 'frame'. 

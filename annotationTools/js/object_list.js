@@ -60,9 +60,13 @@ function RenderObjectList() {
     }
     
     var isDeleted = parseInt(LMgetObjectField(LM_xml,ii,'deleted'));
-    
-    if(((ii<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || ((ii>=num_orig_anno)&&(!isDeleted||(isDeleted&&view_Deleted)))) {
+    var is_currently_shown = true;
+    if (video_mode){
+      if (LMgetObjectField(LM_xml, ii, 'x', oVP.getcurrentFrame()) == null) is_currently_shown = false;
+    }
+    if(is_currently_shown && (((ii<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || ((ii>=num_orig_anno)&&(!isDeleted||(isDeleted&&view_Deleted))))) {
       // change the left margin as a function of part level
+      console.log(is_currently_shown);
       html_str += '<div class="objectListLink" id="LinkAnchor' + ii + '" style="z-index:1; margin-left:'+ (level*1.5) +'em" ';
       
       if (use_parts) {
@@ -155,7 +159,7 @@ function ChangeLinkColorFG(idx) {
 
   // If we're hiding all polygons, then render polygon on canvas:
   if(IsHidingAllPolygons && AllAnnotations[idx].hidden) {
-    AllAnnotations[idx].DrawPolygon(main_media.GetImRatio());
+    AllAnnotations[idx].DrawPolygon(main_media.GetImRatio(), LMgetObjectField(LM_xml,idx,'x'), LMgetObjectField(LM_xml,idx,'y'));
   }
 }
 
@@ -165,9 +169,9 @@ function HideAllPolygons() {
     IsHidingAllPolygons = true;
     
     // Delete all polygons from the canvas:
-    for(var i = 0; i < AllAnnotations.length; i++) {
-      AllAnnotations[i].DeletePolygon();
-      AllAnnotations[i].hidden = true;
+    for(var i = 0; i < main_canvas.annotations.length; i++) {
+      main_canvas.annotations[i].DeletePolygon();
+      main_canvas.annotations[i].hidden = true;
     }
     
     // Create "show all" button:

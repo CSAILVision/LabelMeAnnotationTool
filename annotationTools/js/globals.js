@@ -28,10 +28,6 @@ var editedControlPoints = 0;
 // Scalar indicating which polygon is selected; -1 means no polygon is selected
 var selected_poly = -1;
 
-// Array storing all of the annotation structures.  Eventually this will be 
-// removed since we should read directly from LM_xml.
-var AllAnnotations = Array(0);
-
 // Class with functions to handle actions/events.
 var main_handler;
 
@@ -47,12 +43,17 @@ var xhtmlNS = 'http://www.w3.org/1999/xhtml';
 // Website that refers to LabelMe:
 var ref;
 
+// Indicates whether we are in segmentation or polygon mode
+var drawing_mode = 0;
+
+
 // Scribble mode:
 var scribble_mode = true;
 
 var video_mode = false;
-
 var bounding_box = false;
+var bbox_mode = false;
+
 
 var wait_for_input;
 var edit_popup_open = 0;

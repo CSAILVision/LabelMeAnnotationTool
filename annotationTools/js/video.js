@@ -392,8 +392,7 @@ function video(id) {
     /** Update the position of an annotation. Modifies the xml file information about a given annotation.
      *  @param {annotation} anno - annotation containing the info about the polygon
     */
-    this.UpdateObjectPosition = function (anno){
-      console.log(LM_xml);
+    this.UpdateObjectPosition = function (anno, newx, newy){
       var obj_ndx = anno.anno_id;
       var curr_obj = $(LM_xml).children("annotation").children("object").eq(obj_ndx);
       var framestamps = (curr_obj.children("polygon").children("t").text()).split(',');
@@ -425,25 +424,25 @@ function video(id) {
       var objectind = framestamps.indexOf(oVP.getcurrentFrame());
       // backward interpolation
       for (var i = frameprior+1; i < objectind; i++){
-        var coords = [anno.pts_x, anno.pts_y];
+        var coords = [newx, newy];
         if (frameprior > -1){
             var Xref = pts_x[frameprior].split(',');
             var Yref = pts_y[frameprior].split(',');
-            coords = this.GetInterpolatedPoints(Xref, Yref, anno.pts_x, anno.pts_y, framestamps[frameprior], framestamps[objectind], framestamps[i]);
+            coords = this.GetInterpolatedPoints(Xref, Yref, newx, newy, framestamps[frameprior], framestamps[objectind], framestamps[i]);
         }
         
         pts_x[i] = coords[0].join();
         pts_y[i] = coords[1].join();
       }
-      pts_y[objectind] = anno.pts_y;
-      pts_x[objectind] = anno.pts_x;
+      pts_y[objectind] = newy;
+      pts_x[objectind] = newx;
       // forward interpolation
       for (var i = objectind+1; i < framenext; i++){
-        var coords = [anno.pts_x, anno.pts_y];
+        var coords = [newx, newy];
         if (framenext < framestamps.length){
             var Xref = pts_x[framenext].split(',');
             var Yref = pts_y[framenext].split(',');
-            coords = this.GetInterpolatedPoints(anno.pts_x, anno.pts_y, Xref, Yref, framestamps[objectind], framestamps[framenext], framestamps[i]);
+            coords = this.GetInterpolatedPoints(newx, newy, Xref, Yref, framestamps[objectind], framestamps[framenext], framestamps[i]);
         }
         pts_x[i] = coords[0].join();
         pts_y[i] = coords[1].join();
@@ -499,8 +498,7 @@ function video(id) {
 
       LMsetObjectField(LM_xml, obj_ndx, "attributes", new_attributes);
       LMsetObjectField(LM_xml, obj_ndx, "occluded", new_occluded);
-
-      this.UpdateObjectPosition(anno);  
+ 
       oVP.DisplayFrame(oVP.getcurrentFrame());    
       
     }
@@ -569,13 +567,13 @@ function video(id) {
                 y_str += '; ';
             }
             t_str += fr;
-            for(var jj=0; jj < anno.GetPtsX().length; jj++) {
+            for(var jj=0; jj < draw_x.length; jj++) {
                 if (jj > 0){
                     x_str += ', ';
                     y_str += ', ';
                 }
-                x_str += anno.GetPtsX()[jj];
-                y_str += anno.GetPtsY()[jj];
+                x_str += draw_x[jj];
+                y_str += draw_y[jj];
             }
         }
         t_str += '</t>';
@@ -597,22 +595,29 @@ function video(id) {
         $('#select_canvas_div').css('z-index','0');
         $('#'+this.polygon_id).remove();
           select_anno = anno;
+          if(!LMgetObjectField(LM_xml, LMnumberOfObjects(LM_xml)-1, 'deleted') ||view_Deleted) {
+            main_canvas.AttachAnnotation(anno);
+
+            anno.RenderAnnotation('rest');
+              }
+              if(view_ObjList) RenderObjectList();
           // var anno = main_canvas.DetachAnnotation(anno.anno_id);
-        adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
+        adjust_event = new AdjustEvent('select_canvas',LMgetObjectField(LM_xml,anno.anno_id,'x', oVP.getcurrentFrame()),
+            LMgetObjectField(LM_xml,anno.anno_id,'y', oVP.getcurrentFrame()),
+            LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
           // Submit username:
           if(username_flag) submit_username();
 
           // Redraw polygon:
           anno = select_anno;
-          anno.DrawPolygon(main_media.GetImRatio());
+          anno.DrawPolygon(main_media.GetImRatio(),x, y);
 
-          // Set polygon (x,y) points:
-          anno.pts_x = x;
-          anno.pts_y = y;
+          
 
           // Set global variable whether the control points have been edited:
           editedControlPoints = _editedControlPoints;
           // Submit annotation:
+          main_media.UpdateObjectPosition(anno, x, y);
           StopEditEvent();
           
         },main_media.GetImRatio());

@@ -179,7 +179,9 @@ function IsNearPolygon(x,y,p) {
   var sx = x / main_media.GetImRatio();
   var sy = y / main_media.GetImRatio();
   
-  var pt = AllAnnotations[p].ClosestPoint(sx,sy);
+  var anid = main_canvas.GetAnnoIndex(p);
+  var pt = main_canvas.annotations[anid].ClosestPoint(sx,sy);
+  console.log(pt);
   var minDist = pt[2];
   
   // This is the sensitivity area around the outline of the polygon.
@@ -195,35 +197,42 @@ function IsNearPolygon(x,y,p) {
     
 // Render filled polygons for selected objects:
 function selectObject(idx) {
+  var anid = main_canvas.GetAnnoIndex(idx);
   if(selected_poly==idx) return;
   unselectObjects();
   selected_poly = idx;
   if(view_ObjList) ChangeLinkColorFG(idx);
-  AllAnnotations[selected_poly].FillPolygon();
+  main_canvas.annotations[anid].FillPolygon();
   
   // Select object parts:
   var selected_poly_parts = getPartChildrens(idx);
   for (var i=0; i<selected_poly_parts.length; i++) {
-    if((selected_poly_parts[i]!=selected_poly) && AllAnnotations[selected_poly_parts[i]].hidden) {
-      AllAnnotations[selected_poly_parts[i]].DrawPolygon(main_media.GetImRatio());
+    var anid = main_canvas.GetAnnoIndex(selected_poly_parts[i]);
+    if((selected_poly_parts[i]!=selected_poly) && main_canvas.annotations[anid].hidden) {
+      main_canvas.annotations[anid].DrawPolygon(main_media.GetImRatio(), LMgetObjectField(LM_xml,selected_poly_parts[i],'x'), LMgetObjectField(LM_xml,selected_poly_parts[i],'y'));
     }
-    AllAnnotations[selected_poly_parts[i]].FillPolygon();
+    main_canvas.annotations[anid].FillPolygon();
   }
 }
 
 // Stop fill polygon rendering for selected objects:
 function unselectObjects() {
   if(selected_poly == -1) return;
+  var anid;
+
+  var anid = main_canvas.GetAnnoIndex(selected_poly);
   if(view_ObjList) ChangeLinkColorBG(selected_poly);
-  AllAnnotations[selected_poly].UnfillPolygon();
+  main_canvas.annotations[anid].UnfillPolygon();
   
   // Unselect object parts:
   var selected_poly_parts = getPartChildrens(selected_poly);
   for (var i=0; i<selected_poly_parts.length; i++) {
-    if((selected_poly_parts[i]!=selected_poly) && AllAnnotations[selected_poly_parts[i]].hidden) {
-      AllAnnotations[selected_poly_parts[i]].DeletePolygon();
+
+    var anid = main_canvas.GetAnnoIndex(selected_poly_parts[i]);
+    if((selected_poly_parts[i]!=selected_poly) && main_canvas.annotations[anid].hidden) {
+      main_canvas.annotations[anid].DeletePolygon();
     }
-    AllAnnotations[selected_poly_parts[i]].UnfillPolygon();
+    main_canvas.annotations[anid].UnfillPolygon();
   }
   
   // Reset selected_poly variable:
@@ -245,7 +254,7 @@ function DeleteSelectedPolygon() {
   }
   
   submission_edited = 0;
-  old_name = LMgetObjectField(LM_xml,AllAnnotations[selected_poly].anno_id,'name');
+  old_name = LMgetObjectField(LM_xml,main_canvas.annotations[selected_poly].anno_id,'name');
   new_name = old_name;
   
   // Write to logfile:
@@ -269,7 +278,7 @@ function DeleteSelectedPolygon() {
   if(view_ObjList) RenderObjectList();
   
   // Delete the polygon from the canvas:
-  AllAnnotations[ndx].DeletePolygon();
+  main_canvas.annotations[ndx].DeletePolygon();
 }
 
 

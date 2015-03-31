@@ -33,13 +33,13 @@ function StartupLabelMe() {
     else {
       // This function gets run after image is loaded:
       function main_media_onload_helper() {
-	// Set the image dimensions:
-	main_media.SetImageDimensions();
+  // Set the image dimensions:
+  main_media.SetImageDimensions();
       
-	// Read the XML annotation file:
-	var anno_file = main_media.GetFileInfo().GetFullName();
-	anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
-	ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+  // Read the XML annotation file:
+  var anno_file = main_media.GetFileInfo().GetFullName();
+  anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+  ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
       };
 
       // Get the image:
@@ -57,25 +57,26 @@ function StartupLabelMe() {
   * @param {string} xml - the xml regarding the current file
 */
 function LoadAnnotationSuccess(xml) {
+  
   console.time('load success');
 
   // Set global variable:
   LM_xml = xml;
-  if (video_mode){
-    FinishStartup();
-    return;
-  }
 
   // Set AllAnnotations array:
   SetAllAnnotationsArray();
 
   console.time('attach main_canvas');
   // Attach valid annotations to the main_canvas:
-  for(var pp = 0; pp < AllAnnotations.length; pp++) {
+  for(var pp = 0; pp < LMnumberOfObjects(LM_xml); pp++) {
     var isDeleted = LMgetObjectField(LM_xml, pp, 'deleted');
     if((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted)) {
       // Attach to main_canvas:
-      main_canvas.AttachAnnotation(AllAnnotations[pp]);
+      main_canvas.AttachAnnotation(new annotation(pp));
+      if (!video_mode && LMgetObjectField(LM_xml, pp, 'x') == null){
+        main_canvas.annotations[main_canvas.annotations.length -1].SetType(1);
+        main_canvas.annotations[main_canvas.annotations.length -1].scribble = new scribble(pp);
+      }
     }
   }
   console.timeEnd('attach main_canvas');
@@ -96,7 +97,6 @@ function SetAllAnnotationsArray() {
   var obj_elts = LM_xml.getElementsByTagName("object");
   var num_obj = obj_elts.length;
   
-  AllAnnotations = Array(num_obj);
   num_orig_anno = num_obj;
 
   console.time('initialize XML');
@@ -133,45 +133,7 @@ function SetAllAnnotationsArray() {
   console.timeEnd('addPartFields()');
 
   console.time('loop annotated');
-  // Loop over annotated objects
-  for(var pp = 0; pp < num_obj; pp++) {
-    AllAnnotations[pp] = new annotation(pp);
-    
-    /*************************************************************/
-    /*************************************************************/
-    // Scribble: 
-    // If annotation is polygon, insert polygon:
-    if(obj_elts[pp].getElementsByTagName("polygon").length > 0){
-      var pt_elts = obj_elts[pp].getElementsByTagName("polygon")[0].getElementsByTagName("pt");
-      var numpts = pt_elts.length;
-      AllAnnotations[pp].CreatePtsX(numpts);
-      AllAnnotations[pp].CreatePtsY(numpts);
-      for(ii=0; ii < numpts; ii++) {
-        AllAnnotations[pp].GetPtsX()[ii] = parseInt(pt_elts[ii].getElementsByTagName("x")[0].firstChild.nodeValue);
-        AllAnnotations[pp].GetPtsY()[ii] = parseInt(pt_elts[ii].getElementsByTagName("y")[0].firstChild.nodeValue);
-      }
-    }
-    // Otherwise, insert segmentation:
-    else if (scribble_mode){
-      AllAnnotations[pp].SetType(1);
-      AllAnnotations[pp].SetImName(obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("mask")[0].firstChild.nodeValue);
-      AllAnnotations[pp].SetScribbleName(obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("scribble_name")[0].firstChild.nodeValue);
-      var xc1 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("xmin")[0].firstChild.nodeValue);
-      var yc1 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("ymin")[0].firstChild.nodeValue);
-      var xc2 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("xmax")[0].firstChild.nodeValue);
-      var yc2 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("ymax")[0].firstChild.nodeValue);
-      var xc3 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("xmin")[0].firstChild.nodeValue);
-      var yc3 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("ymin")[0].firstChild.nodeValue);
-      var xc4 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("xmax")[0].firstChild.nodeValue);
-      var yc4 = parseInt (obj_elts[pp].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("ymax")[0].firstChild.nodeValue);
   
-      AllAnnotations[pp].SetImageCorners(xc1,yc1,xc2,yc2);
-      AllAnnotations[pp].SetCorners(xc3,yc3,xc4,yc4);
-    }
-    /*************************************************************/
-    /*************************************************************/
-
-  }
   console.timeEnd('loop annotated');
 }
 
@@ -187,7 +149,7 @@ function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
 function LoadTemplate404(jqXHR,textStatus,errorThrown) {
   if(jqXHR.status==404)
     ReadXML('annotationCache/XMLTemplates/labelme.xml',LoadTemplateSuccess,function(jqXHR) {
-	alert(jqXHR.status);
+  alert(jqXHR.status);
       });
   else
     alert(jqXHR.status);
@@ -214,7 +176,7 @@ function LoadTemplateSuccess(xml) {
 /** Finish the startup process: */
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
-  if(view_ObjList && !video_mode) RenderObjectList();
+  if(view_ObjList) RenderObjectList();
 
   // Add actions:
   console.log('LabelMe: setting actions');
@@ -239,7 +201,7 @@ function FinishStartup() {
   initUserName();
 
   // Enable scribble mode:
-  if(scribble_mode) InitializeScribbleMode('label_buttons_drawing','main_media');
+  InitializeAnnotationTools('label_buttons_drawing','main_media');
   
   // Set action when the user presses a key:
   document.onkeyup = main_handler.KeyPress;
@@ -252,4 +214,93 @@ function FinishStartup() {
   console.log('LabelMe: finished loading');
 
   console.timeEnd('startup');
+}
+
+// Initialize the segmentation tool. This function is called when the field 
+// scribble of the url is true
+function InitializeAnnotationTools(tag_button, tag_canvas){
+    if (scribble_mode) scribble_canvas = new scribble_canvas(tag_canvas);
+    var html_str = '<div id= "polygonDiv" class="annotatemenu">Polygon<br></br>Tool \
+        <button id="polygon" class="labelBtnDraw" type="button" title="Start Polygon" onclick="SetPolygonDrawingMode(false)" > \
+        <img id="polygonModeImg" src="Icons/polygon.png"  width="28" height="38" /> \
+        </button> \
+        <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegment()" > \
+        <img src="Icons/erase.png"  width="28" height="38" /> \
+        </button> ';
+        if (bbox_mode) html_str += ' <button id="bounding_box" class="labelBtnDraw" type="button" title="Delete last segment" onclick="SetPolygonDrawingMode(true)" > \
+        <img src="Icons/bounding.png"  width="28" height="38" /> \
+        </button> ';
+    html_str += '</div>';
+
+    html_str += '<div id= "segmDiv" class="annotatemenu">Mask<br></br>Tool \
+        <button id="ScribbleObj" class="labelBtnDraw" type="button" title="Use the red pencil to mark areas inside the object you want to segment" onclick="scribble_canvas.setCurrentDraw(OBJECT_DRAWING)" > \
+        <img src="Icons/object.png" width="28" height="38" /></button> \
+        <button id="ScribbleBg" class="labelBtnDraw" type="button" title="Use the blue pencil to mark areas outside the object" onclick="scribble_canvas.setCurrentDraw(BG_DRAWING)" > \
+        <img src="Icons/background.png" width="28" height="38" /></button> \
+        <button id="ScribbleRubber" class="labelBtnDraw" type="button" title="ScribbleRubber" onclick="scribble_canvas.setCurrentDraw(RUBBER_DRAWING)" > \
+        <img src="Icons/erase.png" width="28" height="38" /> \
+        </button><input type="button" class="segbut" id="segmentbtn" value="Process" title="Press this button to see the segmentation results." onclick="scribble_canvas.segmentImage(0)"/><input type="button" class="segbut"  id="donebtn" value="Done" title="Press this button after you are done with the scribbling." onclick="scribble_canvas.segmentImage(1)"/> \
+        <p> </p><div id="loadspinner" style="display: none;"><img src="Icons/segment_loader.gif"/> </div></div>';
+
+    $('#'+tag_button).append(html_str);    
+
+    var html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:GetPackFile();"> \
+        <img src="Icons/download_all.png" height="30" /> \
+        </button>';
+
+    var html_str3 = '<form action="annotationTools/php/getpackfile.php" method="post" id="packform"> \
+        <input type="hidden" id= "folder" name="folder" value="provesfinal" /> \
+        <input type="hidden" id= "name" name="name" value="img2.jpg" /> \
+       </form>';
+
+    $('#tool_buttons').append(html_str3);
+    $('#help').before(html_str2); 
+    document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
+    document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
+    document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
+    document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
+    document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
+}
+
+// Switch between polygon and scribble mode. If a polygon is open or the user 
+// is in the middle of the segmentation an alert appears to indicate so.
+function SetDrawingMode(mode){
+    if (drawing_mode == mode || active_canvas == QUERY_CANVAS) return;
+    if (mode == 0){
+        if (scribble_canvas.annotationid != -1){
+            alert("You can't change drawing mode while editting scribbles.");
+            return;
+        }
+
+        document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
+        document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
+        scribble_canvas.scribble_image = "";
+        scribble_canvas.cleanscribbles();
+        scribble_canvas.CloseCanvas();
+    }
+    if (mode == 1) {
+        if(draw_anno) {
+        alert("Need to close current polygon first.");
+        return;
+    }
+    
+    document.getElementById("segmDiv").setAttribute('style', 'border-color: #f00');
+    document.getElementById("polygonDiv").setAttribute('style', 'border-color: #000');
+    scribble_canvas.startSegmentationMode();
+    }
+    drawing_mode = mode;
+}
+
+function SetPolygonDrawingMode(bounding){
+  if (active_canvas == QUERY_CANVAS) return;
+  if(draw_anno) {
+      alert("Need to close current polygon first.");
+      return;
+  }
+  var buttons = document.getElementsByClassName("labelBtnDraw");
+  for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute('style', 'background-color: #fff');
+  if (!bounding) document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
+  else document.getElementById("bounding_box").setAttribute('style', 'background-color: #faa');
+  bounding_box = bounding;
+  SetDrawingMode(0);
 }

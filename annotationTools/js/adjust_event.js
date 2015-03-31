@@ -70,7 +70,6 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
   /** This function starts the adjusting event: */
   this.StartEvent = function() {
     console.log('LabelMe: Starting adjust event...');
-
     // Draw polygon:
     this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
     select_anno.polygon_id = this.polygon_id;
@@ -268,10 +267,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.MoveScalingPoint(event);
       FillPolygon(this.polygon_id);
       this.isEditingScalingPoint = false;
-
-      select_anno.pts_x = this.x;
-      select_anno.pts_y = this.y;
-      if (video_mode) main_media.UpdateObjectPosition(select_anno);
+      if (video_mode) main_media.UpdateObjectPosition(select_anno, this.x, this.y);
       // Set action:
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousedown({obj: this},function(e) {
@@ -340,10 +336,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       FillPolygon(this.polygon_id);
       this.ShowCenterOfMass();
       this.isEditingControlPoint = false;
-
-      select_anno.pts_x = this.x;
-      select_anno.pts_y = this.y;
-      if (video_mode) main_media.UpdateObjectPosition(select_anno);
+      if (video_mode) main_media.UpdateObjectPosition(select_anno, this.x, this.y);
       // Set action:
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousedown({obj: this},function(e) {
@@ -431,10 +424,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
 
       FillPolygon(this.polygon_id);
       this.isMovingCenterOfMass = false;
-
-      select_anno.pts_x = this.x;
-      select_anno.pts_y = this.y;
-      if (video_mode) main_media.UpdateObjectPosition(select_anno);
+      if (video_mode) main_media.UpdateObjectPosition(select_anno, this.x, this.y);
       // Set action:
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousedown({obj: this},function(e) {

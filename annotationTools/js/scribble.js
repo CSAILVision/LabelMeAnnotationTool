@@ -7,97 +7,6 @@ var resp;
 drawing_mode = 0;
 
 
-function SetPolygonDrawingMode(bounding){
-  if (active_canvas == QUERY_CANVAS) return;
-  if(draw_anno) {
-      alert("Need to close current polygon first.");
-      return;
-  }
-  var buttons = document.getElementsByClassName("labelBtnDraw");
-  for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute('style', 'background-color: #fff');
-  if (!bounding) document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
-  else document.getElementById("bounding_box").setAttribute('style', 'background-color: #faa');
-  bounding_box = bounding;
-  SetDrawingMode(0);
-}
-
-// Switch between polygon and scribble mode. If a polygon is open or the user 
-// is in the middle of the segmentation an alert appears to indicate so.
-function SetDrawingMode(mode){
-  if (drawing_mode == mode || active_canvas == QUERY_CANVAS) return;
-  if (mode == 0){
-    if (scribble_canvas.annotationid != -1){
-      alert("You can't change drawing mode while editting scribbles.");
-      return;
-    }
-
-    document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
-    document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
-    scribble_canvas.scribble_image = "";
-    scribble_canvas.cleanscribbles();
-    scribble_canvas.CloseCanvas();
-  }
-  if (mode == 1) {
-    if(draw_anno) {
-      alert("Need to close current polygon first.");
-      return;
-    }
-    
-    document.getElementById("segmDiv").setAttribute('style', 'border-color: #f00');
-    document.getElementById("polygonDiv").setAttribute('style', 'border-color: #000');
-    scribble_canvas.startSegmentationMode();
-  }
-  drawing_mode = mode;
-}
-
-
-// Initialize the segmentation tool. This function is called when the field 
-// scribble of the url is true
-function InitializeScribbleMode(tag_button, tag_canvas){
-  scribble_canvas = new scribble_canvas(tag_canvas);
-  var html_str = '<div id= "polygonDiv" class="annotatemenu">Polygon<br></br>Tool \
-             <button id="polygon" class="labelBtnDraw" type="button" title="Start Polygon" onclick="SetPolygonDrawingMode(false)" > \
-                 <img id="polygonModeImg" src="Icons/polygon.png"  width="28" height="38" /> \
-             </button> \
-             <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegment()" > \
-              <img src="Icons/erase.png"  width="28" height="38" /> \
-              </button> \
-              <button id="bounding_box" class="labelBtnDraw" type="button" title="Delete last segment" onclick="SetPolygonDrawingMode(true)" > \
-              <img src="Icons/bounding.png"  width="28" height="38" /> \
-              </button> \
-          </div>';
-
-  html_str += '<div id= "segmDiv" class="annotatemenu">Mask<br></br>Tool \
-             <button id="ScribbleObj" class="labelBtnDraw" type="button" title="Use the red pencil to mark areas inside the object you want to segment" onclick="scribble_canvas.setCurrentDraw(OBJECT_DRAWING)" > \
-                <img src="Icons/object.png" width="28" height="38" /></button> \
-             <button id="ScribbleBg" class="labelBtnDraw" type="button" title="Use the blue pencil to mark areas outside the object" onclick="scribble_canvas.setCurrentDraw(BG_DRAWING)" > \
-                <img src="Icons/background.png" width="28" height="38" /></button> \
-             <button id="ScribbleRubber" class="labelBtnDraw" type="button" title="ScribbleRubber" onclick="scribble_canvas.setCurrentDraw(RUBBER_DRAWING)" > \
-                <img src="Icons/erase.png" width="28" height="38" /> \
-            </button><input type="button" class="segbut" id="segmentbtn" value="Process" title="Press this button to see the segmentation results." onclick="scribble_canvas.segmentImage(0)"/><input type="button" class="segbut"  id="donebtn" value="Done" title="Press this button after you are done with the scribbling." onclick="scribble_canvas.segmentImage(1)"/> \
-            <p> </p><div id="loadspinner" style="display: none;"><img src="Icons/segment_loader.gif"/> </div></div>';
-
-  $('#'+tag_button).append(html_str);    
-
-  var html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:GetPackFile();"> \
-        <img src="Icons/download_all.png" height="30" /> \
-      </button>';
-
-  var html_str3 = '<form action="annotationTools/php/getpackfile.php" method="post" id="packform"> \
-        <input type="hidden" id= "folder" name="folder" value="provesfinal" /> \
-        <input type="hidden" id= "name" name="name" value="img2.jpg" /> \
-       </form>';
-
-  $('#tool_buttons').append(html_str3);
-  $('#help').before(html_str2); 
-  document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
-  document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
-  document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
-  document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
-  document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
-}
-
-
 function scribble_canvas(tag) {
   this.tagcanvasDiv = tag; 
   this.colorseg = Math.floor(Math.random()*14);
@@ -124,7 +33,9 @@ function scribble_canvas(tag) {
   this.annotationid = -1;
 
   this.object_corners = new Array();
-
+  this.image_corners = new Array();
+  this.image_name;
+  this.scribble_name;
   this.scribblecanvas;
 
   // These two functions are called to show and hide the spinner wheel 
@@ -192,7 +103,7 @@ function scribble_canvas(tag) {
         context.moveTo(this.clickX[i-1]*ratio, this.clickY[i-1]*ratio);
       }
       else{
-	context.moveTo(this.clickX[i]*ratio-1, this.clickY[i]*ratio);
+    context.moveTo(this.clickX[i]*ratio-1, this.clickY[i]*ratio);
       }
       context.lineTo(this.clickX[i]*ratio, this.clickY[i]*ratio);
       if (this.clickColor[i] == OBJECT_DRAWING){
@@ -237,7 +148,7 @@ function scribble_canvas(tag) {
         context.moveTo(this.clickX[i-1]*ratio, this.clickY[i-1]*ratio);
       }
       else{
-	context.moveTo(this.clickX[i]*ratio-1, this.clickY[i]*ratio);
+    context.moveTo(this.clickX[i]*ratio-1, this.clickY[i]*ratio);
       }
       context.lineTo(this.clickX[i]*ratio, this.clickY[i]*ratio);
       if (this.clickColor[i] == OBJECT_DRAWING){
@@ -269,9 +180,9 @@ function scribble_canvas(tag) {
       type: "POST",
       url: "annotationTools/php/saveimage.php",
       data: { 
-	image: canvasData,
+    image: canvasData,
         name: imname,
-	uploadDir: dir,
+    uploadDir: dir,
       }
     }).done(function(o) {
       var Nobj = $(LM_xml).children("annotation").children("object").length;
@@ -297,7 +208,7 @@ function scribble_canvas(tag) {
       type: "POST",
       url: "annotationTools/php/createdir.php",
       data: { 
-	urlData: url
+    urlData: url
       }
     }).done(function(o) {
       console.log(url);
@@ -339,7 +250,7 @@ function scribble_canvas(tag) {
     
     // Get location where popup bubble will appear:
     var im_ratio = main_media.GetImRatio();
-    var pt = main_media.SlideWindow((anno.GetPtsX()[0]*im_ratio + anno.GetPtsX()[1]*im_ratio)/2,(anno.GetPtsY()[0]*im_ratio + anno.GetPtsY()[2]*im_ratio)/2);
+    var pt = main_media.SlideWindow((scribble_canvas.object_corners[0]*im_ratio + scribble_canvas.object_corners[2]*im_ratio)/2,(scribble_canvas.object_corners[1]*im_ratio + scribble_canvas.object_corners[2]*im_ratio)/2);
     
     // Make query popup appear.
     main_media.ScrollbarsOff();
@@ -361,7 +272,9 @@ function scribble_canvas(tag) {
     query_anno = anno;
     query_anno.SetDivAttach('query_canvas');
     var anno_id = query_anno.GetAnnoID();
-    query_anno.DrawPolygon(main_media.GetImRatio());
+    var X_array = [scribble_canvas.object_corners[0],scribble_canvas.object_corners[2],scribble_canvas.object_corners[2], scribble_canvas.object_corners[0]];
+    var Y_array = [scribble_canvas.object_corners[1],scribble_canvas.object_corners[1],scribble_canvas.object_corners[3], scribble_canvas.object_corners[3]];
+    query_anno.DrawPolygon(main_media.GetImRatio(), X_array, Y_array);
     
     // Set polygon actions:
     query_anno.SetAttribute('onmousedown','StartEditEvent(' + anno_id + ',evt); return false;');
@@ -430,7 +343,7 @@ function scribble_canvas(tag) {
       html_str += 'list="datalist1" />'; // insert list and close <input
       html_str += '<datalist id="datalist1"><select style="display:none">';
       for(var i = 0; i < object_choices.length; i++) {
-	html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
+    html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
       }
       html_str += '</select></datalist>';
     }
@@ -447,24 +360,28 @@ function scribble_canvas(tag) {
   // bounding box.
   this.preparetoSubmit = function(){
     if (this.annotationid == -1){ // The segmentation was new
-      var anno = new annotation(AllAnnotations.length);
+
+      var anno = new annotation(LMnumberOfObjects(LM_xml));
+      anno.scribble = new scribble(anno.anno_id);
       var Nobj = $(LM_xml).children("annotation").children("object").length;
       var imagname = main_media.GetFileInfo().GetImName();
       imagname = imagname.substr(0, imagname.length-4);
-      anno.SetRandomCache(this.cache_random_number);
+      anno.scribble.SetRandomCache(this.cache_random_number);
       anno.SetType(1);
-      anno.SetImageCorners(Math.max(0, this.minclicX-(this.maxclicX - this.minclicX)*0.25), 
-			   Math.max(0, this.minclicY - (this.maxclicY - this.minclicY)*0.25),
-			   Math.min(main_media.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25), 
-			   Math.min(main_media.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25));
-      anno.SetCorners(object_corners[0], object_corners[1], object_corners[2], object_corners[3]);
-      anno.SetImName(resp);
-      anno.SetScribbleName(imagname+'_scribble_'+Nobj+'.png');
+      scribble_canvas.image_corners = new Array();
+      scribble_canvas.image_corners.push(Math.max(0, this.minclicX-(this.maxclicX - this.minclicX)*0.25));
+      scribble_canvas.image_corners.push(Math.max(0, this.minclicY - (this.maxclicY - this.minclicY)*0.25));
+      scribble_canvas.image_corners.push(Math.min(main_media.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25));
+      scribble_canvas.image_corners.push(Math.min(main_media.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25));
+      this.image_name = resp;
+      this.scribble_name = imagname+'_scribble_'+Nobj+'.png';
       
       // Draw polygon on draw canvas:
       draw_anno = anno;
       draw_anno.SetDivAttach('draw_canvas');
-      draw_anno.DrawPolygon(main_media.GetImRatio());
+      var X_array = [scribble_canvas.object_corners[0],scribble_canvas.object_corners[2],scribble_canvas.object_corners[2],scribble_canvas.object_corners[0]];
+      var Y_array = [scribble_canvas.object_corners[1], scribble_canvas.object_corners[1], scribble_canvas.object_corners[3], scribble_canvas.object_corners[3]];
+      draw_anno.DrawPolygon(main_media.GetImRatio(), X_array,Y_array);
       
       // Set polygon actions:
       draw_anno.SetAttribute('onmousedown','StartEditEvent(' + draw_anno.GetAnnoID() + ',evt); return false;');
@@ -475,23 +392,28 @@ function scribble_canvas(tag) {
       this.DrawToQuery();
     }
     else { // We were editting a segmentation
-      var anno = AllAnnotations[this.annotationid];
+      var anno = new annotation(this.annotationid); 
+      anno.SetType(1);
+      anno.scribble = new scribble(this.annotationid);
+      console.log(main_canvas.GetAnnoIndex(this.annotationid));
       var idx = scribble_canvas.annotationid;
       
       if (scribble_canvas.clickX.length > 0){
-	var lx = Math.max(0, scribble_canvas.minclicX-(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
-	var ly = Math.max(0, scribble_canvas.minclicY -  (scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
-	var rx = Math.min(main_media.width_orig, scribble_canvas.maxclicX+(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
-	var ry = Math.min(main_media.height_orig, scribble_canvas.maxclicY+(scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
-	anno.SetImageCorners(Math.min(lx, scribble_canvas.editborderlx), 
-			     Math.min(ly, scribble_canvas.editborderly),
-			     Math.max(rx, scribble_canvas.editborderrx), 
-			     Math.max(ry, scribble_canvas.editborderry));
-	anno.SetCorners(object_corners[0], object_corners[1], object_corners[2], object_corners[3]);
-	anno.SetRandomCache(scribble_canvas.cache_random_number);
-	AllAnnotations[scribble_canvas.annotationid] = anno;
-	
-	scribble_canvas.UpdateMaskXML(idx, anno);
+    var lx = Math.max(0, scribble_canvas.minclicX-(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
+    var ly = Math.max(0, scribble_canvas.minclicY -  (scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
+    var rx = Math.min(main_media.width_orig, scribble_canvas.maxclicX+(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
+    var ry = Math.min(main_media.height_orig, scribble_canvas.maxclicY+(scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
+    scribble_canvas.image_corners = new Array();
+    scribble_canvas.image_corners.push(Math.min(lx, scribble_canvas.editborderlx));
+    scribble_canvas.image_corners.push(Math.min(ly, scribble_canvas.editborderly));
+    scribble_canvas.image_corners.push(Math.max(rx, scribble_canvas.editborderrx));
+    scribble_canvas.image_corners.push(Math.max(ry, scribble_canvas.editborderry));
+    console.log(anno.scribble);
+    anno.scribble.SetRandomCache(scribble_canvas.cache_random_number);
+
+    main_canvas.AttachAnnotation(anno);
+    
+    scribble_canvas.UpdateMaskXML(idx);
       }
       main_canvas.AttachAnnotation(anno);
       
@@ -508,15 +430,15 @@ function scribble_canvas(tag) {
   // segmentation.  It updates the boundaries of the polygon enclosing 
   // the segmentation and the boundaries of the image containing the 
   // segmentation.  
-  this.UpdateMaskXML = function (idx, annot){
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("xmin").text(annot.GetCornerLX());
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("ymin").text(annot.GetCornerLY());
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("xmax").text(annot.GetCornerRX());
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("ymax").text(annot.GetCornerRY());
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("xmin").text(annot.GetPtsX()[0]);
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("ymin").text(annot.GetPtsY()[0]);
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("xmax").text(annot.GetPtsX()[1]);
-    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("ymax").text(annot.GetPtsY()[2]);
+  this.UpdateMaskXML = function (idx){
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("xmin").text(scribble_canvas.image_corners[0]);
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("ymin").text(scribble_canvas.image_corners[1]);
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("xmax").text(scribble_canvas.image_corners[2]);
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("scribbles").children("ymax").text(scribble_canvas.image_corners[3]);
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("xmin").text(scribble_canvas.object_corners[0]);
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("ymin").text(scribble_canvas.object_corners[1]);
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("xmax").text(scribble_canvas.object_corners[2]);
+    $(LM_xml).children("annotation").children("object").eq(idx).children("segm").children("box").children("ymax").text(scribble_canvas.object_corners[3]);
     
     WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
   }
@@ -548,8 +470,8 @@ function scribble_canvas(tag) {
       type: "POST",
       url: "annotationTools/php/resizeandsaveimage.php",
       data: { 
-	urlSource: urlSource,
-	namedest: namedest,
+        urlSource: urlSource,
+        namedest: namedest,
         urlDest: urlDest,
         scale: scale,
         posx: poslx,
@@ -566,47 +488,49 @@ function scribble_canvas(tag) {
       var Nobj = $(LM_xml).children("annotation").children("object").length;
       if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
       if (callback == 0){
-	var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
-	scribble_canvas.resizeandsaveImage(imagetoSegmentURL, 'image.jpg', collectionName+"/", scale,fwidth,fheight,0,1, annotation_ended);
+    var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
+    scribble_canvas.resizeandsaveImage(imagetoSegmentURL, 'image.jpg', collectionName+"/", scale,fwidth,fheight,0,1, annotation_ended);
       }
       else if (callback == 1){
-	console.log(data_response);
-	var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
-	scribble_canvas.createDir("Masks/"+collectionName+"/");
-	
-	// Execute the cgi to perform the segmentation
-	var url = 'annotationTools/scribble/segment.cgi';
-	
-	var req_submit;
-	if (window.XMLHttpRequest) {
-	  path = data_response;
-	  tmpPath = path+main_media.GetFileInfo().GetDirName().replace("///","/");
+    console.log(data_response);
+    var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
+    scribble_canvas.createDir("Masks/"+collectionName+"/");
+    
+    // Execute the cgi to perform the segmentation
+    var url = 'annotationTools/scribble/segment.cgi';
+    
+    var req_submit;
+    if (window.XMLHttpRequest) {
+      path = data_response;
+      tmpPath = path+main_media.GetFileInfo().GetDirName().replace("///","/");
 
-	  req_submit = new XMLHttpRequest();
-	  req_submit.open("POST", url, false);
+      req_submit = new XMLHttpRequest();
+      req_submit.open("POST", url, false);
           
-	  req_submit.send(imagetoSegmentURL+"&"+Nobj+"&"+scribble_canvas.colorseg+"&"+tmpPath);
-	  var cadena = req_submit.responseText.split('&');
-	  resp = cadena[0];
-	  object_corners = new Array();
-	  object_corners.push(poslx + (cadena[1]/scale)); 
-	  object_corners.push(posly + (cadena[2]/scale)); 
-	  object_corners.push(poslx + (cadena[3]/scale)); 
-	  object_corners.push(posly + (cadena[4]/scale));
+      req_submit.send(imagetoSegmentURL+"&"+Nobj+"&"+scribble_canvas.colorseg+"&"+tmpPath);
+      var cadena = req_submit.responseText.split('&');
+      resp = cadena[0];
+      scribble_canvas.object_corners = new Array();
+      scribble_canvas.object_corners.push(poslx + (cadena[1]/scale)); 
+      scribble_canvas.object_corners.push(posly + (cadena[2]/scale)); 
+      scribble_canvas.object_corners.push(poslx + (cadena[3]/scale)); 
+      scribble_canvas.object_corners.push(posly + (cadena[4]/scale));
+
           
-	  // Save the segmentation result in the Masks folder:
-	  console.log(collectionName);
-	  scribble_canvas.resizeandsaveImage(collectionName+"/",resp,collectionName+"/",1./scale,main_media.width_orig,main_media.height_orig,1,2, annotation_ended);
-	}
+      // Save the segmentation result in the Masks folder:
+      
+      scribble_canvas.resizeandsaveImage(collectionName+"/",resp,collectionName+"/",1./scale,main_media.width_orig,main_media.height_orig,1,2, annotation_ended);
+    }
       }
       else if (callback == 2){
-	scribble_canvas.drawMask(1);
-	scribble_canvas.hidespinner();
-	scribble_canvas.segmentation_in_progress = 0;
-	scribble_canvas.flag_changed = 0;
-	if (annotation_ended){
-	  scribble_canvas.preparetoSubmit();
-	}
+        scribble_canvas.drawMask(1);
+        scribble_canvas.hidespinner();
+        scribble_canvas.segmentation_in_progress = 0;
+        scribble_canvas.flag_changed = 0;
+        if (annotation_ended){
+          console.log("VAA"+scribble_canvas.object_corners);
+          scribble_canvas.preparetoSubmit();
+        }
       }
     });
   }
@@ -717,10 +641,10 @@ function scribble_canvas(tag) {
       if (e.button > 1) return;
       // If we are hiding all polygons, then clear the main canvas:
       if(IsHidingAllPolygons) {
-	for(var i = 0; i < main_canvas.annotations.length; i++) {
-	  main_canvas.annotations[i].hidden = true;
-	  main_canvas.annotations[i].DeletePolygon();
-	}
+        for(var i = 0; i < main_canvas.annotations.length; i++) {
+          main_canvas.annotations[i].hidden = true;
+          main_canvas.annotations[i].DeletePolygon();
+        }
       }
       
       var mouseX = GetEventPosX(e.originalEvent);
@@ -736,8 +660,8 @@ function scribble_canvas(tag) {
 
     $('#scribble_canvas').mousemove(function(e){
       if(this.paint){
-	scribble_canvas.addClick(GetEventPosX(e.originalEvent) , GetEventPosY(e.originalEvent) , true);
-	scribble_canvas.redraw();
+        scribble_canvas.addClick(GetEventPosX(e.originalEvent) , GetEventPosY(e.originalEvent) , true);
+        scribble_canvas.redraw();
       }
     });
     
@@ -828,12 +752,12 @@ function EditBubbleEditScribble(){
   main_media.ScrollbarsOn();
   scribble_canvas.annotationid = anno.GetAnnoID();
   scribble_canvas.scribble_image = new Image();
-  scribble_canvas.scribble_image.src = "Scribbles/"+main_media.GetFileInfo().GetDirName()+"/"+anno.GetScribbleName()+"?t="+Math.random();
+  scribble_canvas.scribble_image.src = "Scribbles/"+main_media.GetFileInfo().GetDirName()+"/"+anno.scribble.GetScribbleName()+"?t="+Math.random();
   scribble_canvas.setCurrentDraw(OBJECT_DRAWING);
-  scribble_canvas.editborderrx = anno.GetCornerRX(); 
-  scribble_canvas.editborderlx = anno.GetCornerLX();
-  scribble_canvas.editborderry = anno.GetCornerRY();
-  scribble_canvas.editborderly = anno.GetCornerLY();
+  scribble_canvas.editborderrx = anno.scribble.GetCornerRX(); 
+  scribble_canvas.editborderlx = anno.scribble.GetCornerLX();
+  scribble_canvas.editborderry = anno.scribble.GetCornerRY();
+  scribble_canvas.editborderly = anno.scribble.GetCornerLY();
   scribble_canvas.scribble_image.onload = function(){
     scribble_canvas.redraw();
   }
@@ -861,20 +785,20 @@ function LMplot(xml,imagename) {
       var X = Array();
       var Y = Array();
       if (obj.children("polygon") != null){
-	for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
-	  X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
-	  Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
-	}
+    for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
+      X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
+      Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
+    }
       }
       else {
-	X.push(parseInt(obj.children("segm").children("box").children("xmin").text()));
-	X.push(parseInt(obj.children("segm").children("box").children("xmax").text()));
-	X.push(parseInt(obj.children("segm").children("box").children("xmax").text()));
-	X.push(parseInt(obj.children("segm").children("box").children("xmin").text()));
-	Y.push(parseInt(obj.children("segm").children("box").children("ymin").text()));
-	Y.push(parseInt(obj.children("segm").children("box").children("ymin").text()));
-	Y.push(parseInt(obj.children("segm").children("box").children("ymax").text()));
-	Y.push(parseInt(obj.children("segm").children("box").children("ymax").text()));
+    X.push(parseInt(obj.children("segm").children("box").children("xmin").text()));
+    X.push(parseInt(obj.children("segm").children("box").children("xmax").text()));
+    X.push(parseInt(obj.children("segm").children("box").children("xmax").text()));
+    X.push(parseInt(obj.children("segm").children("box").children("xmin").text()));
+    Y.push(parseInt(obj.children("segm").children("box").children("ymin").text()));
+    Y.push(parseInt(obj.children("segm").children("box").children("ymin").text()));
+    Y.push(parseInt(obj.children("segm").children("box").children("ymax").text()));
+    Y.push(parseInt(obj.children("segm").children("box").children("ymax").text()));
       }
       // Draw polygon:
       var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
@@ -885,7 +809,6 @@ function LMplot(xml,imagename) {
 
   return 'canvas';
 }
-
 // Plots the segmentation mask over the canvas, indicated by div_attach
 // the field 'modified' is used to reload the mask from cache when neeeded. 
 function DrawSegmentation ( div_attach, link, width, height, modified, aux){
@@ -900,6 +823,7 @@ function DrawSegmentation ( div_attach, link, width, height, modified, aux){
   this.drawn_obj.setAttributeNS(null,"height",height);
   this.drawn_obj.setAttributeNS(null,"width", width);
   this.drawn_obj.setAttributeNS(this.xlinkNS,'href',link+"?" + modified);
+  console.log(this.drawn_obj);
   document.getElementById(div_attach).insertBefore(this.drawn_obj,document.getElementById(div_attach).firstChild);
   return id;
 }
@@ -912,7 +836,55 @@ function ClearMask (id){
 
 function GetPackFile(){
   document.getElementById("folder").value = main_media.GetFileInfo().GetDirName().replace("///","/");
-  document.getElementById("name").value = main_media.GetFileInfo().GetImName();
-  
+  document.getElementById("name").value = main_media.GetFileInfo().GetImName(); 
   document.getElementById("packform").submit();
 }
+
+
+function scribble (id){
+  this.cache_random_number = Math.random(); // This avoids cache loading - there must be a better solution
+  this.annot_id = id;
+  // Get the name of the image containing the mask for the segmentation
+  this.GetImName = function (){
+    return LMgetObjectField(LM_xml, this.annot_id, 'mask_name');
+  };
+
+  // Get the name of the image containing the scribbles for the segmentation
+  this.GetScribbleName = function (){
+    return LMgetObjectField(LM_xml, this.annot_id, 'scribble_name');
+  };
+  // Gets the location of the image containing the mask for the segmentation
+  this.GetMaskURL = function (){
+    var url_name =  $(LM_xml).children("annotation").children("object").eq(this.annot_id).children("segm").children("mask").text();
+    var url_folder =  $(LM_xml).children("annotation").children("folder").text();
+    var loc = window.location.href;
+    var   dir = loc.substring(0, loc.lastIndexOf('/tool.html'));
+    url_name = dir+'/Masks/'+url_folder+'/'+url_name;
+     
+    return url_name;
+  };
+  // Get the corners of the cropped image that was used to create the segmentation
+  this.GetCornerRX = function (){
+      var res = LMgetObjectField(LM_xml, this.annot_id,'imagecorners');
+    return res[2];
+  };
+
+  this.GetCornerLX = function (){
+    var res = LMgetObjectField(LM_xml, this.annot_id,'imagecorners');
+    return res[0];
+  };
+
+  this.GetCornerRY = function (){
+    var res = LMgetObjectField(LM_xml, this.annot_id,'imagecorners');
+    return res[3];
+  };
+
+  this.GetCornerLY = function (){
+    var res = LMgetObjectField(LM_xml, this.annot_id,'imagecorners');
+    return res[1];
+  };
+  this.SetRandomCache = function (num){
+    this.cache_random_number = num;
+  };
+}
+

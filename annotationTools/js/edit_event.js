@@ -24,12 +24,13 @@ function StartEditEvent(anno_id,event) {
   // Turn off automatic flag and write to XML file:
   if(LMgetObjectField(LM_xml, anno_id, 'automatic')) {
     // Insert data for server logfile:
-    old_name = LMgetObjectField(LM_xml,AllAnnotations[anno_id].anno_id,'name');
+    var anid = main_canvas.GetAnnoIndex(anno_id);
+    old_name = LMgetObjectField(LM_xml,main_canvas.annotations[anid].anno_id,'name');
     new_name = old_name;
     InsertServerLogData('cpts_not_modified');
     
     // Set <automatic> in XML:
-    $(LM_xml).children("annotation").children("object").eq(anno_id).children("automatic").text('0');
+    LMsetObjectField(LM_xml, anno_id, 'automatic', '0');
     
     // Write XML to server:
     WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
@@ -47,10 +48,19 @@ function StartEditEvent(anno_id,event) {
   
   select_anno = anno;
   select_anno.SetDivAttach('select_canvas');
-  FillPolygon(select_anno.DrawPolygon(main_media.GetImRatio()));
+  var pt_x, pt_y;
+  if (video_mode){
+    pt_x = LMgetObjectField(LM_xml,select_anno.anno_id,'x', oVP.getcurrentFrame());
+    pt_y = LMgetObjectField(LM_xml,select_anno.anno_id,'y', ovP.getcurrentFrame());
+  }
+  else {
+    pt_x = select_anno.GetPtsX();
+    pt_y = select_anno.GetPtsY();
+  }
+  FillPolygon(select_anno.DrawPolygon(main_media.GetImRatio(),pt_x,pt_y));
   
   // Get location where popup bubble will appear:
-  var pt = main_media.SlideWindow(Math.round(anno.GetPtsX()[0]*main_media.GetImRatio()),Math.round(anno.GetPtsY()[0]*main_media.GetImRatio()));
+  var pt = main_media.SlideWindow(Math.round(pt_x[0]*main_media.GetImRatio()),Math.round(pt_y[0]*main_media.GetImRatio()));
 
   // Make edit popup appear.
   main_media.ScrollbarsOff();
@@ -105,13 +115,12 @@ function StopEditEvent() {
   // If the annotation is not deleted or we are in "view deleted" mode, 
   // then attach the annotation to the main_canvas:
   if(!LMgetObjectField(LM_xml, anno.anno_id, 'deleted') || view_Deleted) {
-    if (!video_mode){
-      main_canvas.AttachAnnotation(anno);
-      if(!anno.hidden) {
-        anno.RenderAnnotation('rest');
-      }
+    
+    main_canvas.AttachAnnotation(anno);
+    if(!anno.hidden) {
+      anno.RenderAnnotation('rest');
     }
-    else {
+    if (video_mode){
       oVP.DisplayFrame(oVP.getcurrentFrame());
     }
   }
@@ -165,16 +174,25 @@ function AdjustPolygonButton() {
   SetDrawingMode(0);
 
   // Create adjust event:
-  adjust_event = new AdjustEvent('select_canvas',anno.pts_x,anno.pts_y,LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
+  var frame = null;
+  if (video_mode) frame = ovP.getcurrentFrame();
+  adjust_event = new AdjustEvent('select_canvas',LMgetObjectField(LM_xml,anno.anno_id,'x', frame),LMgetObjectField(LM_xml,anno.anno_id,'y', frame),
+    LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
       // Submit username:
       if(username_flag) submit_username();
 
       // Redraw polygon:
-      anno.DrawPolygon(main_media.GetImRatio());
-
+      anno.DrawPolygon(main_media.GetImRatio(), LMgetObjectField(LM_xml,anno.anno_id,'x'), LMgetObjectField(LM_xml,anno.anno_id,'y'));
+      
       // Set polygon (x,y) points:
-      anno.pts_x = x;
-      anno.pts_y = y;
+      if (!video_mode){
+        LMsetObjectField(LM_xml, anno.anno_id, 'x', x);
+        LMsetObjectField(LM_xml, anno.anno_id, 'y', y);
+      }
+      else {
+        main_media.UpdateObjectPosition(anno, x, y);
+      }
+      
 
       // Set global variable whether the control points have been edited:
       editedControlPoints = _editedControlPoints;
@@ -188,74 +206,3 @@ function AdjustPolygonButton() {
   adjust_event.StartEvent();
 }
 
-/**
-  * Mirror function of StartEditEvent for video
-  * It creates an aux annotation so that the code is compliant
-  * @param {int} anno_id - the id of the annotation being edited
-  * @param {string} polygon_id - the id of the html polygon element
-
-*/
-function StartEditVideoEvent(polygon_id, anno_id,event) {
-
-  object_annotation = new annotation(anno_id);
-  var obj = $(LM_xml).children("annotation").children("object").eq(anno_id);
-  var framestamps = (obj.children("polygon").children("t").text());
-  framestamps = framestamps.split(',');
-  for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
-  var objectind = framestamps.indexOf(oVP.getcurrentFrame());
-  var x_pts = (((obj.children("polygon").children("x").text()).split(';'))[objectind]).split(',');
-  var y_pts = (((obj.children("polygon").children("y").text()).split(';'))[objectind]).split(',');
-  for(var ti=0; ti<x_pts.length; ti++) { 
-    x_pts[ti] = parseInt(x_pts[ti], 10);
-    y_pts[ti] = parseInt(y_pts[ti], 10); 
-  } 
-  object_annotation.pts_x = x_pts;
-  object_annotation.pts_y = y_pts;
-  object_annotation.polygon_id = polygon_id;
-  console.log('LabelMe: Starting edit event...');
-  if(event) event.stopPropagation();
-  if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, anno_id, 'username')))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
-    PermissionError();
-    return;
-  }
-  active_canvas = SELECTED_CANVAS;
-  edit_popup_open = 1;
-  
-  // Turn off automatic flag and write to XML file:
-  if(LMgetObjectField(LM_xml, anno_id, 'automatic')) {
-    // Insert data for server logfile:
-    old_name = LMgetObjectField(LM_xml,object_annotation.anno_id,'name');
-    new_name = old_name;
-    
-  }
-  
-  // Move select_canvas to front:
-  $('#select_canvas').css('z-index','0');
-  $('#select_canvas_div').css('z-index','0');
-  
-  
-  editedControlPoints = 0;
-  
-  if(username_flag) submit_username();
-  select_anno = object_annotation;
-
-  FillPolygon(anno_id);
-  var pt = main_media.SlideWindow(Math.round(object_annotation.GetPtsX()[0]*main_media.GetImRatio()),Math.round(object_annotation.GetPtsY()[0]*main_media.GetImRatio()));
-  main_media.ScrollbarsOff();
-  if(LMgetObjectField(LM_xml, object_annotation.anno_id, 'verified')) {
-    edit_popup_open = 1;
-    var innerHTML = "<b>This annotation has been blocked.</b><br />";
-    var dom_bubble = CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');
-    CreatePopupBubbleCloseButton(dom_bubble,StopEditEvent);
-  }
-  else {
-    // Set object list choices for points and lines:
-    var doReset = SetObjectChoicesPointLine(object_annotation.GetPtsX().length);
-    
-    // Popup edit bubble:
-    mkEditPopup(pt[0],pt[1],object_annotation);
-    
-    // If annotation is point or line, then 
-    if(doReset) object_choices = '...';
-  }
-}

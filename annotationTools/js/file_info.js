@@ -157,6 +157,9 @@ function file_info() {
                 if((par_field=='video')&&(par_value=='true')) {
 		  video_mode = true;
 		}
+        if((par_field=='bbox')&&(par_value=='true')) {
+          bbox_mode = true;
+        }
                 par_str = par_str.substring(idx+1,par_str.length);
             } while(idx != -1);
             if((!this.dir_name) || (!this.im_name)) return this.SetURL(labelme_url);

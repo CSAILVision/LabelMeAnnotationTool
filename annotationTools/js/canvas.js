@@ -11,7 +11,7 @@ function canvas(div_attach) {
   // *******************************************
   // Private variables:
   // *******************************************
-  
+
   this.annotations = Array(); // includes name, deleted, verified info
   this.div_attach = div_attach; // name of DIV element to attach to
 
@@ -76,6 +76,11 @@ function canvas(div_attach) {
 	this.annotations[pp].RenderAnnotation('rest');
       }
     }
+  };
+  this.GetAnnoIndex = function(id){
+    var anid;
+    for (var i = 0; i < this.annotations.length; i++) if (this.annotations[i].anno_id == id) anid = i;
+    return anid;
   };
   
 }

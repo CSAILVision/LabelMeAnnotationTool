@@ -47,6 +47,7 @@ function LMgetObjectField(xml,ind_object, name, frame) {
 
 		}
 		else {
+			if (obj.children("polygon").length == 0) return null;
 			var pt_elts = obj.children("polygon")[0].getElementsByTagName("pt");
 			if (pt_elts){
 				var coord = Array(pt_elts.length);
@@ -57,6 +58,30 @@ function LMgetObjectField(xml,ind_object, name, frame) {
 				return coord;
 			}
 		}
+	}
+	if (name == 'mask_name'){
+		return obj[0].getElementsByTagName("segm")[0].getElementsByTagName("mask")[0].firstChild.nodeValue
+	}
+	if (name == 'scribble_name'){
+		return obj[0].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("scribble_name")[0].firstChild.nodeValue;
+	}
+	if (name == 'imagecorners'){
+		var corners = new Array(4);
+		corners[0] = parseInt(obj[0].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("xmin")[0].firstChild.nodeValue);
+		corners[1] = parseInt(obj[0].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("ymin")[0].firstChild.nodeValue);
+		corners[2] = parseInt(obj[0].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("xmax")[0].firstChild.nodeValue);
+		corners[3] = parseInt(obj[0].getElementsByTagName("segm")[0].getElementsByTagName("scribbles")[0].getElementsByTagName("ymax")[0].firstChild.nodeValue);
+		return corners;
+	
+	}
+	if (name == 'bboxcorners'){
+		var corners = new Array(4);
+		corners[0] = parseInt (obj[0].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("xmin")[0].firstChild.nodeValue);
+      	corners[1] = parseInt (obj[0].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("ymin")[0].firstChild.nodeValue);
+      	corners[2] = parseInt (obj[0].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("xmax")[0].firstChild.nodeValue);
+      	corners[3] = parseInt (obj[0].getElementsByTagName("segm")[0].getElementsByTagName("box")[0].getElementsByTagName("ymax")[0].firstChild.nodeValue);
+      	return corners;	
+  
 	}
 	return null;
 

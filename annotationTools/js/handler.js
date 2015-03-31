@@ -71,12 +71,6 @@ function handler() {
         
       
       LMsetObjectField(LM_xml, obj_ndx, "occluded", new_occluded);
-        
-      if(editedControlPoints) {
-        LMsetObjectField(LM_xml, obj_ndx, 'x', AllAnnotations[obj_ndx].GetPtsX());
-        LMsetObjectField(LM_xml, obj_ndx, 'y', AllAnnotations[obj_ndx].GetPtsY());
-
-      }
       
       // Write XML to server:
       WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
@@ -122,7 +116,7 @@ function handler() {
 	// Refresh object list:
         if(view_ObjList) RenderObjectList();
         
-        unselectObjects(); // Perhaps this should go elsewhere...
+        //unselectObjects(); // Perhaps this should go elsewhere...
         StopEditEvent();
     };
     
@@ -191,7 +185,6 @@ function handler() {
 	nn = RemoveSpecialChars(document.getElementById('objEnter').value);
 	anno = this.QueryToRest();
       }
-      
       var re = /[a-zA-Z0-9]/;
       if(!re.test(nn)) {
 	alert('Please enter an object name');
@@ -230,20 +223,20 @@ function handler() {
 	html_str += '<username>' + username + '</username>';
 	
 	html_str += '<box>';
-	html_str += '<xmin>' + anno.GetPtsX()[0] + '</xmin>'; 
-	html_str += '<ymin>' + anno.GetPtsY()[0] + '</ymin>';
-	html_str += '<xmax>' + anno.GetPtsX()[1] + '</xmax>'; 
-	html_str += '<ymax>' + anno.GetPtsY()[2] + '</ymax>';
+	html_str += '<xmin>' + scribble_canvas.object_corners[0] + '</xmin>'; 
+	html_str += '<ymin>' + scribble_canvas.object_corners[1] + '</ymin>';
+	html_str += '<xmax>' + scribble_canvas.object_corners[2] + '</xmax>'; 
+	html_str += '<ymax>' + scribble_canvas.object_corners[3] + '</ymax>';
 	html_str += '</box>';
 	
-	html_str += '<mask>'+ anno.GetImName()+'</mask>';
+	html_str += '<mask>'+ scribble_canvas.image_name +'</mask>';
 	
 	html_str += '<scribbles>';
-	html_str += '<xmin>' + anno.GetCornerLX() + '</xmin>'; 
-	html_str += '<ymin>' + anno.GetCornerLY() + '</ymin>';
-	html_str += '<xmax>' + anno.GetCornerRX() + '</xmax>'; 
-	html_str += '<ymax>' + anno.GetCornerRY() + '</ymax>';
-	html_str += '<scribble_name>'+ anno.GetScribbleName()+'</scribble_name>'; 
+	html_str += '<xmin>' + scribble_canvas.image_corners[0] + '</xmin>'; 
+	html_str += '<ymin>' + scribble_canvas.image_corners[1] + '</ymin>';
+	html_str += '<xmax>' + scribble_canvas.image_corners[2] + '</xmax>'; 
+	html_str += '<ymax>' + scribble_canvas.image_corners[3] + '</ymax>';
+	html_str += '<scribble_name>'+ scribble_canvas.scribble_name +'</scribble_name>'; 
 	html_str += '</scribbles>';
 	
 	html_str += '</segm>';
@@ -255,10 +248,10 @@ function handler() {
       else {
 	html_str += '<polygon>';
 	html_str += '<username>' + username + '</username>';
-	for(var jj=0; jj < anno.GetPtsX().length; jj++) {
+	for(var jj=0; jj < draw_x.length; jj++) {
 	  html_str += '<pt>';
-	  html_str += '<x>' + anno.GetPtsX()[jj] + '</x>';
-	  html_str += '<y>' + anno.GetPtsY()[jj] + '</y>';
+	  html_str += '<x>' + draw_x[jj] + '</x>';
+	  html_str += '<y>' + draw_y[jj] + '</y>';
 	  html_str += '</pt>';
 	}
 	html_str += '</polygon>';
@@ -266,7 +259,6 @@ function handler() {
 	$(LM_xml).children("annotation").append($(html_str));
       }
       
-      AllAnnotations.push(anno);
       
       if(!LMgetObjectField(LM_xml, LMnumberOfObjects(LM_xml)-1, 'deleted') ||view_Deleted) {
 	main_canvas.AttachAnnotation(anno);

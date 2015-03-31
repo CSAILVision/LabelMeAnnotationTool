@@ -2,10 +2,11 @@
 
 var draw_anno = null;
 var query_anno = null;
-
 /** This function is called with the draw event is started.  It can be 
  triggered when the user (1) clicks on the base canvas. */
 function StartDrawEvent(event) {
+  draw_x = new Array();
+  draw_y = new Array();
   if(!action_CreatePolygon) return;
   if(active_canvas != REST_CANVAS) return;
   
@@ -42,12 +43,12 @@ function StartDrawEvent(event) {
   draw_anno = new annotation(numItems);
   
   // Add first control point:
-  draw_anno.pts_x.push(Math.round(x/main_media.GetImRatio()));
-  draw_anno.pts_y.push(Math.round(y/main_media.GetImRatio()));
+  draw_x.push(Math.round(x/main_media.GetImRatio()));
+  draw_y.push(Math.round(y/main_media.GetImRatio()));
   
   // Draw polyline:
   draw_anno.SetDivAttach('draw_canvas');
-  draw_anno.DrawPolyLine();
+  draw_anno.DrawPolyLine(draw_x, draw_y);
  
   // Set mousedown action to handle when user clicks on the drawing canvas:
   $('#draw_canvas_div').unbind();
@@ -71,10 +72,10 @@ function DrawCanvasMouseMove(event){
   var xb = GetEventPosX(event);
   var yb = GetEventPosY(event);
   var scale = main_media.GetImRatio();
-  var xarr = [draw_anno.pts_x[0], Math.round(xb/scale), Math.round(xb/scale), draw_anno.pts_x[0]];
-  var yarr = [draw_anno.pts_y[0],draw_anno.pts_y[0], Math.round(yb/scale), Math.round(yb/scale)];
+  var xarr = [draw_x[0], Math.round(xb/scale), Math.round(xb/scale), draw_x[0]];
+  var yarr = [draw_y[0],draw_y[0], Math.round(yb/scale), Math.round(yb/scale)];
   DrawPolygon(draw_anno.div_attach,xarr, yarr,'drawing_bounding_box','stroke="#0000ff" stroke-width="4" fill-opacity="0.0"',scale);
-  DrawPoint(draw_anno.div_attach,draw_anno.pts_x[0],draw_anno.pts_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',scale);
+  DrawPoint(draw_anno.div_attach,draw_x[0],draw_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',scale);
 
 }
 /** Handles when the user presses the mouse button down on the drawing
@@ -99,28 +100,28 @@ function DrawCanvasMouseDown(event) {
   if (bounding_box){
 
     $('#draw_canvas').find("a").remove();
-    draw_anno.pts_x.push(x);
-    draw_anno.pts_y.push(draw_anno.pts_y[0]);
-    draw_anno.pts_x.push(x);
-    draw_anno.pts_y.push(y);
-    draw_anno.pts_x.push(draw_anno.pts_x[0]);
-    draw_anno.pts_y.push(y);
+    draw_x.push(x);
+    draw_y.push(draw_y[0]);
+    draw_x.push(x);
+    draw_y.push(y);
+    draw_x.push(draw_x[0]);
+    draw_y.push(y);
     $('#draw_canvas_div').unbind("mousemove");
     DrawCanvasClosePolygon();
     return;
   } 
   else {
-    draw_anno.pts_x.push(x);
-    draw_anno.pts_y.push(y);
+    draw_x.push(x);
+    draw_y.push(y);
   }
   // Create array of line IDs if it is null:
   if(!draw_anno.line_ids) draw_anno.line_ids = Array();
   
   var line_idx = draw_anno.line_ids.length;
-  var n = draw_anno.pts_x.length-1;
+  var n = draw_x.length-1;
   
   // Draw line segment:
-  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_anno.pts_x[n-1],draw_anno.pts_y[n-1],draw_anno.pts_x[n],draw_anno.pts_y[n],'stroke="#0000ff" stroke-width="4"',scale));
+  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_x[n-1],draw_y[n-1],draw_x[n],draw_y[n],'stroke="#0000ff" stroke-width="4"',scale));
 
   // Set cursor to be crosshair on line segment:
   $('#'+draw_anno.line_ids[line_idx]).css('cursor','crosshair');
@@ -156,16 +157,15 @@ function DrawCanvasClosePolygon() {
     anno = draw_anno;
     draw_anno = null;
   }
-  
   // Move query canvas to front:
   document.getElementById('query_canvas').style.zIndex = 0;
   document.getElementById('query_canvas_div').style.zIndex = 0;
   
   // Set object list choices for points and lines:
-  var doReset = SetObjectChoicesPointLine(anno.pts_x.length);
+  var doReset = SetObjectChoicesPointLine(draw_x.length);
 
   // Get location where popup bubble will appear:
-  var pt = main_media.SlideWindow(Math.round(anno.pts_x[0]*main_media.GetImRatio()),Math.round(anno.pts_y[0]*main_media.GetImRatio()));
+  var pt = main_media.SlideWindow(Math.round(draw_x[0]*main_media.GetImRatio()),Math.round(draw_y[0]*main_media.GetImRatio()));
 
   // Make query popup appear.
   main_media.ScrollbarsOff();
@@ -206,7 +206,7 @@ function DrawCanvasClosePolygon() {
   // Render annotation:
   query_anno = anno;
   query_anno.SetDivAttach('query_canvas');
-  FillPolygon(query_anno.DrawPolygon(main_media.GetImRatio()));
+  FillPolygon(query_anno.DrawPolygon(main_media.GetImRatio(), draw_x, draw_y));
 }
 
 /** Handles when the user presses the undo close button in response to
@@ -233,7 +233,7 @@ function UndoCloseButton() {
   // Draw polyline:
   draw_anno = anno;
   draw_anno.SetDivAttach('draw_canvas');
-  draw_anno.DrawPolyLine();
+  draw_anno.DrawPolyLine(draw_x, draw_y);
 }
 
 /** This function is called when the draw event is finished.  It can be
