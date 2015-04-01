@@ -23,26 +23,34 @@ $stdin =~ s/\n//g;
 $stdin =~ tr/\t//d;
 $stdin =~ tr/\r//d;
 
-##############################
-# Determine if Video or Image and assign path:
-$path = $LM_HOME . "Annotations";
-$tmpPath = $LM_HOME . "annotationCache/TmpAnnotations";
 
 ##############################
 # Get file information:
 ($fname,$junk) = split("</filename>",$stdin);
 ($junk,$fname) = split("<filename>",$fname);
-$fname = substr($fname,0,length($fname)-4);
+
+if (index($fname, ".") != -1) {
+    $fname = substr($fname,0,length($fname)-4);
+}
 
 ($folder,$junk) = split("</folder>",$stdin);
 ($junk,$folder) = split("<folder>",$folder);
 
 ##############################
 # Get private data:
-($global_count,$username,$edited,$old_name,$new_name,$modifiedControlPoints) = &GetPrivateData($stdin);
+($global_count,$username,$edited,$old_name,$new_name,$modifiedControlPoints, $video_mode) = &GetPrivateData($stdin);
 ($left_side,$stdin) = split("<private>",$stdin);
 ($junk,$stdin) = split("</private>",$stdin);
 $stdin = "$left_side$stdin";
+
+##############################
+# Determine if Video or Image and assign path:
+print "HELLO";
+$path = $LM_HOME . "Annotations";
+$tmpPath = $LM_HOME . "annotationCache/TmpAnnotations";
+if ($video_mode){
+    $path = $LM_HOME . "VLMAnnotations";    
+} 
 
 ##############################
 # Insert the time into the new polygons:
@@ -123,3 +131,6 @@ $username =~ s/\s/_/g;
 &WriteLogfile($datestr2,$folder,$fname,$tot_before,$tot_after,$addr,$host,$objname,$global_count,$username,$modifiedControlPoints,$tot_del_before,$tot_del_after);
 
 print "Content-type: text/xml\n\n" ;
+print $stdin;
+print $fname;
+

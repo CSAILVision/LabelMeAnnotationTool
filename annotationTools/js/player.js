@@ -224,7 +224,10 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     var N = $(xml).children("annotation").children("object").length;
     
     for(var it = 0; it < N; it++) {
-      var obj = $(xml).children("annotation").children("object").eq(it);
+        var del = parseInt($(LM_xml).children("annotation").children("object").eq(it).children("deleted").text());
+        if (del) continue;
+        var obj = $(xml).children("annotation").children("object").eq(it);
+        
         // Get object name:
 
         // Get points:
@@ -258,7 +261,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
               adjust_event.ShowCenterOfMass();
             }
         }
-        RenderObjectList();
   }
 
   /** This function sets the player to frame 'frame'. 

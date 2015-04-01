@@ -35,6 +35,11 @@ sub GetPrivateData {
     ($modifiedControlPoints,$junk) = split("</modified_cpts>",$stdin);
     ($junk,$modifiedControlPoints) = split("<modified_cpts>",$modifiedControlPoints);
 
+    # Get the video flag
+    ($video_mode,$junk) = split("</video>",$stdin);
+    ($junk,$video_mode) = split("<video>",$video_mode);
+
+
     # Check if names are empty:
     if($old_name eq "") {
 	$old_name = "*empty*";
@@ -43,7 +48,7 @@ sub GetPrivateData {
 	$new_name = "*empty*";
     }
 
-    return ($global_count,$username,$edited,$old_name,$new_name,$modifiedControlPoints);
+    return ($global_count,$username,$edited,$old_name,$new_name,$modifiedControlPoints, $video_mode);
 }
 
 sub GetTimeStamp {

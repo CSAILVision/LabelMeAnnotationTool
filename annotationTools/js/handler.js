@@ -115,8 +115,8 @@ function handler() {
 
 	// Refresh object list:
         if(view_ObjList) RenderObjectList();
-        
-        //unselectObjects(); // Perhaps this should go elsewhere...
+        selected_poly = -1;
+        unselectObjects(); // Perhaps this should go elsewhere...
         StopEditEvent();
     };
     

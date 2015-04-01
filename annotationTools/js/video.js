@@ -487,6 +487,10 @@ function video(id) {
       
       StopEditEvent();
       
+      // Insert data to write to logfile:
+      if(editedControlPoints) InsertServerLogData('cpts_modified');
+      else InsertServerLogData('cpts_not_modified');
+
       // Object index:
       var obj_ndx = anno.anno_id;
       
@@ -544,7 +548,10 @@ function video(id) {
         // Update old and new object names for logfile:
         submission_edited = 0;
         global_count++;
-      
+        new_name = nn;
+        old_name = nn;
+        // Insert data for server logfile:
+        InsertServerLogData('cpts_not_modified');
         // Insert data into XML:
         var html_str = '<object>';
         html_str += '<name>' + nn + '</name>';

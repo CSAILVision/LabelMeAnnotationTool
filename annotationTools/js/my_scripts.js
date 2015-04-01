@@ -85,7 +85,8 @@ function InsertServerLogData(modifiedControlPoints) {
   for(ii=0;ii<old_pri.length;ii++) {
     old_pri[ii].parentNode.removeChild(old_pri[ii]);
   }
-  
+  var video_mode_num = 0;
+  if (video_mode) video_mode_num = 1;
   // Add information to go into the log:
   var elt_pri = LM_xml.createElement("private");
   var elt_gct = LM_xml.createElement("global_count");
@@ -94,7 +95,7 @@ function InsertServerLogData(modifiedControlPoints) {
   var elt_onm = LM_xml.createElement("old_name");
   var elt_nnm = LM_xml.createElement("new_name");
   var elt_mcp = LM_xml.createElement("modified_cpts");
-  
+  var elt_vid = LM_xml.createElement("video");
   var txt_gct = LM_xml.createTextNode(global_count);
   var txt_user = LM_xml.createTextNode(username);
   var txt_edt = LM_xml.createTextNode(submission_edited);
@@ -102,7 +103,9 @@ function InsertServerLogData(modifiedControlPoints) {
   var txt_nnm = LM_xml.createTextNode(new_name);
   var txt_mcp = LM_xml.createTextNode(modifiedControlPoints);
   var txt_pri = LM_xml.createTextNode(ref);
-  
+  var txt_vid = LM_xml.createTextNode(video_mode_num);
+
+
   LM_xml.documentElement.appendChild(elt_pri);
   elt_pri.appendChild(elt_gct);
   elt_pri.appendChild(elt_user);
@@ -110,6 +113,7 @@ function InsertServerLogData(modifiedControlPoints) {
   elt_pri.appendChild(elt_onm);
   elt_pri.appendChild(elt_nnm);
   elt_pri.appendChild(elt_mcp);
+  elt_pri.appendChild(elt_vid);
   elt_pri.appendChild(txt_pri);
   
   elt_gct.appendChild(txt_gct);
@@ -118,6 +122,7 @@ function InsertServerLogData(modifiedControlPoints) {
   elt_onm.appendChild(txt_onm);
   elt_nnm.appendChild(txt_nnm);
   elt_mcp.appendChild(txt_mcp);
+  elt_vid.appendChild(txt_vid);
 }
 
 function PermissionError() {
