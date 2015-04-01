@@ -498,6 +498,7 @@ function video(id) {
 
       LMsetObjectField(LM_xml, obj_ndx, "attributes", new_attributes);
       LMsetObjectField(LM_xml, obj_ndx, "occluded", new_occluded);
+      WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
  
       oVP.DisplayFrame(oVP.getcurrentFrame());    
       
@@ -619,6 +620,7 @@ function video(id) {
           // Submit annotation:
           main_media.UpdateObjectPosition(anno, x, y);
           StopEditEvent();
+          WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
           
         },main_media.GetImRatio());
       // Start adjust event:
