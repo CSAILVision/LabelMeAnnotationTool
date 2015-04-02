@@ -329,6 +329,15 @@ function video(id) {
         return 1;
     };
 
+    /** Gets mode */
+    this.GetMode = function() {
+        return 'v';
+    };
+    
+    /** Gets collection name */
+    this.GetCollection = function () {
+        return "LabelMe";
+    };
 
     /** Gets mode */
     this.GetDirName = function () {

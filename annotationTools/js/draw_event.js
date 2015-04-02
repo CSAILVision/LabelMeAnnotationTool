@@ -67,15 +67,17 @@ function StartDrawEvent(event) {
 }
 
 function DrawCanvasMouseMove(event){
-  $('#draw_canvas').find("a").remove();
-  $('#draw_canvas').find("circle").remove();
+  draw_anno.DeletePolygon();
   var xb = GetEventPosX(event);
   var yb = GetEventPosY(event);
   var scale = main_media.GetImRatio();
-  var xarr = [draw_x[0], Math.round(xb/scale), Math.round(xb/scale), draw_x[0]];
-  var yarr = [draw_y[0],draw_y[0], Math.round(yb/scale), Math.round(yb/scale)];
-  DrawPolygon(draw_anno.div_attach,xarr, yarr,'drawing_bounding_box','stroke="#0000ff" stroke-width="4" fill-opacity="0.0"',scale);
-  DrawPoint(draw_anno.div_attach,draw_x[0],draw_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',scale);
+  var xarr = [draw_x[0], Math.round(xb/scale), Math.round(xb/scale), draw_x[0], draw_x[0]];
+  var yarr = [draw_y[0],draw_y[0], Math.round(yb/scale), Math.round(yb/scale), draw_y[0]];
+  console.log(draw_anno);
+  draw_anno.DrawPolyLine(xarr, yarr);
+
+  /*DrawPolygon(draw_anno.div_attach,xarr, yarr,'drawing_bounding_box','stroke="#0000ff" stroke-width="4" fill-opacity="0.0"',scale);
+  DrawPoint(draw_anno.div_attach,draw_x[0],draw_y[0],'r="6" fill="#00ff00" stroke="#ffffff" stroke-width="3"',scale);*/
 
 }
 /** Handles when the user presses the mouse button down on the drawing
@@ -153,6 +155,7 @@ function DrawCanvasClosePolygon() {
   var anno = null;
 
   if(draw_anno) {
+    console.log(draw_anno.first_point)
     draw_anno.DeletePolygon();
     anno = draw_anno;
     draw_anno = null;

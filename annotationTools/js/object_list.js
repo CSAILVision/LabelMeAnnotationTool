@@ -61,12 +61,10 @@ function RenderObjectList() {
     
     var isDeleted = parseInt(LMgetObjectField(LM_xml,ii,'deleted'));
     var is_currently_shown = true;
-    if (video_mode){
-      if (LMgetObjectField(LM_xml, ii, 'x', oVP.getcurrentFrame()) == null) is_currently_shown = false;
-    }
+    
     if(is_currently_shown && (((ii<num_orig_anno)&&((view_Existing&&!isDeleted)||(isDeleted&&view_Deleted))) || ((ii>=num_orig_anno)&&(!isDeleted||(isDeleted&&view_Deleted))))) {
       // change the left margin as a function of part level
-      console.log(is_currently_shown);
+      
       html_str += '<div class="objectListLink" id="LinkAnchor' + ii + '" style="z-index:1; margin-left:'+ (level*1.5) +'em" ';
       
       if (use_parts) {

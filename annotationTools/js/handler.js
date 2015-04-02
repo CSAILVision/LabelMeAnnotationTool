@@ -122,21 +122,37 @@ function handler() {
     
     // Handles when the user clicks on the link for an annotation.
     this.AnnotationLinkClick = function (idx) {
+      if (video_mode && LMgetObjectField(LM_xml, idx, 'x', oVP.getcurrentFrame()) == null){
+        // get frame that is closest
+        var frames = LMgetObjectField(LM_xml, idx, 't');
+        var id1 = -1;
+        var id2 = frames.length;
+        var i = 0;
+        while (i < frames.length){
+          if (frames[i] >= oVP.getcurrentFrame()) id2 = Math.min(id2, i);
+          else id1 = Math.max(id1, i);
+          i++;
+        }
+        if (id2 < frames.length) oVP.GoToFrame(frames[id2]);
+        else oVP.GoToFrame(frames[id1]);
+
+      }
       if(active_canvas==REST_CANVAS) StartEditEvent(idx,null);
       else if(active_canvas==SELECTED_CANVAS) {
-	var anno_id = select_anno.GetAnnoID();
-	if(edit_popup_open && (idx==anno_id)) StopEditEvent();
+      	var anno_id = select_anno.GetAnnoID();
+      	if(edit_popup_open && (idx==anno_id)) StopEditEvent();
       }
     };
     
     // Handles when the user moves the mouse over an annotation link.
     this.AnnotationLinkMouseOver = function (a) {
-        if(active_canvas!=SELECTED_CANVAS) selectObject(a);
+        if (video_mode && LMgetObjectField(LM_xml, a, 'x', oVP.getcurrentFrame()) == null) console.log("Not found here");
+        else if(active_canvas!=SELECTED_CANVAS) selectObject(a);
     };
     
     // Handles when the user moves the mouse away from an annotation link.
     this.AnnotationLinkMouseOut = function () {
-        if(active_canvas!=SELECTED_CANVAS) unselectObjects();
+      if(active_canvas!=SELECTED_CANVAS) unselectObjects();
     };
     
     // Handles when the user moves the mouse over a polygon on the drawing

@@ -37,7 +37,7 @@ function LMgetObjectField(xml,ind_object, name, frame) {
     }
 	if (name == 'x' || name == 'y'){
 		if (frame){
-			var framestamps = (obj.children("polygon").children("t").text()).split(',')
+			var framestamps = (obj.children("polygon").children("t").text()).split(',');
           	for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
           	var objectind = framestamps.indexOf(frame);
             if (objectind == -1) return null;
@@ -58,6 +58,11 @@ function LMgetObjectField(xml,ind_object, name, frame) {
 				return coord;
 			}
 		}
+	}
+	if (name == 't'){
+		var framestamps = (obj.children("polygon").children("t").text()).split(',');
+        for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
+        return framestamps;
 	}
 	if (name == 'mask_name'){
 		return obj[0].getElementsByTagName("segm")[0].getElementsByTagName("mask")[0].firstChild.nodeValue
