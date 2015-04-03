@@ -146,13 +146,21 @@ function handler() {
     
     // Handles when the user moves the mouse over an annotation link.
     this.AnnotationLinkMouseOver = function (a) {
-        if (video_mode && LMgetObjectField(LM_xml, a, 'x', oVP.getcurrentFrame()) == null) console.log("Not found here");
+        if (video_mode && LMgetObjectField(LM_xml, a, 'x', oVP.getcurrentFrame()) == null){
+          ChangeLinkColorFG(a);
+          selected_poly = a;
+          oVP.HighLightFrames(LMgetObjectField(LM_xml, a, 't'));
+        } 
         else if(active_canvas!=SELECTED_CANVAS) selectObject(a);
     };
     
     // Handles when the user moves the mouse away from an annotation link.
     this.AnnotationLinkMouseOut = function () {
+       
       if(active_canvas!=SELECTED_CANVAS) unselectObjects();
+      if (video_mode){
+        oVP.UnHighLightFrames();
+      }
     };
     
     // Handles when the user moves the mouse over a polygon on the drawing

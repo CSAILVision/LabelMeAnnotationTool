@@ -96,11 +96,43 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     }
     if (response) fncLoad();
     else fncError();
-  }
+  } 
+  this.HighLightFrames = function(frames){
+    if (frames.length == 0) return;
+    var frame1 = frames[0];
+    var frame2 = frames[0];
+    var i = 1;
 
+    while (i < frames.length){
+      if (frames[i] == frames[i-1]+1){
+        frame2 = frames[i];
+        
+      }
+      else {
+        var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
+        var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1); 
+        var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+posx+'px;top:-30px;z-index:0;background-color:yellow;" />';
+        $('#oScroll').after(oObjectShow);
+        frame1 = frame2 = frames[i];
+
+      }
+      i++;
+    }
+
+    var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
+    var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1); 
+    var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+posx+'px;top:-30px;z-index:0;background-color:yellow;" />';
+    $('#oScroll').after(oObjectShow);
+    
+  }
+  this.UnHighLightFrames = function (){
+    $('.oObjectshow').remove();
+  }
   /** This function creates the html elements (display, scroll bar and buttons) for the video player */
   // Create video canvas elements.
   this.CreateVideoCanvas = function() {
+
+    
     // Create canvas:
     var oCanvas = '<svg id="canvas" width="' + this.imageWidth + '" height="' + this.imageHeight + '" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" style="position:absolute;left:8px;top:8px;z-index:-5;"></svg><div id="oCanvas" style="background-color:black;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;position:relative;z-index:-5;" />';
     $('#videoplayer').append(oCanvas);
@@ -112,7 +144,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     // Create scroll bar:
     var oScroll = '<div id="oScroll" style="width:'+this.imageWidth+'px;"></div>'
     var oLoad = '<div id="oLoadBar" style="width:'+this.imageWidth+'px; z-index:0"></div>'
-
+    
           
     $('#videoplayer').append(oScroll);
     $('#oScroll').slider({
