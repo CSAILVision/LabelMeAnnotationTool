@@ -186,7 +186,6 @@ function IsNearPolygon(x,y,p) {
   
   var anid = main_canvas.GetAnnoIndex(p);
   var pt = main_canvas.annotations[anid].ClosestPoint(sx,sy);
-  console.log(pt);
   var minDist = pt[2];
   
   // This is the sensitivity area around the outline of the polygon.

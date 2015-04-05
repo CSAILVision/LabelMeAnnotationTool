@@ -11,11 +11,13 @@
  * @param {function} ExitFunction - the_function to execute once adjusting is done
  * @param {float} scale - Scaling factor for polygon points
 */
-function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
+function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_annot) {
 
   /****************** Private variables ************************/
 
   // ID of DOM element to attach to:
+  this.bounding_box = bounding_box_annot;
+
   this.dom_attach = dom_attach;
   this.scale_button_pressed = false;
   // Polygon:
@@ -75,17 +77,25 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     select_anno.polygon_id = this.polygon_id;
     FillPolygon(this.polygon_id);
     
-    // Show control points:
-    this.ShowControlPoints();
-    // Show center of mass:
-    this.ShowCenterOfMass();
-    
     // Set mousedown action to stop adjust event when user clicks on canvas:
 
     $('#'+this.dom_attach).unbind();
     $('#'+this.dom_attach).mousedown({obj: this},function(e) {
       return e.data.obj.StopAdjustEvent();
       });
+
+    // Show control points:
+    if (this.bounding_box){
+      this.ShowScalingPoints();
+      this.ShowCenterOfMass();
+      return;
+
+    }
+    this.ShowControlPoints();
+    // Show center of mass:
+    this.ShowCenterOfMass();
+    
+    
     $(window).keydown({obj: this}, function (e){
       if (!e.data.obj.scale_button_pressed && e.keyCode == 17 && !e.data.obj.isEditingControlPoint){
         e.data.obj.RemoveScalingPoints();
@@ -202,11 +212,12 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
     if(!this.isEditingScalingPoint) {
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousemove({obj: this},function(e) {
-      return e.data.obj.MoveScalingPoint(e.originalEvent);
+      return e.data.obj.MoveScalingPoint(e.originalEvent, !e.data.obj.bounding_box);
     });
       $('#body').mouseup({obj: this},function(e) {
         return e.data.obj.StopMoveScalingPoint(e.originalEvent);
-      });      
+      });
+      this.RemoveCenterOfMass();      
       this.selectedScalingPoint = i;
       this.isEditingScalingPoint = true;
       this.editedControlPoints = true;
@@ -217,11 +228,10 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
    * and resizes the polygon accordingly
    * @param {event} event - Indicates a point is being moved and the index of such point
   */
-  this.MoveScalingPoint = function(event) {
-
+  this.MoveScalingPoint = function(event, proportion) {
     var x = GetEventPosX(event);
     var y = GetEventPosY(event);
-    if(this.isEditingScalingPoint && this.scale_button_pressed) {
+    if(this.isEditingScalingPoint && (this.scale_button_pressed || this.bounding_box)) {
       var origx, origy, pointx, pointy, prx, pry;
       pointx = this.x[this.selectedScalingPoint];
       pointy = this.y[this.selectedScalingPoint];
@@ -235,7 +245,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       else origy = Math.min.apply(Math, this.y);
       prx = (Math.round(x/this.scale)-origx)/(pointx-origx);
       pry = (Math.round(y/this.scale)-origy)/(pointy-origy);
-      pry = prx;
+      if (proportion) pry = prx;
       if (prx <= 0 || pry  <= 0 ) return;
       for (var i = 0; i < this.x.length; i++){
       // Set point:
@@ -247,11 +257,13 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
         this.y[i] = Math.max(Math.min(y,main_media.height_orig),1);
       }
       // Remove polygon and redraw:
+      console.log(this.polygon_id);
       $('#'+this.polygon_id).parent().remove();
       $('#'+this.polygon_id).remove();
       this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
       select_anno.polygon_id = this.polygon_id;
       // Adjust control points:
+
       this.RemoveScalingPoints();
       this.ShowScalingPoints();
     }
@@ -264,10 +276,12 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
   this.StopMoveScalingPoint = function(event) {
     console.log('Moving scaling point');
     if(this.isEditingScalingPoint) {
-      this.MoveScalingPoint(event);
+      this.MoveScalingPoint(event, !this.bounding_box);
       FillPolygon(this.polygon_id);
       this.isEditingScalingPoint = false;
       if (video_mode) main_media.UpdateObjectPosition(select_anno, this.x, this.y);
+
+      this.ShowCenterOfMass();
       // Set action:
       $('#'+this.dom_attach).unbind();
       $('#'+this.dom_attach).mousedown({obj: this},function(e) {
@@ -358,7 +372,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       $('#body').mouseup({obj: this},function(e) {
         return e.data.obj.StopMoveCenterOfMass(e.originalEvent);
       });
-
+      this.RemoveScalingPoints();
       this.RemoveControlPoints();
       
       this.isMovingCenterOfMass = true;
@@ -417,10 +431,18 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale) {
       this.MoveCenterOfMass(event);
       
       // Refresh control points:
-      this.RemoveControlPoints();
-      this.RemoveCenterOfMass();
-      this.ShowControlPoints();
-      this.ShowCenterOfMass();
+      if (this.bounding_box){
+        this.RemoveScalingPoints();
+        this.RemoveCenterOfMass();
+        this.ShowScalingPoints();
+        this.ShowCenterOfMass();
+      }
+      else {
+        this.RemoveControlPoints();
+        this.RemoveCenterOfMass();
+        this.ShowControlPoints();
+        this.ShowCenterOfMass();
+      }
 
       FillPolygon(this.polygon_id);
       this.isMovingCenterOfMass = false;

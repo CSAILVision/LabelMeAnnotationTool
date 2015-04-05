@@ -200,7 +200,7 @@ function AdjustPolygonButton() {
       // Submit annotation:
       if (video_mode) main_media.SubmitEditObject();
       else main_handler.SubmitEditLabel();
-    },main_media.GetImRatio());
+    },main_media.GetImRatio(), (LMgetObjectField(LM_xml, anno.anno_id, 'type') == 'bounding_box'));
 
   // Start adjust event:
   adjust_event.StartEvent();

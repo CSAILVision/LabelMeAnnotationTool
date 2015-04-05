@@ -14,6 +14,11 @@ function LMgetObjectField(xml,ind_object, name, frame) {
 		if (!obj.children(name).length > 0) return "";
 		else return obj.children(name).text();
 	}
+	if (name == 'type'){
+		if (obj.children("segm").length > 0) return 'segmentation';
+		else if (obj.children(name).length > 0) return 'bounding_box';
+		else return 'polygon';
+	}
 	if (name == 'deleted' || name == 'verified' || name == 'automatic'){
 		if (!obj.children(name).length > 0) return "";
 		else return parseInt(obj.children(name).text());
@@ -114,28 +119,6 @@ function LMsetObjectField(xml, ind_object, name, value){
 		if (obj.children("polygon").length == 0 && obj.children("segm").children("username").length == 0) obj.children("segm").append($("<username>anonymous</username>"));
 		else if (obj.children("polygon").length > 0 && obj.children("polygon").children("username").length == 0) obj.children("polygon").append($("<username>anonymous</username>"));
 	}
-	// if (name == 'parts'){
-	// 	if (obj.children("parts").length > 0){
-	// 		if (!obj.children("parts").children("ispartof").length>0) {
-	// 			obj.children("parts").append("<ispartof></ispartof>");
-	// 		}
-	// 		if (!curr_obj.children("parts").children("hasparts").length>0) {
-	// 			obj.children("parts").append("<hasparts></hasparts>");
-	// 		}
-	// 	}
-	// 	else obj.append("<parts><hasparts></hasparts><ispartof></ispartof></parts>");
-	// }
-	// if (name == "ispartof" || name == "hasparts"){
-	// 	if (obj.children("parts").length > 0){
-	// 		if (!obj.children(name).children("ispartof").length > 0) obj.children(name).append("<ispartof></ispartof>");
-	// 		if (!obj.children(name).children("hasparts").length > 0) obj.children(name).append("<hasparts></hasparts>");
-			
-
-	// 	}
-	// 	else {
-	// 		obj.append("<parts><hasparts></hasparts><ispartof></ispartof></parts>");
-	// 	}
-	// }
 	if (name == 'x' || name == 'y' || name == 't' || name == 'userlabeled'){
 		if (obj.children("polygon").children("t").length > 0){
 			obj.children("polygon").children(name).text(value);

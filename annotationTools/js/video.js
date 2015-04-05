@@ -572,6 +572,9 @@ function video(id) {
         var ts = 0;//GetTimeStamp();
         if(ts.length==20) html_str += '<date>' + ts + '</date>';
         html_str += '<id>' + anno.anno_id + '</id>';
+        if (bounding_box){
+           html_str += '<type> bounding_box </type>';
+        } 
         html_str += '<polygon>';
         html_str += '<username>' + username + '</username>';
         var t_str = '<t>';
@@ -610,13 +613,12 @@ function video(id) {
         //ChangeLinkColorFG(anno.GetAnnoID());
         $('#select_canvas').css('z-index','0');
         $('#select_canvas_div').css('z-index','0');
-        $('#'+this.polygon_id).remove();
           select_anno = anno;
           if(!LMgetObjectField(LM_xml, LMnumberOfObjects(LM_xml)-1, 'deleted') ||view_Deleted) {
             main_canvas.AttachAnnotation(anno);
 
-            anno.RenderAnnotation('rest');
-              }
+            //anno.RenderAnnotation('rest');
+            }
               if(view_ObjList) RenderObjectList();
           // var anno = main_canvas.DetachAnnotation(anno.anno_id);
         adjust_event = new AdjustEvent('select_canvas',LMgetObjectField(LM_xml,anno.anno_id,'x', oVP.getcurrentFrame()),
@@ -638,7 +640,7 @@ function video(id) {
           StopEditEvent();
           WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
           
-        },main_media.GetImRatio());
+        },main_media.GetImRatio(), bounding_box);
       // Start adjust event:
       adjust_event.StartEvent();
     };

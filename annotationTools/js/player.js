@@ -98,6 +98,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     else fncError();
   } 
   this.HighLightFrames = function(frames){
+    $('.oObjectshow').remove();
     if (frames.length == 0) return;
     var frame1 = frames[0];
     var frame2 = frames[0];
@@ -127,6 +128,9 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   }
   this.UnHighLightFrames = function (){
     $('.oObjectshow').remove();
+    var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + this.imageWidth + 'px;height:3px;position:relative;left:'+0+'px;top:-30px;z-index:0;" />';
+    $('#oScroll').after(oObjectShow);
+
   }
   /** This function creates the html elements (display, scroll bar and buttons) for the video player */
   // Create video canvas elements.
@@ -159,7 +163,9 @@ this.loadFile = function(frame, first_time, isbackground, response) {
             }
             
         });
-
+    // Object show
+    var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + this.imageWidth + 'px;height:3px;position:relative;left:'+0+'px;top:-30px;z-index:0;" />';
+    $('#oScroll').after(oObjectShow);
     // Create loaded bar
     
     $('#oScroll').append(oLoad);
@@ -286,10 +292,12 @@ this.loadFile = function(frame, first_time, isbackground, response) {
               adjust_event.polygon_id = adjust_event.DrawPolygon(adjust_event.dom_attach,X,Y,obj_name,scale);
               select_anno.polygon_id = adjust_event.polygon_id;
               
+              adjust_event.RemoveScalingPoints();
               adjust_event.RemoveControlPoints();
               adjust_event.RemoveCenterOfMass();
 
-              adjust_event.ShowControlPoints();
+              if (adjust_event.bounding_box) adjust_event.ShowScalingPoints();
+              else adjust_event.ShowControlPoints();
               adjust_event.ShowCenterOfMass();
             }
         }
