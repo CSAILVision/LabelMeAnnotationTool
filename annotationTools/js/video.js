@@ -50,9 +50,13 @@ function video(id) {
         edit_popup_open = 0;
         this.SetImageDimensions();
         console.time('Load LabelMe XML file');
-        oVP = new JSVideo();
-        console.time('Load video');
-        oVP.loadChunk(1, 1, true, false);
+        $.getScript("annotationTools/js/player.js", function(){
+            oVP = new JSVideo();
+            console.time('Load video');
+            oVP.loadChunk(1, 1, true, false);
+
+        });
+        
     };
     
     /** Returns the ratio of the available width/height to the original
@@ -358,7 +362,9 @@ function video(id) {
     this.GetFullName = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return this.dir_name + '/' + this.video_name;
     };
-
+    this.GetAnnotationPath = function () {
+        if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'VLMAnnotations/' + this.dir_name + '/' + this.video_name + '.xml';
+    };
     /** Gets template path */
     this.GetTemplatePath = function () {
         if(!this.dir_name) return 'annotationCache/XMLTemplates/labelme.xml';

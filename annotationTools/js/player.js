@@ -97,39 +97,62 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     if (response) fncLoad();
     else fncError();
   } 
-  this.HighLightFrames = function(frames){
+  this.HighLightFrames = function(framestotal, userlabeledframes){
     $('.oObjectshow').remove();
-    if (frames.length == 0) return;
-    var frame1 = frames[0];
-    var frame2 = frames[0];
-    var i = 1;
-
-    while (i < frames.length){
-      if (frames[i] == frames[i-1]+1){
-        frame2 = frames[i];
-        
-      }
+    var offset = 0;
+    for (var typeframe = 0; typeframe < 2; typeframe++){
+      
+      var frames;
+      var color;
+      var zind;
+      if (typeframe == 0){
+        color = 'yellow';
+        frames = framestotal;
+        zind = 0;
+      } 
       else {
-        var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
-        var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1); 
-        var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+posx+'px;top:-30px;z-index:0;background-color:yellow;" />';
-        $('#oScroll').after(oObjectShow);
-        frame1 = frame2 = frames[i];
+        color = 'red';
+        frames = userlabeledframes;
+        zind = 1;
 
       }
-      i++;
-    }
+      if (frames.length == 0) return;
+      var frame1 = frames[0];
+      var frame2 = frames[0];
+      var i = 1;
 
-    var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
-    var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1); 
-    var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+posx+'px;top:-30px;z-index:0;background-color:yellow;" />';
-    $('#oScroll').after(oObjectShow);
+      while (i < frames.length){
+        if (frames[i] == frames[i-1]+1){
+          frame2 = frames[i];
+          
+        }
+        else {
+          console.log(frame1, oVideoData.frames-1);
+          var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
+          if (width == 0) width = this.imageWidth/(oVideoData.frames-1);
+          var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1);
+          var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+(posx-offset)+'px;top:-30px;z-index:'+zind+';background-color:'+color+';" />';
+          offset += (width);
+          $('#oControls').before(oObjectShow);
+          frame1 = frame2 = frames[i];
+
+        }
+        i++;
+      }
+      var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
+      if (width == 0) width = this.imageWidth/(oVideoData.frames-1);
+      console.log(frame1, oVideoData.frames-1);
+      var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1); 
+      var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+(posx-offset)+'px;top:-30px;z-index:'+zind+';background-color:'+color+';" />';
+      offset += (width);
+      $('#oControls').before(oObjectShow);
+    }
     
   }
   this.UnHighLightFrames = function (){
     $('.oObjectshow').remove();
     var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + this.imageWidth + 'px;height:3px;position:relative;left:'+0+'px;top:-30px;z-index:0;" />';
-    $('#oScroll').after(oObjectShow);
+    $('#oControls').before(oObjectShow);
 
   }
   /** This function creates the html elements (display, scroll bar and buttons) for the video player */

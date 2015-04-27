@@ -45,7 +45,7 @@ function LMgetObjectField(xml,ind_object, name, frame) {
 			var framestamps = (obj.children("polygon").children("t").text()).split(',');
           	for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
           	var objectind = framestamps.indexOf(frame);
-            if (objectind == -1) return null;
+            if (objectind == -1) return [];
 			var coords = ((obj.children("polygon").children(name).text()).split(';')[objectind]).split(',');
 			for(var ti=0; ti<coords.length; ti++) { coords[ti] = parseInt(coords[ti], 10); }
 			return coords;	
@@ -66,6 +66,12 @@ function LMgetObjectField(xml,ind_object, name, frame) {
 	}
 	if (name == 't'){
 		var framestamps = (obj.children("polygon").children("t").text()).split(',');
+        for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
+        return framestamps;
+	}
+	if (name == 'userlabeled'){
+		if(obj.children("polygon").children("userlabeled").length == 0) return [];
+		var framestamps = (obj.children("polygon").children("userlabeled").text()).split(',');
         for(var ti=0; ti<framestamps.length; ti++) { framestamps[ti] = parseInt(framestamps[ti], 10); } 
         return framestamps;
 	}
