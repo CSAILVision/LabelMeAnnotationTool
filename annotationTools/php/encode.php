@@ -11,7 +11,6 @@ $duration = floatval($argv[6]);
 
 
 //"/var/www/developers/xavierpuigf/xpf/LabelMe3.0/"
-
 $width = intval($_POST['width']);
 $height = intval($_POST['height']);
 $framerate = floatval($_POST['rate']);
@@ -30,8 +29,19 @@ $dir = dir($inpath);
 $files = Array();
 $count = 1;
 
-
+$mode = 1;
+$format = "%010d";
 while ($file = $dir->read()) {
+  if ($count == 1){
+    $entry = $file;
+    if (strpos($file,'_') !== false){
+      $mode = 0;
+      $scpos = strrpos($entry, "_");
+      $entry = substr($entry, $scpos+1);
+    } 
+    $length = strlen($entry)-4;
+    $format = "%0".$length."d";
+  }
   if (strtolower(substr($file, -4)) == ".jpg") {
     //if ($count >= $initframe and $count <=$last_frame) array_push($files, $inpath . "/" . $file);
     $count++;
@@ -41,9 +51,11 @@ $count--;
 $last_frame = $initframe + $duration*$framerate;
 if ($last_frame >= $count) $last_frame = $count;
 $i = $initframe;
-$file = $inpath ."/". $foldername . "_". sprintf("%05d", $i) . ".jpg";
+
+
 while (intval($i) <= intval($last_frame)){
-  $file = $inpath ."/". $foldername . "_". sprintf("%05d", $i) . ".jpg";
+  if ($mode == 0) $file = $inpath ."/". $foldername . "_". sprintf($format, $i) . ".jpg";
+  else $file = $inpath ."/".  sprintf($format, $i) . ".jpg";
   //echo $inpath;
   array_push($files, $file);
   $i++;
