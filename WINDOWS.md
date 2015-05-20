@@ -4,11 +4,13 @@
 
 2. Install "Active Perl".
 
-3. Install Cygwin.
+3. Install "Cygwin".  Make sure Cygwin is added to PATH (for "cp" in Windows).
 
-4. Make sure that all of the above (except LabelMe) works OK first.
+4. Install "ImageMagick" (this is required for the "identify" command).  
 
-5. Change the config file of Apache (httpd.conf) by adding the
+5. Make sure that all of the above (except LabelMe) works OK first.
+
+6. Change the config file of Apache (httpd.conf) by adding the
    following:
 
    ``` sh
@@ -35,12 +37,12 @@
    AddOutputFilter INCLUDES .shtml
    ```
 
-6. Add the module "mod_rewrite" to the Active Perl version.
+7. Add the module "mod_rewrite" to the Active Perl version.
 
-7. Change all the "#! /usr/bin/.." by "#!c:/Perl/bin/perl.exe" in all
+8. Change all the "#! /usr/bin/.." by "#!c:/Perl/bin/perl.exe" in all
    the scripts under LabelMe.
 
-8. Add/change the scipt "fetch_image.cgi". See below all the file
+9. Add/change the scipt "fetch_image.cgi". See below all the file
    after the changes:
 
    ``` sh
