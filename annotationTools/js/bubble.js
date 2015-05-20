@@ -45,7 +45,7 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   else {
     document.getElementById(bubble_name).style.top = (top) + 'px';
   }
-
+  setTimeout("$('#objEnter').focus();",1);
   return bubble_name;
 }
 
@@ -116,6 +116,7 @@ function CloseEditPopup() {
 // ****************************
 
 function GetPopupFormDraw() {
+  wait_for_input = 1;
   html_str = "<b>Enter object name</b><br />";
   html_str += HTMLobjectBox("");
   
@@ -127,7 +128,6 @@ function GetPopupFormDraw() {
   if(use_parts) {
     html_str += HTMLpartsBox("");
   }
-  console.log(html_str);
   html_str += "<br />";
   
   // Done button:
@@ -144,6 +144,7 @@ function GetPopupFormDraw() {
 
 function GetPopupFormEdit(anno) {
   // get object name and attributes from 'anno'
+  edit_popup_open =  1;
   var obj_name = LMgetObjectField(LM_xml,anno.anno_id,'name');
   if(obj_name=="") obj_name = "?";
   var attributes = LMgetObjectField(LM_xml,anno.anno_id,'attributes');

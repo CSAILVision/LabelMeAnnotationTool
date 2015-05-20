@@ -22,13 +22,19 @@ function StartupLabelMe() {
     if(!main_media.GetFileInfo().ParseURL()) return;
 
     if(video_mode) {
-      main_media = new video('videoplayer');
-      main_media.GetFileInfo().ParseURL();
-      console.log("Video mode...");
-      var anno_file = main_media.GetFileInfo().GetFullName();
-      main_media.GetNewVideo();
-      anno_file = 'VLMAnnotations/' + anno_file + '.xml' + '?' + Math.random();
-      ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+      $('#generic_buttons').remove();
+      $.getScript("annotationTools/js/video.js", function(){
+        main_media = new video('videoplayer');
+        main_media.GetFileInfo().ParseURL();
+        console.log("Video mode...");
+        
+        function main_media_onload_helper(){
+          var anno_file = main_media.GetFileInfo().GetFullName();
+          anno_file = 'VLMAnnotations/' + anno_file + '.xml' + '?' + Math.random();
+          ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+        }
+        main_media.GetNewVideo(main_media_onload_helper);
+      });
     }
     else {
       // This function gets run after image is loaded:
@@ -180,11 +186,18 @@ function FinishStartup() {
 
   // Add actions:
   console.log('LabelMe: setting actions');
-  if($('#img_url')) $('#img_url').attr('onclick','javascript:console.log(\'bobo\');location.href=main_media.GetFileInfo().GetImagePath();');
+  if($('#img_url')){
+    if (!video_mode) $('#img_url').attr('onclick','javascript:location.href=main_media.GetFileInfo().GetImagePath();');
+    else $('#img_url').attr('onclick','javascript:location.href=main_media.GetFileInfo().GetVideoPath();');
+  } 
   $('#changeuser').attr("onclick","javascript:show_enterUserNameDIV(); return false;");
   $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
   $('#xml_url').attr("onclick","javascript:GetXMLFile();");
   $('#nextImage').attr("onclick","javascript:ShowNextImage()");
+  if (video_mode){
+    $('#nextImage').attr("title", "Next Video");
+    $('#img_url').attr("title", "Download Video");
+  } 
   $('#zoomin').attr("onclick","javascript:main_media.Zoom(1.15)");
   $('#zoomout').attr("onclick","javascript:main_media.Zoom(1.0/1.15)");
   $('#fit').attr("onclick","javascript:main_media.Zoom('fitted')");
@@ -227,12 +240,13 @@ function InitializeAnnotationTools(tag_button, tag_canvas){
         <button id="erase" class="labelBtnDraw" type="button" title="Delete last segment" onclick="main_handler.EraseSegment()" > \
         <img src="Icons/erase.png"  width="28" height="38" /> \
         </button> ';
-        if (bbox_mode) html_str += ' <button id="bounding_box" class="labelBtnDraw" type="button" title="Delete last segment" onclick="SetPolygonDrawingMode(true)" > \
+        if (bbox_mode) html_str += ' <button id="bounding_box" class="labelBtnDraw" type="button" title="Start bounding box" onclick="SetPolygonDrawingMode(true)" > \
         <img src="Icons/bounding.png"  width="28" height="38" /> \
         </button> ';
     html_str += '</div>';
 
-    html_str += '<div id= "segmDiv" class="annotatemenu">Mask<br></br>Tool \
+    if (!video_mode){
+      html_str += '<div id= "segmDiv" class="annotatemenu">Mask<br></br>Tool \
         <button id="ScribbleObj" class="labelBtnDraw" type="button" title="Use the red pencil to mark areas inside the object you want to segment" onclick="scribble_canvas.setCurrentDraw(OBJECT_DRAWING)" > \
         <img src="Icons/object.png" width="28" height="38" /></button> \
         <button id="ScribbleBg" class="labelBtnDraw" type="button" title="Use the blue pencil to mark areas outside the object" onclick="scribble_canvas.setCurrentDraw(BG_DRAWING)" > \
@@ -241,25 +255,32 @@ function InitializeAnnotationTools(tag_button, tag_canvas){
         <img src="Icons/erase.png" width="28" height="38" /> \
         </button><input type="button" class="segbut" id="segmentbtn" value="Process" title="Press this button to see the segmentation results." onclick="scribble_canvas.segmentImage(0)"/><input type="button" class="segbut"  id="donebtn" value="Done" title="Press this button after you are done with the scribbling." onclick="scribble_canvas.segmentImage(1)"/> \
         <p> </p><div id="loadspinner" style="display: none;"><img src="Icons/segment_loader.gif"/> </div></div>';
+     
 
-    $('#'+tag_button).append(html_str);    
+      var html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:GetPackFile();"> \
+          <img src="Icons/download_all.png" height="30" /> \
+          </button>';
 
-    var html_str2 = '<button xmlns="http://www.w3.org/1999/xhtml" id="img_url" class="labelBtn" type="button" title="Download Pack" onclick="javascript:GetPackFile();"> \
-        <img src="Icons/download_all.png" height="30" /> \
-        </button>';
+      var html_str3 = '<form action="annotationTools/php/getpackfile.php" method="post" id="packform"> \
+          <input type="hidden" id= "folder" name="folder" value="provesfinal" /> \
+          <input type="hidden" id= "name" name="name" value="img2.jpg" /> \
+         </form>';
 
-    var html_str3 = '<form action="annotationTools/php/getpackfile.php" method="post" id="packform"> \
-        <input type="hidden" id= "folder" name="folder" value="provesfinal" /> \
-        <input type="hidden" id= "name" name="name" value="img2.jpg" /> \
-       </form>';
-
-    $('#tool_buttons').append(html_str3);
-    $('#help').before(html_str2); 
-    document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
-    document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
-    document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
-    document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
-    document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
+      $('#tool_buttons').append(html_str3);
+      $('#help').before(html_str2); 
+    }
+    $('#'+tag_button).append(html_str);  
+    if (document.getElementById("polygon")) document.getElementById("polygon").setAttribute('style', 'background-color: #faa');
+    if (document.getElementById("segmDiv")){
+      document.getElementById("segmDiv").setAttribute('style', 'opacity: 1');
+      document.getElementById("segmDiv").setAttribute('style', 'border-color: #000');
+    }
+    if (document.getElementById("polygonDiv")){
+      document.getElementById("polygonDiv").setAttribute('style', 'opacity: 1');
+      document.getElementById("polygonDiv").setAttribute('style', 'border-color: #f00');
+    }
+    if (video_mode) SetPolygonDrawingMode(true);
+    
 }
 
 // Switch between polygon and scribble mode. If a polygon is open or the user 

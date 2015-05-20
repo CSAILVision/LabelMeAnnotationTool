@@ -12,7 +12,7 @@ var oVP;
  * @constructor
 */
 function JSVideo() {
-
+  var frame_rate = 10;
   var fname_folder = main_media.GetFileInfo().GetImagePath()+"/";
   fname_folder =  fname_folder;
 
@@ -83,8 +83,8 @@ this.loadFile = function(frame, first_time, isbackground, response) {
         }
         if (first_time || frame >= iFrameCtr) $('#oLoading').css('display',"none");
         oVP.GenerateFrames();
-        if (first_time) ovP.GoToFrame(frame);
-        ovP.seekChunkToDownload(frame);
+        if (first_time) oVP.GoToFrame(frame);
+        oVP.seekChunkToDownload(frame);
         if (first_time || frame == iFrameCtr ) oVP.Play();
       }
       catch(e) {
@@ -97,6 +97,73 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     if (response) fncLoad();
     else fncError();
   } 
+  this.ShowTemporalBar = function (){
+    if (!select_anno) return;
+    var selected_object_frames = LMgetObjectField(LM_xml, select_anno.anno_id, 't');
+    var oTemporal = '<div id="oTempBar" style="width:'+this.imageWidth+'px; height:10px; z-index:0; top:-30px"></div>';
+    $('#oScroll').append(oTemporal);
+    $('#oTempBar').slider({
+      range : true,
+      min   : 1,
+      max   : oVideoData.frames,
+      values : [selected_object_frames[0], selected_object_frames[selected_object_frames.length-1]],
+      slide : function (event, ui) {
+        var userlab = LMgetObjectField(LM_xml, select_anno.anno_id, 'userlabeled');
+        selected_object_frames = LMgetObjectField(LM_xml, select_anno.anno_id, 't');
+        var init = ui.values[ 0 ];
+        var end = ui.values[1];
+        if (init > userlab[0] || end < userlab[userlab.length-1]) return false;
+        var i1 = selected_object_frames.indexOf(init);
+        var i2 = selected_object_frames.indexOf(end);
+        console.log(init, end);
+        var obj = $(LM_xml).children("annotation").children("object").eq(select_anno.anno_id);
+        var pts_x = (obj.children("polygon").children('x').text()).split(';');
+        var pts_y = (obj.children("polygon").children('y').text()).split(';');
+        if (i1 == -1){
+          while (selected_object_frames[0] > init){
+            selected_object_frames.unshift(selected_object_frames[0]-1);
+            pts_x.unshift(pts_x[0]);
+            pts_y.unshift(pts_y[0]);
+          }
+          i1 = 0;
+        }
+        if (i2 == -1){
+          while (selected_object_frames[selected_object_frames.length-1] < end){
+            selected_object_frames.push(selected_object_frames[selected_object_frames.length-1]+1);
+            pts_x.push(pts_x[pts_x.length-1]);
+            pts_y.push(pts_y[pts_y.length-1]);
+          }
+          i2 = pts_x.length-1;
+        }
+        pts_x = pts_x.slice(i1,i2+1);
+        pts_y = pts_y.slice(i1,i2+1);
+        selected_object_frames = selected_object_frames.slice(i1, i2+1);
+        console.log(selected_object_frames[0]);
+        console.log(selected_object_frames[selected_object_frames.length-1]);
+        LMsetObjectField(LM_xml, select_anno.anno_id, 'x', pts_x.join(';'));
+        LMsetObjectField(LM_xml, select_anno.anno_id, 'y', pts_y.join(';'));
+        LMsetObjectField(LM_xml, select_anno.anno_id, 't', selected_object_frames.join(','));
+        if (ui.handle.nextSibling){ // left slider
+          oVP.DisplayFrame(-init);
+        }
+        else {
+          oVP.DisplayFrame(-end);
+        }      
+      },
+      stop: function(event, ui){
+        oVP.DisplayFrame(oVP.getcurrentFrame());
+      } 
+    });
+    
+    $("#oTempBar .ui-slider-handle").css("top", "-0.1em");
+    $("#oTempBar .ui-slider-handle").css("height", "0.75em");
+    $("#oTempBar .ui-slider-handle").css("width", "0.5em");
+
+  }
+
+  this.HideTemporalBar = function (){
+    $('#oTempBar').remove();  
+  }
   this.HighLightFrames = function(framestotal, userlabeledframes){
     $('.oObjectshow').remove();
     var offset = 0;
@@ -127,7 +194,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
           
         }
         else {
-          console.log(frame1, oVideoData.frames-1);
           var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
           if (width == 0) width = this.imageWidth/(oVideoData.frames-1);
           var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1);
@@ -141,7 +207,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
       }
       var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
       if (width == 0) width = this.imageWidth/(oVideoData.frames-1);
-      console.log(frame1, oVideoData.frames-1);
       var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1); 
       var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+(posx-offset)+'px;top:-30px;z-index:'+zind+';background-color:'+color+';" />';
       offset += (width);
@@ -149,6 +214,53 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     }
     
   }
+  this.ShowLoadedFramesForDebug = function (){
+    $('.oObjectshow').remove();
+    var offset = 0;
+    var frames;
+    var color;
+    var zind;
+    color = 'yellow';
+    var framesLoaded = aFrameImages;
+    zind = 0;
+    if (framesLoaded.length == 0) return;
+    var frame1 = 0;
+    var frame2 = 0;
+    var i = 1;
+    console.log(framesLoaded.length);
+    while (i < framesLoaded.length){
+      if (framesLoaded[i] != null){
+        frame2 = i;
+        
+      }
+      else {
+        var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
+        if (frame2 > frame1){
+          var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1);
+          console.log(frame2, frame1);
+          var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+(posx-offset)+'px;top:-30px;z-index:'+zind+';background-color:'+color+';" />';
+          offset += (width);
+          console.log(oObjectShow);
+          $('#oControls').before(oObjectShow);
+        }
+        
+        frame1 = frame2 = i;
+
+      }
+      i++;
+    }
+    console.log(frame1, frame2)
+    var width = this.imageWidth*(frame2 - frame1)/(oVideoData.frames-1);
+    if (width > 0){
+      var posx = this.imageWidth*(frame1 - 1)/(oVideoData.frames-1); 
+      var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + width + 'px;height:3px;position:relative;left:'+(posx-offset)+'px;top:-30px;z-index:'+zind+';background-color:'+color+';" />';
+      console.log(oObjectShow);
+      $('#oControls').before(oObjectShow);
+    }
+    
+  }
+
+
   this.UnHighLightFrames = function (){
     $('.oObjectshow').remove();
     var oObjectShow = '<div class="oObjectshow" style="display:inline-block;width:' + this.imageWidth + 'px;height:3px;position:relative;left:'+0+'px;top:-30px;z-index:0;" />';
@@ -180,9 +292,10 @@ this.loadFile = function(frame, first_time, isbackground, response) {
             max   : this.imageWidth,
             value : 1,
             slide : function (event, ui) {
-                pos = ui.value/ovP.imageWidth;
+                if (wait_for_input || edit_popup_open) return false;
+                pos = ui.value/oVP.imageWidth;
                 iFrameCtr = Math.max(Math.floor(pos*(oVideoData.frames-1)),1);
-                ovP.DisplayFrame(iFrameCtr);
+                oVP.DisplayFrame(iFrameCtr);
             }
             
         });
@@ -204,7 +317,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     $("#oLoadBar .ui-slider-range").css("background", "gray");
     $("#oLoadBar .ui-slider-handle").css("display", "none");
     $('#oLoadBar.ui-slider, #oLoadBar ui-slider-handler').off();
-    //$('#oScroll.ui-slider, #oScroll ui-slider-handler').off();
     // Create controls:
     var oControls = '<div id="oControls" style="width:' + this.imageWidth + 'px;height:30px;bottom:0px;text-align:center;padding-top:10px;z-index:10;" />';
     $('#videoplayer').append(oControls);
@@ -229,11 +341,11 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     var oBtnStepEnd = '<img id="stependbutton" src="./annotationTools/video/icons/video_end.png" style="border-width:px;padding:10px;" onclick="oVP.StepEnd();" title="Go to end" />';
     $('#oControls').append(oBtnStepEnd);
     
-    var frameNumber = '<div>Frame number: <p style="display: inline-block" id="framenum">0</p></div>';
-    $('#oControls').append(frameNumber);
+    // var frameNumber = '<div>Frame number: <p style="display: inline-block" id="framenum">0</p></div>';
+    // $('#oControls').append(frameNumber);
 
-    var goToFrameForm = '<form action="">Go to frame:<input type="text" id="frameinput" placeholder="Frame Number"></input><input type="button" onclick="oVP.GoToFrameButtonClicked()" value="Submit"></input></form>';
-     $('#oControls').append(goToFrameForm);         
+    // var goToFrameForm = '<form action="">Go to frame:<input type="text" id="frameinput" placeholder="Frame Number"></input><input type="button" onclick="oVP.GoToFrameButtonClicked()" value="Submit"></input></form>';
+    //  $('#oControls').append(goToFrameForm);         
 
   };
 
@@ -251,8 +363,10 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   this.GenerateFrames = function() {
     var shift = oVideoData.firstframe;
     for(var i = 0; i < oVideoData.data.video.length; i++) {
-      var oImage = '<img src="' + oVideoData.data.video[i] + '" id="im" style="display:block;position:absolute;padding:0;border-width:0;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;z-index:-3;" />';
-      aFrameImages[i+shift] = oImage;
+      if (aFrameImages[i+shift] == null){
+        var oImage = '<img src="' + oVideoData.data.video[i] + '" id="im" style="display:block;position:absolute;padding:0;border-width:0;width:' + this.imageWidth + 'px;height:' + this.imageHeight + 'px;z-index:-3;" />';
+        aFrameImages[i+shift] = oImage;
+      }
     }
 
   }
@@ -262,11 +376,18 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   */
   this.DisplayFrame = function(i) {
     // Show frame:
+    var slidervalues = [];
+    var preview_mode = false;
+    if (i < 0 && select_anno){
+      slidervalues = $('#oTempBar').slider("option", "values");
+      i *= -1;
+      preview_mode = true;
+    }
     $('#framenum').html(i);
 
     if (aFrameImages[i] == null){
       this.Pause();
-      ovP.loadChunk(i, 2, false, false);
+      oVP.loadChunk(i, 4, false, false);
       //return;
     }
     if($('#im').length) {
@@ -295,10 +416,10 @@ this.loadFile = function(frame, first_time, isbackground, response) {
         var anno_id = obj.children("id").text();
           var X = LMgetObjectField(LM_xml,it, 'x',i);
           var Y = LMgetObjectField(LM_xml,it, 'y', i);
-          if (X == null) continue;
-            var obj_name = "foo";
+           var obj_name = "foo";
            if (obj.children("name")) obj_name = obj.children("name").text();
            if (select_anno == null || (select_anno && select_anno.anno_id != anno_id)){
+              if (X.length == 0) continue;
               var anoindex = main_canvas.GetAnnoIndex(it);
               polid = main_canvas.annotations[anoindex].DrawPolygon(scale, X,Y);
               $('#'+polid).attr('onmousedown','StartEditEvent('+ it + ',evt); return false;');
@@ -306,19 +427,20 @@ this.loadFile = function(frame, first_time, isbackground, response) {
               $('#'+polid).attr('oncontextmenu','return false');
               $('#'+polid).css('cursor','pointer');
             }
-            else {
-
+            else if (adjust_event){
               $('#'+select_anno.polygon_id).parent().remove();
               $('#'+select_anno.polygon_id).remove();
+              adjust_event.RemoveScalingPoints();
+              adjust_event.RemoveControlPoints();
+              adjust_event.RemoveCenterOfMass();
+              if (X.length == 0) continue;
+              
+
+              if (!preview_mode && (i < slidervalues[0] || i > slidervalues[1])) continue;
               adjust_event.x  = X;
               adjust_event.y = Y;
               adjust_event.polygon_id = adjust_event.DrawPolygon(adjust_event.dom_attach,X,Y,obj_name,scale);
               select_anno.polygon_id = adjust_event.polygon_id;
-              
-              adjust_event.RemoveScalingPoints();
-              adjust_event.RemoveControlPoints();
-              adjust_event.RemoveCenterOfMass();
-
               if (adjust_event.bounding_box) adjust_event.ShowScalingPoints();
               else adjust_event.ShowControlPoints();
               adjust_event.ShowCenterOfMass();
@@ -338,7 +460,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
 
   
   this.ShowFirstFrame = function() {
-    // $('#oCanvas').append(aFrameImages[0]);
+    // We may need to update the selected object points
     this.DisplayFrame(0);
     this.UpdateScrollbar(0);
   }
@@ -348,8 +470,6 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   */
   this.UpdateScrollbar = function(pos) {
     $('#oScroll').slider('value',  pos*this.imageWidth);
-    //$('#scrollbutton').css('left',pos*this.imageWidth);
-    //$('#oProgress').css('width',pos*this.imageWidth);
   }
 
   /** This function updates the position of the load bar. 
@@ -365,6 +485,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   */
   this.Play = function(buttonClicked) {
     //if (active_canvas != REST_CANVAS) return;
+    if (wait_for_input || edit_popup_open) return;
     if (buttonClicked) uPaused = false;
     else if (uPaused == true) return;
     if (aFrameImages[iFrameCtr] == null) return;
@@ -431,6 +552,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   /** This function forces to go to the next frame, regardless of frame rate. 
   */
   this.StepForward = function() {
+    if (wait_for_input || edit_popup_open) return;
     if(!bPaused) this.Pause();
     else {
       iFrameCtr++;
@@ -447,6 +569,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   /** This function goes to the previous frame. 
   */
   this.StepBackward = function() {
+    if (wait_for_input || edit_popup_open) return;
     if(!bPaused) this.Pause();
     else {
       iFrameCtr--;
@@ -463,9 +586,35 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   /** This function goes to the start of the video. 
   */
   this.StepBeginning = function() {
+    if (wait_for_input || edit_popup_open) return;
     this.Pause();
     iFrameCtr = 1;
     
+    
+    if (select_anno){
+      var userlab = LMgetObjectField(LM_xml,select_anno.anno_id, 'userlabeled');
+      var obj_name = LMgetObjectField(LM_xml, select_anno.anno_id, 'name');
+      if (userlab.length > 0 && userlab[0] > 1){
+        var i = userlab[0];
+        var X = LMgetObjectField(LM_xml,select_anno.anno_id, 'x',i);
+        var Y = LMgetObjectField(LM_xml,select_anno.anno_id, 'y', i);
+        $('#'+select_anno.polygon_id).parent().remove();
+        $('#'+select_anno.polygon_id).remove();
+        adjust_event.x  = X;
+        adjust_event.y = Y;
+        adjust_event.polygon_id = adjust_event.DrawPolygon(adjust_event.dom_attach,X,Y,obj_name,1);
+        select_anno.polygon_id = adjust_event.polygon_id;
+        
+        adjust_event.RemoveScalingPoints();
+        adjust_event.RemoveControlPoints();
+        adjust_event.RemoveCenterOfMass();
+
+        if (adjust_event.bounding_box) adjust_event.ShowScalingPoints();
+        else adjust_event.ShowControlPoints();
+        adjust_event.ShowCenterOfMass();
+      }
+    }
+
     // Render next frame:
     this.DisplayFrame(iFrameCtr);
     this.UpdateScrollbar(iFrameCtr/oVideoData.frames);
@@ -474,8 +623,33 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   /** This function goes to the end of the video. 
   */
   this.StepEnd = function() {
+    if (wait_for_input || edit_popup_open) return;
     this.Pause();
     iFrameCtr = oVideoData.frames-1;
+
+    if (select_anno){
+      var userlab = LMgetObjectField(LM_xml,select_anno.anno_id, 'userlabeled');
+      var obj_name = LMgetObjectField(LM_xml, select_anno.anno_id, 'name');
+      if (userlab.length > 0 && userlab[userlab.length-1] < iFrameCtr){
+        var i = userlab[userlab.length-1];
+        var X = LMgetObjectField(LM_xml,select_anno.anno_id, 'x',i);
+        var Y = LMgetObjectField(LM_xml,select_anno.anno_id, 'y', i);
+        $('#'+select_anno.polygon_id).parent().remove();
+        $('#'+select_anno.polygon_id).remove();
+        adjust_event.x  = X;
+        adjust_event.y = Y;
+        adjust_event.polygon_id = adjust_event.DrawPolygon(adjust_event.dom_attach,X,Y,obj_name,1);
+        select_anno.polygon_id = adjust_event.polygon_id;
+        
+        adjust_event.RemoveScalingPoints();
+        adjust_event.RemoveControlPoints();
+        adjust_event.RemoveCenterOfMass();
+
+        if (adjust_event.bounding_box) adjust_event.ShowScalingPoints();
+        else adjust_event.ShowControlPoints();
+        adjust_event.ShowCenterOfMass();
+      }
+    }
     
     // Render next frame:
     this.DisplayFrame(iFrameCtr);
@@ -486,24 +660,26 @@ this.loadFile = function(frame, first_time, isbackground, response) {
   */
   this.seekChunkToDownload = function (frame){
     while (aFrameImages[frame] != null) frame++;
-    if (frame < oVideoData.frames) this.loadChunk(frame, 1, false, true);
-  }
+    if (frame < oVideoData.frames && aFrameImages[frame] == null) this.loadChunk(frame, 3, false, true);
+    else oVP.UpdateLoadbar(1);
+  } 
   /** This function loads a set of frames to the player. 
     * @param {int} frame - the first frame to load
     * @param {int} duration - the duration of the chunk to be loaded
     * @param {bool} first_time - boolean indicating whether the function is called for the first time
   */
   this.loadChunk = function(frame, duration, first_time, isbackground){
-    ovP = this;
+    oVP = this;
     $.ajax({
            async: true,
            type: "POST", 
            url: "./annotationTools/php/encode.php",
-           data: {width: "640", height: "480", rate:"15", input: fname_folder,frame: frame.toString(), duration: duration},
+           data: {width: "640", height: "480", rate:frame_rate.toString(), input: fname_folder,frame: frame.toString(), duration: duration},
            success: function(response){
-            last_frame = Math.min(frame + duration*15, ovP.getnumFrames());
-            ovP.loadFile(frame, first_time, isbackground, response)
-            if (ovP.getnumFrames() != 0 && ovP.getcurrentFrame() <= last_frame) ovP.UpdateLoadbar(last_frame/ovP.getnumFrames());
+            last_frame = Math.min(Math.floor(frame + duration*frame_rate), oVP.getnumFrames());
+            oVP.loadFile(frame, first_time, isbackground, response);
+            while (aFrameImages[last_frame] != null) last_frame++;
+            if (oVP.getnumFrames() != 0 && oVP.getcurrentFrame() <= last_frame) oVP.UpdateLoadbar(last_frame/oVP.getnumFrames());
 
           }
     });

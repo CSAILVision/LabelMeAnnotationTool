@@ -122,6 +122,7 @@ function handler() {
     
     // Handles when the user clicks on the link for an annotation.
     this.AnnotationLinkClick = function (idx) {
+      if (adjust_event) return;
       if (video_mode && LMgetObjectField(LM_xml, idx, 'x', oVP.getcurrentFrame()).length == 0){
         // get frame that is closest
         var frames = LMgetObjectField(LM_xml, idx, 't');
@@ -153,12 +154,12 @@ function handler() {
     
     // Handles when the user moves the mouse over an annotation link.
     this.AnnotationLinkMouseOver = function (a) {
-        if (video_mode && LMgetObjectField(LM_xml, a, 'x', oVP.getcurrentFrame()).length == 0){ 
+        if (active_canvas != SELECTED_CANVAS && video_mode && LMgetObjectField(LM_xml, a, 'x', oVP.getcurrentFrame()).length == 0){ 
           ChangeLinkColorFG(a);
           selected_poly = a;
-          oVP.HighLightFrames(LMgetObjectField(LM_xml, a, 't'), LMgetObjectField(LM_xml, a, 'userlabeled'));
         } 
         else if(active_canvas!=SELECTED_CANVAS) selectObject(a);
+        oVP.HighLightFrames(LMgetObjectField(LM_xml, a, 't'), LMgetObjectField(LM_xml, a, 'userlabeled'));
     };
     
     // Handles when the user moves the mouse away from an annotation link.
@@ -198,6 +199,11 @@ function handler() {
       
       if((object_choices!='...') && (object_choices.length==1)) {
 	nn = RemoveSpecialChars(object_choices[0]);
+  var re = /[a-zA-Z0-9]/;
+  if(!re.test(nn)) {
+    alert('Please enter an object name');
+    return;
+  }
 	active_canvas = REST_CANVAS;
 	
 	// Move draw canvas to the back:
@@ -216,11 +222,7 @@ function handler() {
 	nn = RemoveSpecialChars(document.getElementById('objEnter').value);
 	anno = this.QueryToRest();
       }
-      var re = /[a-zA-Z0-9]/;
-      if(!re.test(nn)) {
-	alert('Please enter an object name');
-	return;
-      }
+      
       
       // Update old and new object names for logfile:
       new_name = nn;

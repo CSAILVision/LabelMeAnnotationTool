@@ -76,7 +76,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
     this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
     select_anno.polygon_id = this.polygon_id;
     FillPolygon(this.polygon_id);
-    
+    oVP.ShowTemporalBar();
     // Set mousedown action to stop adjust event when user clicks on canvas:
 
     $('#'+this.dom_attach).unbind();
@@ -131,7 +131,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
     this.RemoveCenterOfMass();
     this.RemoveScalingPoints();
     console.log('LabelMe: Stopped adjust event.');
-    
+    oVP.HideTemporalBar();
     // Call exit function:
     this.ExitFunction(this.x,this.y,this.editedControlPoints);
   };

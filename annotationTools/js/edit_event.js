@@ -12,7 +12,10 @@ var adjust_event = null;
 
 */
 function StartEditEvent(anno_id,event) {
+
   console.log('LabelMe: Starting edit event...');
+  
+  if (video_mode) oVP.Pause();
   if(event) event.stopPropagation();
   if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, anno_id, 'username')))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {
     PermissionError();
@@ -51,7 +54,7 @@ function StartEditEvent(anno_id,event) {
   var pt_x, pt_y;
   if (video_mode){
     pt_x = LMgetObjectField(LM_xml,select_anno.anno_id,'x', oVP.getcurrentFrame());
-    pt_y = LMgetObjectField(LM_xml,select_anno.anno_id,'y', ovP.getcurrentFrame());
+    pt_y = LMgetObjectField(LM_xml,select_anno.anno_id,'y', oVP.getcurrentFrame());
   }
   else {
     pt_x = select_anno.GetPtsX();
@@ -127,9 +130,8 @@ function StopEditEvent() {
 
   // Render the object list:
   if(view_ObjList) {
-    if (!video_mode) RenderObjectList();
+    RenderObjectList();
   }
-
   console.log('LabelMe: Stopped edit event.');
 }
 
@@ -175,7 +177,7 @@ function AdjustPolygonButton() {
 
   // Create adjust event:
   var frame = null;
-  if (video_mode) frame = ovP.getcurrentFrame();
+  if (video_mode) frame = oVP.getcurrentFrame();
   adjust_event = new AdjustEvent('select_canvas',LMgetObjectField(LM_xml,anno.anno_id,'x', frame),LMgetObjectField(LM_xml,anno.anno_id,'y', frame),
     LMgetObjectField(LM_xml,anno.anno_id,'name'),function(x,y,_editedControlPoints) {
       // Submit username:
@@ -190,7 +192,10 @@ function AdjustPolygonButton() {
         LMsetObjectField(LM_xml, anno.anno_id, 'y', y);
       }
       else {
-        main_media.UpdateObjectPosition(anno, x, y);
+        var slidervalues = $('#oTempBar').slider("option", "values");
+        if (oVP.getcurrentFrame() >= slidervalues[0] && oVP.getcurrentFrame() <= slidervalues[1]){   
+          main_media.UpdateObjectPosition(anno, x, y);
+        }
       }
       
 
@@ -198,8 +203,10 @@ function AdjustPolygonButton() {
       editedControlPoints = _editedControlPoints;
       
       // Submit annotation:
+
       if (video_mode) main_media.SubmitEditObject();
       else main_handler.SubmitEditLabel();
+      adjust_event = null;
     },main_media.GetImRatio(), (LMgetObjectField(LM_xml, anno.anno_id, 'type') == 'bounding_box'));
 
   // Start adjust event:

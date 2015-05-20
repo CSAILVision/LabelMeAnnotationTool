@@ -1,5 +1,4 @@
 /** @file File containing the video class 
-
 * Video is a mirror class of image.js. Most of the functions are
 * similar and could be joined
 */
@@ -17,6 +16,7 @@ function video(id) {
     this.page_in_use = 0; // Describes if we already see a video.
     this.id = id;
     this.dir_name = null;
+    this.collection = "LabelMe";
     this.im = document.getElementById("im");
     this.dir_name;
     this.video_name = null;
@@ -48,11 +48,12 @@ function video(id) {
         else this.im.style.display = '';
         wait_for_input = 0;
         edit_popup_open = 0;
-        this.SetImageDimensions();
-        console.time('Load LabelMe XML file');
-        $.getScript("annotationTools/js/player.js", function(){
+         $.getScript("annotationTools/js/player.js", function(){
             oVP = new JSVideo();
             console.time('Load video');
+            main_media.SetImageDimensions();
+            onload_helper();
+            console.time('Load LabelMe XML file');
             oVP.loadChunk(1, 1, true, false);
 
         });
@@ -157,12 +158,12 @@ function video(id) {
         // Scale and scroll the image so that the center stays in the center of the visible area
         this.ScaleFrame(amt);
         
-	// Remove polygon from draw canvas:
-	var anno = null;
-	if(draw_anno) {
-	  draw_anno.DeletePolygon();
-	  anno = draw_anno;
-	  draw_anno = null;
+    // Remove polygon from draw canvas:
+    var anno = null;
+    if(draw_anno) {
+      draw_anno.DeletePolygon();
+      anno = draw_anno;
+      draw_anno = null;
         }
 
         // set the size of the image (this.im is the image object)
@@ -175,24 +176,24 @@ function video(id) {
         $("#query_canvas").width(this.width_curr).height(this.height_curr);
         
         // Redraw polygons.
-	main_canvas.RenderAnnotations();
+    main_canvas.RenderAnnotations();
 
-	if(anno) {
-	  // Draw polyline:
-	  draw_anno = anno;
-	  draw_anno.SetDivAttach('draw_canvas');
-	  draw_anno.DrawPolyLine();
-	}
+    if(anno) {
+      // Draw polyline:
+      draw_anno = anno;
+      draw_anno.SetDivAttach('draw_canvas');
+      draw_anno.DrawPolyLine();
+    }
 
-	/*************************************************************/
-	/*************************************************************/
-	// Scribble: 
-	if (drawing_mode == 1){
-	  scribble_canvas.redraw();
-	  scribble_canvas.drawMask();
+    /*************************************************************/
+    /*************************************************************/
+    // Scribble: 
+    if (drawing_mode == 1){
+      scribble_canvas.redraw();
+      scribble_canvas.drawMask();
         }
-	/*************************************************************/
-	/*************************************************************/
+    /*************************************************************/
+    /*************************************************************/
     };
     
     
@@ -355,16 +356,19 @@ function video(id) {
 
     /** Gets image path */
     this.GetImagePath = function () {
-        if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'VLMVideos/' + this.dir_name + '/' + this.video_name;
+        if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'VLMFrames/' + this.dir_name + '/' + this.video_name;
     };
+
+    /** Gets video path */
+    this.GetVideoPath = function (){
+      if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return '/LabelMeVideo/VLMVideos/' + this.dir_name + '/' + this.video_name+'.flv';
+    };  
 
     /** Gets full image name */
     this.GetFullName = function () {
         if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return this.dir_name + '/' + this.video_name;
     };
-    this.GetAnnotationPath = function () {
-        if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'VLMAnnotations/' + this.dir_name + '/' + this.video_name + '.xml';
-    };
+
     /** Gets template path */
     this.GetTemplatePath = function () {
         if(!this.dir_name) return 'annotationCache/XMLTemplates/labelme.xml';
@@ -384,6 +388,60 @@ function video(id) {
         var idx = str.indexOf('=');
         return str.substring(idx+1,str.length);
     };
+    /** Gets annotation path */
+    this.GetAnnotationPath = function () {
+        if((this.mode=='i') || (this.mode=='c') || (this.mode=='f') || (this.mode=='im') || (this.mode=='mt')) return 'VLMAnnotations/' + this.dir_name + '/' + this.video_name + '.xml';
+    };
+
+    this.SetURL = function (url) {
+        this.FetchVideo();
+        var idx = url.indexOf('?');
+        if(idx != -1) {
+            url = url.substring(0,idx);
+        }
+        
+        // Include username in URL:
+        extra_field = '&video=true';
+        if (bbox_mode) extra_field += '&bbox=true';
+        if(username != 'anonymous') extra_field += '&username=' + username;
+        
+        if(this.mode=='i') window.location = url + '?collection=' + this.collection + '&mode=' + this.mode + '&folder=' + this.dir_name + '&videoname=' + this.video_name + extra_field;
+        else if(this.mode=='im') window.location = url + '?collection=' + this.collection + '&mode=' + this.mode + '&folder=' + this.dir_name + '&videoname=' + this.video_name + extra_field;
+        else if(this.mode=='mt') window.location = url + '?collection=' + this.collection + '&mode=' + this.mode + '&folder=' + this.dir_name + '&videoname=' + this.video_name + extra_field;
+        else if(this.mode=='c') window.location = url + '?mode=' + this.mode + '&username=' + username + '&collection=' + this.collection + '&folder=' + this.dir_name + '&videoname=' + this.video_name + extra_field;
+        else if(this.mode=='f') window.location = url + '?mode=' + this.mode + '&folder=' + this.dir_name + '&videoname=' + this.video_name + extra_field;
+        
+        return false;
+    };
+
+    /** Fetch next image. */
+    this.FetchVideo = function () {
+        var url = 'annotationTools/perl/fetch_video.cgi?mode=' + this.mode + '&username=' + username + '&collection=' + this.collection.toLowerCase() + '&folder=' + this.dir_name + '&videoname=' + this.video_name;
+        var im_req;
+        console.log(url);
+        // branch for native XMLHttpRequest object
+        if (window.XMLHttpRequest) {
+            im_req = new XMLHttpRequest();
+            im_req.open("GET", url, false);
+            im_req.send('');
+        }
+        else if (window.ActiveXObject) {
+            im_req = new ActiveXObject("Microsoft.XMLHTTP");
+            if (im_req) {
+                im_req.open("GET", url, false);
+                im_req.send('');
+            }
+        }
+        if(im_req.status==200) {
+            this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
+            this.video_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+        }
+        else {
+            alert('Fatal: there are problems with fetch_video.cgi');
+        }
+    };
+
+
     /** Computes a set of points representing a linearly interpolated polygon.
      * @param {array} xinit - xcoordinates of the polygon at tinit
      * @param {array} yinit - ycoordinates of the polygon at tinit
@@ -398,8 +456,8 @@ function video(id) {
         Yresp = Array(xinit.length);
         for (var i = 0; i <Xresp.length; i++){
             alfa = (tend - tcurrent)/(tend-tinit);
-            Xresp[i] = alfa*xinit[i] + (1-alfa)*xend[i];
-            Yresp[i] = alfa*yinit[i] + (1-alfa)*yend[i];
+            Xresp[i] = parseInt(alfa*xinit[i] + (1-alfa)*xend[i]);
+            Yresp[i] = parseInt(alfa*yinit[i] + (1-alfa)*yend[i]);
         }
         return [Xresp, Yresp];
     }
@@ -500,7 +558,7 @@ function video(id) {
         else new_attributes = RemoveSpecialChars(adjust_attributes);
       }
       
-      StopEditEvent();
+      
       
       // Insert data to write to logfile:
       if(editedControlPoints) InsertServerLogData('cpts_modified');
@@ -518,7 +576,8 @@ function video(id) {
       LMsetObjectField(LM_xml, obj_ndx, "attributes", new_attributes);
       LMsetObjectField(LM_xml, obj_ndx, "occluded", new_occluded);
       WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
- 
+    
+      StopEditEvent();
       oVP.DisplayFrame(oVP.getcurrentFrame());    
       
     }
@@ -547,17 +606,22 @@ function video(id) {
               anno = draw_anno;
               draw_anno = null;
             }
-            
+            var re = /[a-zA-Z0-9]/;
+            if(!re.test(nn)) {
+                alert('Please enter an object name');
+                return;
+            }
         }
         else {
             nn = RemoveSpecialChars(document.getElementById('objEnter').value);
+            var re = /[a-zA-Z0-9]/;
+            if(!re.test(nn)) {
+                alert('Please enter an object name');
+                return;
+            }
             anno = main_handler.QueryToRest();
         }
-        var re = /[a-zA-Z0-9]/;
-        if(!re.test(nn)) {
-            alert('Please enter an object name');
-            return;
-        }
+        
         
     
         // Update old and new object names for logfile:
@@ -642,10 +706,13 @@ function video(id) {
           // Set global variable whether the control points have been edited:
           editedControlPoints = _editedControlPoints;
           // Submit annotation:
-          main_media.UpdateObjectPosition(anno, x, y);
+          var slidervalues = $('#oTempBar').slider("option", "values");
+          if (oVP.getcurrentFrame() >= slidervalues[0] && oVP.getcurrentFrame() <= slidervalues[1]){
+            main_media.UpdateObjectPosition(anno, x, y);
+          }
           StopEditEvent();
           WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
-          
+          this.adjust_event = null;
         },main_media.GetImRatio(), bounding_box);
       // Start adjust event:
       adjust_event.StartEvent();
@@ -654,4 +721,3 @@ function video(id) {
 
     
 }
-
