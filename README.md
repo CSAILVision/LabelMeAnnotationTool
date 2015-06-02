@@ -90,6 +90,13 @@ server:
   common source of errors, so make sure this step is working.
 * Allow perl/CGI scripts to run.  This is the second most common
   source of errors.
+* Make sure the php5 and libapache2-mod-php5 libraries are
+  installed. You can install them on Linux by running the following:
+
+   ``` sh
+   $ sudo apt-get install php5 libapache2-mod-php5
+   ```
+
 * (Optional) See special configuration instructions if you are
   installing on [Ubuntu](UBUNTU.md) or [Windows](WINDOWS.md).
 
