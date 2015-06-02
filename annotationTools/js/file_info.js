@@ -158,6 +158,9 @@ function file_info() {
 		             video_mode = true;
                      bbox_mode = true;
 		        }
+                if((par_field=='threed')&&(par_value=='true')) {
+                     threed_mode = true;
+                }
                 if((par_field=='bbox')&&(par_value=='true')) {
                   bbox_mode = true;
                 }

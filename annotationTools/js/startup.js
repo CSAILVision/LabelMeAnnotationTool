@@ -36,17 +36,20 @@ function StartupLabelMe() {
         main_media.GetNewVideo(main_media_onload_helper);
       });
     }
+    else if (threed_mode){
+      // 3D Code Starts here
+    }
     else {
       // This function gets run after image is loaded:
       function main_media_onload_helper() {
-  // Set the image dimensions:
-  main_media.SetImageDimensions();
-      
-  // Read the XML annotation file:
-  var anno_file = main_media.GetFileInfo().GetFullName();
-  anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
-  ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
-      };
+      // Set the image dimensions:
+      main_media.SetImageDimensions();
+          
+      // Read the XML annotation file:
+      var anno_file = main_media.GetFileInfo().GetFullName();
+      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+      ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+          };
 
       // Get the image:
       main_media.GetNewImage(main_media_onload_helper);
