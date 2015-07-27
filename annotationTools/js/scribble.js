@@ -1,7 +1,13 @@
 var OBJECT_DRAWING = 1;
 var BG_DRAWING = 2;
 var RUBBER_DRAWING = 3;
-var resp;
+var saveCanvas;
+var saveScribbleCanvas;
+var localop = false;
+//Module.TOTAL_MEMORY = 7108864;
+grabCut = Module.cwrap(
+    'grabCut', 'string', ['number', 'number', 'number', 'number', 'number']
+);
 
 // Indicates whether we are in segmentation or polygon mode
 drawing_mode = 0;
@@ -19,6 +25,7 @@ function scribble_canvas(tag) {
   this.minclicX = -1;
   this.maxclicY = -1;
   this.minclicY = -1;
+
   this.clickX = new Array();
   this.clickY = new Array();
   this.clickDrag = new Array();
@@ -41,14 +48,19 @@ function scribble_canvas(tag) {
   // These two functions are called to show and hide the spinner wheel 
   // when the segmentation is in progress
   this.showspinner = function (){
-    document.getElementById('segmentbtn').disabled = true;
+    scribble_canvas.scribblecanvas.setAttribute('style','cursor: progress');
+    //document.getElementById('segmentbtn').disabled = true;
     document.getElementById('donebtn').disabled = true;
     $('#loadspinner').show();
   }
 
   this.hidespinner = function (){
+    var val = scribble_canvas.currently_drawing;
+    if (val == OBJECT_DRAWING) scribble_canvas.scribblecanvas.setAttribute('style','cursor:url(Icons/red_pointer.cur), default');
+    else if (val == BG_DRAWING) scribble_canvas.scribblecanvas.setAttribute('style','cursor:url(Icons/blue_pointer.cur), default');
+    else scribble_canvas.scribblecanvas.setAttribute('style','cursor:url(Icons/rubber_pointer.cur), default');
     document.getElementById('donebtn').disabled = false;
-    document.getElementById('segmentbtn').disabled = false;
+    //document.getElementById('segmentbtn').disabled = false;
     $('#loadspinner').hide();
   }
 
@@ -58,8 +70,9 @@ function scribble_canvas(tag) {
     this.clickY = new Array();
     this.clickDrag = new Array();
     this.clickColor = new Array();
-    paint = false;
-    ClearMask('aux_mask');
+    saveCanvas = null;
+    saveScribbleCanvas = null;
+    ClearMask('mask_canvas');
     this.redraw();
   };
 
@@ -70,7 +83,6 @@ function scribble_canvas(tag) {
     this.clickY = new Array();
     this.clickDrag = new Array();
     this.clickColor = new Array();
-    paint = false;
     resp = "";
     this.prepareHTMLtoDraw();    
   };
@@ -121,97 +133,39 @@ function scribble_canvas(tag) {
         context.globalCompositeOperation =  "destination-out";
         context.strokeStyle = "rgba(0,0,0,1)";
       }
-      context.closePath();
-      context.stroke();
-    }
-  };
-
-  // similar to redraw() but to set the scribbles to the same size than 
-  // the original image (not according to the zoom) this function is only 
-  // called when creating the segmentation to create save an image with 
-  // the scribbles 
-  this.redraw2 = function(ratio){
-    this.scribblecanvas.setAttribute('width', main_media.width_orig);
-    this.scribblecanvas.setAttribute('height',main_media.height_orig);
-    var context = this.scribblecanvas.getContext("2d");
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
-    context.lineJoin = "miter"; 
-    context.lineCap = "round";      
-    if (this.annotationid > -1){
-      scribble_canvas.scribblecanvas.getContext("2d").globalCompositeOperation = "source-over";
-      scribble_canvas.scribblecanvas.getContext("2d").drawImage(scribble_canvas.scribble_image,0,0,main_media.width_orig, main_media.height_orig);      
-    }
-    var width = 9;//(main_media.width_orig * main_media.height_orig)/327680.; // proportional to the size of the imag
-    for(var i=0; i < this.clickX.length; i++) { 
-      context.beginPath();
-      if(this.clickDrag[i] && i){
-        context.moveTo(this.clickX[i-1]*ratio, this.clickY[i-1]*ratio);
-      }
-      else{
-    context.moveTo(this.clickX[i]*ratio-1, this.clickY[i]*ratio);
-      }
-      context.lineTo(this.clickX[i]*ratio, this.clickY[i]*ratio);
-      if (this.clickColor[i] == OBJECT_DRAWING){
-        context.lineWidth = width;
-        context.globalCompositeOperation =  "source-over";
-        context.strokeStyle = "#ff0000";
-      } 
-      else if (this.clickColor[i] == BG_DRAWING){
-        context.lineWidth = width;
-        context.globalCompositeOperation =  "source-over";
-        context.strokeStyle = "#0000ff";
-      } 
-      else if (this.clickColor[i] == RUBBER_DRAWING){ 
-        context.lineWidth = width*3;
-        context.globalCompositeOperation =  "destination-out";
-        context.strokeStyle = "rgba(0,0,0,1)";
-      }
-      context.closePath();
+      //context.closePath();
       context.stroke();
     }
   };
  
   // Saves the resized scribbles into the server to create the segmentation
-  this.saveImage = function(url, imname, dir, async, segment_ratio, fw, fh, annotation_ended) {
-    var canvasData = url;
-    
+  this.save = function (dataURL, imname, dir, callback){
     $.ajax({
-      async: async,
+      async: true,
       type: "POST",
       url: "annotationTools/php/saveimage.php",
       data: { 
-    image: canvasData,
+        image: dataURL,
         name: imname,
-    uploadDir: dir,
+        uploadDir: dir,
       }
     }).done(function(o) {
-      var Nobj = $(LM_xml).children("annotation").children("object").length;
-      if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
-        
-      // Save the scribble for segmenting (this is done synchronously 
-      // because we need to wait for the image to be saved in order 
-      // to segment).
-      var imagname = main_media.GetFileInfo().GetImName();
-      imagname = imagname.substr(0, imagname.length-4);
-      
-      var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
-      console.log(collectionName);
-      scribble_canvas.createDir("annotationCache/TmpAnnotations/"+collectionName);
-      scribble_canvas.resizeandsaveImage(collectionName+"/"+imagname+'_scribble_'+Nobj+'.png', 'scribble.png', collectionName+"/", segment_ratio,fw,fh,-1, 0, annotation_ended);
+      callback;
     });
   };
+  
 
   // General function to synchronously create a directory from a given url
-  this.createDir = function(url){
+  this.createDir = function(url, callback){
     $.ajax({
-      async: false,
+      async: true,
       type: "POST",
       url: "annotationTools/php/createdir.php",
       data: { 
     urlData: url
       }
     }).done(function(o) {
-      console.log(url);
+      callback;
     });
   };
 
@@ -240,7 +194,6 @@ function scribble_canvas(tag) {
       anno = draw_anno;
       draw_anno = null;
     }
-
     // Move query canvas to front:
     document.getElementById('query_canvas').style.zIndex = 0;
     document.getElementById('query_canvas_div').style.zIndex = 0;
@@ -250,6 +203,7 @@ function scribble_canvas(tag) {
     
     // Get location where popup bubble will appear:
     var im_ratio = main_media.GetImRatio();
+    console.log(scribble_canvas.object_corners[0]);
     var pt = main_media.SlideWindow((scribble_canvas.object_corners[0]*im_ratio + scribble_canvas.object_corners[2]*im_ratio)/2,(scribble_canvas.object_corners[1]*im_ratio + scribble_canvas.object_corners[2]*im_ratio)/2);
     
     // Make query popup appear.
@@ -315,7 +269,7 @@ function scribble_canvas(tag) {
     submission_edited = 0;
     main_handler.QueryToRest();
     this.cleanscribbles();
-    ClearMask('aux_mask');
+    ClearMask('mask_canvas');
   }
   
   this.HTMLobjectBox = function(obj_name) {
@@ -373,7 +327,7 @@ function scribble_canvas(tag) {
       scribble_canvas.image_corners.push(Math.max(0, this.minclicY - (this.maxclicY - this.minclicY)*0.25));
       scribble_canvas.image_corners.push(Math.min(main_media.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25));
       scribble_canvas.image_corners.push(Math.min(main_media.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25));
-      this.image_name = resp;
+      this.image_name = imagname+'_mask_'+Nobj+'.png';
       this.scribble_name = imagname+'_scribble_'+Nobj+'.png';
       
       // Draw polygon on draw canvas:
@@ -395,35 +349,27 @@ function scribble_canvas(tag) {
       var anno = new annotation(this.annotationid); 
       anno.SetType(1);
       anno.scribble = new scribble(this.annotationid);
-      console.log(main_canvas.GetAnnoIndex(this.annotationid));
       var idx = scribble_canvas.annotationid;
-      
+      scribble_canvas.cache_random_number = Math.random();
+      anno.scribble.SetRandomCache(scribble_canvas.cache_random_number);
       if (scribble_canvas.clickX.length > 0){
-    var lx = Math.max(0, scribble_canvas.minclicX-(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
-    var ly = Math.max(0, scribble_canvas.minclicY -  (scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
-    var rx = Math.min(main_media.width_orig, scribble_canvas.maxclicX+(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
-    var ry = Math.min(main_media.height_orig, scribble_canvas.maxclicY+(scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
-    scribble_canvas.image_corners = new Array();
-    scribble_canvas.image_corners.push(Math.min(lx, scribble_canvas.editborderlx));
-    scribble_canvas.image_corners.push(Math.min(ly, scribble_canvas.editborderly));
-    scribble_canvas.image_corners.push(Math.max(rx, scribble_canvas.editborderrx));
-    scribble_canvas.image_corners.push(Math.max(ry, scribble_canvas.editborderry));
-    console.log(anno.scribble);
-    anno.scribble.SetRandomCache(scribble_canvas.cache_random_number);
-
-    main_canvas.AttachAnnotation(anno);
-    
-    scribble_canvas.UpdateMaskXML(idx);
+        var lx = Math.max(0, scribble_canvas.minclicX-(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
+        var ly = Math.max(0, scribble_canvas.minclicY -  (scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
+        var rx = Math.min(main_media.width_orig, scribble_canvas.maxclicX+(scribble_canvas.maxclicX - scribble_canvas.minclicX)*0.25);
+        var ry = Math.min(main_media.height_orig, scribble_canvas.maxclicY+(scribble_canvas.maxclicY - scribble_canvas.minclicY)*0.25);
+        scribble_canvas.image_corners = new Array();
+        scribble_canvas.image_corners.push(Math.min(lx, scribble_canvas.editborderlx));
+        scribble_canvas.image_corners.push(Math.min(ly, scribble_canvas.editborderly));
+        scribble_canvas.image_corners.push(Math.max(rx, scribble_canvas.editborderrx));
+        scribble_canvas.image_corners.push(Math.max(ry, scribble_canvas.editborderry));
+        scribble_canvas.UpdateMaskXML(idx);
       }
       main_canvas.AttachAnnotation(anno);
       
-      scribble_canvas.annotationid = -1;
-      scribble_canvas.cleanscribbles();
       active_canvas = REST_CANVAS;
       
       main_handler.AnnotationLinkClick(idx);
     }
-    resp = "";
   }
 
   // Updates the XML with the object 'idx' according to the edited 
@@ -443,109 +389,198 @@ function scribble_canvas(tag) {
     WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
   }
 
-  // Creates the segmentation in different steps according to the 
-  // callback value. The function is done this way to allow asynchronous 
-  // behavior.
-  // 1. the function saves the scribbles that the user has introduced to 
-  // segment an image.
-  // 2. it saves a portion of the original image, according to the region 
-  // where the scribbles where drawn
-  // 3. Creates the Masks directory and through an http requests calls a 
-  // cgi that will perform the segmentation through GraphCuts. It saves 
-  // the resulting mask in the new folder
-  // 4. The final mask is drawn over the canvas, and the spinner that 
-  // indicated the segmentation process is turned off.
 
-  this.resizeandsaveImage = function(urlSource, namedest, urlDest, scale, fwidth, fheight, dir, callback, annotation_ended  ){
-    var poslx = Math.max(0, this.minclicX-(this.maxclicX - this.minclicX)*0.25);
-    var posly = Math.max(0, this.minclicY - (this.maxclicY - this.minclicY)*0.25);
-    if (this.annotationid > -1){
-      poslx = Math.min(poslx, this.editborderlx);
-      posly = Math.min(posly, this.editborderly); 
-    }
-
-    $.ajax({
-      async: true,
-      cache: false,
-      type: "POST",
-      url: "annotationTools/php/resizeandsaveimage.php",
-      data: { 
-        urlSource: urlSource,
-        namedest: namedest,
-        urlDest: urlDest,
-        scale: scale,
-        posx: poslx,
-        posy: posly,
-        fwidth: fwidth,
-        fheight: fheight,
-        dir: dir,
-        bwidth: main_media.width_orig,
-        bheight: main_media.height_orig,
-      }
-    }).done(function(data_response) {
-      var imagetoSegmentURL = main_media.GetFileInfo().GetFullName();
-      imagetoSegmentURL = imagetoSegmentURL.replace("///","/");
-      var Nobj = $(LM_xml).children("annotation").children("object").length;
-      if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
-      if (callback == 0){
-    var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
-    scribble_canvas.resizeandsaveImage(imagetoSegmentURL, 'image.jpg', collectionName+"/", scale,fwidth,fheight,0,1, annotation_ended);
-      }
-      else if (callback == 1){
-    console.log(data_response);
-    var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
-    scribble_canvas.createDir("Masks/"+collectionName+"/");
-    
-    // Execute the cgi to perform the segmentation
-    var url = 'annotationTools/scribble/segment.cgi';
-    
-    var req_submit;
-    if (window.XMLHttpRequest) {
-      path = data_response;
-      tmpPath = path+main_media.GetFileInfo().GetDirName().replace("///","/");
-
-      req_submit = new XMLHttpRequest();
-      req_submit.open("POST", url, false);
-          
-      req_submit.send(imagetoSegmentURL+"&"+Nobj+"&"+scribble_canvas.colorseg+"&"+tmpPath);
-      var cadena = req_submit.responseText.split('&');
-      resp = cadena[0];
-      scribble_canvas.object_corners = new Array();
-      scribble_canvas.object_corners.push(poslx + (cadena[1]/scale)); 
-      scribble_canvas.object_corners.push(posly + (cadena[2]/scale)); 
-      scribble_canvas.object_corners.push(poslx + (cadena[3]/scale)); 
-      scribble_canvas.object_corners.push(posly + (cadena[4]/scale));
-
-          
-      // Save the segmentation result in the Masks folder:
-      
-      scribble_canvas.resizeandsaveImage(collectionName+"/",resp,collectionName+"/",1./scale,main_media.width_orig,main_media.height_orig,1,2, annotation_ended);
-    }
-      }
-      else if (callback == 2){
-        scribble_canvas.drawMask(1);
-        scribble_canvas.hidespinner();
-        scribble_canvas.segmentation_in_progress = 0;
-        scribble_canvas.flag_changed = 0;
-        if (annotation_ended){
-          console.log("VAA"+scribble_canvas.object_corners);
-          scribble_canvas.preparetoSubmit();
-        }
-      }
-    });
+  this.cropandResize = function(cornerx, cornery, scale, finalwidth, finalheight, data){
+    var resize_canvas = document.createElement('canvas');  
+    resize_canvas.width = finalwidth;
+    resize_canvas.height = finalheight;
+    var swidth = finalwidth/scale;
+    var sheight = finalheight/scale;
+    resize_canvas.getContext('2d').drawImage(data, Math.floor(cornerx), Math.floor(cornery), Math.floor(swidth), Math.floor(sheight), 0, 0, Math.floor(finalwidth), Math.floor(finalheight));
+    return resize_canvas.getContext('2d').getImageData(0,0,Math.floor(finalwidth),Math.floor(finalheight));
   }
 
-  // Draw the segmentation mask into the canvas, clearing previous masks from the canvas if there were any
-  this.drawMask = function(modified){
-    var loc = window.location.href;
-    var   dir = loc.substring(0, loc.lastIndexOf('/tool.html'));
-    ClearMask('aux_mask')
-    if (resp){
-      this.cache_random_number = Math.random();
-      var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
-      
-      DrawSegmentation('myCanvas_bg','Masks/'+collectionName+"/"+resp, main_media.width_curr, main_media.height_curr, this.cache_random_number, 'aux_mask');
+  this.compute = function (imageData, scribbleData) {
+    var size = imageData.data.length * imageData.data.BYTES_PER_ELEMENT;
+    var imagePtr = Module._malloc(size);
+    var scribblePtr = Module._malloc(size);
+    // Copy data to Emscripten heap (directly accessed from Module.HEAPU8)
+
+    var imageHeap = new Uint8Array(Module.HEAPU8.buffer, imagePtr, size);
+    imageHeap.set(new Uint8Array(imageData.data.buffer));
+
+    var scribbleHeap = new Uint8Array(Module.HEAPU8.buffer, scribblePtr, size);
+    scribbleHeap.set(new Uint8Array(scribbleData.data.buffer));
+
+    // Call function and get result
+    var params = grabCut(imageHeap.byteOffset, scribbleHeap.byteOffset, imageData.height, imageData.width, scribble_canvas.colorseg);
+
+    var resultData = new Uint8ClampedArray(imageHeap.buffer, imageHeap.byteOffset, imageData.data.length);
+    
+    // Create canvas to store result
+    var result = document.createElement('canvas');
+    result.width = imageData.width;
+    result.height = imageData.height;
+    var resultImageData = result.getContext('2d').createImageData(imageData.width, imageData.height);
+    resultImageData.data.set(resultData);
+    // Free memory
+    Module._free(imageHeap.byteOffset);
+    Module._free(scribbleHeap.byteOffset);
+   
+    result.getContext('2d').putImageData(resultImageData, 0, 0);
+
+    return [result, params];
+
+  }
+  this.resizeandsaveImage = function(scale, fwidth, fheight, annotation_ended, poslx, posly){
+    var Nobj = $(LM_xml).children("annotation").children("object").length;
+    if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
+    var imagname = main_media.GetFileInfo().GetImName();
+    imagname = imagname.substr(0, imagname.length-4);
+    var imratio = main_media.GetImRatio();
+    var scribbleData = scribble_canvas.cropandResize(poslx*imratio,posly*imratio,scale/imratio,fwidth*scale,fheight*scale,scribble_canvas.scribblecanvas);
+    var origIm = new Image();
+    origIm.src = main_media.GetFileInfo().GetImagePath();
+    origIm.poslx = poslx;
+    origIm.posly = posly;
+    origIm.onload = function(){
+      var poslx = Math.round(this.poslx);
+      var posly = Math.round(this.posly);
+      var imageData = scribble_canvas.cropandResize(poslx,posly,scale,fwidth*scale,fheight*scale,origIm);
+      var resultarray = scribble_canvas.compute(imageData, scribbleData);
+      var result = resultarray[0];
+      scribble_canvas.redraw();
+      // Contains the segmentation at original scale
+      if (!saveCanvas){
+        saveCanvas = document.createElement('canvas');
+        saveCanvas.width = main_media.width_orig;
+        saveCanvas.height = main_media.height_orig;
+      }
+      var newMask = result.getContext("2d").getImageData(0,0,result.width, result.height);
+      var resizedsavedMask = scribble_canvas.cropandResize(poslx,posly,scale,fwidth*scale,fheight*scale, saveCanvas);
+      console.log(newMask.width, newMask.height, resizedsavedMask.width, resizedsavedMask.height);
+      var opArray = scribble_canvas.maskOp(newMask, resizedsavedMask, poslx, posly,scale);
+      result.getContext('2d').putImageData(opArray[0], 0, 0);
+
+      scribble_canvas.object_corners = new Array();
+      scribble_canvas.object_corners.push(Math.round(poslx + opArray[1][0]/scale)); 
+      scribble_canvas.object_corners.push(Math.round(posly + opArray[1][1]/scale)); 
+      scribble_canvas.object_corners.push(Math.round(poslx + opArray[1][2]/scale)); 
+      scribble_canvas.object_corners.push(Math.round(posly + opArray[1][3]/scale));
+
+      saveCanvas.getContext("2d").clearRect(0, 0, saveCanvas.width, saveCanvas.height);
+      var originalsizedMask = scribble_canvas.cropandResize(0,0,1./scale,fwidth,fheight,result);
+      saveCanvas.getContext("2d").putImageData(originalsizedMask, poslx, posly);
+      scribble_canvas.segmentation_in_progress = 0;
+       // Display result in adjusted canvas
+      scribble_canvas.drawMask();
+      scribble_canvas.hidespinner();
+      scribble_canvas.flag_changed = 0;
+      if (annotation_ended){
+        scribble_canvas.saveScribbles();
+        scribble_canvas.saveMask();
+        scribble_canvas.preparetoSubmit();
+      }
+    }
+    
+  }
+  this.obtainMask = function(image, xarr,yarr, width,height){
+    var resp = new Uint8ClampedArray(height*width);
+    var mx = [1,0,-1,0]; var my = [0,1,0,-1];
+    while (xarr.length > 0){
+      x = xarr[xarr.length-1]; y = yarr[yarr.length-1];
+      xarr.pop(); yarr.pop();
+      for (var it = 0 ; it < 4; it++){
+        var id = ((y+my[it])*width + (x+mx[it]));
+        if (x+mx[it] >= 0 && x+mx[it] < width && y+my[it] >= 0 && y+my[it] < height && resp[id] == 0 && image[4*id+3] > 0){
+          resp[id] = 1;
+          xarr.push(x+mx[it]); yarr.push(y+my[it]);
+        }
+      }
+
+    }
+    return resp;
+  }
+  this.diffMasks = function(mask1, mask2){
+    var resp = new Uint8ClampedArray(mask1.data.length);
+    for (var id = 0; id < resp.length/4; id++){
+      if (mask1.data[4*id+3] > 0 && mask2.data[4*id+3] == 0){
+        resp[4*id] = mask1.data[4*id];
+        resp[4*id+1] = mask1.data[4*id+1];
+        resp[4*id+2] = mask1.data[4*id+2];
+        resp[4*id+3] = mask1.data[4*id+3];
+      } 
+    }
+    return resp;
+  }
+  this.maskOp = function(mask1, mask2, shiftx, shifty, scale){
+    // op: 1 is or, 0 is substitute
+    // Check span of the last scribble
+    for (var i = 0; i < mask2.data.length/4; i++){
+      if (mask2.data[4*i+3] > 70) mask2.data[4*i+3] = 153;
+      else {
+        mask2.data[4*i] = 0;
+        mask2.data[4*i+1] = 0;
+        mask2.data[4*i+2] = 0;
+        mask2.data[4*i+3] = 0;
+      }
     } 
+    var corners = [mask1.width, mask1.height, 0,0];
+    shiftx = Math.round(shiftx*scale);
+    shifty = Math.round(shifty*scale);
+    var op = 0;
+    if (scribble_canvas.clickColor[scribble_canvas.clickColor.length-1] == OBJECT_DRAWING) op = 1;
+    var maskchange;
+    var Xarr = new Array(); var Yarr = new Array();
+    var it = scribble_canvas.clickX.length-1;
+    while (it >= 0 && scribble_canvas.clickDrag[it]){
+      Xarr.push(Math.round(scale*scribble_canvas.clickX[it])-shiftx);
+      Yarr.push(Math.round(scale*scribble_canvas.clickY[it])-shifty);
+      it--;
+    }
+    if (op == 1) maskchange = this.diffMasks(mask1, mask2);
+    else maskchange = this.diffMasks(mask2, mask1);
+    var combinemask = this.obtainMask(maskchange, Xarr, Yarr, mask1.width, mask1.height);
+    var res = mask1;
+    for (var i = 0; i < mask1.height; i++){
+      for (var j = 0; j < mask1.width; j++){
+        var id1 = (i*mask1.width + j);
+        if (op == 1){
+
+          res.data[4*id1] = Math.max(mask2.data[4*id1], maskchange[4*id1]*combinemask[id1]);
+          res.data[4*id1+1] = Math.max(mask2.data[4*id1+1], maskchange[4*id1+1]*combinemask[id1]);
+          res.data[4*id1+2] = Math.max(mask2.data[4*id1+2], maskchange[4*id1+2]*combinemask[id1]);
+          res.data[4*id1+3] = Math.max(mask2.data[4*id1+3], maskchange[4*id1+3]*combinemask[id1]);
+        }
+        else {
+          res.data[4*id1] = mask2.data[4*id1] - maskchange[4*id1]*combinemask[id1];
+          res.data[4*id1+1] = mask2.data[4*id1+1] - maskchange[4*id1+1]*combinemask[id1];
+          res.data[4*id1+2] = mask2.data[4*id1+2] - maskchange[4*id1+2]*combinemask[id1];
+          res.data[4*id1+3] = mask2.data[4*id1+3] - maskchange[4*id1+3]*combinemask[id1];
+        }
+        if (res.data[4*id1+3] > 0){
+          corners[0] = Math.min(corners[0],j);
+          corners[1] = Math.min(corners[1],i);
+          corners[2] = Math.max(corners[2],j);
+          corners[3] = Math.max(corners[3],i);
+        }
+      }
+    }
+    return [res,corners];
+
+  }
+  // Draw the segmentation mask into the canvas, clearing previous masks from the canvas if there were any
+  this.drawMask = function(){
+    ClearMask('mask_canvas');
+    if (saveCanvas == null) return;
+    var adjustedMask = scribble_canvas.cropandResize(0,0,main_media.GetImRatio(),saveCanvas.width*main_media.GetImRatio(),saveCanvas.height*main_media.GetImRatio(),saveCanvas);
+    var result = document.createElement('canvas');
+    result.id = 'mask_canvas';
+    result.width = main_media.width_curr;
+    result.height = main_media.height_curr;
+    result.getContext('2d').putImageData(adjustedMask, 0, 0);
+    $('#myCanvas_bg_div').append(result);
+    
   };
 
   // This function is called when the user clicks the segment or done 
@@ -553,6 +588,7 @@ function scribble_canvas(tag) {
   // user has hit done.  If the scribbles have not changed since the 
   // last time the user segmented the image it will avoid calculating 
   // the new mask.
+
   this.segmentImage = function(annotation_ended){
     if (drawing_mode == 0){
       SetDrawingMode(1);
@@ -565,12 +601,11 @@ function scribble_canvas(tag) {
     if (this.flag_changed == 1){
       this.showspinner();
       this.segmentation_in_progress = 1;
-      
-      this.redraw2(1, annotation_ended);
-      
-      this.segmentAfterScribblesDone(annotation_ended);
+      this.segment(annotation_ended);
     }
-    else if (annotation_ended){ // if the last segmentation has not ended
+    else if (annotation_ended){ // if the last segmentation has ended
+      this.saveScribbles();
+      if (saveCanvas) this.saveMask();
       this.preparetoSubmit();
     }
   };
@@ -580,13 +615,13 @@ function scribble_canvas(tag) {
   // compute the segmentation mask. The resizing is done accordingly to 
   // the size of the scribbles to avoid having to segment big images 
   // when the user annotates big objects.
-  this.segmentAfterScribblesDone = function (annotation_ended){
+
+  this.segment = function (annotation_ended){
     var clx = Math.max(0, this.minclicX-(this.maxclicX - this.minclicX)*0.25);
     var crx = Math.min(main_media.width_orig, this.maxclicX+(this.maxclicX - this.minclicX)*0.25);
     var cly = Math.max(0, this.minclicY - (this.maxclicY - this.minclicY)*0.25);
     var cry = Math.min(main_media.height_orig, this.maxclicY+(this.maxclicY - this.minclicY)*0.25);
     if (this.annotationid > -1){
-      // ESTA MAL
       clx = Math.min(clx, this.editborderlx);
       crx = Math.max(crx, this.editborderrx);
       cly = Math.min(cly, this.editborderly);
@@ -594,26 +629,51 @@ function scribble_canvas(tag) {
     }
     var fw =  crx - clx;
     var fh =  cry - cly;
-    
     var scribblesize = Math.sqrt(fw*fh);
-    var segment_ratio = Math.min(500/scribblesize,1);
-    
-    var scribbledataURL = this.scribblecanvas.toDataURL("image/png"); 
-    this.redraw();
-    
-    var Nobj = $(LM_xml).children("annotation").children("object").length;
-    if (this.annotationid > -1) Nobj = this.annotationid;
-
-    // Save the scribble in the Scribbles folder
+    var segment_ratio = Math.min(350/scribblesize,1);
+    if (fw == 0 || fh == 0){
+      this.segmentation_in_progress = 0;
+      this.hidespinner();
+    } 
+    else scribble_canvas.resizeandsaveImage(segment_ratio,fw,fh, annotation_ended, clx, cly);
+  }
+  this.saveScribbles = function(){
     var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
-    this.createDir("Scribbles/"+collectionName+"/");
-    
-    var imagname = main_media.GetFileInfo().GetImName();
-    imagname = imagname.substr(0, imagname.length-4);
-    
-    this.saveImage(scribbledataURL, imagname+'_scribble_'+Nobj+'.png', collectionName+"/", true, segment_ratio, fw, fh, annotation_ended);
+    if (!saveScribbleCanvas) saveScribbleCanvas = document.createElement('canvas');
+    var func = function (url){
+      var imgdata = new Image();
+      imgdata.src = scribble_canvas.scribblecanvas.toDataURL("image/png");
+      imgdata.onload = function(){
+        saveScribbleCanvas.setAttribute('width', main_media.width_orig);
+        saveScribbleCanvas.setAttribute('height',main_media.height_orig);
+        saveScribbleCanvas.getContext("2d").drawImage(imgdata,0,0,main_media.width_orig, main_media.height_orig);       
+        var scribbledataURL = saveScribbleCanvas.toDataURL("image/png"); 
+        var Nobj = $(LM_xml).children("annotation").children("object").length;
+        if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
+        var imagname = main_media.GetFileInfo().GetImName();
+        imagname = imagname.substr(0, imagname.length-4);
+        scribble_canvas.save(scribbledataURL, imagname+'_scribble_'+Nobj+'.png', url, null);
+      }
+    }
+    this.createDir("Scribbles/"+collectionName+"/", func("Scribbles/"+collectionName+"/"));
     
   }
+  this.saveMask = function (){
+    var collectionName = main_media.GetFileInfo().GetDirName().replace("///","/");
+
+    var func1 = function (url){
+      var Nobj = $(LM_xml).children("annotation").children("object").length;
+      console.log(scribble_canvas.annotationid);
+      if (scribble_canvas.annotationid > -1) Nobj = scribble_canvas.annotationid;
+      var imagname = main_media.GetFileInfo().GetImName();
+      imagname = imagname.substr(0, imagname.length-4);
+      var name = imagname+'_mask_'+Nobj+'.png';
+      scribble_canvas.save(saveCanvas.toDataURL("image/png"),name, url, null);
+    } 
+    scribble_canvas.createDir("annotationCache/TmpAnnotations/"+collectionName+"/", func1("annotationCache/TmpAnnotations/"+collectionName+"/", scribble_canvas.annotationid));
+    scribble_canvas.createDir("Masks/"+collectionName+"/", func1("Masks/"+collectionName+"/", scribble_canvas.annotationid));
+  }
+  
 
   // Creates the div elements to insert the scribble_canvas in the html
   this.prepareHTMLtoDraw = function(){  
@@ -638,20 +698,11 @@ function scribble_canvas(tag) {
     }
 
     $('#scribble_canvas').mousedown(function(e){
-      if (e.button > 1) return;
-      // If we are hiding all polygons, then clear the main canvas:
-      if(IsHidingAllPolygons) {
-        for(var i = 0; i < main_canvas.annotations.length; i++) {
-          main_canvas.annotations[i].hidden = true;
-          main_canvas.annotations[i].DeletePolygon();
-        }
-      }
-      
+      if (e.button > 1 || scribble_canvas.segmentation_in_progress) return;
       var mouseX = GetEventPosX(e.originalEvent);
       var mouseY = GetEventPosY(e.originalEvent);      
       this.paint = true;
       scribble_canvas.addClick(mouseX, mouseY);
-      scribble_canvas.redraw();
       });
 
     $('#scribble_canvas').mouseout(function(e){
@@ -659,7 +710,7 @@ function scribble_canvas(tag) {
     });
 
     $('#scribble_canvas').mousemove(function(e){
-      if(this.paint){
+      if(this.paint && !scribble_canvas.segmentation_in_progress){
         scribble_canvas.addClick(GetEventPosX(e.originalEvent) , GetEventPosY(e.originalEvent) , true);
         scribble_canvas.redraw();
       }
@@ -667,6 +718,11 @@ function scribble_canvas(tag) {
     
     $('#scribble_canvas').mouseup(function(e){
       this.paint = false;
+      if (scribble_canvas.segmentation_in_progress) return;
+      scribble_canvas.showspinner();
+      scribble_canvas.segmentation_in_progress = 1;
+      scribble_canvas.segment(false);
+
     });
   };
 
@@ -676,8 +732,8 @@ function scribble_canvas(tag) {
     this.flag_changed = 1;
     var ratio = main_media.GetImRatio();  
     x-=1; 
-    x = Math.round(x/ratio);
-    y = Math.round(y/ratio);
+    x = Math.floor(x/ratio);
+    y = Math.floor(y/ratio);
     if (this.clickX.length == 0){
       this.maxclicX = this.minclicX = x;
       this.maxclicY = this.minclicY = y;
@@ -686,6 +742,7 @@ function scribble_canvas(tag) {
       this.maxclicY = Math.max(this.maxclicY, y); this.maxclicX = Math.max(this.maxclicX, x); 
       this.minclicY = Math.min(this.minclicY, y); this.minclicX = Math.min(this.minclicX, x);
     }
+
     this.clickX.push(x);
     this.clickY.push(y);
     this.clickDrag.push(dragging);
@@ -699,7 +756,6 @@ function scribble_canvas(tag) {
       if(draw_anno) return;
     }
     var buttons = document.getElementsByClassName("labelBtnDraw");
-    console.log(buttons);
     for (var i = 0; i < buttons.length; i++) buttons[i].setAttribute('style', 'background-color: #fff');
     if (val != OBJECT_DRAWING && val != BG_DRAWING && val != RUBBER_DRAWING) return;
     if (val == OBJECT_DRAWING){
@@ -714,6 +770,7 @@ function scribble_canvas(tag) {
       this.scribblecanvas.setAttribute('style','cursor:url(Icons/rubber_pointer.cur), default');
       document.getElementById("ScribbleRubber").setAttribute('style', 'background-color: #faa');
     } 
+    
     this.currently_drawing = val;
   };
 }
@@ -772,7 +829,7 @@ function EditBubbleEditScribble(){
 function LMplot(xml,imagename) {
   // Display image:
   $('body').append('<svg id="canvas" width="2560" height="1920" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><image id="img" xlink:href="' + imagename + '" x="0" y="0" height="1920" width="2560" /></svg>');
-  
+  $('#myCanvas_bg').empty();
   // Display polygons:
   var N = $(xml).children("annotation").children("object").length;
   for(var i = 0; i < N; i++) {
@@ -785,10 +842,10 @@ function LMplot(xml,imagename) {
       var X = Array();
       var Y = Array();
       if (obj.children("polygon") != null){
-    for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
-      X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
-      Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
-    }
+        for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
+          X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
+          Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
+        }
       }
       else {
     X.push(parseInt(obj.children("segm").children("box").children("xmin").text()));
@@ -823,7 +880,6 @@ function DrawSegmentation ( div_attach, link, width, height, modified, aux){
   this.drawn_obj.setAttributeNS(null,"height",height);
   this.drawn_obj.setAttributeNS(null,"width", width);
   this.drawn_obj.setAttributeNS(this.xlinkNS,'href',link+"?" + modified);
-  console.log(this.drawn_obj);
   document.getElementById(div_attach).insertBefore(this.drawn_obj,document.getElementById(div_attach).firstChild);
   return id;
 }
@@ -860,7 +916,6 @@ function scribble (id){
     var loc = window.location.href;
     var   dir = loc.substring(0, loc.lastIndexOf('/tool.html'));
     url_name = dir+'/Masks/'+url_folder+'/'+url_name;
-     
     return url_name;
   };
   // Get the corners of the cropped image that was used to create the segmentation

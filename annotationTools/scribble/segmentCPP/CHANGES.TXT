@@ -1,0 +1,29 @@
+List of changes from version 3.0:
+- Moved line
+	#include "instances.inc"
+to the end of cpp files to make it compile under GNU c++ compilers 4.2(?) and above
+
+List of changes from version 2.2:
+
+- Added functions for accessing graph structure, residual capacities, etc.
+  (They are needed for implementing maxflow-based algorithms such as primal-dual algorithm for convex MRFs.)
+- Added option of reusing trees.
+- node_id's are now integers starting from 0. Thus, it is not necessary to store node_id's in a separate array.
+- Capacity types are now templated.
+- Fixed bug in block.h. (After Block<type>::Reset, ScanFirst() and ScanNext() did not work properly).
+- Implementation with a forward star representation of the graph is no longer supported. (It needs less memory, but slightly slower than adjacency list representation.) If you still wish to use it, download version 2.2.
+- Note: version 3.0 is released under a different license than version 2.2.
+
+List of changes from version 2.1:
+
+- Put the code under GPL license
+
+List of changes from version 2.02:
+
+- Fixed a bug in the implementation that uses forward star representation
+
+List of changes from version 2.01:
+
+- Added new interface function - Graph::add_tweights(Node_id, captype, captype)
+  (necessary for the "ENERGY" software package)
+

@@ -27,6 +27,11 @@ function handler() {
     
     // Submits the object label in response to the edit/delete popup bubble.
     this.SubmitEditLabel = function () {
+
+      if (scribble_canvas.scribblecanvas){
+        scribble_canvas.annotationid = -1;
+        scribble_canvas.cleanscribbles();
+      } 
       submission_edited = 1;
       var anno = select_anno;
       
@@ -118,6 +123,10 @@ function handler() {
         selected_poly = -1;
         unselectObjects(); // Perhaps this should go elsewhere...
         StopEditEvent();
+        if (scribble_canvas.scribblecanvas){
+          scribble_canvas.annotationid = -1;
+          scribble_canvas.cleanscribbles();
+        } 
     };
     
     // Handles when the user clicks on the link for an annotation.
@@ -125,6 +134,7 @@ function handler() {
       if (adjust_event) return;
       if (video_mode && LMgetObjectField(LM_xml, idx, 'x', oVP.getcurrentFrame()).length == 0){
         // get frame that is closest
+
         var frames = LMgetObjectField(LM_xml, idx, 't');
         var id1 = -1;
         var id2 = frames.length;
@@ -136,7 +146,6 @@ function handler() {
         }
         if (id2 < frames.length) oVP.GoToFrame(frames[id2]);
         else oVP.GoToFrame(frames[id1]);
-
       }
       if(active_canvas==REST_CANVAS) StartEditEvent(idx,null);
       else if(active_canvas==SELECTED_CANVAS) {
@@ -146,6 +155,7 @@ function handler() {
           ChangeLinkColorBG(idx);
         }
         if (idx != anno_id){
+          if (video_mode) oVP.HighLightFrames(LMgetObjectField(LM_xml, idx, 't'), LMgetObjectField(LM_xml, idx, 'userlabeled'));
           ChangeLinkColorFG(idx);
           StartEditEvent(idx,null);
         } 
@@ -156,18 +166,21 @@ function handler() {
     this.AnnotationLinkMouseOver = function (a) {
         if (active_canvas != SELECTED_CANVAS && video_mode && LMgetObjectField(LM_xml, a, 'x', oVP.getcurrentFrame()).length == 0){ 
           ChangeLinkColorFG(a);
+          oVP.HighLightFrames(LMgetObjectField(LM_xml, a, 't'), LMgetObjectField(LM_xml, a, 'userlabeled'));
           selected_poly = a;
         } 
-        else if(active_canvas!=SELECTED_CANVAS) selectObject(a);
-        oVP.HighLightFrames(LMgetObjectField(LM_xml, a, 't'), LMgetObjectField(LM_xml, a, 'userlabeled'));
+        else if(active_canvas!=SELECTED_CANVAS){
+          selectObject(a);
+          console.log('select');
+        } 
+        
     };
     
     // Handles when the user moves the mouse away from an annotation link.
     this.AnnotationLinkMouseOut = function () {
        
-      if(active_canvas!=SELECTED_CANVAS) unselectObjects();
-      if (video_mode){
-        oVP.UnHighLightFrames();
+      if(active_canvas!=SELECTED_CANVAS){
+        unselectObjects();
       }
     };
     
@@ -308,9 +321,9 @@ function handler() {
       /*************************************************************/
       // Scribble: Clean scribbles.
       if(anno.GetType() == 1) {
-	scribble_canvas.cleanscribbles();
-	scribble_canvas.scribble_image = "";
-	scribble_canvas.colorseg = Math.floor(Math.random()*14);
+      	scribble_canvas.cleanscribbles();
+      	scribble_canvas.scribble_image = "";
+      	scribble_canvas.colorseg = Math.floor(Math.random()*14);
       }
       /*************************************************************/
       /*************************************************************/

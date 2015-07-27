@@ -67,13 +67,14 @@ function StartDrawEvent(event) {
 }
 
 function DrawCanvasMouseMove(event){
+  if (event.target.id != "draw_canvas") return;
   draw_anno.DeletePolygon();
   var xb = GetEventPosX(event);
   var yb = GetEventPosY(event);
+  console.log(xb,yb);
   var scale = main_media.GetImRatio();
   var xarr = [draw_x[0], Math.round(xb/scale), Math.round(xb/scale), draw_x[0], draw_x[0]];
   var yarr = [draw_y[0],draw_y[0], Math.round(yb/scale), Math.round(yb/scale), draw_y[0]];
-  console.log(draw_anno);
   draw_anno.DrawPolyLine(xarr, yarr);
 
   /*DrawPolygon(draw_anno.div_attach,xarr, yarr,'drawing_bounding_box','stroke="#0000ff" stroke-width="4" fill-opacity="0.0"',scale);

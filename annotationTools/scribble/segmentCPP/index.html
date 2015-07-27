@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src='http://code.jquery.com/jquery-1.11.2.min.js'></script>
+    <script src='example.js'></script>
+    <script src='main.js'></script>
+    <link rel='stylesheet' type='text/css' href='style.css'>
+</head>
+<body>
+    <h1>Image segmentation</h1><br>
+    <p>If you see more than 2 boxes, make your window bigger (or zoom out) and then refresh the page</p>
+
+
+    <form>
+        <input type="radio" name="segment" value="foreground" checked style='background:red'>Foreground(red)<br>
+        <input type="radio" name="segment" value="background">Background(green)<br>
+    </form> <br>
+
+    Compute segmentation automatically after every edit?
+    <form>
+        <input type="radio" name="mode" value="automatic" style='background:red'>Automatic<br>
+        <input type="radio" name="mode" value="manual" checked>Manual<br>
+    </form>
+    <button id='compute'>Compute</button>
+
+    <div>
+        Scribble Canvas<br>
+        <canvas id="imageCanvas"></canvas>
+        <canvas id="scribbleCanvas"></canvas>
+    </div>
+
+    <div>
+        Result Canvas<br>
+        <canvas id="resultCanvas"></canvas>
+    </div>
+
+
+
+
+</body>
+</html>

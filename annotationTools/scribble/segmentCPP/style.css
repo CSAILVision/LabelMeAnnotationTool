@@ -1,0 +1,20 @@
+div {
+    margin: 20px;
+    /*height: 100%;
+    width: 100%*/
+}
+
+canvas {
+    border: solid;
+    margin: 0;
+    padding: 0;
+}
+
+
+
+canvas#scribbleCanvas {
+    position: relative;
+}
+
+canvas#imageCanvas {
+}
