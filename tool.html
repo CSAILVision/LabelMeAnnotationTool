@@ -27,6 +27,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 // <![CDATA[
 <!--#include virtual="./annotationTools/js/jquery-1.9.1.js" -->
 <!--#include virtual="./annotationTools/js/jquery-ui.js" -->
+<!--#include virtual="./annotationTools/js/jquery-ui-intervals.js" -->
+<!--#include virtual="./annotationTools/js/example.js" -->
 <!--#include virtual="./annotationTools/js/browser.js" -->  
 <!--#include virtual="./annotationTools/js/globals.js" -->
 <!--#include virtual="./annotationTools/js/io.js" -->
@@ -137,7 +139,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <!-- IMAGE CANVAS -->
   <div class="image_canvas" id="main_section">
     <div id="loading">Loading image...</div>
-    <div id="main_media" class="top" style="visibility:hidden; overflow:visible;">
+    <div id="main_media" class="top" style="visibility:hidden; overflow:auto;">
       <img id="im" style="vertical-align:bottom;z-index:-3;" />
       
       <div id="myCanvas_bg_div" style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
