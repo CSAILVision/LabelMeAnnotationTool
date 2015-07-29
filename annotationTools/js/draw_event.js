@@ -21,6 +21,9 @@ function StartDrawEvent(event) {
     }
   }
 
+  // Lower opacity of rest of elements
+  $('#myCanvas_bg').css('opacity', 0.5);
+
   // Set active canvas:
   active_canvas = DRAW_CANVAS;
   if (video_mode) oVP.Pause();
@@ -258,6 +261,7 @@ function StopDrawEvent() {
     draw_anno = null;
   }
 
+  $('#myCanvas_bg').css('opacity', 1);
   // Write message to the console:
   console.log('LabelMe: Stopped draw event.');
 }

@@ -73,16 +73,23 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
   this.StartEvent = function() {
     console.log('LabelMe: Starting adjust event...');
     // Draw polygon:
+
     this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
     select_anno.polygon_id = this.polygon_id;
     FillPolygon(this.polygon_id);
-    oVP.ShowTemporalBar();
+    if (video_mode){
+      oVP.ShowTemporalBar();
+      oVP.CreateLabeledFramesNavigationButtons();
+    }
     // Set mousedown action to stop adjust event when user clicks on canvas:
 
     $('#'+this.dom_attach).unbind();
     $('#'+this.dom_attach).mousedown({obj: this},function(e) {
       return e.data.obj.StopAdjustEvent();
       });
+
+    // Lower opacity of the rest of elements
+    $('#myCanvas_bg').css('opacity', 0.5);
 
     // Show control points:
     if (this.bounding_box){
@@ -131,8 +138,14 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
     this.RemoveCenterOfMass();
     this.RemoveScalingPoints();
     console.log('LabelMe: Stopped adjust event.');
-    oVP.HideTemporalBar();
+    if (video_mode){
+      oVP.HideTemporalBar();
+      oVP.RemoveLabeledFramesNavigationButtons();
+    }
+    
+    $('#myCanvas_bg').css('opacity', 1);
     // Call exit function:
+
     this.ExitFunction(this.x,this.y,this.editedControlPoints);
   };
 
@@ -329,6 +342,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
       this.originaly = this.y;
       
       // Remove polygon and redraw:
+      //if ($('#'+this.polygon_id).is('image')) $('#'+this.polygon_id).remove();
       $('#'+this.polygon_id).parent().remove();
       $('#'+this.polygon_id).remove();
       this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
@@ -409,8 +423,8 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
       this.center_y = Math.round(this.scale*(dy+this.center_y));
       
       // Remove polygon and redraw:
+      //if ($('#'+this.polygon_id).is('image')) $('#'+this.polygon_id).remove();
       $('#'+this.polygon_id).parent().remove();
-      $('#'+this.polygon_id).remove();
       this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
       select_anno.polygon_id = this.polygon_id;
 
