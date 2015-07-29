@@ -80,6 +80,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
     if (video_mode){
       oVP.ShowTemporalBar();
       oVP.CreateLabeledFramesNavigationButtons();
+      $('#myCanvas_bg').css('opacity', 0.5);
     }
     // Set mousedown action to stop adjust event when user clicks on canvas:
 
@@ -89,7 +90,6 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
       });
 
     // Lower opacity of the rest of elements
-    $('#myCanvas_bg').css('opacity', 0.5);
 
     // Show control points:
     if (this.bounding_box){
@@ -143,7 +143,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
       oVP.RemoveLabeledFramesNavigationButtons();
     }
     
-    $('#myCanvas_bg').css('opacity', 1);
+    if (video_mode) $('#myCanvas_bg').css('opacity', 1);
     // Call exit function:
 
     this.ExitFunction(this.x,this.y,this.editedControlPoints);
