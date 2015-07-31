@@ -50,14 +50,6 @@ $ git clone https://github.com/CSAILVision/LabelMeAnnotationTool.git
    $ make
    ```
 
-   Alternatively, if you want to install only the basic tool and none
-   of the advanced features, such as scribbles, run on the command
-   line instead:
-
-   ``` sh
-   $ make basic
-   ```
-
    This will set a global variable that the perl scripts
    need.  ***Note*** If you move the location of the code, then you
    need to re-run "make" to refresh the global variable.
