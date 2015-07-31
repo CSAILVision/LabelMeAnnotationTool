@@ -11,7 +11,7 @@ LM_TOOL_HOME = $(shell pwd)/
 # Get path for perl scripts:
 SET_LM_HOME = $(shell pwd)/
 
-all: setpath write_permissions scribble
+all: setpath write_permissions
 
 basic: setpath write_permissions
 
@@ -30,6 +30,3 @@ write_permissions:
 	$(shell chmod -R 777 ./annotationCache/Logs/logfile.txt)
 	$(shell chmod -R 777 ./annotationTools/scribble)
 	$(shell chmod -R 777 ./annotationTools/php)
-
-scribble:
-	rm ./annotationTools/scribble/segment.cgi; cd ./annotationTools/scribble; make; cd ../../
