@@ -203,8 +203,7 @@ function scribble_canvas(tag) {
     
     // Get location where popup bubble will appear:
     var im_ratio = main_media.GetImRatio();
-    console.log(scribble_canvas.object_corners[0]);
-    var pt = main_media.SlideWindow((scribble_canvas.object_corners[0]*im_ratio + scribble_canvas.object_corners[2]*im_ratio)/2,(scribble_canvas.object_corners[1]*im_ratio + scribble_canvas.object_corners[2]*im_ratio)/2);
+    var pt = main_media.SlideWindow((scribble_canvas.object_corners[0]*im_ratio + scribble_canvas.object_corners[2]*im_ratio)/2,(scribble_canvas.object_corners[1]*im_ratio + scribble_canvas.object_corners[3]*im_ratio)/2);
     
     // Make query popup appear.
     main_media.ScrollbarsOff();
