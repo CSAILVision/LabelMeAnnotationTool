@@ -7,6 +7,7 @@
    apt-get install libapache2-mod-perl2
    a2enmod include
    a2enmod rewrite
+   a2enmod cgi
    ```
 
 2. Edit /etc/apache2/sites-available/default so that the following is
