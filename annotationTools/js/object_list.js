@@ -143,10 +143,10 @@ function ChangeLinkColorBG(idx) {
     var isDeleted = parseInt($(LM_xml).children("annotation").children("object").eq(idx).children("deleted").text());
     if(isDeleted) document.getElementById('Link'+idx).style.color = '#888888';
     else document.getElementById('Link'+idx).style.color = '#0000FF';
-
+    var anid = main_canvas.GetAnnoIndex(idx);
     // If we're hiding all polygons, then remove rendered polygon from canvas:
-    if(IsHidingAllPolygons && AllAnnotations[idx].hidden) {
-      AllAnnotations[idx].DeletePolygon();
+    if(IsHidingAllPolygons && main_canvas.annotations[anid].hidden) {
+      main_canvas.annotations[anid].DeletePolygon();
     }
   }
 }
@@ -154,10 +154,10 @@ function ChangeLinkColorBG(idx) {
 
 function ChangeLinkColorFG(idx) {
   document.getElementById('Link'+idx).style.color = '#FF0000';
-
+  var anid = main_canvas.GetAnnoIndex(idx);
   // If we're hiding all polygons, then render polygon on canvas:
-  if(IsHidingAllPolygons && AllAnnotations[idx].hidden) {
-    AllAnnotations[idx].DrawPolygon(main_media.GetImRatio(), LMgetObjectField(LM_xml,idx,'x'), LMgetObjectField(LM_xml,idx,'y'));
+  if(IsHidingAllPolygons && main_canvas.annotations[anid].hidden) {
+    main_canvas.annotations[anid].DrawPolygon(main_media.GetImRatio(), main_canvas.annotations[anid].GetPtsX(), main_canvas.annotations[anid].GetPtsY());
   }
 }
 

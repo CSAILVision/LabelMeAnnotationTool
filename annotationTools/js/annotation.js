@@ -33,6 +33,9 @@ function annotation(anno_id) {
 
     // Element id for drawn first point:
     this.point_id = null;
+
+    // Element id for drawn mask
+    this.mask_id = null; 
     
     // *******************************************
     // Public methods:
@@ -217,7 +220,7 @@ function annotation(anno_id) {
       // Remove drawn polygon:
         if(this.polygon_id) {
             console.log('deleting polygon: ',this.polygon_id);
-            $('#'+this.polygon_id).remove();
+            $('#'+this.polygon_id).parent().remove();
             this.polygon_id = null;
         }
 
@@ -230,8 +233,8 @@ function annotation(anno_id) {
         /*************************************************************/
         /*************************************************************/
         // Scribble: Finally we remove the segmentation mask if there was any
-        var id = 'object'+($('#'+'myCanvas_bg').children().length-1)+"_mask";
-        ClearMask(id);
+        //var id = 'object'+($('#'+'myCanvas_bg').children().length)+"_mask";
+        ClearMask(this.mask_id);
         /*************************************************************/
         /*************************************************************/
       
@@ -264,7 +267,7 @@ function annotation(anno_id) {
             FillPolygon(this.polygon_id);
         }
         else { // It is a segmentation
-            DrawSegmentation('myCanvas_bg',this.scribble.GetMaskURL(), main_media.width_curr, main_media.height_curr, this.scribble.cache_random_number);
+            this.mask_id = DrawSegmentation('myCanvas_bg',this.scribble.GetMaskURL(), main_media.width_curr, main_media.height_curr, this.scribble.cache_random_number);
         }
         /*************************************************************/
         /*************************************************************/
@@ -280,8 +283,8 @@ function annotation(anno_id) {
         }
         else {
             // If we have a segmentation we clear it from the canvas
-            var id = 'object'+($('#'+this.div_attach).children().length-1)+"_mask";
-            ClearMask(id);
+            //var id = 'object'+($('#'+this.div_attach).children().length-1)+"_mask";
+            ClearMask(this.mask_id);
         }
         /*************************************************************/
         /*************************************************************/

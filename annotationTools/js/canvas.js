@@ -78,7 +78,7 @@ function canvas(div_attach) {
     }
   };
   this.GetAnnoIndex = function(id){
-    var anid;
+    var anid = -1;
     for (var i = 0; i < this.annotations.length; i++) if (this.annotations[i].anno_id == id) anid = i;
     return anid;
   };
