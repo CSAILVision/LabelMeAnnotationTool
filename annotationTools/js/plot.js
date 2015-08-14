@@ -18,8 +18,8 @@ function LMplot(xml,imagename) {
       var X = Array();
       var Y = Array();
       for(var j = 0; j < obj.children("polygon").children("pt").length; j++) {
-	X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
-	Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
+  X.push(parseInt(obj.children("polygon").children("pt").eq(j).children("x").text()));
+  Y.push(parseInt(obj.children("polygon").children("pt").eq(j).children("y").text()));
       }
 
       // Draw polygon:
@@ -48,7 +48,7 @@ function DrawPolygon(element_id,X,Y,obj_name,attr,scale) {
   var dom_id = element_id + '_obj' + $('#'+element_id).children().length + '_' + Math.floor(Math.random()*100000);
 
   // Draw polygon:
-  $('#'+element_id).append('<a xmlns="http://www.w3.org/2000/svg"><polygon xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" points="' + poly_points + '" ' + attr + ' /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');
+  $('#'+element_id).append('<a xmlns="http://www.w3.org/2000/svg"> <polygon xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" points="' + poly_points + '" ' + attr + ' /><title xmlns="http://www.w3.org/2000/svg">' + obj_name + '</title></a>');
 
   return dom_id;
 }
@@ -70,7 +70,7 @@ function DrawFlag(element_id,x,y,obj_name,scale) {
   var dom_id = element_id + '_obj' + $('#'+element_id).children().length;
 
   // Draw flag:
-  $('#'+element_id).append('<image xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" width="36" height="43" x="' + x + '" y="' + y + '" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="Icons/flag.png" />');
+  $('#'+element_id).append('<a xmlns="http://www.w3.org/2000/svg"><image xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" width="36" height="43" x="' + x + '" y="' + y + '" xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="Icons/flag.png" /></a>');
 
   return dom_id;
 }
@@ -91,7 +91,7 @@ function DrawPolyLine(element_id,X,Y,obj_name,attr,scale) {
   var dom_id = element_id + '_obj' + $('#'+element_id).children().length;
 
   // Draw polyline:
-  $('#'+element_id).append('<polyline xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" points="' + poly_points + '" ' + attr + ' />');
+  $('#'+element_id).append('<a xmlns="http://www.w3.org/2000/svg"> <polyline xmlns="http://www.w3.org/2000/svg" id="' + dom_id + '" points="' + poly_points + '" ' + attr + ' /></a>');
 
   return dom_id;
 }
@@ -129,8 +129,8 @@ function HashObjectColor(name) {
     var tmp = name.substring(i,i+1);
     for(var j = 1; j <= 255; j++) {
       if(unescape('%'+j.toString(16)) == tmp) {
-	hash += j;
-	break;
+  hash += j;
+  break;
       }
     }
   }

@@ -170,7 +170,7 @@ function AdjustPolygonButton() {
   
 
   // Remove polygon from canvas:
-  $('#'+anno.polygon_id).remove();
+  $('#'+anno.polygon_id).parent().remove();
 
   // Set to polygon drawing mode:
   SetDrawingMode(0);
@@ -184,7 +184,7 @@ function AdjustPolygonButton() {
       if(username_flag) submit_username();
 
       // Redraw polygon:
-      anno.DrawPolygon(main_media.GetImRatio(), LMgetObjectField(LM_xml,anno.anno_id,'x'), LMgetObjectField(LM_xml,anno.anno_id,'y'));
+      anno.RenderAnnotation('rest');
       
       // Set polygon (x,y) points:
       if (!video_mode){

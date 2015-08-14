@@ -128,7 +128,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
   /** This function stops the adjusting event and calls the ExitFunction: */
   this.StopAdjustEvent = function() {
     // Remove polygon:
-    $('#'+this.polygon_id).remove();
+    $('#'+this.polygon_id).parent().remove();
 
     // Remove key press action
     $(window).unbind("keydown");
