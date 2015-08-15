@@ -150,7 +150,14 @@ function SetAllAnnotationsArray() {
 function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
   if(jqXHR.status==404) 
     ReadXML(main_media.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
-  else
+  else if (jqXHR.status == 200){
+    var resp = jqXHR.responseText;
+    var NOT_SAFE_IN_XML_1_0 = /[^\x09\x0A\x0D\x20-\xFF\x85\xA0-\uD7FF\uE000-\uFDCF\uFDE0-\uFFFD]/gm;
+    resp =resp.replace(/[\u001a]/gm,'');
+    resp = resp.replace(NOT_SAFE_IN_XML_1_0,'');
+    LoadAnnotationSuccess(jQuery.parseXML(resp));
+  }
+  else 
     alert(jqXHR.status);
 }
 
