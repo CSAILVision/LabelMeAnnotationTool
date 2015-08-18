@@ -6,10 +6,12 @@
 
 
 var IsHidingAllPolygons = false;
+var ListOffSet = 0;
 
 // This function creates and populates the list 
 function RenderObjectList() {
   // If object list has been rendered, then remove it:
+  var scrollPos = $("#anno_list").scrollTop();
   if($('#anno_list').length) {
     $('#anno_list').remove();
   }
@@ -130,6 +132,7 @@ function RenderObjectList() {
   
   // Attach annotation list to 'anno_anchor' DIV element:
   $('#anno_anchor').append(html_str);
+  $('#anno_list').scrollTop(scrollPos);
 }
 
 
