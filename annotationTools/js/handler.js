@@ -33,13 +33,13 @@ function handler() {
         var anno = this.SubmitQuery();
         add_parts_to = anno.anno_id;
       }
-      $('#Link'+add_parts_to).css('font-weight',700)
+      $('#Link'+add_parts_to).css('font-weight',700);
     }
 
     this.StopAddParts = function(){
       if (select_anno) this.SubmitEditLabel();
       else this.SubmitQuery();
-      $('#Link'+add_parts_to).css('font-weight',00)
+      $('#Link'+add_parts_to).css('font-weight', 400);
       add_parts_to = null;
     }
 

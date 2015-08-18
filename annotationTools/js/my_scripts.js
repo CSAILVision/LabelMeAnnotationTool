@@ -212,8 +212,8 @@ function selectObject(idx) {
   var selected_poly_parts = getPartChildrens(idx);
   for (var i=0; i<selected_poly_parts.length; i++) {
     var anid = main_canvas.GetAnnoIndex(selected_poly_parts[i]);
-    if(anid >= 0 && (selected_poly_parts[i]!=selected_poly) && main_canvas.annotations[anid].hidden) {
-      main_canvas.annotations[anid].DrawPolygon(main_media.GetImRatio(), main_canvas.annotations[anid].GetPtsX(), main_canvas.annotations[anid].GetPtsY());
+    if(anid >= 0 && (selected_poly_parts[i]!=selected_poly)) {
+      if (main_canvas.annotations[anid].hidden) main_canvas.annotations[anid].DrawPolygon(main_media.GetImRatio(), main_canvas.annotations[anid].GetPtsX(), main_canvas.annotations[anid].GetPtsY());
       main_canvas.annotations[anid].FillPolygon();
     }
     
@@ -234,10 +234,11 @@ function unselectObjects() {
   for (var i=0; i<selected_poly_parts.length; i++) {
 
     var anid = main_canvas.GetAnnoIndex(selected_poly_parts[i]);
-    if(anid >= 0 && (selected_poly_parts[i]!=selected_poly) && main_canvas.annotations[anid].hidden) {
-      main_canvas.annotations[anid].DeletePolygon();
+    if(anid >= 0 && (selected_poly_parts[i]!=selected_poly)) {
       main_canvas.annotations[anid].UnfillPolygon();
+      if (main_canvas.annotations[anid].hidden) main_canvas.annotations[anid].DeletePolygon();
     }
+
     
   }
   

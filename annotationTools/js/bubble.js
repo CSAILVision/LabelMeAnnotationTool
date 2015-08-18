@@ -214,7 +214,7 @@ function GetPopupFormEdit(anno) {
 function HTMLobjectBox(obj_name) {
   var html_str="";
   
-  html_str += '<input name="objEnter" id="objEnter" type="text" style="width:240px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
+  html_str += '<input name="objEnter" id="objEnter" type="text" style="width:260px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
   
   html_str += ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)';
         
@@ -281,7 +281,7 @@ function HTMLoccludedBox(occluded) {
 
 // Boxes to enter attributes
 function HTMLattributesBox(attList) {    
-  return '<textarea name="attributes" id="attributes" type="text" style="width:240px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
+  return '<textarea name="attributes" id="attributes" type="text" style="width:260px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
 }
 
 
