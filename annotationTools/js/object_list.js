@@ -132,6 +132,7 @@ function RenderObjectList() {
   
   // Attach annotation list to 'anno_anchor' DIV element:
   $('#anno_anchor').append(html_str);
+  $('#Link'+add_parts_to).css('font-weight',700); //
   $('#anno_list').scrollTop(scrollPos);
 }
 

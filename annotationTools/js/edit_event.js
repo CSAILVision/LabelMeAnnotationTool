@@ -3,7 +3,6 @@
 
 var select_anno = null;
 var adjust_event = null;
-
 /**
   * This function is called with the edit event is started.  It can be
   * triggered when the user (1) clicks a polygon, (2) clicks the object in
@@ -12,9 +11,13 @@ var adjust_event = null;
 
 */
 function StartEditEvent(anno_id,event) {
-
+  
   console.log('LabelMe: Starting edit event...');
   
+  if (add_parts_to != null){
+    $('#Link'+add_parts_to).css('font-weight',400)
+    add_parts_to = null;
+  }
   if (video_mode) oVP.Pause();
   if(event) event.stopPropagation();
   if((IsUserAnonymous() || (!IsCreator(LMgetObjectField(LM_xml, anno_id, 'username')))) && (!IsUserAdmin()) && (anno_id<num_orig_anno) && !action_RenameExistingObjects && !action_ModifyControlExistingObjects && !action_DeleteExistingObjects) {

@@ -208,11 +208,8 @@ function scribble_canvas(tag) {
     // Make query popup appear.
     main_media.ScrollbarsOff();
     WriteLogMsg('*What_is_this_object_query');
-
-    wait_for_input = 1;
-    var innerHTML = this.GetPopupFormDraw();
-
-    CreatePopupBubble(pt[0],pt[1],innerHTML,'main_section');
+    
+    mkPopup(pt[0],pt[1], true);
 
     // Focus the cursor inside the box
     document.getElementById('objEnter').focus();
@@ -236,75 +233,6 @@ function scribble_canvas(tag) {
     query_anno.SetCSS('cursor','pointer');
   };
   
-  this.GetPopupFormDraw = function() {
-    html_str = "<b>Enter object name</b><br />";
-    html_str += this.HTMLobjectBox("");
-    
-    if(use_attributes) {
-      html_str += HTMLoccludedBox("");
-      html_str += "<b>Enter attributes</b><br />";
-      html_str += HTMLattributesBox("");
-    }
-    
-    if(use_parts) {
-      html_str += HTMLpartsBox("");
-    }
-    
-    html_str += "<br />";
-  
-    // Done button:
-    html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
-  
-    // Undo close button:
-    html_str += '<input type="button" value="Edit Scribble" title="Press this button if to keep adding scribbles." onclick="KeepEditingScribbles();" tabindex="0" />';
-  
-    // Delete button:
-    html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="scribble_canvas.WhatIsThisObjectDeleteButton();" tabindex="0" />';
-    
-    return html_str;
-  }
-
-  this.WhatIsThisObjectDeleteButton = function (){
-    submission_edited = 0;
-    main_handler.QueryToRest();
-    this.cleanscribbles();
-    ClearMask('mask_canvas');
-  }
-  
-  this.HTMLobjectBox = function(obj_name) {
-    var html_str="";
-  
-    html_str += '<input name="objEnter" id="objEnter" type="text" style="width:220px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
-  
-    html_str += ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)';
-        
-    // if obj_name is empty it means that the box is being created
-    if (obj_name=='') {
-      // If press enter, then submit; if press ESC, then delete:
-      html_str += 'main_handler.SubmitQuery();if(c==27)scribble_canvas.WhatIsThisObjectDeleteButton();" ';
-    }
-    else {
-      // If press enter, then submit:
-      html_str += 'this.SubmitEditLabel();" ';
-    }
-  
-    // if there is a list of objects, we need to habilitate the list
-    if(object_choices=='...') {
-      html_str += '/>'; // close <input
-    }
-    else {
-      html_str += 'list="datalist1" />'; // insert list and close <input
-      html_str += '<datalist id="datalist1"><select style="display:none">';
-      for(var i = 0; i < object_choices.length; i++) {
-    html_str += '<option value="' + object_choices[i] + '">' + object_choices[i] + '</option>';
-      }
-      html_str += '</select></datalist>';
-    }
-  
-    html_str += '<br />';
-  
-    return html_str;
-  }
 
   // Called after the segmentation is done. It prepares an annotation 
   // object describing the new segmentation and shows up a bubble to 

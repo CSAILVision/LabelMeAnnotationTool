@@ -12,6 +12,7 @@
  * @param {string} dom_attach - id of the html element where it should be attached
  * @returns {string} bubble_name - dom element name for the popup bubble
 */
+var part_bubble;
 function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   var html_str;
   var bubble_name = 'myPopup';
@@ -36,6 +37,8 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
   
   // Insert bubble into the DOM tree:
   $('#'+dom_attach).append(html_str);
+  if (part_bubble) $('#myPopup').css('background-color', 'rgb(255,230,230)')
+    
   
   // Place bubble in the right location taking into account the rendered size and the location of the arrow
   if(top > 214) {  
@@ -81,9 +84,9 @@ function CreatePopupBubbleCloseButton(dom_bubble,close_function) {
 //
 
 // Query popup bubble:
-function mkPopup(left,top) {
+function mkPopup(left,top,scribble_popup) {
   wait_for_input = 1;
-  var innerHTML = GetPopupFormDraw();
+  var innerHTML = GetPopupFormDraw(scribble_popup);
   CreatePopupBubble(left,top,innerHTML,'main_section');
 
   // Focus the cursor inside the box
@@ -115,9 +118,14 @@ function CloseEditPopup() {
 // Forms:
 // ****************************
 
-function GetPopupFormDraw() {
+function GetPopupFormDraw(scribble_form) {
   wait_for_input = 1;
+  part_bubble = false;
   html_str = "<b>Enter object name</b><br />";
+  if (add_parts_to != null){
+    html_str = "<b>Enter part name</b><br />";
+    part_bubble = true;
+  }
   html_str += HTMLobjectBox("");
   
   if(use_attributes) {
@@ -133,9 +141,13 @@ function GetPopupFormDraw() {
   // Done button:
   html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
   
-  // Undo close button:
-  html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
-  
+  // Undo close button/Keep editting
+  if (!scribble_form) html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
+  else html_str += '<input type="button" value="Edit Scribble" title="Press this button if to keep adding scribbles." onclick="KeepEditingScribbles();" tabindex="0" />';
+  // Add parts/Stop adding parts
+  if (add_parts_to == null) html_str += '<input type="button" value="Add parts" title="Press this button if you want to start adding parts" onclick="main_handler.StartAddParts();" tabindex="0" />';
+  else html_str += '<input type="button" value="Stop parts" title="Press this button if you want to stop adding parts" onclick="main_handler.StopAddParts();" tabindex="0" />';
+    
   // Delete button:
   html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
   
@@ -145,13 +157,14 @@ function GetPopupFormDraw() {
 function GetPopupFormEdit(anno) {
   // get object name and attributes from 'anno'
   edit_popup_open =  1;
+  part_bubble = false;
   var obj_name = LMgetObjectField(LM_xml,anno.anno_id,'name');
   if(obj_name=="") obj_name = "?";
   var attributes = LMgetObjectField(LM_xml,anno.anno_id,'attributes');
   var occluded = LMgetObjectField(LM_xml,anno.anno_id,'occluded');
   var parts = LMgetObjectField(LM_xml, anno.anno_id, 'parts');
   
-  html_str = "<b>Enter object name</b><br />";
+  html_str = "<b>Enter object name</b><br />"; 
   html_str += HTMLobjectBox(obj_name);
   
   if(use_attributes) {
@@ -180,11 +193,13 @@ function GetPopupFormEdit(anno) {
     html_str += '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
   }
   else {
-    html_str += '<input type="button" value="Edit Scribbles" title="Press this button if you wish to update the segmentation." onclick="javascript:EditBubbleEditScribble();" />';  
+    html_str += '<input type="button" value="Edit Scribbles" title="Press this button if you wish to update the segmentation." onclick="javascript:EditBubblehtmribble();" />';  
   }
   /*************************************************************/
   /*************************************************************/
-
+  
+  // Add parts/Stop adding parts
+  if (add_parts_to == null) html_str += '<input type="button" value="Add parts" title="Press this button if you want to start adding parts" onclick="main_handler.StartAddParts();" tabindex="0" />';
   // Delete button:
   html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" />';
   
@@ -199,7 +214,7 @@ function GetPopupFormEdit(anno) {
 function HTMLobjectBox(obj_name) {
   var html_str="";
   
-  html_str += '<input name="objEnter" id="objEnter" type="text" style="width:220px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
+  html_str += '<input name="objEnter" id="objEnter" type="text" style="width:240px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
   
   html_str += ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)';
         
@@ -266,7 +281,7 @@ function HTMLoccludedBox(occluded) {
 
 // Boxes to enter attributes
 function HTMLattributesBox(attList) {    
-  return '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
+  return '<textarea name="attributes" id="attributes" type="text" style="width:240px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
 }
 
 
@@ -284,7 +299,7 @@ function HTMLpartsBox(parts) {
     }
   }
   else {
-    html_str = 'Object has no parts (you can add parts using the right panel).';
+    html_str = 'Object has no parts.';
   }
   
   return html_str;

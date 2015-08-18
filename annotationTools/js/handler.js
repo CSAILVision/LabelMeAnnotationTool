@@ -12,17 +12,43 @@ var QUERY_CANVAS = 4;
 // Global variable indicating which canvas is active:
 var active_canvas = REST_CANVAS;
 
+// Check if we are in add parts mode
+var add_parts_to = null;
+
 function handler() {
     
     // *******************************************
     // Public methods:
     // *******************************************
     
+
+    this.StartAddParts = function(){
+      
+      if (select_anno){
+        var anno_id = select_anno.anno_id;
+        this.SubmitEditLabel();
+        add_parts_to = anno_id;
+      }
+      else {
+        var anno = this.SubmitQuery();
+        add_parts_to = anno.anno_id;
+      }
+      $('#Link'+add_parts_to).css('font-weight',700)
+    }
+
+    this.StopAddParts = function(){
+      if (select_anno) this.SubmitEditLabel();
+      else this.SubmitQuery();
+      $('#Link'+add_parts_to).css('font-weight',00)
+      add_parts_to = null;
+    }
+
     // Handles when the user presses the delete button in response to
     // the "What is this object?" popup bubble.
     this.WhatIsThisObjectDeleteButton = function () {
       submission_edited = 0;
       this.QueryToRest();
+      if (scribble_canvas.scribblecanvas) scribble_canvas.cleanscribbles();
     };
     
     // Submits the object label in response to the edit/delete popup bubble.
@@ -82,8 +108,8 @@ function handler() {
       
       // Refresh object list:
       if(view_ObjList) {
-	RenderObjectList();
-	ChangeLinkColorFG(anno.GetAnnoID());
+      	RenderObjectList();
+      	ChangeLinkColorFG(anno.GetAnnoID());
       }
     };
     
@@ -328,6 +354,7 @@ function handler() {
       /*************************************************************/
       /*************************************************************/
 
+      if (add_parts_to != null) addPart(add_parts_to, anno.anno_id);
       // Write XML to server:
       WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
       
@@ -335,11 +362,12 @@ function handler() {
       
       var m = main_media.GetFileInfo().GetMode();
       if(m=='mt') {
-	document.getElementById('object_name').value=new_name;
-	document.getElementById('number_objects').value=global_count;
-	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_media.GetFileInfo().GetDirName() + '&image=' + main_media.GetFileInfo().GetImName();
-	if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
+      	document.getElementById('object_name').value=new_name;
+      	document.getElementById('number_objects').value=global_count;
+      	document.getElementById('LMurl').value = LMbaseurl + '?collection=LabelMe&mode=i&folder=' + main_media.GetFileInfo().GetDirName() + '&image=' + main_media.GetFileInfo().GetImName();
+      	if(global_count >= mt_N) document.getElementById('mt_submit').disabled=false;
       }
+      return anno;
     };
     
     // Handles when we wish to change from "query" to "rest".
