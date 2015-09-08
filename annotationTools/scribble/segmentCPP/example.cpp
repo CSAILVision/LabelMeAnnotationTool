@@ -54,15 +54,16 @@ void addBackgroundRect(uint8_t* imageData, int height, int width)
             setPixel(imageData, height, width, i, xmax, 0, 0, 255, 255);
     }
 }
-char* grabCut(uint8_t* imageData, uint8_t* scribbleData, int height, int width, int colorId)
+char* grabCut(uint8_t* imageData, uint8_t* objectImageData, uint8_t* scribbleData, int height, int width, int colorId)
 {
-    std::cout << "Start" << std::endl;
+    std::cout << "Start!!!" << std::endl;
     addBackgroundRect(scribbleData, height, width);
     std::cout << "Added Background" << std::endl;
     GraphType* g = getGraph(imageData, scribbleData, height, width);
     int flow = g->maxflow();
-    std::cout << flow << std::endl;
-    setResult(g, imageData, height, width, colorId);
+    std::cout << "PRINTING" << std::endl;
+    std::cout << "FLOW: " << flow << std::endl;
+    setResult(g, imageData, objectImageData, height, width, colorId);
     delete g;
     std::string res = convertInt(flow);
     char* S = new char[res.length() + 1];
@@ -95,8 +96,7 @@ GraphType* getGraph(uint8_t* imageData, uint8_t* scribbleData, int height, int w
     // not sure if we need an edge for both directions;
     GraphType* g = new GraphType(height * width, 8 * height * width);
     g->add_node(height * width);
-    float probForeground[BINS];
-    getProb(imageData, scribbleData, probForeground, height, width);
+    float* probForeground = getProb(imageData, scribbleData, height, width);
 
     float beta = getBeta(imageData, height, width);
     int i, j, index, index2, weight;
@@ -123,7 +123,7 @@ GraphType* getGraph(uint8_t* imageData, uint8_t* scribbleData, int height, int w
     return g;
 }
 
-void getProb(uint8_t* imageData, uint8_t* scribbleData, float probForeground[], int height, int width)
+float* getProb(uint8_t* imageData, uint8_t* scribbleData, int height, int width)
 {
     int countForeground = 0;
     int countBackground = 0;
@@ -268,7 +268,7 @@ std::vector<int> getTWeight(uint8_t* imageData, uint8_t* scribbleData, float* pr
     return weights;
 }
 
-void setResult(GraphType* g, uint8_t* imageData, int height, int width, int colorId)
+void setResult(GraphType* g, uint8_t* imageData, uint8_t* objectImageData, int height, int width, int colorId)
 {
     // sets each pixel in the image to be the corresponding segment. This allows us to pass information back out to JS
     objectColors[0][0] = 0;
@@ -319,6 +319,12 @@ void setResult(GraphType* g, uint8_t* imageData, int height, int width, int colo
             index = (i * width + j);
             int segment = g->what_segment(index);
             if (g->what_segment(index) == GraphType::SOURCE) {
+
+                objectImageData[4 * index] = imageData[4 * index];
+                objectImageData[4 * index + 1] = imageData[4 * index + 1];
+                objectImageData[4 * index + 2] = imageData[4 * index + 2];
+                objectImageData[4 * index + 3] = imageData[4 * index + 2];
+
                 imageData[4 * index] = objectColors[colorId][0];
                 imageData[4 * index + 1] = objectColors[colorId][1];
                 imageData[4 * index + 2] = objectColors[colorId][2];
@@ -329,6 +335,10 @@ void setResult(GraphType* g, uint8_t* imageData, int height, int width, int colo
                 imageData[4 * index + 1] = 0;
                 imageData[4 * index + 2] = 0;
                 imageData[4 * index + 3] = 0;
+                objectImageData[4 * index] = 0;
+                objectImageData[4 * index + 1] = 0;
+                objectImageData[4 * index + 2] = 0;
+                objectImageData[4 * index + 3] = 0;
             }
         }
     }
