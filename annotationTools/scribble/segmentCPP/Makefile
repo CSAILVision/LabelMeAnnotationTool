@@ -3,3 +3,9 @@
 
 example: example.cpp graph.cpp maxflow.cpp
 	emcc example.cpp maxflow.cpp graph.cpp -o example.js -s EXPORTED_FUNCTIONS="['_grabCut']" -s TOTAL_MEMORY=60000000 -O2
+
+debug: example.cpp graph.cpp maxflow.cpp
+	emcc example.cpp maxflow.cpp graph.cpp -o ../../js/example.js -s EXPORTED_FUNCTIONS="['_grabCut']" -s TOTAL_MEMORY=60000000 -O2
+	cp ../../js/example.js.mem ../../../
+
+

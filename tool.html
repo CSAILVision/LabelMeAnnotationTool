@@ -13,174 +13,167 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <!DOCTYPE html PUBLIC
 "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:svg="http://www.w3.org/2000/svg" 
-      xmlns:xlink="http://www.w3.org/1999/xlink">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:svg="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 
 <head>
-<title>LabelMe: The open annotation tool</title>
-<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE,NO-STORE,MUST-REVALIDATE" />
-<META HTTP-EQUIV="imagetoolbar" CONTENT="no" />
-<link rel="shortcut icon" href="Icons/favicon16.ico" />
+    <title>LabelMe: The open annotation tool</title>
+    <META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE,NO-STORE,MUST-REVALIDATE" />
+    <META HTTP-EQUIV="imagetoolbar" CONTENT="no" />
+    <link rel="shortcut icon" href="Icons/favicon16.ico" />
 
-<script type="text/javascript">
-// <![CDATA[
-<!--#include virtual="./annotationTools/js/jquery-1.9.1.js" -->
-<!--#include virtual="./annotationTools/js/jquery-ui.js" -->
-<!--#include virtual="./annotationTools/js/jquery-ui-intervals.js" -->
-<!--#include virtual="./annotationTools/js/example.js" -->
-<!--#include virtual="./annotationTools/js/browser.js" -->  
-<!--#include virtual="./annotationTools/js/globals.js" -->
-<!--#include virtual="./annotationTools/js/io.js" -->
-<!--#include virtual="./annotationTools/js/plot.js" -->
-<!--#include virtual="./annotationTools/js/my_scripts.js" -->
-<!--#include virtual="./annotationTools/js/object_list.js" -->
-<!--#include virtual="./annotationTools/js/object_parts.js" -->
-<!--#include virtual="./annotationTools/js/bubble.js" -->
-<!--#include virtual="./annotationTools/js/image.js" -->
-<!--#include virtual="./annotationTools/js/file_info.js" -->
-<!--#include virtual="./annotationTools/js/annotation.js" -->
-<!--#include virtual="./annotationTools/js/canvas.js" -->
-<!--#include virtual="./annotationTools/js/handler.js" -->
-<!--#include virtual="./annotationTools/js/sign_in.js" -->
-<!--#include virtual="./annotationTools/js/startup.js" -->
-<!--#include virtual="./annotationTools/js/player.js" -->
-<!--#include virtual="./annotationTools/js/video.js" -->
-<!--#include virtual="./annotationTools/js/draw_event.js" -->
-<!--#include virtual="./annotationTools/js/edit_event.js" -->
-<!--#include virtual="./annotationTools/js/adjust_event.js" -->
-<!--#include virtual="./annotationTools/js/scribble.js" -->
-<!--#include virtual="./annotationTools/js/xml_accessors.js" -->
-// ]]>
-</script>
-<style>
-@import url("annotationTools/css/styles.css?version=4");
-@import url("annotationTools/css/header.css?version=4");
-@import url("annotationTools/css/bubble.css?version=4");
-@import url("annotationTools/css/object_list.css?version=4");
-@import url("annotationTools/css/scribblemenu.css?version=4");
-@import url("annotationTools/css/jquery-ui.css");
-</style>
+    <script type="text/javascript">
+        // <![CDATA[
+        <!--#include virtual="./annotationTools/js/jquery-1.9.1.js" -->
+        <!--#include virtual="./annotationTools/js/jquery-ui.js" -->
+        <!--#include virtual="./annotationTools/js/jquery-ui-intervals.js" -->
+        <!--#include virtual="./annotationTools/js/example.js" -->
+        <!--#include virtual="./annotationTools/js/browser.js" -->  
+        <!--#include virtual="./annotationTools/js/globals.js" -->
+        <!--#include virtual="./annotationTools/js/io.js" -->
+        <!--#include virtual="./annotationTools/js/plot.js" -->
+        <!--#include virtual="./annotationTools/js/my_scripts.js" -->
+        <!--#include virtual="./annotationTools/js/object_list.js" -->
+        <!--#include virtual="./annotationTools/js/object_parts.js" -->
+        <!--#include virtual="./annotationTools/js/bubble.js" -->
+        <!--#include virtual="./annotationTools/js/image.js" -->
+        <!--#include virtual="./annotationTools/js/file_info.js" -->
+        <!--#include virtual="./annotationTools/js/annotation.js" -->
+        <!--#include virtual="./annotationTools/js/canvas.js" -->
+        <!--#include virtual="./annotationTools/js/handler.js" -->
+        <!--#include virtual="./annotationTools/js/sign_in.js" -->
+        <!--#include virtual="./annotationTools/js/startup.js" -->
+        <!--#include virtual="./annotationTools/js/player.js" -->
+        <!--#include virtual="./annotationTools/js/video.js" -->
+        <!--#include virtual="./annotationTools/js/draw_event.js" -->
+        <!--#include virtual="./annotationTools/js/edit_event.js" -->
+        <!--#include virtual="./annotationTools/js/adjust_event.js" -->
+        <!--#include virtual="./annotationTools/js/scribble.js" -->
+        <!--#include virtual="./annotationTools/js/xml_accessors.js" -->
+        // ]]>
+    </script>
+    <style>
+        @import url("annotationTools/css/styles.css?version=4");
+        @import url("annotationTools/css/header.css?version=4");
+        @import url("annotationTools/css/bubble.css?version=4");
+        @import url("annotationTools/css/object_list.css?version=4");
+        @import url("annotationTools/css/scribblemenu.css?version=4");
+        @import url("annotationTools/css/jquery-ui.css");
+    </style>
 
 </head>
 
 <!-- Start up LabelMe after HTML elements load -->
+
 <body id="body" style="visibility:hidden;" onload="javascript:StartupLabelMe();">
 
-  <!-- Mechanical Turk instructions and submit button -->
-  <div id="mt_submit_form"></div>
-  
-  <!-- HEADER AND LOGO -->  
-  <div class="header" id="header">
-    <!-- LOGO-->
-    <div id="logo">
-      <a href="index.html"><img src="Icons/LabelMe_logo3.png" width="216" height="69" alt="LabelMe logo"></img></a>
-    </div>
-    
-    <!-- USERNAME FORM-->
-    <div id="username_main_div">
-      <div id="display_user" style="display:block;">
-        You are:
-        <b><span id="usernametxt" type="text" style="max-width:120px; height:1.2em;" tabindex="0" title="This username will get associated to each new polygon inside the XML.">anonymous
+    <!-- Mechanical Turk instructions and submit button -->
+    <div id="mt_submit_form"></div>
+
+    <!-- HEADER AND LOGO -->
+    <div class="header" id="header">
+        <!-- LOGO-->
+        <div id="logo">
+            <a href="index.html"><img src="Icons/LabelMe_logo3.png" width="216" height="69" alt="LabelMe logo"></img>
+            </a>
+        </div>
+
+        <!-- USERNAME FORM-->
+        <div id="username_main_div">
+            <div id="display_user" style="display:block;">
+                You are:
+                <b><span id="usernametxt" type="text" style="max-width:120px; height:1.2em;" tabindex="0" title="This username will get associated to each new polygon inside the XML.">anonymous
         </span></b>
-        <font size="-2">(<a href="#" id="changeuser" title="Click to change the username">change user</a>)</font>
-      </div>
-      <div id="enterUserName" style="display:none;">
-        Enter name:
-        <input id="userEnter" type="text" style="width:120px;" tabindex="0" value="" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using." />
-      </div>
+                <font size="-2">(<a href="#" id="changeuser" title="Click to change the username">change user</a>)</font>
+            </div>
+            <div id="enterUserName" style="display:none;">
+                Enter name:
+                <input id="userEnter" type="text" style="width:120px;" tabindex="0" value="" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using." />
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <!-- BUTTONS -->
-  <div id="tool_buttons">
-    <!-- NAVIGATION BUTTONS  -->
-    <div id="label_buttons_navigation">
-      <!-- DOWNLOAD IMAGE BUTTON -->
-      <button id="img_url" class="labelBtn" type="button" title="Download image">
-        <img src="Icons/download_img.png"  height="30" />
-      </button>
-      
-      <!-- DOWNLOAD XML BUTTON -->
-      <button id="xml_url" class="labelBtn" type="button" title="Download XML file">
-        <img src="Icons/download_xml.png"  height="30" />
-      </button>
-      
-      <!-- HELP BUTTON -->
-      <button id="help" class="labelBtn" type="button" title="Show help page" onclick="location.href='annotationTools/html/labeling_instructions.html'" >
-        <img src="Icons/help_new.png"  height="30" />
-      </button>
-      
-      <!-- NEXT IMAGE BUTTON -->
-      <button id="nextImage" class="labelBtn" type="button" title="Next Image">
-        <img src="Icons/next_2.png" height="30" />
-      </button>
+
+    <!-- BUTTONS -->
+    <div id="tool_buttons">
+        <!-- NAVIGATION BUTTONS  -->
+        <div id="label_buttons_navigation">
+            <!-- DOWNLOAD IMAGE BUTTON -->
+            <button id="img_url" class="labelBtn" type="button" title="Download image">
+                <img src="Icons/download_img.png" height="30" />
+            </button>
+
+            <!-- OBJECT BUTTON -->
+            <button id="obj_url" class="labelBtn" type="button" title="Download object image">
+                <img src="Icons/download_img.png" height="30" />
+            </button>
+
+            <!-- DOWNLOAD XML BUTTON -->
+            <button id="xml_url" class="labelBtn" type="button" title="Download XML file">
+                <img src="Icons/download_xml.png" height="30" />
+            </button>
+
+            <!-- HELP BUTTON -->
+            <button id="help" class="labelBtn" type="button" title="Show help page" onclick="location.href='annotationTools/html/labeling_instructions.html'">
+                <img src="Icons/help_new.png" height="30" />
+            </button>
+
+            <!-- NEXT IMAGE BUTTON -->
+            <button id="nextImage" class="labelBtn" type="button" title="Next Image">
+                <img src="Icons/next_2.png" height="30" />
+            </button>
+        </div>
+
+        <!-- DRAWING BUTTONS -->
+        <div id="label_buttons_drawing">
+            <div id="generic_buttons" class="annotatemenu">
+                <!-- ZOOM IN BUTTON -->
+                <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In">
+                    <img src="Icons/zoomin.png" width="28" height="38" />
+                </button>
+                <!-- ZOOM OUT BUTTON -->
+                <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out">
+                    <img src="Icons/zoomout.png" width="28" height="38" />
+                </button>
+                <!-- FIT IMAGE BUTTON -->
+                <button id="fit" class="labelBtnDraw" type="button" title="Fit Image">
+                    <img src="Icons/fitscreen.png" width="28" height="38" />
+                </button>
+            </div>
+        </div>
     </div>
-    
-    <!-- DRAWING BUTTONS -->
-    <div id="label_buttons_drawing">
-      <div id ="generic_buttons" class="annotatemenu">
-      <!-- ZOOM IN BUTTON -->
-      <button id="zoomin" class="labelBtnDraw" type="button" title="Zoom In">
-        <img src="Icons/zoomin.png" width="28" height="38" />
-      </button>
-      <!-- ZOOM OUT BUTTON -->
-      <button id="zoomout" class="labelBtnDraw" type="button" title="Zoom Out">
-        <img src="Icons/zoomout.png" width="28" height="38" />
-      </button>
-      <!-- FIT IMAGE BUTTON -->
-      <button id="fit" class="labelBtnDraw" type="button" title="Fit Image">
-        <img src="Icons/fitscreen.png" width="28" height="38" />
-      </button>
-      </div>
+
+    <!-- IMAGE CANVAS -->
+    <div class="image_canvas" id="main_section">
+        <div id="loading">Loading image...</div>
+        <div id="main_media" class="top" style="visibility:hidden; overflow:auto;">
+            <img id="im" style="vertical-align:bottom;z-index:-3;" />
+
+
+            <div id="myCanvas_bg_div" style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
+                <svg:svg id="myCanvas_bg" width="100%" height="100%" style="position:absolute;left:0px;top:0px;z-index:0;" />
+            </div>
+
+            <div id="select_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
+                <svg:svg id="select_canvas" width="100%" height="100%" style="position:absolute;left:0px;top:0px;z-index:-2;" />
+            </div>
+
+            <div id="draw_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
+                <svg:svg id="draw_canvas" width="100%" height="100%" style="position:absolute;left:0px;top:0px;z-index:-2;" />
+            </div>
+
+            <div id="query_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
+                <svg:svg id="query_canvas" width="100%" height="100%" style="position:absolute;left:0px;top:0px;z-index:-2;" />
+            </div>
+        </div>
     </div>
-  </div>
-  
-  <!-- IMAGE CANVAS -->
-  <div class="image_canvas" id="main_section">
-    <div id="loading">Loading image...</div>
-    <div id="main_media" class="top" style="visibility:hidden; overflow:auto;">
-      <img id="im" style="vertical-align:bottom;z-index:-3;" />
-      
-      <div id="myCanvas_bg_div" style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
-           id="myCanvas_bg"
-           width="100%"
-           height="100%" 
-           style="position:absolute;left:0px;top:0px;z-index:0;" />
-      </div>
-      
-      <div id="select_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
-           id="select_canvas"
-           width="100%"
-           height="100%"
-           style="position:absolute;left:0px;top:0px;z-index:-2;" />
-      </div>	      
-      
-      <div id="draw_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
-           id="draw_canvas"
-           width="100%"
-           height="100%"
-           style="position:absolute;left:0px;top:0px;z-index:-2;" />
-      </div>
-      
-      <div id="query_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
-           id="query_canvas"
-           width="100%"
-           height="100%"
-           style="position:absolute;left:0px;top:0px;z-index:-2;" />
-      </div>
+
+    <div id="myObject_div"></div>
+    <!-- DIV that will contain the object list -->
+    <div id="anno_anchor">
     </div>
-  </div>
-  
-  <!-- DIV that will contain the object list -->
-  <div id="anno_anchor"></div>
-  
-  <!-- DIV for Mechanical Turk feedback form -->
-  <div id="mt_feedback" style="position:absolute;bottom:4px;" />
+
+    <!-- DIV for Mechanical Turk feedback form -->
+    <div id="mt_feedback" style="position:absolute;bottom:4px;" />
 
 </body>
+
 </html>
