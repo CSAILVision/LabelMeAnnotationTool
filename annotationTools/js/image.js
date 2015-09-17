@@ -182,7 +182,7 @@ function image(id) {
 	  // Draw polyline:
 	  draw_anno = anno;
 	  draw_anno.SetDivAttach('draw_canvas');
-	  draw_anno.DrawPolyLine();
+	  draw_anno.DrawPolyLine(draw_x, draw_y);
 	}
 
 	/*************************************************************/
