@@ -68,10 +68,10 @@ char *grabCut(uint8_t *imageData, uint8_t *scribbleData, int height, int width, 
 
 void setPixel(uint8_t *imageData, int height, int width, int i, int j, int r, int g, int b, int a) {
     int index = (i * width + j) * 4;
-    imageData[4 * index] = r;
-    imageData[4 * index + 1] = g;
-    imageData[4 * index + 2] = b;
-    imageData[4 * index + 3] = a;
+    imageData[index] = r;
+    imageData[index + 1] = g;
+    imageData[index + 2] = b;
+    imageData[index + 3] = a;
 }
 Pixel getPixel(uint8_t *imageData, int height, int width, int i, int j) {
     int index = (i * width + j) * 4;
