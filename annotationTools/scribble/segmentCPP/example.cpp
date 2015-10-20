@@ -1,3 +1,6 @@
+#ifdef FLASH
+#include "AS3/AS3.h"
+#endif
 #include <stdio.h>
 #include "graph.h"
 #include <iostream>
@@ -41,6 +44,7 @@ void addBackgroundRect(uint8_t* imageData, int height, int width)
     ymax = fmin(height - 1, ymax + dify / 4);
     xmin = fmax(0, xmin - difx / 4);
     ymin = fmax(0, ymin - dify / 4);
+    printf("RECT: %d, %d, %d, %d", xmin, ymin, xmax, ymax);
     for (int i = xmin; i <= xmax; i++) {
         if (whatSegment(imageData, height, width, ymin, i) == -1)
             setPixel(imageData, height, width, ymin, i, 0, 0, 255, 255);
@@ -54,22 +58,21 @@ void addBackgroundRect(uint8_t* imageData, int height, int width)
             setPixel(imageData, height, width, i, xmax, 0, 0, 255, 255);
     }
 }
-char* grabCut(uint8_t* imageData, uint8_t* objectImageData, uint8_t* scribbleData, int height, int width, int colorId)
+int grabCut(uint8_t* imageData, uint8_t* scribbleData, int height, int width, int colorId)
 {
     std::cout << "Start!!!" << std::endl;
     addBackgroundRect(scribbleData, height, width);
     std::cout << "Added Background" << std::endl;
+
     GraphType* g = getGraph(imageData, scribbleData, height, width);
+
     int flow = g->maxflow();
     std::cout << "PRINTING" << std::endl;
     std::cout << "FLOW: " << flow << std::endl;
-    setResult(g, imageData, objectImageData, height, width, colorId);
+
+    setResult(g, imageData, height, width, colorId);
     delete g;
-    std::string res = convertInt(flow);
-    char* S = new char[res.length() + 1];
-    std::strcpy(S, res.c_str());
-    return S;
-    //return flow;
+    return flow;
 }
 
 void setPixel(uint8_t* imageData, int height, int width, int i, int j, int r, int g, int b, int a)
@@ -96,8 +99,8 @@ GraphType* getGraph(uint8_t* imageData, uint8_t* scribbleData, int height, int w
     // not sure if we need an edge for both directions;
     GraphType* g = new GraphType(height * width, 8 * height * width);
     g->add_node(height * width);
-    float* probForeground = getProb(imageData, scribbleData, height, width);
-
+    float probForeground[BINS];
+    getProb(imageData, scribbleData, probForeground, height, width);
     float beta = getBeta(imageData, height, width);
     int i, j, index, index2, weight;
     std::vector<int> tWeight(2);
@@ -123,7 +126,7 @@ GraphType* getGraph(uint8_t* imageData, uint8_t* scribbleData, int height, int w
     return g;
 }
 
-float* getProb(uint8_t* imageData, uint8_t* scribbleData, int height, int width)
+void getProb(uint8_t* imageData, uint8_t* scribbleData, float probForeground[], int height, int width)
 {
     int countForeground = 0;
     int countBackground = 0;
@@ -186,7 +189,7 @@ int whatSegment(uint8_t* scribbleData, int height, int width, int i, int j)
         return 1;
     }
     else if (px.r + px.g + px.b != 0) {
-        printf("Unknown color: (%d,%d,%d)\n", px.r, px.g, px.b);
+        printf("Unknown color: %d, %d, %d\n", px.r, px.g, px.b);
         return -1;
     }
     else {
@@ -268,7 +271,7 @@ std::vector<int> getTWeight(uint8_t* imageData, uint8_t* scribbleData, float* pr
     return weights;
 }
 
-void setResult(GraphType* g, uint8_t* imageData, uint8_t* objectImageData, int height, int width, int colorId)
+void setResult(GraphType* g, uint8_t* imageData, int height, int width, int colorId)
 {
     // sets each pixel in the image to be the corresponding segment. This allows us to pass information back out to JS
     objectColors[0][0] = 0;
@@ -319,12 +322,6 @@ void setResult(GraphType* g, uint8_t* imageData, uint8_t* objectImageData, int h
             index = (i * width + j);
             int segment = g->what_segment(index);
             if (g->what_segment(index) == GraphType::SOURCE) {
-
-                objectImageData[4 * index] = imageData[4 * index];
-                objectImageData[4 * index + 1] = imageData[4 * index + 1];
-                objectImageData[4 * index + 2] = imageData[4 * index + 2];
-                objectImageData[4 * index + 3] = imageData[4 * index + 2];
-
                 imageData[4 * index] = objectColors[colorId][0];
                 imageData[4 * index + 1] = objectColors[colorId][1];
                 imageData[4 * index + 2] = objectColors[colorId][2];
@@ -335,12 +332,21 @@ void setResult(GraphType* g, uint8_t* imageData, uint8_t* objectImageData, int h
                 imageData[4 * index + 1] = 0;
                 imageData[4 * index + 2] = 0;
                 imageData[4 * index + 3] = 0;
-                objectImageData[4 * index] = 0;
-                objectImageData[4 * index + 1] = 0;
-                objectImageData[4 * index + 2] = 0;
-                objectImageData[4 * index + 3] = 0;
             }
         }
     }
 }
+#ifdef FLASH
+
+int test(char* str)
+{
+    str[0] = 'W';
+    return 5;
+}
+
+int main()
+{
+    AS3_GoAsync();
+}
+#endif
 }
