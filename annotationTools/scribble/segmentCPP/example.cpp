@@ -47,15 +47,15 @@ void addBackgroundRect(uint8_t* imageData, int height, int width)
     printf("RECT: %d, %d, %d, %d", xmin, ymin, xmax, ymax);
     for (int i = xmin; i <= xmax; i++) {
         if (whatSegment(imageData, height, width, ymin, i) == -1)
-            setPixel(imageData, height, width, ymin, i, 0, 0, 255, 255);
+            setPixel(imageData, height, width, ymin, i, 255, 0, 0, 255);
         if (whatSegment(imageData, height, width, ymax, i) == -1)
-            setPixel(imageData, height, width, ymax, i, 0, 0, 255, 255);
+            setPixel(imageData, height, width, ymax, i, 255, 0, 0, 255);
     }
     for (int i = ymin; i <= ymax; i++) {
         if (whatSegment(imageData, height, width, i, xmin) == -1)
-            setPixel(imageData, height, width, i, xmin, 0, 0, 255, 255);
+            setPixel(imageData, height, width, i, xmin, 255, 0, 0, 255);
         if (whatSegment(imageData, height, width, i, xmax) == -1)
-            setPixel(imageData, height, width, i, xmax, 0, 0, 255, 255);
+            setPixel(imageData, height, width, i, xmax, 255, 0, 0, 255);
     }
 }
 int grabCut(uint8_t* imageData, uint8_t* scribbleData, int height, int width, int colorId)
@@ -182,10 +182,10 @@ int whatSegment(uint8_t* scribbleData, int height, int width, int i, int j)
     // background: 1
     // unknown: -1
     Pixel px = getPixel(scribbleData, height, width, i, j);
-    if (px.r == 255) {
+    if (px.b == 255) {
         return 0;
     }
-    else if (px.b == 255) {
+    else if (px.r == 255) {
         return 1;
     }
     else if (px.r + px.g + px.b != 0) {
