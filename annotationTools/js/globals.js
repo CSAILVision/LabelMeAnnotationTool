@@ -52,7 +52,7 @@ var scribble_mode = true;
 var threed_mode = false;
 var video_mode = false;
 var bounding_box = false;
-var bbox_mode = false;
+var bbox_mode = true;
 
 
 var wait_for_input;
