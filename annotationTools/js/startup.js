@@ -49,6 +49,7 @@ function StartupLabelMe() {
       var anno_file = main_media.GetFileInfo().GetFullName();
       anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
       ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+      main_media.GetFileInfo().PreFetchImage();
           };
 
       // Get the image:
@@ -73,6 +74,7 @@ function LoadNewMedia(){
 	      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
 	      ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
 	      main_media.Zoom('fitted');
+	      main_media.GetFileInfo().PreFetchImage();
           };
 
       // Get the image:

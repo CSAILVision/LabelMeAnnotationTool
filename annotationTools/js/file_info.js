@@ -349,6 +349,7 @@ function file_info() {
                 im_req.open("GET", url, true);
             }
         }
+	console.log('prefetching')
 	im_req.onload = function(e){
 		if(im_req.status==200) {
 		    dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
