@@ -327,7 +327,6 @@ function file_info() {
                 im_req.send('');
             }
         }
-        
         if(im_req.status==200) {
             this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
@@ -335,5 +334,36 @@ function file_info() {
         else {
             alert('Fatal: there are problems with fetch_image.cgi');
         }
+    };
+    this.PreFetchImage = function () {
+        var url = 'annotationTools/perl/fetch_image.cgi?mode=' + this.mode + '&username=' + username + '&collection=' + this.collection.toLowerCase() + '&folder=' + this.dir_name + '&image=' + this.im_name;
+        var im_req;
+        // branch for native XMLHttpRequest object
+        if (window.XMLHttpRequest) {
+            im_req = new XMLHttpRequest();
+            im_req.open("GET", url, true);
+        }
+        else if (window.ActiveXObject) {
+            im_req = new ActiveXObject("Microsoft.XMLHTTP");
+            if (im_req) {
+                im_req.open("GET", url, true);
+            }
+        }
+	im_req.onload = function(e){
+		if(im_req.status==200) {
+		    dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
+		    im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+		    path =  'Images/' + dir_name + '/' + im_name;
+		    var img1 = new Image()
+		    img1.src = path;
+		    img1.onload = function (){
+			console.log('preloaded');
+		    }
+		}
+		else {
+		    alert('Fatal: there are problems with fetch_image.cgi');
+		}
+	}
+	im_req.send('');
     };
 }

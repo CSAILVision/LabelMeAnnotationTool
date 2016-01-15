@@ -70,14 +70,17 @@ function ShowNextImage() {
     return;
   }
 
-  // Remove the image:
-  $('#main_media').remove();
+  //$('#main_media').remove();
 
   // Remove the object list:
   RemoveObjectList();
 
   // Get a new image and reset URL to reflect new image:
-  main_media.GetFileInfo().SetURL(document.URL);
+  if (video_mode) main_media.GetFileInfo().SetURL(document.URL);
+  else {
+    main_media.GetFileInfo().FetchImage();
+    LoadNewMedia();
+  }
 }
 
 function InsertServerLogData(modifiedControlPoints) {

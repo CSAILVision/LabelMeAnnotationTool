@@ -37,7 +37,8 @@ function image(id) {
      * will call obj.SetImageDimensions().
     */
     this.GetNewImage = function(onload_helper) {
-        document.getElementById('loading').style.display = '';
+	console.log('new image');
+        document.getElementById('loading').style.visibility = 'visible';
         if(IsMicrosoft()) this.im.style.visibility = 'hidden';
         else this.im.style.display = 'none';
         this.im.src = this.file_info.GetImagePath();
@@ -230,8 +231,8 @@ function image(id) {
      * @param {image} im
     */
     this.SetOrigImDims = function (im) {
-        this.width_orig = im.width;
-        this.height_orig = im.height;
+        this.width_orig = im.naturalWidth;
+        this.height_orig = im.naturalHeight;
         return;
     };
     

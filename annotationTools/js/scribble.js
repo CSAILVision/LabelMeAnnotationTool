@@ -13,7 +13,7 @@ grabCut = Module.cwrap(
 drawing_mode = 0;
 
 
-function scribble_canvas(tag) {
+function Scribble_canvas(tag) {
   this.tagcanvasDiv = tag; 
   this.colorseg = Math.floor(Math.random()*14);
   this.cache_random_number = Math.random();

@@ -61,7 +61,23 @@ function StartupLabelMe() {
     $('html').append('<body><p><img src="Icons/LabelMe.gif" /></p><br /><p>Sorry!  This page only works with Mozilla Firefox, Chrome, and Internet Explorer.  We may support other browsers in the future.</p><p><a href="http://www.mozilla.org">Download Mozilla Firefox?</a></p></body>');
   }
 }
+function LoadNewMedia(){
+	
+      main_canvas = new canvas('myCanvas_bg');
+      function main_media_onload_helper() {
+	      // Set the image dimensions:
+	       main_media.SetImageDimensions();
 
+	      // Read the XML annotation file:
+	      var anno_file = main_media.GetFileInfo().GetFullName();
+	      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+	      ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+	      main_media.Zoom('fitted');
+          };
+
+      // Get the image:
+      main_media.GetNewImage(main_media_onload_helper);
+}
 /** This function gets called if the annotation has been successfully loaded.
   * @param {string} xml - the xml regarding the current file
 */
@@ -98,7 +114,10 @@ function LoadAnnotationSuccess(xml) {
   console.timeEnd('load success');
 
   // Finish the startup scripts:
-  FinishStartup();
+ FinishStartup();
+ loaded_once = true;
+   
+
 }
 
 /** Sets AllAnnotations array from LM_xml */
@@ -193,7 +212,7 @@ function LoadTemplateSuccess(xml) {
 function FinishStartup() {
   // Load the annotation list on the right side of the page:
   if(view_ObjList) RenderObjectList();
-
+  if (loaded_once) return; 
   // Add actions:
   console.log('LabelMe: setting actions');
   if($('#img_url')){
@@ -224,6 +243,7 @@ function FinishStartup() {
   initUserName();
 
   // Enable scribble mode:
+
   InitializeAnnotationTools('label_buttons_drawing','main_media');
   
   // Set action when the user presses a key:
@@ -242,7 +262,10 @@ function FinishStartup() {
 // Initialize the segmentation tool. This function is called when the field 
 // scribble of the url is true
 function InitializeAnnotationTools(tag_button, tag_canvas){
-    if (scribble_mode) scribble_canvas = new scribble_canvas(tag_canvas);
+
+    if (scribble_mode){
+	 scribble_canvas = new Scribble_canvas(tag_canvas);
+    }
     var html_str = '<div id= "polygonDiv" class="annotatemenu">Polygon<br></br>Tool \
         <button id="polygon" class="labelBtnDraw" type="button" title="Start Polygon" onclick="SetPolygonDrawingMode(false)" > \
         <img id="polygonModeImg" src="Icons/polygon.png"  width="28" height="38" /> \

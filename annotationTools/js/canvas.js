@@ -13,6 +13,7 @@ function canvas(div_attach) {
   // *******************************************
 
   this.annotations = Array(); // includes name, deleted, verified info
+  $('#'+div_attach).empty()
   this.div_attach = div_attach; // name of DIV element to attach to
 
   // *******************************************

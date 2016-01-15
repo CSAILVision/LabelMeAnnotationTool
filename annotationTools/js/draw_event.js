@@ -23,7 +23,7 @@ function StartDrawEvent(event) {
 
   // Lower opacity of rest of elements
   if (video_mode) $('#myCanvas_bg').css('opacity', 0.5);
-
+  else main_media.GetFileInfo().PreFetchImage();
   // Set active canvas:
   active_canvas = DRAW_CANVAS;
   if (video_mode) oVP.Pause();
