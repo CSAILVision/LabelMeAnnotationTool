@@ -117,7 +117,6 @@ function LoadAnnotationSuccess(xml) {
 
   // Finish the startup scripts:
  FinishStartup();
- loaded_once = true;
    
 
 }
@@ -215,6 +214,7 @@ function FinishStartup() {
   // Load the annotation list on the right side of the page:
   if(view_ObjList) RenderObjectList();
   if (loaded_once) return; 
+  loaded_once = true;
   // Add actions:
   console.log('LabelMe: setting actions');
   if($('#img_url')){
