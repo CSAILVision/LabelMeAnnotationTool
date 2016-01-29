@@ -15,7 +15,10 @@ function GetEventPosY(event) {
 
 function RemoveSpecialChars(str) {
   var re = /\$|@|#|~|`|\%|\*|\^|\&|\+|\=|\[|\]|\}|\{|\;|\:|\'|\"|\<|\>|\?|\||\\|\!|\$/g;
-  return str.replace(re,"_");
+  var aux = str.replace(re,"_");
+  aux =  aux.replace(/\s+/g,' ');
+  aux = aux.toLowerCase()
+  return aux;
 }
 
 function WaitForInput() {
