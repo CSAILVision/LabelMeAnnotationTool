@@ -50,7 +50,7 @@ void addBackgroundRect (uint8_t *imageData, int height, int width){
     }
 
 }
-char *grabCut(uint8_t *imageData, uint8_t *scribbleData, int height, int width, int colorId) {
+int grabCut(uint8_t *imageData, uint8_t *scribbleData, int height, int width, int colorId) {
     std::cout << "Start" << std::endl;
     addBackgroundRect(scribbleData, height, width);
     std::cout << "Added Background" << std::endl;
@@ -59,11 +59,11 @@ char *grabCut(uint8_t *imageData, uint8_t *scribbleData, int height, int width, 
     std::cout << flow << std::endl;
     setResult(g, imageData, height, width, colorId);
     delete g;
-    std::string res = convertInt(flow);
-    char * S = new char[res.length() + 1];
-    std::strcpy(S,res.c_str());
-    return S;
-    //return flow;
+    //std::string res = convertInt(flow);
+    //char * S = new char[res.length() + 1];
+    //std::strcpy(S,res.c_str());
+    //return S;
+    return flow;
 }
 
 void setPixel(uint8_t *imageData, int height, int width, int i, int j, int r, int g, int b, int a) {
@@ -87,8 +87,9 @@ GraphType *getGraph(uint8_t *imageData, uint8_t *scribbleData, int height, int w
     // not sure if we need an edge for both directions;
     GraphType *g = new GraphType(height * width, 8 * height * width);
     g->add_node(height * width);
-
-    float *probForeground = getProb(imageData, scribbleData, height, width);
+    float probForeground[BINS];
+    getProb(imageData, scribbleData, probForeground, height, width);
+    //float *probForeground = getProb(imageData, scribbleData, height, width);
 
     float beta = getBeta(imageData, height, width);
     int i, j, index, index2, weight;
@@ -115,7 +116,7 @@ GraphType *getGraph(uint8_t *imageData, uint8_t *scribbleData, int height, int w
     return g;
 }
 
-float *getProb(uint8_t *imageData, uint8_t *scribbleData, int height, int width) {
+void getProb(uint8_t *imageData, uint8_t *scribbleData, float probForeground[], int height, int width) {
     int countForeground = 0;
     int countBackground = 0;
     float histForeground[BINS];
@@ -137,7 +138,6 @@ float *getProb(uint8_t *imageData, uint8_t *scribbleData, int height, int width)
             }
         }
     }
-    float probForeground[BINS];
     int count;
     float probGivenForeground, probGivenBackground;
 
@@ -159,7 +159,6 @@ float *getProb(uint8_t *imageData, uint8_t *scribbleData, int height, int width)
             probForeground[i] = 0.5;
         }
     }
-    return probForeground;
 }
 
 int whatSegment(uint8_t *scribbleData, int height, int width, int i, int j) {
