@@ -17,7 +17,9 @@ function RemoveSpecialChars(str) {
   var re = /\$|@|#|~|`|\%|\*|\^|\&|\+|\=|\[|\]|\}|\{|\;|\:|\'|\"|\<|\>|\?|\||\\|\!|\$/g;
   var aux = str.replace(re,"_");
   aux =  aux.replace(/\s+/g,' ');
-  aux = aux.toLowerCase()
+  aux = aux.toLowerCase();
+  aux = aux.trim();
+  aux = aux.replace(/ +(?= )/g,'');
   return aux;
 }
 
