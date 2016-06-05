@@ -73,13 +73,13 @@ function handler() {
       }
       
       if (use_attributes) {
-	// occlusion field
-	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
-	else new_occluded = RemoveSpecialChars(adjust_occluded);
-	
-	// attributes field
-	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
-	else new_attributes = RemoveSpecialChars(adjust_attributes);
+      	// occlusion field
+      	if (document.getElementById('occluded')) new_occluded = RemoveSpecialChars(document.getElementById('occluded').value);
+      	else new_occluded = RemoveSpecialChars(adjust_occluded);
+      	
+      	// attributes field
+      	if(document.getElementById('attributes')) new_attributes = RemoveSpecialChars(document.getElementById('attributes').value);
+      	else new_attributes = RemoveSpecialChars(adjust_attributes);
       }
       
       StopEditEvent();

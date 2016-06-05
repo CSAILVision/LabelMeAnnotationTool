@@ -74,7 +74,7 @@ function canvas(div_attach) {
     // Render the annotations:
     for(var pp=0; pp < this.annotations.length; pp++) {
       if(!this.annotations[pp].hidden) {
-	this.annotations[pp].RenderAnnotation('rest');
+	     this.annotations[pp].RenderAnnotation('rest');
       }
     }
   };

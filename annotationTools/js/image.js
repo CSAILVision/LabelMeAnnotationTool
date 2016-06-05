@@ -159,12 +159,12 @@ function image(id) {
         // Scale and scroll the image so that the center stays in the center of the visible area
         this.ScaleFrame(amt);
         
-	// Remove polygon from draw canvas:
-	var anno = null;
-	if(draw_anno) {
-	  draw_anno.DeletePolygon();
-	  anno = draw_anno;
-	  draw_anno = null;
+    	// Remove polygon from draw canvas:
+    	var anno = null;
+    	if(draw_anno) {
+    	  draw_anno.DeletePolygon();
+    	  anno = draw_anno;
+    	  draw_anno = null;
         }
 
         // set the size of the image (this.im is the image object)
@@ -175,26 +175,36 @@ function image(id) {
         $("#select_canvas").width(this.width_curr).height(this.height_curr);
         $("#draw_canvas").width(this.width_curr).height(this.height_curr);
         $("#query_canvas").width(this.width_curr).height(this.height_curr);
-        
+            
         // Redraw polygons.
-	main_canvas.RenderAnnotations();
+    	main_canvas.RenderAnnotations();
 
-	if(anno) {
-	  // Draw polyline:
-	  draw_anno = anno;
-	  draw_anno.SetDivAttach('draw_canvas');
-	  draw_anno.DrawPolyLine(draw_x, draw_y);
-	}
-
-	/*************************************************************/
-	/*************************************************************/
-	// Scribble: 
-	if (drawing_mode == 1){
-	  scribble_canvas.redraw();
-	  scribble_canvas.drawMask();
+    	if(anno) {
+    	  // Draw polyline:
+    	  draw_anno = anno;
+    	  draw_anno.SetDivAttach('draw_canvas');
+    	  draw_anno.DrawPolyLine(draw_x, draw_y);
+    	}
+        if (adjust_event){
+            adjust_event.scale = main_media.GetImRatio();
+            $('#'+adjust_event.polygon_id).parent().remove();
+            adjust_event.polygon_id = adjust_event.DrawPolygon(adjust_event.dom_attach,adjust_event.x,adjust_event.y,adjust_event.obj_name,adjust_event.scale);
+            select_anno.polygon_id = this.polygon_id;
+            adjust_event.RemoveControlPoints();
+            adjust_event.RemoveCenterOfMass();
+            adjust_event.ShowCenterOfMass();
+            adjust_event.ShowControlPoints();
         }
-	/*************************************************************/
-	/*************************************************************/
+
+    	/*************************************************************/
+    	/*************************************************************/
+    	// Scribble: 
+    	if (drawing_mode == 1){
+    	  scribble_canvas.redraw();
+    	  scribble_canvas.drawMask();
+        }
+    	/*************************************************************/
+    	/*************************************************************/
     };
     
     
