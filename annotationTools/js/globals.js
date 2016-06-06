@@ -53,7 +53,7 @@ var threed_mode = false;
 var video_mode = false;
 var bounding_box = false;
 var bbox_mode = true;
-var autocomplete_mode = false;
+var autocomplete_mode = true;
 
 
 var wait_for_input;

@@ -57,18 +57,28 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
 function addAutoComplete(){
 	var tags = [];
 	$.getScript("./annotationTools/js/wordnet_data.js", function(){
-		console.log('found');
     var NoResultsLabel = 'No results found';
 		tags = data_wordnet;
 		$( "#objEnter" ).autocomplete({
         
 			  source: function( request, response ) {
           if (request.term.length > 0){
+            var matcher2 = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term )+'$', "i" );
     			  var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
             res = $.grep( tags, function( item ){
               aux = matcher.test( item );
               return aux
             }); 
+            res2 = $.grep( tags, function( item ){
+              aux = matcher2.test( item );
+              return aux
+            });
+            if (res2.length == 0){
+              $("#objEnter").css('color', 'red');
+            }
+            else {
+              $("#objEnter").css('color', 'black');
+            }
             if (res.length == 0){
               res = [NoResultsLabel];
             }
@@ -79,15 +89,16 @@ function addAutoComplete(){
             response(false);
           }
         },
-        response: function(event, ui){
-          if (ui.content.length > 0 && ui.content[0].label == NoResultsLabel) {
-            //$("#empty-message").text("No results found");
-            $("#objEnter").css('color', 'red');
-          }
-          else {
-            $("#objEnter").css('color', 'black');
-          }
-        },
+        // response: function(event, ui){
+        //   console.log(this.term);
+        //   if (ui.content.length > 0 && ui.content[0].label == NoResultsLabel) {
+        //     //$("#empty-message").text("No results found");
+        //     $("#objEnter").css('color', 'red');
+        //   }
+        //   else {
+        //     $("#objEnter").css('color', 'black');
+        //   }
+        // },
         select: function (event, ui) {
             if (ui.item.label === NoResultsLabel) {
                 event.preventDefault();
@@ -101,13 +112,11 @@ function addAutoComplete(){
 
         minLength: 0  
 		}).data("ui-autocomplete")._renderItem =  function( ul, item ) {
-            console.log('hi')
             // Replace the matched text with a custom span. This
             // span uses the class found in the "highlightClass" option.
              var newText = String(item.value).replace(
                 new RegExp("^" + $.ui.autocomplete.escapeRegex( this.term ), "i"),
                 "<strong>$&</strong>");
-             console.log(newText);
             return $("<li></li>")
                 .data("ui-item.autocomplete", item)
                 .append("<a>" + newText + "</a>")
