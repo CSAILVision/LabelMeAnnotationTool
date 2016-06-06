@@ -100,6 +100,7 @@ function addAutoComplete(){
         //   }
         // },
         select: function (event, ui) {
+            $("#objEnter").css('color', 'black');
             if (ui.item.label === NoResultsLabel) {
                 event.preventDefault();
             }
