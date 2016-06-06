@@ -146,4 +146,11 @@ function FillPolygon(id) {
     $('#'+id).attr("fill-opacity","0.5");
   }
 }
+function ShadePolygon(id) {
+  if(id) {
+    $('#'+id).attr("fill",'red');
+    $('#'+id).attr("fill-opacity","1");
+    $('#'+id).attr("stroke-width", "0");
+  }
+}
     

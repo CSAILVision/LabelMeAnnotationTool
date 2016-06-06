@@ -49,7 +49,75 @@ function CreatePopupBubble(left,top,innerHTML,dom_attach) {
     document.getElementById(bubble_name).style.top = (top) + 'px';
   }
   setTimeout("$('#objEnter').focus();",1);
+  if (autocomplete_mode){
+    addAutoComplete();
+  }
   return bubble_name;
+}
+function addAutoComplete(){
+	var tags = [];
+	$.getScript("./annotationTools/js/wordnet_data.js", function(){
+		console.log('found');
+    var NoResultsLabel = 'No results found';
+		tags = data_wordnet;
+		$( "#objEnter" ).autocomplete({
+        
+			  source: function( request, response ) {
+          if (request.term.length > 0){
+    			  var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex( request.term ), "i" );
+            res = $.grep( tags, function( item ){
+              aux = matcher.test( item );
+              return aux
+            }); 
+            if (res.length == 0){
+              res = [NoResultsLabel];
+            }
+    			  response(res);
+          }
+          else {
+            $("#objEnter").css('color', 'black');
+            response(false);
+          }
+        },
+        response: function(event, ui){
+          if (ui.content.length > 0 && ui.content[0].label == NoResultsLabel) {
+            //$("#empty-message").text("No results found");
+            $("#objEnter").css('color', 'red');
+          }
+          else {
+            $("#objEnter").css('color', 'black');
+          }
+        },
+        select: function (event, ui) {
+            if (ui.item.label === NoResultsLabel) {
+                event.preventDefault();
+            }
+        },
+        focus: function (event, ui) {
+            if (ui.item.label === NoResultsLabel) {
+                event.preventDefault();
+            }
+        },
+
+        minLength: 0  
+		}).data("ui-autocomplete")._renderItem =  function( ul, item ) {
+            console.log('hi')
+            // Replace the matched text with a custom span. This
+            // span uses the class found in the "highlightClass" option.
+             var newText = String(item.value).replace(
+                new RegExp("^" + $.ui.autocomplete.escapeRegex( this.term ), "i"),
+                "<strong>$&</strong>");
+             console.log(newText);
+            return $("<li></li>")
+                .data("ui-item.autocomplete", item)
+                .append("<a>" + newText + "</a>")
+                .appendTo(ul);
+              
+          };
+    $(".ui-autocomplete").css('font-size', '11px')
+    $(".ui-autocomplete").css('font-family', 'BlinkMacSystemFont')
+	});	
+
 }
 
 /** This function creates the close button at the top-right corner of the popup bubble
@@ -216,18 +284,18 @@ function HTMLobjectBox(obj_name) {
   
   html_str += '<input name="objEnter" id="objEnter" type="text" style="width:220px;" tabindex="0" value="'+obj_name+'" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using. "';
   
-  html_str += ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13)';
-        
+  html_str += ' onkeyup="var c;if(event.keyCode)c=event.keyCode;if(event.which)c=event.which;if(c==13){';
+  //html_str += 'console.log($(".ui-autocomplete.ui-widget:visible").length);';
   // if obj_name is empty it means that the box is being created
   if (obj_name=='') {
     // If press enter, then submit; if press ESC, then delete:
-    if (video_mode) html_str += 'main_media.SubmitObject();if(c==27) main_handler.WhatIsThisObjectDeleteButton();" ';
-    else html_str += 'main_handler.SubmitQuery();if(c==27)main_handler.WhatIsThisObjectDeleteButton();" ';
+    if (video_mode) html_str += 'main_media.SubmitObject()};if(c==27) main_handler.WhatIsThisObjectDeleteButton();" ';
+    else html_str += 'main_handler.SubmitQuery()};if(c==27)main_handler.WhatIsThisObjectDeleteButton();" ';
   }
   else {
     // If press enter, then submit:
-    if (video_mode) html_str += 'main_media.SubmitEditObject();" ';
-    else html_str += 'main_handler.SubmitEditLabel();" ';
+    if (video_mode) html_str += 'main_media.SubmitEditObject()};" ';
+    else html_str += 'main_handler.SubmitEditLabel()};" ';
   }
   
   // if there is a list of objects, we need to habilitate the list

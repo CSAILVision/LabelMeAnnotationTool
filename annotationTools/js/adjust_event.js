@@ -270,9 +270,8 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
         this.y[i] = Math.max(Math.min(y,main_media.height_orig),1);
       }
       // Remove polygon and redraw:
-      console.log(this.polygon_id);
       $('#'+this.polygon_id).parent().remove();
-      $('#'+this.polygon_id).remove();
+      //$('#'+this.polygon_id).remove();
       this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
       select_anno.polygon_id = this.polygon_id;
       // Adjust control points:
@@ -344,7 +343,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
       // Remove polygon and redraw:
       //if ($('#'+this.polygon_id).is('image')) $('#'+this.polygon_id).remove();
       $('#'+this.polygon_id).parent().remove();
-      $('#'+this.polygon_id).remove();
+      //$('#'+this.polygon_id).remove();
       this.polygon_id = this.DrawPolygon(this.dom_attach,this.x,this.y,this.obj_name,this.scale);
       select_anno.polygon_id = this.polygon_id;
       // Adjust control points:

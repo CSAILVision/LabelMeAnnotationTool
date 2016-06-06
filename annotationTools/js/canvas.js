@@ -78,6 +78,11 @@ function canvas(div_attach) {
       }
     }
   };
+  this.ShadePolygons = function (){
+    for(var i=0;i<this.annotations.length;i++) {
+      this.annotations[i].ShadePolygon();
+    }
+  }
   this.GetAnnoIndex = function(id){
     var anid = -1;
     for (var i = 0; i < this.annotations.length; i++) if (this.annotations[i].anno_id == id) anid = i;

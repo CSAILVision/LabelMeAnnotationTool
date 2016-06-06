@@ -142,7 +142,6 @@ function annotation(anno_id) {
     this.RenderAnnotation = function (action_type) {
         // Render the shape:
         this.DrawPolygon(main_media.GetImRatio(), this.GetPtsX(), this.GetPtsY());
-
         // Set shape actions:
         switch(action_type) {
             case 'rest':
@@ -272,6 +271,9 @@ function annotation(anno_id) {
         /*************************************************************/
         /*************************************************************/
     };
+    this.ShadePolygon = function(){
+        ShadePolygon(this.polygon_id);
+    }
     
     // Unfill the interior of the polygon.
     this.UnfillPolygon = function () {

@@ -33,7 +33,9 @@ function RenderObjectList() {
   
   // Create DIV
   html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
-
+  html_str += '<p style="font-size:10px;line-height:100%"><a ' +
+  'onmouseover="main_canvas.ShadePolygons();" ' +
+  'onmouseout="main_canvas.RenderAnnotations();"> Reveal unlabeled pixels </a></p>';
   // Create "hide all" button:
   if(IsHidingAllPolygons) {
     html_str += '<p style="font-size:10px;line-height:100%"><a id="show_all_button" href="javascript:ShowAllPolygons();">Show all polygons</a></p>';
