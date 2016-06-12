@@ -101,7 +101,7 @@ function addAutoComplete(){
         // },
         select: function (event, ui) {
             $("#objEnter").css('color', 'black');
-            if (ui.item.label === NoResultsLabel) {
+            if (ui.item.label === NoResultsLabel || event.which == 13) {
                 event.preventDefault();
             }
         },
