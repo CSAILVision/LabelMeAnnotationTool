@@ -16,6 +16,7 @@ function image(id) {
     // *******************************************
     
     this.file_info = new file_info();
+    this.contrast = 128;
     this.id = id;
     this.im = document.getElementById(this.id);
     this.width_orig;
@@ -41,8 +42,14 @@ function image(id) {
         document.getElementById('loading').style.visibility = 'visible';
         if(IsMicrosoft()) this.im.style.visibility = 'hidden';
         else this.im.style.display = 'none';
-        this.im.src = this.file_info.GetImagePath();
-        this.im.onload = onload_helper;
+        this.image =  new Image();
+        
+        this.image.src  =  this.file_info.GetImagePath();
+        this.image.onload = function (){
+            onload_helper();
+            main_media.im.getContext('2d').drawImage(main_media.image,0,0,main_media.width_curr, main_media.height_curr);
+            main_media.DisplayWithContrast(main_media.contrast);
+        }
         wait_for_input = 0;
         edit_popup_open = 0;
     };
@@ -60,12 +67,11 @@ function image(id) {
     this.GetFileInfo = function() {
         return this.file_info;
     };
-    
+ 
     
     /** Sets the dimensions of the image based on browser setup. */
     this.SetImageDimensions = function() {
-        
-        this.SetOrigImDims(this.im);
+        this.SetOrigImDims(this.image);
         var avail_width = this.GetAvailWidth();
         var avail_height = this.GetAvailHeight();
         var width_ratio = avail_width/this.width_orig;
@@ -80,7 +86,6 @@ function image(id) {
         
         this.im.width = this.width_curr;
         this.im.height = this.height_curr;
-        
         $("#myCanvas_bg").width(this.width_curr).height(this.height_curr);
         $("#select_canvas").width(this.width_curr).height(this.height_curr);
         $("#draw_canvas").width(this.width_curr).height(this.height_curr);
@@ -175,7 +180,11 @@ function image(id) {
         $("#select_canvas").width(this.width_curr).height(this.height_curr);
         $("#draw_canvas").width(this.width_curr).height(this.height_curr);
         $("#query_canvas").width(this.width_curr).height(this.height_curr);
-            
+        
+        // Draw Image in canvas
+
+        
+        main_media.DisplayWithContrast(main_media.contrast);
         // Redraw polygons.
     	main_canvas.RenderAnnotations();
 
@@ -280,6 +289,44 @@ function image(id) {
             return false;  //the 160 is about the width of the right-side div
         return true;
     };
+	this.ObtainImagePixels = function(){
+		var c = document.getElementById('imcanvas');
+		c.width = this.width_curr;
+		c.height = this.height_curr;
+		var ctx = c.getContext('2d');
+		ctx.drawImage(this.image,0,0, main_media.width_curr, main_media.height_curr);
+		data = ctx.getImageData(0,0, c.width, c.height);
+        return data;
+	}
+    this.AugmentContrast = function(){
+        this.contrast = this.contrast + 5;
+        this.contrast = Math.min(this.contrast, 255);
+        this.DisplayWithContrast(this.contrast);
+    }
+    this.ReduceContrast = function(){
+        this.contrast = this.contrast - 5;
+        this.contrast = Math.max(this.contrast, 0);
+        this.DisplayWithContrast(this.contrast);
+    }
+	this.DisplayWithContrast = function(alpha){
+		var data_im = this.ObtainImagePixels();
+        var data = data_im.data;
+		for (var i = 0; i < data.length; i+=4){
+			for (var j = 0; j < 3; j++){
+				var elem = data[i+j];
+				if (elem < alpha){
+					var elem_new = 128*(elem/alpha)
+				}
+				else {
+					var elem_new = 128*(1+(elem - alpha)/(256-alpha));
+				}
+				data[i+j] = elem_new;
+			}
+		}
+        data_im.data = data;
+        main_media.im.getContext('2d').putImageData(data_im,0,0,0,0,main_media.width_curr, main_media.height_curr);
+
+	}
     
 }
 

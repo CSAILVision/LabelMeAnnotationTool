@@ -14,7 +14,7 @@ function StartupLabelMe() {
     // Initialize global variables:
     main_handler = new handler();
     main_canvas = new canvas('myCanvas_bg');
-    main_media = new image('im');
+    main_media = new image('imcanvas');
     // Parse the input URL.  Returns false if the URL does not set the 
     // annotation folder or image filename.  If false is returned, the 
     // function fetches a new image and sets the URL to reflect the 
@@ -225,6 +225,8 @@ function FinishStartup() {
   $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
   $('#xml_url').attr("onclick","javascript:GetXMLFile();");
   $('#nextImage').attr("onclick","javascript:ShowNextImage()");
+  $('#lessContrast').attr("onclick","javascript:main_media.AugmentContrast()");
+  $('#moreContrast').attr("onclick","javascript:main_media.ReduceContrast()");
   if (video_mode){
     $('#nextImage').attr("title", "Next Video");
     $('#img_url').attr("title", "Download Video");

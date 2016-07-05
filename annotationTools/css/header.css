@@ -64,6 +64,22 @@
 	margin-bottom:0px;
 	display:block;
 }
+#label_buttons_contrast{
+    position:absolute;
+    top:8px;
+	background-color:#fff;
+	border: 2px solid #000;
+	padding:2px;
+	padding-left:10px;
+	padding-right:10px;
+	-webkit-border-radius:20px;
+	-moz-border-radius:20px;
+	border-radius:20px;
+	/*height:52px;*/
+    left:515px;
+	margin-bottom:0px;
+	display:block;
+}
 
 .labelBtn, img.labelBtn {
 	background-color:#fff;

@@ -116,6 +116,15 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <img src="Icons/next_2.png" height="30" />
       </button>
     </div>
+    <div id="label_buttons_contrast">
+
+      <button id="lessContrast" class="labelBtn" type="button" title="Decrease Brightness">
+        <img src="Icons/morecontrast.png" height="30" />
+      </button>
+      <button id="moreContrast" class="labelBtn" type="button" title="Increase Brightness">
+        <img src="Icons/lesscontrast.png" height="30" />
+      </button>
+    </div>
     
     <!-- DRAWING BUTTONS -->
     <div id="label_buttons_drawing">
@@ -140,7 +149,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   <div class="image_canvas" id="main_section">
     <div id="loading">Loading image...</div>
     <div id="main_media" class="top" style="visibility:hidden; overflow:auto;">
-      <img id="im" style="vertical-align:bottom;z-index:-3;" />
+	  <canvas id="imcanvas" style="vertical-align:bottom;z-index:-3;">      
+      <!-- <img id="im" style="vertical-align:bottom;z-index:-3;" /> -->
+  	  </canvas>
       
       <div id="myCanvas_bg_div" style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
         <svg:svg 
