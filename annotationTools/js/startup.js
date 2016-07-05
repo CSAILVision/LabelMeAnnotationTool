@@ -6,7 +6,15 @@ function StartupLabelMe() {
 
   // Check browser:
   GetBrowserInfo();
+
   if(IsNetscape() || (IsMicrosoft() && (bversion>=4.5)) || IsSafari() || IsChrome()) {
+
+    if (IsNetscape()){
+      $('#label_buttons_contrast').css('left', '545px');
+    }
+    if (IsSafari()){
+      $('#label_buttons_contrast').css('left', '525px');
+    }
     // Write "start up" messages:
     WriteLogMsg('*start_loading');
     console.log('LabelMe: starting up...');
