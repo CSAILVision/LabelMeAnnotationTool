@@ -47,6 +47,7 @@ function image(id) {
         this.image.src  =  this.file_info.GetImagePath();
         this.image.onload = function (){
             onload_helper();
+            main_media.contrast = 128;
             main_media.im.getContext('2d').drawImage(main_media.image,0,0,main_media.width_curr, main_media.height_curr);
             main_media.DisplayWithContrast(main_media.contrast);
         }
