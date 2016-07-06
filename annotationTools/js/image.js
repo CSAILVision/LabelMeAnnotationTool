@@ -300,12 +300,12 @@ function image(id) {
 	}
     this.AugmentContrast = function(){
         this.contrast = this.contrast + 5;
-        this.contrast = Math.min(this.contrast, 255);
+        this.contrast = Math.min(this.contrast, 254);
         this.DisplayWithContrast(this.contrast);
     }
     this.ReduceContrast = function(){
         this.contrast = this.contrast - 5;
-        this.contrast = Math.max(this.contrast, 0);
+        this.contrast = Math.max(this.contrast, 1);
         this.DisplayWithContrast(this.contrast);
     }
 	this.DisplayWithContrast = function(alpha){
@@ -318,7 +318,7 @@ function image(id) {
 					var elem_new = 128*(elem/alpha)
 				}
 				else {
-					var elem_new = 128*(1+(elem - alpha)/(256-alpha));
+					var elem_new = 128*(1+(elem - alpha)/(255-alpha));
 				}
 				data[i+j] = elem_new;
 			}
