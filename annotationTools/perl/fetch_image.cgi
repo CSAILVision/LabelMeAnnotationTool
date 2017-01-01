@@ -42,7 +42,7 @@ if($mode eq "i") {
     close(FP);
 }
 elsif($mode eq "c") {
-    opendir(DIR,$LM_HOME . "Images/users/$username/$collection") || die("Cannot read collections");
+    opendir(DIR,$LM_HOME . "Images/$collection") || die("Cannot read collections");
     my @all_images = readdir(DIR);
     closedir(DIR);
 
