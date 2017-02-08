@@ -18,8 +18,8 @@ var use_parts = 1; // if this is 0 disapears the message from the bubble
 
 // for now, let's remove the attributes in MT mode. Just in case anybody is trying this.
 if (getQueryVariable('mode')=='mt'){
-    use_attributes=0;
-    use_parts = 0;
+    //use_attributes=0;
+    //use_parts = 0;
 }
 
 // Boolean indicating whether the control points were edited:
