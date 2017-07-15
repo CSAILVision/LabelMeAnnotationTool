@@ -154,8 +154,13 @@ function file_info() {
                 if((par_field=='scribble')&&(par_value=='true')) {
 		             scribble_mode = true;
 		        }
-                if((par_field=='wordnet')&&(par_value=='false')) {
-                     autocomplete_mode = false;
+                if(par_field=='wordnet'){
+		    if(par_value=='false') {
+                    	autocomplete_mode = false;
+		    }
+		    else {
+		    	autocomplete_mode = true;
+		    }
                 }
                 if((par_field=='video')&&(par_value=='true')) {
 		             video_mode = true;
