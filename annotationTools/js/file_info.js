@@ -155,12 +155,12 @@ function file_info() {
 		             scribble_mode = true;
 		        }
                 if(par_field=='wordnet'){
-		    if(par_value=='false') {
-                    	autocomplete_mode = false;
-		    }
-		    else {
-		    	autocomplete_mode = true;
-		    }
+			if(par_value=='false') {
+				autocomplete_mode = false;
+			}
+			else {
+				autocomplete_mode = true;
+			}
                 }
                 if((par_field=='video')&&(par_value=='true')) {
 		             video_mode = true;
