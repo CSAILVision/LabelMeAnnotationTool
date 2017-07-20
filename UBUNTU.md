@@ -1,5 +1,7 @@
 ### UBUNTU CONFIGURATION
 
+*Note: Instructions specific to [Ubuntu 16.04](UBUNTU_16_04.md) are found at this [link](UBUNTU_16_04.md).*
+
 1. Install "Apache" and "Perl" and configure.
 
    ``` sh
