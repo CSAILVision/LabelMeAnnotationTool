@@ -73,3 +73,5 @@
   ```
   sudo service apache2 restart
   ```
+
+*Note, there is a [YouTube tutorial](https://www.youtube.com/watch?v=07uHcjRjAbM) by thelittlekid that demos LabelMe installation on a local Ubuntu 16.04 box.*
