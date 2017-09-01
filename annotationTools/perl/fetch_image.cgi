@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+require 'globalvariables.pl';
 
 use strict;
 use CGI;
@@ -67,24 +68,43 @@ if($mode eq "i") {
     close(FP);
 }
 elsif($mode eq "c") {
-    opendir(DIR,$LM_HOME . "Images/$collection") || die("Cannot read collections");
-    my @all_images = readdir(DIR);
-    closedir(DIR);
-
+    my $fname = $LM_HOME . "annotationCache/DirLists/$collection.txt";
+    
+    if(!open(FP,$fname)) {
+	print "Status: 404\n\n";
+	return;
+    }
+    
+    open(NUMLINES,"wc -l $fname |");
+    my $numlines = <NUMLINES>;
+    ($numlines,my $bar) = split(" DirLists",$numlines);
+    close(NUMLINES);
+    my @allimages_list=();# initialise empty array
+    my @alldir_list=();# initialise empty
+    $numlines =int($numlines)+1;
+    for(my $i=1; $i < $numlines; $i++) {
+	    my $fileinfo = readline(FP);
+        (my $temp_dir,my $temp_file) = split(",",$fileinfo);
+        $temp_file =~ tr/"\n"//d; # remove trailing newline
+        $allimages_list[$i-1]=$temp_file; #append images
+        $alldir_list[$i-1]=$temp_dir; 
+    } 
+    close(FP);
     my $c = 0;
-    foreach my $i (@all_images) {
-	if($i eq $image) {
+    foreach my $j (@allimages_list) {
+	if($j eq $image) {
 	    goto next_section;
 	}
 	$c = $c+1;
     }
   next_section:
-    if($c == scalar(@all_images)-1) {
+    if($c == scalar(@allimages_list)-1) {
 	$c = 1;
     }
-    $im_file = $all_images[$c+1];
-    $im_dir = $folder;
-}
+    $im_file = $allimages_list[$c+1];
+    $im_dir = $alldir_list[$c+1];
+}       
+
 elsif($mode eq "f") {
     opendir(DIR,$LM_HOME . "Images/$folder") || die("Cannot read folder $LM_HOME/Images/$folder");
     my @all_images = readdir(DIR);
