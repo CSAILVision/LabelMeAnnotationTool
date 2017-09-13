@@ -68,13 +68,30 @@ function WriteLogMsg(msg) {
 }
 
 // This function gets called when the user clicks on the "Next image" button.
+function ShowPrevImage() {
+  if(wait_for_input) return WaitForInput();
+  if(draw_anno) {
+    alert("Need to close current polygon first.");
+    return;
+  }
+  //$('#main_media').remove();
+
+  // Remove the object list:
+  RemoveObjectList();
+
+  // Get a new image and reset URL to reflect new image:
+  if (video_mode) main_media.GetFileInfo().SetURL(document.URL);
+  else {
+    main_media.GetFileInfo().FetchPrevImage();
+    LoadNewMedia();
+  }
+}
 function ShowNextImage() {
   if(wait_for_input) return WaitForInput();
   if(draw_anno) {
     alert("Need to close current polygon first.");
     return;
   }
-
   //$('#main_media').remove();
 
   // Remove the object list:
