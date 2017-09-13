@@ -18,8 +18,8 @@ var use_parts = 1; // if this is 0 disapears the message from the bubble
 
 // for now, let's remove the attributes in MT mode. Just in case anybody is trying this.
 if (getQueryVariable('mode')=='mt'){
-    use_attributes=0;
-    use_parts = 0;
+    //use_attributes=0;
+    //use_parts = 0;
 }
 
 // Boolean indicating whether the control points were edited:
@@ -53,7 +53,7 @@ var threed_mode = false;
 var video_mode = false;
 var bounding_box = false;
 var bbox_mode = true;
-var autocomplete_mode = false;
+var autocomplete_mode = true;
 
 
 var wait_for_input;
@@ -81,8 +81,8 @@ var view_ObjList = true;
 // Mechanical Turk variables:
 var LMbaseurl = 'http://' + window.location.host + window.location.pathname;
 var MThelpPage = 'annotationTools/html/mt_instructions.html';
-var externalSubmitURL = 'http://mturk.com/mturk/externalSubmit';
-var externalSubmitURLsandbox = 'http://workersandbox.mturk.com/mturk/externalSubmit';
+var externalSubmitURL = 'https://www.mturk.com/mturk/externalSubmit';
+var externalSubmitURLsandbox = 'https://workersandbox.mturk.com/mturk/externalSubmit';
 var mt_N = 'inf';
 
 var object_choices = '...';
