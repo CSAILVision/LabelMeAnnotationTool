@@ -232,6 +232,7 @@ function FinishStartup() {
   $('#changeuser').attr("onclick","javascript:show_enterUserNameDIV(); return false;");
   $('#userEnter').attr("onkeyup","javascript:var c; if(event.keyCode)c=event.keyCode; if(event.which)c=event.which; if(c==13 || c==27) changeAndDisplayUserName(c);");
   $('#xml_url').attr("onclick","javascript:GetXMLFile();");
+  $('#prevImage').attr("onclick","javascript:ShowPrevImage()");
   $('#nextImage').attr("onclick","javascript:ShowNextImage()");
   $('#lessContrast').attr("onclick","javascript:main_media.AugmentContrast()");
   $('#moreContrast').attr("onclick","javascript:main_media.ReduceContrast()");
