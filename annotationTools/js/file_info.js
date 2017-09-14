@@ -51,11 +51,17 @@ function file_info() {
                     this.mode = par_value;
 					if (this.mode != 'c' && this.mode != 'f'){
 						$('#prevImage').hide();
-						$('#label_buttons_contrast').css('left', '525px');
+						if (bname == 'Netscape'){
+							$('#label_buttons_contrast').css('left', '545px');
+						}
+						else $('#label_buttons_contrast').css('left', '525px');
 					}
 					else{
 						$('#prevImage').show();
-						$('#label_buttons_contrast').css('left', '565px');
+						if (bname == 'Netscape'){
+							$('#label_buttons_contrast').css('left', '585px');
+						}
+						else $('#label_buttons_contrast').css('left', '565px');
 
 					}
                     if(this.mode=='im' || this.mode=='mt') view_ObjList = false;
