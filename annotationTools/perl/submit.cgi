@@ -33,9 +33,13 @@ if (index($fname, ".") != -1) {
     $fname = substr($fname,0,length($fname)-4);
 }
 
+# Remove all non alphanumer characters except for _, -
+$fname =~ tr/\-0-9A-Z_a-z//cd;
+
 ($folder,$junk) = split("</folder>",$stdin);
 ($junk,$folder) = split("<folder>",$folder);
 
+$folder =~ tr/\-0-9A-Z_a-z\///cd;
 ##############################
 # Get private data:
 ($global_count,$username,$edited,$old_name,$new_name,$modifiedControlPoints, $video_mode) = &GetPrivateData($stdin);
@@ -45,7 +49,6 @@ $stdin = "$left_side$stdin";
 
 ##############################
 # Determine if Video or Image and assign path:
-print "HELLO";
 $path = $LM_HOME . "Annotations";
 $tmpPath = $LM_HOME . "annotationCache/TmpAnnotations";
 if ($video_mode){
