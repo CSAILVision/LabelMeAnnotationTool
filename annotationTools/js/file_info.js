@@ -49,6 +49,21 @@ function file_info() {
                 var par_value = this.GetURLValue(par_tag);
                 if(par_field=='mode'){
                     this.mode = par_value;
+					if (this.mode != 'c' && this.mode != 'f'){
+						$('#prevImage').hide();
+						if (bname == 'Netscape'){
+							$('#label_buttons_contrast').css('left', '545px');
+						}
+						else $('#label_buttons_contrast').css('left', '525px');
+					}
+					else{
+						$('#prevImage').show();
+						if (bname == 'Netscape'){
+							$('#label_buttons_contrast').css('left', '585px');
+						}
+						else $('#label_buttons_contrast').css('left', '565px');
+
+					}
                     if(this.mode=='im' || this.mode=='mt') view_ObjList = false;
                     if(this.mode=='mt') isMT = true;
                 }
@@ -341,6 +356,33 @@ function file_info() {
         }
         else {
             alert('Fatal: there are problems with fetch_image.cgi');
+        }
+    };
+    this.FetchPrevImage = function () {
+		if (this.mode == 'i'){
+			return;
+		}
+        var url = 'annotationTools/perl/fetch_prev_image.cgi?mode=' + this.mode + '&username=' + username + '&collection=' + this.collection.toLowerCase() + '&folder=' + this.dir_name + '&image=' + this.im_name;
+        var im_req;
+        // branch for native XMLHttpRequest object
+        if (window.XMLHttpRequest) {
+            im_req = new XMLHttpRequest();
+            im_req.open("GET", url, false);
+            im_req.send('');
+        }
+        else if (window.ActiveXObject) {
+            im_req = new ActiveXObject("Microsoft.XMLHTTP");
+            if (im_req) {
+                im_req.open("GET", url, false);
+                im_req.send('');
+            }
+        }
+        if(im_req.status==200) {
+            this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
+            this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+        }
+        else {
+            alert('Fatal: there are problems with fetch_prev_image.cgi');
         }
     };
     this.PreFetchImage = function () {
