@@ -222,6 +222,11 @@ function file_info() {
             }
             
             if(this.assignmentId=='ASSIGNMENT_ID_NOT_AVAILABLE') {
+                if (!document.referrer.includes("requestersandbox.mturk.com")
+                    && !document.referrer.includes("requester.mturk.com")){
+                    window.location = MThelpPage;
+                    return false;
+                }
                 window.location = MThelpPage;
                 return false;
             }
