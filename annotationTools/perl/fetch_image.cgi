@@ -117,7 +117,7 @@ elsif($mode eq "f") {
 
 	# Get location of image in array:
 	for(my $j = 0; $j < scalar(@all_images); $j++) {
-	    if($all_images[$j] =~ m/$image/) {
+	    if($all_images[$j] =~ m/^$image$/) {
 		$i = $j;
 		last;
 	    }
