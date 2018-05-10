@@ -1,5 +1,4 @@
 #!/usr/bin/perl
-require 'globalvariables.pl';
 
 use strict;
 use CGI;
@@ -79,32 +78,32 @@ elsif($mode eq "c") {
     my $numlines = <NUMLINES>;
     ($numlines,my $bar) = split(" DirLists",$numlines);
     close(NUMLINES);
-    my @allimages_list=();# initialise empty array
-    my @alldir_list=();# initialise empty
-    $numlines =int($numlines)+1;
-    for(my $i=1; $i < $numlines; $i++) {
-	    my $fileinfo = readline(FP);
+
+    my @all_images=(); # initialise empty array
+    my @all_folders=(); # initialise empty
+    for(my $i = 0; $i < int($numlines); $i++) {
+        my $fileinfo = readline(FP);
         (my $temp_dir,my $temp_file) = split(",",$fileinfo);
         $temp_file =~ tr/"\n"//d; # remove trailing newline
-        $allimages_list[$i-1]=$temp_file; #append images
-        $alldir_list[$i-1]=$temp_dir; 
-    } 
+        $all_images[$i]=$temp_file; #append images
+        $all_folders[$i]=$temp_dir;
+    }
     close(FP);
+
     my $c = 0;
-    foreach my $j (@allimages_list) {
-	if($j eq $image) {
+    foreach my $i (@all_images) {
+	if($i eq $image) {
 	    goto next_section;
 	}
 	$c = $c+1;
     }
   next_section:
-    if($c == scalar(@allimages_list)-1) {
-	$c = 1;
+    if($c == scalar(@all_images)-1) {
+	$c = -1;
     }
-    $im_file = $allimages_list[$c+1];
-    $im_dir = $alldir_list[$c+1];
-}       
-
+    $im_file = $all_images[$c+1];
+    $im_dir = $all_folders[$c+1];
+}
 elsif($mode eq "f") {
     opendir(DIR,$LM_HOME . "Images/$folder") || die("Cannot read folder $LM_HOME/Images/$folder");
     my @all_images = readdir(DIR);
@@ -117,7 +116,7 @@ elsif($mode eq "f") {
 
 	# Get location of image in array:
 	for(my $j = 0; $j < scalar(@all_images); $j++) {
-	    if($all_images[$j] =~ m/$image/) {
+	    if($all_images[$j] =~ m/^$image$/) {
 		$i = $j;
 		last;
 	    }
