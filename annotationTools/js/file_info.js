@@ -385,6 +385,7 @@ function file_info() {
         if(im_req.status==200) {
             this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+			imgName = this.im_name;
         }
         else {
             alert('Fatal: there are problems with fetch_prev_image.cgi');
