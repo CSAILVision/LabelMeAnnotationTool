@@ -112,7 +112,7 @@ function DrawCanvasMouseDown(event) {
   var n = draw_anno.pts_x.length-1;
   
   // Draw line segment:
-  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_anno.pts_x[n-1],draw_anno.pts_y[n-1],draw_anno.pts_x[n],draw_anno.pts_y[n],'stroke="#0000ff" stroke-width="4"',scale));
+  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_anno.pts_x[n-1],draw_anno.pts_y[n-1],draw_anno.pts_x[n],draw_anno.pts_y[n],'stroke="#0000ff" stroke-width="1"',scale));
 
   // Set cursor to be crosshair on line segment:
   $('#'+draw_anno.line_ids[line_idx]).css('cursor','crosshair');

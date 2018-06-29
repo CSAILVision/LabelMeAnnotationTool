@@ -785,7 +785,7 @@ function LMplot(xml,imagename) {
     Y.push(parseInt(obj.children("segm").children("box").children("ymax").text()));
       }
       // Draw polygon:
-      var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
+      var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="1"';
       var scale = 1;
       DrawPolygon('myCanvas_bg',X,Y,name,attr,scale);
     }

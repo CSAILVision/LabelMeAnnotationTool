@@ -501,7 +501,7 @@ function AdjustEvent(dom_attach,x,y,obj_name,ExitFunction,scale, bounding_box_an
   this.DrawPolygon = function(dom_id,x,y,obj_name,scale) {
     if(x.length==1) return DrawFlag(dom_id,x[0],y[0],obj_name,scale);
     
-    var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4"';
+    var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="1"';
     return DrawPolygon(dom_id,x,y,obj_name,attr,scale);
   };
 }
