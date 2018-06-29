@@ -398,7 +398,7 @@ this.loadFile = function(frame, first_time, isbackground, response) {
     }
     $('#myCanvas_bg').empty();
 
-    var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="4"';
+    var attr = 'fill="none" stroke="' + HashObjectColor(name) + '" stroke-width="1"';
     var scale = 1;
     
     // Plot polygons:

@@ -169,17 +169,17 @@ function annotation(anno_id) {
             this.polygon_id = DrawFlag(this.div_attach,xp[0],yp[0],obj_name,im_ratio);
         }
         else if((xp.length==3) && isAngle) {
-            var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4"';
+            var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="1"';
             this.polygon_id = DrawPolyLine(this.div_attach,xp,yp,obj_name,attr,im_ratio);
         }
         else if(this.GetAutomatic()==1) {
             // Draw a dashed polygon:
-            var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4" stroke-dasharray="9,5"';
+            var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="1" stroke-dasharray="9,5"';
             this.polygon_id = DrawPolygon(this.div_attach,xp,yp,obj_name,attr,im_ratio);
         }
         else {
             // Draw a polygon:
-            var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="4"';
+            var attr = 'fill="none" stroke="' + HashObjectColor(obj_name) + '" stroke-width="1"';
             this.polygon_id = DrawPolygon(this.div_attach,xp,yp,obj_name,attr,im_ratio);
         }
         return this.polygon_id;
@@ -195,7 +195,7 @@ function annotation(anno_id) {
         this.line_ids = Array();
         for(var i = 0; i < xp.length-1; i++) {
             // Draw line segment:
-            this.line_ids.push(DrawLineSegment(this.div_attach, xp[i],yp[i],xp[i+1],yp[i+1],'stroke="#0000ff" stroke-width="4"',im_ratio));
+            this.line_ids.push(DrawLineSegment(this.div_attach, xp[i],yp[i],xp[i+1],yp[i+1],'stroke="#0000ff" stroke-width="1"',im_ratio));
 
             // Set cursor to be crosshair on line segment:
             $('#'+this.line_ids[i]).css('cursor','crosshair');
@@ -210,7 +210,7 @@ function annotation(anno_id) {
 
           // Set actions for first point:
           $('#'+this.point_id).attr('onmousedown','DrawCanvasClosePolygon();');
-          $('#'+this.point_id).attr('onmouseover',"$('#'+draw_anno.point_id).attr('r',8,'stroke-width',4);");
+          $('#'+this.point_id).attr('onmouseover',"$('#'+draw_anno.point_id).attr('r',8,'stroke-width',1);");
           $('#'+this.point_id).attr('onmouseout',"if(draw_anno) {$('#'+draw_anno.point_id).attr('r',6,'stroke-width',3);}");
     };
     
