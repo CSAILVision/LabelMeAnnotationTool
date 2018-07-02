@@ -98,6 +98,7 @@ function ShowNextImage() {
   RemoveObjectList();
 
   // Get a new image and reset URL to reflect new image:
+  console.log(document.URL)
   if (video_mode) main_media.GetFileInfo().SetURL(document.URL);
   else {
     main_media.GetFileInfo().FetchImage();
