@@ -223,7 +223,7 @@ function GetPopupFormDraw(scribble_form) {
   html_str += '<input type="button" style="float:right" value="Supprimer" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
   html_str += '<br />' 
   // Undo close button/Keep editting
-  if (!scribble_form) if (!bounding_box) html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
+  if (!scribble_form) if (!bounding_box) html_str += '<input type="button" value="Annuler la fermeture" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
   else if (scribble_form) html_str += '<input type="button" value="Edit Scribble" title="Press this button if to keep adding scribbles." onclick="KeepEditingScribbles();" tabindex="0" />';
     
   return html_str;
