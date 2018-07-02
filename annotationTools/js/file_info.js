@@ -357,7 +357,8 @@ function file_info() {
         if(im_req.status==200) {
             this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
-			imgName = this.im_name;
+            imgName = this.im_name;
+            console.log('HELLO', imgName)
         }
         else {
             alert('Fatal: there are problems with fetch_image.cgi');
@@ -409,7 +410,8 @@ function file_info() {
 	im_req.onload = function(e){
 		if(im_req.status==200) {
 		    dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
-		    im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+            im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+            console.log('HELLO111', im_name)
 		    path =  'Images/' + dir_name + '/' + im_name;
 		    var img1 = new Image()
 		    img1.src = path;
