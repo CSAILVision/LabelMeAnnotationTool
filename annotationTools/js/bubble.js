@@ -255,16 +255,16 @@ function GetPopupFormEdit(anno) {
   html_str += "<br />";
   
   // Done button:
-  if (video_mode) html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_media.SubmitEditObject();" tabindex="0" />';
+  if (video_mode) html_str += '<input type="button" value="Terminé" title="Press this button when you are done editing." onclick="main_media.SubmitEditObject();" tabindex="0" />';
   
-  else html_str += '<input type="button" value="Done" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
+  else html_str += '<input type="button" value="Terminé" title="Press this button when you are done editing." onclick="main_handler.SubmitEditLabel();" tabindex="0" />';
   
   /*************************************************************/
   /*************************************************************/
   // Scribble: if anno.GetType() != 0 then scribble mode:
 
   // Delete button:
-  html_str += '<input type="button" style="float:right" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" /><br />';
+  html_str += '<input type="button" style="float:right" value="Supprimer" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" /><br />';
   // Adjust polygon button:
   if (anno.GetType() == 0) {
     html_str += '<input type="button" value="Ajuster le polygone" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
@@ -274,10 +274,7 @@ function GetPopupFormEdit(anno) {
   }
   /*************************************************************/
   /*************************************************************/
-  
-  // Add parts/Stop adding parts
-  if (add_parts_to == null) html_str += '<input type="button" value="Add parts" title="Press this button if you want to start adding parts" onclick="main_handler.StartAddParts();" tabindex="0" />';
-  
+    
   return html_str;
 }
 
@@ -338,7 +335,7 @@ function HTMLoccludedBox(occluded) {
   }
   
   // the value of the selection is inside a hidden field:
-  html_str += 'Est bstrué ? <input type="hidden" name="occluded" id="occluded" value="'+occluded+'"/>';
+  html_str += 'Est obstrué ? <input type="hidden" name="occluded" id="occluded" value="'+occluded+'"/>';
   
   // generate radio button
   if (occluded=='yes') {
