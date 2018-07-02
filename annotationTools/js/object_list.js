@@ -33,7 +33,7 @@ function RenderObjectList() {
   
   // Create DIV
   if (showImgName) {html_str += '<p><b>Image name: '+ imgName +'</b></p>';}
-  html_str += '<b id="imageName"></b>';
+  html_str += '<p>Image courante : <b id="imageName"></b></p>';
   html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
   html_str += '<p style="font-size:10px;line-height:100%"><a ' +
   'onmouseover="main_canvas.ShadePolygons();" ' +
