@@ -410,7 +410,6 @@ function file_info() {
 		if(im_req.status==200) {
 		    dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
-            console.log('HELLO111', im_name)
             $('#imageName').text(im_name)
 		    path =  'Images/' + dir_name + '/' + im_name;
 		    var img1 = new Image()
