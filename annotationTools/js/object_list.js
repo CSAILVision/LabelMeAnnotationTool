@@ -47,10 +47,6 @@ function RenderObjectList() {
     html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Cacher tous les polygones</a></p>';
   }
 
-  // Add parts-of drag-and-drop functionality:
-  if(use_parts) {
-    html_str += '<p style="font-size:10px;line-height:100%" ondrop="drop(event, -1)" ondragenter="return dragEnter(event)" ondragover="return dragOver(event)">Faites glisser un tag au-dessus d\'un autre pour créer une relation de partie.</p>';
-  }
   html_str += '<ol>';
   
   // Show list (of non-deleted objects)
