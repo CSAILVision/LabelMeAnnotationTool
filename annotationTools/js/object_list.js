@@ -37,7 +37,7 @@ function RenderObjectList() {
   html_str += '<b>Polygones dans cette image ('+ NundeletedPolygons +')</b>';
   html_str += '<p style="font-size:10px;line-height:100%"><a ' +
   'onmouseover="main_canvas.ShadePolygons();" ' +
-  'onmouseout="main_canvas.RenderAnnotations();"> Reveal unlabeled pixels </a></p>';
+  'onmouseout="main_canvas.RenderAnnotations();"> Révelez les masques </a></p>';
   // Create "hide all" button:
   if(IsHidingAllPolygons) {
     html_str += '<p style="font-size:10px;line-height:100%"><a id="show_all_button" href="javascript:ShowAllPolygons();">Voir tous les polygones</a></p>';

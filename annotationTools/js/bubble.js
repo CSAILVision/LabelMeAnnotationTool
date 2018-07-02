@@ -199,16 +199,16 @@ function CloseEditPopup() {
 function GetPopupFormDraw(scribble_form) {
   wait_for_input = 1;
   part_bubble = false;
-  html_str = "<b>Enter object name</b><br />";
+  html_str = "<b>Nom de l'objet</b><br />";
   if (add_parts_to != null){
-    html_str = "<b>Enter part name</b><br />";
+    html_str = "<b>Nom de l'objet</b><br />";
     part_bubble = true;
   }
   html_str += HTMLobjectBox("");
   
   if(use_attributes) {
     html_str += HTMLoccludedBox("");
-    html_str += "<b>Enter attributes</b><br />";
+    html_str += "<b>Attributs</b><br />";
     html_str += HTMLattributesBox("");
   }
   if(use_parts) {
@@ -217,17 +217,14 @@ function GetPopupFormDraw(scribble_form) {
   html_str += "<br />";
   
   // Done button:
-  html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
+  html_str += '<input type="button" value="Terminé" title="Press this button after you have provided all the information you want about the object." onclick="main_handler.SubmitQuery();" tabindex="0" />';
   
   // Delete button:
-  html_str += '<input type="button" style="float:right" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
+  html_str += '<input type="button" style="float:right" value="Supprimer" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
   html_str += '<br />' 
   // Undo close button/Keep editting
   if (!scribble_form) if (!bounding_box) html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
   else if (scribble_form) html_str += '<input type="button" value="Edit Scribble" title="Press this button if to keep adding scribbles." onclick="KeepEditingScribbles();" tabindex="0" />';
-  // Add parts/Stop adding parts
-  if (add_parts_to == null) html_str += '<input type="button" value="Add parts" title="Press this button if you want to start adding parts" onclick="main_handler.StartAddParts();" tabindex="0" />';
-  else html_str += '<input type="button" value="Stop parts" title="Press this button if you want to stop adding parts" onclick="main_handler.StopAddParts();" tabindex="0" />';
     
   return html_str;
 }
@@ -242,12 +239,12 @@ function GetPopupFormEdit(anno) {
   var occluded = LMgetObjectField(LM_xml,anno.anno_id,'occluded');
   var parts = LMgetObjectField(LM_xml, anno.anno_id, 'parts');
   
-  html_str = "<b>Enter object name</b><br />"; 
+  html_str = "<b>Nom de l'objet</b><br />"; 
   html_str += HTMLobjectBox(obj_name);
   
   if(use_attributes) {
     html_str += HTMLoccludedBox(occluded);
-    html_str += "<b>Enter attributes</b><br />";
+    html_str += "<b>Attributs</b><br />";
     html_str += HTMLattributesBox(attributes);
   }
   
@@ -270,7 +267,7 @@ function GetPopupFormEdit(anno) {
   html_str += '<input type="button" style="float:right" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.EditBubbleDeleteButton();" tabindex="0" /><br />';
   // Adjust polygon button:
   if (anno.GetType() == 0) {
-    html_str += '<input type="button" value="Adjust polygon" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
+    html_str += '<input type="button" value="Ajuster le polygone" title="Press this button if you wish to update the polygon\'s control points." onclick="javascript:AdjustPolygonButton();" />';
   }
   else {
     html_str += '<input type="button" value="Edit Scribbles" title="Press this button if you wish to update the segmentation." onclick="javascript:EditBubbleEditScribble();" />';  
@@ -341,16 +338,16 @@ function HTMLoccludedBox(occluded) {
   }
   
   // the value of the selection is inside a hidden field:
-  html_str += 'Is occluded? <input type="hidden" name="occluded" id="occluded" value="'+occluded+'"/>';
+  html_str += 'Est bstrué ? <input type="hidden" name="occluded" id="occluded" value="'+occluded+'"/>';
   
   // generate radio button
   if (occluded=='yes') {
-    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="yes" checked="yes" onclick="document.getElementById(\'occluded\').value=\'yes\';" />yes';
-    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="no"  onclick="document.getElementById(\'occluded\').value=\'no\';" />no';
+    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="yes" checked="yes" onclick="document.getElementById(\'occluded\').value=\'yes\';" />Oui';
+    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="no"  onclick="document.getElementById(\'occluded\').value=\'no\';" />Non';
   }
   else {
-    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="yes"  onclick="document.getElementById(\'occluded\').value=\'yes\';" />yes';
-    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="no" checked="yes"  onclick="document.getElementById(\'occluded\').value=\'no\';" />no';
+    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="yes"  onclick="document.getElementById(\'occluded\').value=\'yes\';" />Oui';
+    html_str += '<input type="radio" name="rboccluded" id="rboccluded" value="no" checked="yes"  onclick="document.getElementById(\'occluded\').value=\'no\';" />Non';
   }
   html_str += '<br />';
   
@@ -359,7 +356,7 @@ function HTMLoccludedBox(occluded) {
 
 // Boxes to enter attributes
 function HTMLattributesBox(attList) {    
-  return '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Enter a comma separated list of attributes, adjectives or other object properties">'+attList+'</textarea>';
+  return '<textarea name="attributes" id="attributes" type="text" style="width:220px; height:3em;" tabindex="0" title="Entrez une liste d\'attributs, d\'adjectifs ou d\'autres propriétés de l\'objet séparés par des virgules">'+attList+'</textarea>';
 }
 
 
@@ -380,5 +377,5 @@ function HTMLpartsBox(parts) {
     html_str = 'Object has no parts.';
   }
   
-  return html_str;
+  return '';
 }
