@@ -355,6 +355,10 @@ function file_info() {
             }
         }
         if(im_req.status==200) {
+	    console.log('1111', im_req.responseXML)
+	    console.log('2222', im_req.responseXML.getElementsByTagName("dir"))
+	    console.log('3333', im_req.responseXML.getElementsByTagName("dir")[0])
+	    console.log('4444', im_req.responseXML.getElementsByTagName("dir")[0].firstChild)
             this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
             imgName = this.im_name;
