@@ -33,23 +33,20 @@ function RenderObjectList() {
   
   // Create DIV
   if (showImgName) {html_str += '<p><b>Image name: '+ imgName +'</b></p>';}
-  html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
+  html_str += '<p>Image courante : <b id="imageName"></b></p>';
+  html_str += '<b>Polygones dans cette image ('+ NundeletedPolygons +')</b>';
   html_str += '<p style="font-size:10px;line-height:100%"><a ' +
   'onmouseover="main_canvas.ShadePolygons();" ' +
-  'onmouseout="main_canvas.RenderAnnotations();"> Reveal unlabeled pixels </a></p>';
+  'onmouseout="main_canvas.RenderAnnotations();"> Révelez les masques </a></p>';
   // Create "hide all" button:
   if(IsHidingAllPolygons) {
-    html_str += '<p style="font-size:10px;line-height:100%"><a id="show_all_button" href="javascript:ShowAllPolygons();">Show all polygons</a></p>';
+    html_str += '<p style="font-size:10px;line-height:100%"><a id="show_all_button" href="javascript:ShowAllPolygons();">Voir tous les polygones</a></p>';
   }
   else {
     IsHidingAllPolygons = false;
-    html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Hide all polygons</a></p>';
+    html_str += '<p style="font-size:10px;line-height:100%"><a id="hide_all_button" href="javascript:HideAllPolygons();">Cacher tous les polygones</a></p>';
   }
 
-  // Add parts-of drag-and-drop functionality:
-  if(use_parts) {
-    html_str += '<p style="font-size:10px;line-height:100%" ondrop="drop(event, -1)" ondragenter="return dragEnter(event)" ondragover="return dragOver(event)">Drag a tag on top of another one to create a part-of relationship.</p>';
-  }
   html_str += '<ol>';
   
   // Show list (of non-deleted objects)

@@ -14,7 +14,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 "-//W3C//DTD XHTML 1.0 Strict//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:svg="http://www.w3.org/2000/svg" 
+      xmlns:svg="http://www.w3.org/2000/svg"
       xmlns:xlink="http://www.w3.org/1999/xlink">
 
 <head>
@@ -23,36 +23,33 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 <META HTTP-EQUIV="imagetoolbar" CONTENT="no" />
 <link rel="shortcut icon" href="Icons/favicon16.ico" />
 
-<script type="text/javascript">
-// <![CDATA[
-<!--#include virtual="./annotationTools/js/jquery-1.9.1.js" -->
-<!--#include virtual="./annotationTools/js/jquery-ui.js" -->
-<!--#include virtual="./annotationTools/js/jquery-ui-intervals.js" -->
-<!--#include virtual="./annotationTools/js/example.js" -->
-<!--#include virtual="./annotationTools/js/browser.js" -->  
-<!--#include virtual="./annotationTools/js/globals.js" -->
-<!--#include virtual="./annotationTools/js/io.js" -->
-<!--#include virtual="./annotationTools/js/plot.js" -->
-<!--#include virtual="./annotationTools/js/my_scripts.js" -->
-<!--#include virtual="./annotationTools/js/object_list.js" -->
-<!--#include virtual="./annotationTools/js/object_parts.js" -->
-<!--#include virtual="./annotationTools/js/bubble.js" -->
-<!--#include virtual="./annotationTools/js/image.js" -->
-<!--#include virtual="./annotationTools/js/file_info.js" -->
-<!--#include virtual="./annotationTools/js/annotation.js" -->
-<!--#include virtual="./annotationTools/js/canvas.js" -->
-<!--#include virtual="./annotationTools/js/handler.js" -->
-<!--#include virtual="./annotationTools/js/sign_in.js" -->
-<!--#include virtual="./annotationTools/js/startup.js" -->
-<!--#include virtual="./annotationTools/js/player.js" -->
-<!--#include virtual="./annotationTools/js/video.js" -->
-<!--#include virtual="./annotationTools/js/draw_event.js" -->
-<!--#include virtual="./annotationTools/js/edit_event.js" -->
-<!--#include virtual="./annotationTools/js/adjust_event.js" -->
-<!--#include virtual="./annotationTools/js/scribble.js" -->
-<!--#include virtual="./annotationTools/js/xml_accessors.js" -->
-// ]]>
-</script>
+
+<script src='./annotationTools/js/jquery-1.9.1.js'></script>
+<script src='./annotationTools/js/jquery-ui.js'></script>
+<script src='./annotationTools/js/jquery-ui-intervals.js'></script>
+<script src='./annotationTools/js/example.js'></script>
+<script src='./annotationTools/js/browser.js'></script>
+<script src="./annotationTools/js/globals.js"></script>
+<script src="./annotationTools/js/io.js"></script>
+<script src="./annotationTools/js/plot.js"></script>
+<script src="./annotationTools/js/my_scripts.js"></script>
+<script src="./annotationTools/js/object_list.js"></script>
+<script src="./annotationTools/js/object_parts.js"></script>
+<script src="./annotationTools/js/bubble.js"></script>
+<script src="./annotationTools/js/image.js"></script>
+<script src="./annotationTools/js/file_info.js"></script>
+<script src="./annotationTools/js/annotation.js"></script>
+<script src="./annotationTools/js/canvas.js"></script>
+<script src="./annotationTools/js/handler.js"></script>
+<script src="./annotationTools/js/sign_in.js"></script>
+<script src="./annotationTools/js/startup.js"></script>
+<script src="./annotationTools/js/player.js"></script>
+<script src="./annotationTools/js/video.js"></script>
+<script src="./annotationTools/js/draw_event.js"></script>
+<script src="./annotationTools/js/edit_event.js"></script>
+<script src="./annotationTools/js/adjust_event.js"></script>
+<script src="./annotationTools/js/scribble.js"></script>
+<script src="./annotationTools/js/xml_accessors.js"></script>
 <style>
 @import url("annotationTools/css/styles.css?version=4");
 @import url("annotationTools/css/header.css?version=4");
@@ -69,29 +66,29 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
   <!-- Mechanical Turk instructions and submit button -->
   <div id="mt_submit_form"></div>
-  
-  <!-- HEADER AND LOGO -->  
+
+  <!-- HEADER AND LOGO -->
   <div class="header" id="header">
     <!-- LOGO-->
     <div id="logo">
       <a href="index.html"><img src="Icons/LabelMe_logo3.png" width="216" height="69" alt="LabelMe logo"></img></a>
     </div>
-    
+
     <!-- USERNAME FORM-->
     <div id="username_main_div">
       <div id="display_user" style="display:block;">
-        You are:
-        <b><span id="usernametxt" type="text" style="max-width:120px; height:1.2em;" tabindex="0" title="This username will get associated to each new polygon inside the XML.">anonymous
+        Vous êtes:
+        <b><span id="usernametxt" type="text" style="max-width:120px; height:1.2em;" tabindex="0" title="Ce nom d'utilisateur sera associé à chaque nouveau polygone à l'intérieur du XML.">anonymous
         </span></b>
-        <font size="-2">(<a href="#" id="changeuser" title="Click to change the username">change user</a>)</font>
+        <font size="-2">(<a href="#" id="changeuser" title="Cliquez pour changer le nom d'utilisateur">Changer l'utilisateur</a>)</font>
       </div>
       <div id="enterUserName" style="display:none;">
-        Enter name:
-        <input id="userEnter" type="text" style="width:120px;" tabindex="0" value="" title="Enter the object\'s name here. Avoid application specific names, codes, long descriptions. Use a name you think other people would agree in using." />
+        Votre nom:
+        <input id="userEnter" type="text" style="width:120px;" tabindex="0" value="" title="Entrez le nom de lobjet ici. Évitez les noms spécifiques aux applications, les codes, les descriptions longues. Utilisez un nom que vous pensez que dautres personnes accepteraient dutiliser." />
       </div>
     </div>
   </div>
-  
+
   <!-- BUTTONS -->
   <div id="tool_buttons">
     <!-- NAVIGATION BUTTONS  -->
@@ -100,17 +97,17 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       <button id="img_url" class="labelBtn" type="button" title="Download image">
         <img src="Icons/download_img.png"  height="30" />
       </button>
-      
+
       <!-- DOWNLOAD XML BUTTON -->
       <button id="xml_url" class="labelBtn" type="button" title="Download XML file">
         <img src="Icons/download_xml.png"  height="30" />
       </button>
-      
+
       <!-- HELP BUTTON -->
       <button id="help" class="labelBtn" type="button" title="Show help page" onclick="location.href='annotationTools/html/labeling_instructions.html'" >
         <img src="Icons/help_new.png"  height="30" />
       </button>
-      
+
       <!-- NEXT IMAGE BUTTON -->
       <button id="prevImage" class="labelBtn" type="button" title="Prev Image">
         <img src="Icons/previous_2.png" height="30" />
@@ -128,7 +125,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
         <img src="Icons/lesscontrast.png" height="30" />
       </button>
     </div>
-    
+
     <!-- DRAWING BUTTONS -->
     <div id="label_buttons_drawing">
       <div id ="generic_buttons" class="annotatemenu">
@@ -147,41 +144,41 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       </div>
     </div>
   </div>
-  
+
   <!-- IMAGE CANVAS -->
   <div class="image_canvas" id="main_section">
-    <div id="loading">Loading image...</div>
+    <div id="loading">Chargement de l'image...</div>
     <div id="main_media" class="top" style="visibility:hidden; overflow:auto;">
-	  <canvas id="imcanvas" style="vertical-align:bottom;z-index:-3;">      
+	  <canvas id="imcanvas" style="vertical-align:bottom;z-index:-3;">
       <!-- <img id="im" style="vertical-align:bottom;z-index:-3;" /> -->
   	  </canvas>
-      
+
       <div id="myCanvas_bg_div" style="position:absolute;left:0px;top:0px;z-index:0;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
+        <svg:svg
            id="myCanvas_bg"
            width="100%"
-           height="100%" 
+           height="100%"
            style="position:absolute;left:0px;top:0px;z-index:0;" />
       </div>
-      
+
       <div id="select_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
+        <svg:svg
            id="select_canvas"
            width="100%"
            height="100%"
            style="position:absolute;left:0px;top:0px;z-index:-2;" />
-      </div>	      
-      
+      </div>
+
       <div id="draw_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:crosshair;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
+        <svg:svg
            id="draw_canvas"
            width="100%"
            height="100%"
            style="position:absolute;left:0px;top:0px;z-index:-2;" />
       </div>
-      
+
       <div id="query_canvas_div" style="position:absolute;left:0px;top:0px;z-index:-2;cursor:default;width:100%;height:100%;background-color:rgba(128,64,0,0);">
-        <svg:svg 
+        <svg:svg
            id="query_canvas"
            width="100%"
            height="100%"
@@ -189,10 +186,10 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       </div>
     </div>
   </div>
-  
+
   <!-- DIV that will contain the object list -->
   <div id="anno_anchor"></div>
-  
+
   <!-- DIV for Mechanical Turk feedback form -->
   <div id="mt_feedback" style="position:absolute;bottom:4px;" />
 

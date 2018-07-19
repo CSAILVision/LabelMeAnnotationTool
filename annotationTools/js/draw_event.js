@@ -126,7 +126,7 @@ function DrawCanvasMouseDown(event) {
   var n = draw_x.length-1;
   
   // Draw line segment:
-  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_x[n-1],draw_y[n-1],draw_x[n],draw_y[n],'stroke="#0000ff" stroke-width="4"',scale));
+  draw_anno.line_ids.push(DrawLineSegment(draw_anno.div_attach,draw_x[n-1],draw_y[n-1],draw_x[n],draw_y[n],'stroke="#0000ff" stroke-width="1"',scale));
 
   // Set cursor to be crosshair on line segment:
   $('#'+draw_anno.line_ids[line_idx]).css('cursor','crosshair');
@@ -191,13 +191,13 @@ function DrawCanvasClosePolygon() {
     html_str += "<br />";
   
     // Done button:
-    html_str += '<input type="button" value="Done" title="Press this button after you have provided all the information you want about the object." onclick="main_media.SubmitObject();" tabindex="0" />';
+    html_str += '<input type="button" value="Terminé" title="Press this button after you have provided all the information you want about the object." onclick="main_media.SubmitObject();" tabindex="0" />';
   
     // Undo close button:
-    if (!bounding_box) html_str += '<input type="button" value="Undo close" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
+    if (!bounding_box) html_str += '<input type="button" value="Annuler la fermeture" title="Press this button if you accidentally closed the polygon. You can continue adding control points." onclick="UndoCloseButton();" tabindex="0" />';
   
     // Delete button:
-    html_str += '<input type="button" value="Delete" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
+    html_str += '<input type="button" value="Supprimer" title="Press this button if you wish to delete the polygon." onclick="main_handler.WhatIsThisObjectDeleteButton();" tabindex="0" />';
     
 
 

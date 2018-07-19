@@ -279,7 +279,7 @@ function InitializeAnnotationTools(tag_button, tag_canvas){
     if (scribble_mode){
 	 scribble_canvas = new Scribble_canvas(tag_canvas);
     }
-    var html_str = '<div id= "polygonDiv" class="annotatemenu">Polygon<br></br>Tool \
+    var html_str = '<div id= "polygonDiv" class="annotatemenu">Outils<br></br>Polygone \
         <button id="polygon" class="labelBtnDraw" type="button" title="Start Polygon" onclick="SetPolygonDrawingMode(false)" > \
         <img id="polygonModeImg" src="Icons/polygon.png"  width="28" height="38" /> \
         </button> \
@@ -292,7 +292,7 @@ function InitializeAnnotationTools(tag_button, tag_canvas){
     html_str += '</div>';
 
     if (!video_mode){
-      html_str += '<div id= "segmDiv" class="annotatemenu">Mask<br></br>Tool \
+      html_str += '<div id= "segmDiv" class="annotatemenu">Outils<br></br>Masque \
         <button id="ScribbleObj" class="labelBtnDraw" type="button" title="Use the red pencil to mark areas inside the object you want to segment" onclick="scribble_canvas.setCurrentDraw(OBJECT_DRAWING)" > \
         <img src="Icons/object.png" width="28" height="38" /></button> \
         <button id="ScribbleBg" class="labelBtnDraw" type="button" title="Use the blue pencil to mark areas outside the object" onclick="scribble_canvas.setCurrentDraw(BG_DRAWING)" > \

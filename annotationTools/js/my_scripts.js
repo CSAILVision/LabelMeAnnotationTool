@@ -100,6 +100,7 @@ function ShowNextImage() {
   // Get a new image and reset URL to reflect new image:
   if (video_mode) main_media.GetFileInfo().SetURL(document.URL);
   else {
+    console.log(main_media.GetFileInfo());
     main_media.GetFileInfo().FetchImage();
     LoadNewMedia();
   }
