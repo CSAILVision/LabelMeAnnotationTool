@@ -73,6 +73,17 @@ function StartupLabelMe() {
     $('html').append('<body><p><img src="Icons/LabelMe.gif" /></p><br /><p>Sorry!  This page only works with Mozilla Firefox, Chrome, and Internet Explorer.  We may support other browsers in the future.</p><p><a href="http://www.mozilla.org">Download Mozilla Firefox?</a></p></body>');
   }
 }
+function DrawAnnotations() {
+  // Wait 100ms, wait the xml file write to the disk.
+  var seconds = 0.1;
+  var waitTill = new Date(new Date().getTime() + seconds * 1000);
+  while(waitTill > new Date()){};
+  
+  // Read the XML annotation file.
+  var anno_file = main_media.GetFileInfo().GetFullName();
+  anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+  ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+}
 function LoadNewMedia(){
 	
       main_canvas = new canvas('myCanvas_bg');
@@ -97,6 +108,9 @@ function LoadNewMedia(){
 function LoadAnnotationSuccess(xml) {
   
   console.time('load success');
+
+  // read annotation xml success, images is not first label.
+  isFirstLabel = false;
 
   // Set global variable:
   LM_xml = xml;
@@ -179,8 +193,10 @@ function SetAllAnnotationsArray() {
 
 /** Annotation file does not exist, so load template. */
 function LoadAnnotation404(jqXHR,textStatus,errorThrown) {
-  if(jqXHR.status==404) 
+  if(jqXHR.status==404) {
+    isFirstLabel = true;
     ReadXML(main_media.GetFileInfo().GetTemplatePath(),LoadTemplateSuccess,LoadTemplate404);
+  }
   else if (jqXHR.status == 200){
     var resp = jqXHR.responseText;
     var NOT_SAFE_IN_XML_1_0 = /[^\x09\x0A\x0D\x20-\xFF\x85\xA0-\uD7FF\uE000-\uFDCF\uFDE0-\uFFFD]/gm;
@@ -237,6 +253,7 @@ function FinishStartup() {
   $('#xml_url').attr("onclick","javascript:GetXMLFile();");
   $('#prevImage').attr("onclick","javascript:ShowPrevImage()");
   $('#nextImage').attr("onclick","javascript:ShowNextImage()");
+  $('#autoLabel').attr("onclick", "javascript:AutoLabelImage()");
   $('#lessContrast').attr("onclick","javascript:main_media.AugmentContrast()");
   $('#moreContrast').attr("onclick","javascript:main_media.ReduceContrast()");
   if (video_mode){

@@ -64,6 +64,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 </head>
 
+<!-- Load TensorFlow.js. This is required to use coco-ssd model. -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script>
+<!-- Load the coco-ssd model. -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
+
+
 <!-- Start up LabelMe after HTML elements load -->
 <body id="body" style="visibility:hidden;" onload="javascript:StartupLabelMe();">
 
@@ -118,6 +124,9 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
       <button id="nextImage" class="labelBtn" type="button" title="Next Image">
         <img src="Icons/next_2.png" height="30" />
       </button>
+      <button id="autoLabel" class="labelBtn" type="button" titile="Auto Label">
+        <img src="Icons/autoLabel.png" height="30" />
+      </button>
     </div>
     <div id="label_buttons_contrast">
 
@@ -149,8 +158,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   </div>
   
   <!-- IMAGE CANVAS -->
-  <div class="image_canvas" id="main_section">
+  <div class="image_canvas" id="main_section" style="width:75%; height: 100%;">
     <div id="loading">Loading image...</div>
+    <div id="waiting" style="position:absolute; z-index:5; left: 40%; top:40%; visibility: hidden;">
+        <img src="Icons/Disqus-2s-200px.svg"/>
+    </div>
     <div id="main_media" class="top" style="visibility:hidden; overflow:auto;">
 	  <canvas id="imcanvas" style="vertical-align:bottom;z-index:-3;">      
       <!-- <img id="im" style="vertical-align:bottom;z-index:-3;" /> -->

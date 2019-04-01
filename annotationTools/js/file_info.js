@@ -57,11 +57,12 @@ function file_info() {
 						else $('#label_buttons_contrast').css('left', '525px');
 					}
 					else{
+                        // This stupid does not support "flex"!!!
 						$('#prevImage').show();
 						if (bname == 'Netscape'){
 							$('#label_buttons_contrast').css('left', '585px');
 						}
-						else $('#label_buttons_contrast').css('left', '565px');
+						else $('#label_buttons_contrast').css('left', '600px');
 
 					}
                     if(this.mode=='im' || this.mode=='mt') view_ObjList = false;
