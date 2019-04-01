@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t labelme . --no-cache
+docker build -t labelme .
