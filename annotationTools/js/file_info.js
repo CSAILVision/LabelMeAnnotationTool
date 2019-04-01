@@ -54,7 +54,7 @@ function file_info() {
 						if (bname == 'Netscape'){
 							$('#label_buttons_contrast').css('left', '545px');
 						}
-						else $('#label_buttons_contrast').css('left', '525px');
+						else $('#label_buttons_contrast').css('left', '560px');
 					}
 					else{
                         // This stupid does not support "flex"!!!
