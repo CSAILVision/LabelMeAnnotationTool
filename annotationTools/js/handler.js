@@ -145,7 +145,7 @@ function handler() {
         WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
 
 	// Refresh object list:
-        if(view_ObjList) RenderObjectList();
+        if(view_ObjList) UpdateObjectList(true, idx);
         selected_poly = -1;
         unselectObjects(); // Perhaps this should go elsewhere...
         StopEditEvent();
