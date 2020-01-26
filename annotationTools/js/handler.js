@@ -310,6 +310,8 @@ function handler() {
 	html_str += '<ymin>' + scribble_canvas.object_corners[1] + '</ymin>';
 	html_str += '<xmax>' + scribble_canvas.object_corners[2] + '</xmax>'; 
 	html_str += '<ymax>' + scribble_canvas.object_corners[3] + '</ymax>';
+	html_str += '<timefirst>' + draw_anno.time_point[0] + '</timefirst>';
+	html_str += '<timesecond>' + draw_anno.time_point[1] + '</timesecond>';
 	html_str += '</box>';
 	
 	html_str += '<mask>'+ scribble_canvas.image_name +'</mask>';
@@ -335,6 +337,7 @@ function handler() {
 	  html_str += '<pt>';
 	  html_str += '<x>' + draw_x[jj] + '</x>';
 	  html_str += '<y>' + draw_y[jj] + '</y>';
+	  html_str += '<time>' + anno.time_point[jj] + '</time>';
 	  html_str += '</pt>';
 	}
 	html_str += '</polygon>';

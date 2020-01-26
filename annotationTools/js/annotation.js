@@ -31,6 +31,9 @@ function annotation(anno_id) {
     // Element ids of drawn line segments:
     this.line_ids = null;
 
+    // Annotation time of each point
+    this.time_point = new Array();
+
     // Element id for drawn first point:
     this.point_id = null;
 
@@ -251,6 +254,7 @@ function annotation(anno_id) {
             var l = draw_x.length;
             draw_x = draw_x.slice(0,l-1);
             draw_y = draw_y.slice(0,l-1);
+	    this.time_point = this.time_point.slice(0, l-1);
 
             return 1;
         }
