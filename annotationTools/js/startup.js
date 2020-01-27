@@ -58,6 +58,7 @@ function StartupLabelMe() {
       anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
       ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
       main_media.GetFileInfo().PreFetchImage();
+          $("#imcanvas").show();
           };
 
       // Get the image:
