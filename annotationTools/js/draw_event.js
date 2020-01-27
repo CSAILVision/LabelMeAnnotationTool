@@ -179,6 +179,7 @@ function DrawCanvasClosePolygon() {
   var anno = null;
 
   if(draw_anno) {
+    draw_anno.closing_time = get_date()
     draw_anno.DeletePolygon();
     anno = draw_anno;
     draw_anno = null;

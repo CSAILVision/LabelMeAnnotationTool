@@ -340,6 +340,7 @@ function handler() {
 	  html_str += '<time>' + anno.time_point[jj] + '</time>';
 	  html_str += '</pt>';
 	}
+	html_str += '<closed_date>' + anno.closing_time + '</closed_date>';
 	html_str += '</polygon>';
 	html_str += '</object>';
 	$(LM_xml).children("annotation").append($(html_str));

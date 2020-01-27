@@ -33,6 +33,7 @@ function annotation(anno_id) {
 
     // Annotation time of each point
     this.time_point = new Array();
+    this.closing_time = null;
 
     // Element id for drawn first point:
     this.point_id = null;
