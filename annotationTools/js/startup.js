@@ -50,16 +50,17 @@ function StartupLabelMe() {
     else {
       // This function gets run after image is loaded:
       function main_media_onload_helper() {
-      // Set the image dimensions:
-      main_media.SetImageDimensions();
-          
-      // Read the XML annotation file:
-      var anno_file = main_media.GetFileInfo().GetFullName();
-      anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
-      ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
-      main_media.GetFileInfo().PreFetchImage();
+          // Set the image dimensions:
+          main_media.SetImageDimensions();
+              
+          // Read the XML annotation file:
+          var anno_file = main_media.GetFileInfo().GetFullName();
+          anno_file = 'Annotations/' + anno_file.substr(0,anno_file.length-4) + '.xml' + '?' + Math.random();
+          ReadXML(anno_file,LoadAnnotationSuccess,LoadAnnotation404);
+          main_media.GetFileInfo().PreFetchImage();
+
           $("#imcanvas").show();
-          };
+      };
 
       // Get the image:
       main_media.GetNewImage(main_media_onload_helper);

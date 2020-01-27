@@ -32,6 +32,7 @@ function RenderObjectList() {
   var tree = getPartsTree();
   
   // Create DIV
+  if (showImgName) {html_str += '<p><b>Image name: '+ imgName +'</b></p>';}
   html_str += '<b>Polygons in this image ('+ NundeletedPolygons +')</b>';
   html_str += '<p style="font-size:10px;line-height:100%"><a ' +
   'onmouseover="main_canvas.ShadePolygons();" ' +

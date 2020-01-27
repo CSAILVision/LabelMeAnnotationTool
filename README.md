@@ -37,6 +37,7 @@ $ git clone https://github.com/CSAILVision/LabelMeAnnotationTool.git
 * annotationTools - Directory with source code.
 * annotationCache - Location of temporary files.
 * Icons - Icons used on web page.
+* DockerFiles - Directory with Docker files for installation via Docker.
 
 
 ### QUICK START INSTRUCTIONS:

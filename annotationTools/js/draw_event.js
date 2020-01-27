@@ -2,11 +2,26 @@
 
 var draw_anno = null;
 var query_anno = null;
+
+function get_date(){
+
+  var currentdate = new Date(); 
+  var datetime =  ('0'+currentdate.getDate()).slice(-2) + "-"
+                  + ('0'+(currentdate.getMonth()+1)).slice(-2)  + "-" 
+                  + ('0'+currentdate.getFullYear()).slice(-2) + " "  
+                  + ('0'+currentdate.getHours()).slice(-2) + ":"  
+                  + ('0'+currentdate.getMinutes()).slice(-2) + ":" 
+                  + ('0'+currentdate.getSeconds()).slice(-2) + ":"
+                  + ("00"+currentdate.getMilliseconds()).slice(-3);
+  return datetime;
+}
+
 /** This function is called with the draw event is started.  It can be 
  triggered when the user (1) clicks on the base canvas. */
 function StartDrawEvent(event) {
   draw_x = new Array();
   draw_y = new Array();
+  draw_time = new Array();
   if(!action_CreatePolygon) return;
   if(active_canvas != REST_CANVAS) return;
   
@@ -47,6 +62,11 @@ function StartDrawEvent(event) {
   // Add first control point:
   draw_x.push(Math.round(x/main_media.GetImRatio()));
   draw_y.push(Math.round(y/main_media.GetImRatio()));
+
+
+  // Obtain time
+  var datetime = get_date();
+  draw_anno.time_point.push(datetime)
   
   // Draw polyline:
   draw_anno.SetDivAttach('draw_canvas');
@@ -101,7 +121,8 @@ function DrawCanvasMouseDown(event) {
   var y = Math.round(GetEventPosY(event)/scale);
 
   // Add point to polygon:
-  
+  var datetime = get_date(); 
+  draw_anno.time_point.push(datetime)
   if (bounding_box){
 
     $('#draw_canvas').find("a").remove();
@@ -158,7 +179,7 @@ function DrawCanvasClosePolygon() {
   var anno = null;
 
   if(draw_anno) {
-    console.log(draw_anno.first_point)
+    draw_anno.closing_time = get_date()
     draw_anno.DeletePolygon();
     anno = draw_anno;
     draw_anno = null;

@@ -81,6 +81,7 @@ function file_info() {
                     if(this.im_name.indexOf('.jpg')==-1 && this.im_name.indexOf('.png')==-1) {
                         this.im_name = this.im_name + '.jpg';
                     }
+					imgName = this.im_name;
                 }
                 if(par_field=='hitId') {
                     this.hitId = par_value;
@@ -166,6 +167,9 @@ function file_info() {
                     object_choices = par_value.replace('_',' ');
                     object_choices = object_choices.split(/,/);
                 }
+				if (par_field=='showimgname' && par_value=='true'){
+					showImgName = true;
+				}
                 if((par_field=='scribble')&&(par_value=='true')) {
 		             scribble_mode = true;
 		        }
@@ -353,6 +357,7 @@ function file_info() {
         if(im_req.status==200) {
             this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+			imgName = this.im_name;
         }
         else {
             alert('Fatal: there are problems with fetch_image.cgi');
@@ -380,6 +385,7 @@ function file_info() {
         if(im_req.status==200) {
             this.dir_name = im_req.responseXML.getElementsByTagName("dir")[0].firstChild.nodeValue;
             this.im_name = im_req.responseXML.getElementsByTagName("file")[0].firstChild.nodeValue;
+			imgName = this.im_name;
         }
         else {
             alert('Fatal: there are problems with fetch_prev_image.cgi');

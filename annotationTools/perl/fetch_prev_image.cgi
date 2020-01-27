@@ -67,9 +67,28 @@ if($mode eq "i") {
     close(FP);
 }
 elsif($mode eq "c") {
-    opendir(DIR,$LM_HOME . "Images/$collection") || die("Cannot read collections");
-    my @all_images = readdir(DIR);
-    closedir(DIR);
+    my $fname = $LM_HOME . "annotationCache/DirLists/$collection.txt";
+    
+    if(!open(FP,$fname)) {
+    print "Status: 404\n\n";
+    return;
+    }
+    
+    open(NUMLINES,"wc -l $fname |");
+    my $numlines = <NUMLINES>;
+    ($numlines,my $bar) = split(" DirLists",$numlines);
+    close(NUMLINES);
+
+    my @all_images=(); # initialise empty array
+    my @all_folders=(); # initialise empty
+    for(my $i = 0; $i < int($numlines); $i++) {
+        my $fileinfo = readline(FP);
+        (my $temp_dir,my $temp_file) = split(",",$fileinfo);
+        $temp_file =~ tr/"\n"//d; # remove trailing newline
+        $all_images[$i]=$temp_file; #append images
+        $all_folders[$i]=$temp_dir;
+    }
+    close(FP);
 
     my $c = 0;
     foreach my $i (@all_images) {
@@ -83,7 +102,7 @@ elsif($mode eq "c") {
 		$c = scalar(@all_images)
     }
     $im_file = $all_images[$c-1];
-    $im_dir = $folder;
+    $im_dir = $all_folders[$c-1];
 }
 elsif($mode eq "f") {
     opendir(DIR,$LM_HOME . "Images/$folder") || die("Cannot read folder $LM_HOME/Images/$folder");
