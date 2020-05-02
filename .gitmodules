@@ -1,0 +1,3 @@
+[submodule "labelme-server"]
+	path = labelme-server
+	url = https://github.com/rknguyen/labelme-server.git
