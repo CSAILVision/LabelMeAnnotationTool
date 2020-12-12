@@ -15,6 +15,19 @@ var active_canvas = REST_CANVAS;
 // Check if we are in add parts mode
 var add_parts_to = null;
 
+function get_date(){
+
+  var currentdate = new Date(); 
+  var datetime =  ('0'+currentdate.getDate()).slice(-2) + "-"
+                  + ('0'+(currentdate.getMonth()+1)).slice(-2)  + "-" 
+                  + ('0'+currentdate.getFullYear()).slice(-2) + " "  
+                  + ('0'+currentdate.getHours()).slice(-2) + ":"  
+                  + ('0'+currentdate.getMinutes()).slice(-2) + ":" 
+                  + ('0'+currentdate.getSeconds()).slice(-2) + ":"
+                  + ("00"+currentdate.getMilliseconds()).slice(-3);
+  return datetime;
+}
+
 function handler() {
     
     // *******************************************
@@ -288,8 +301,8 @@ function handler() {
 	html_str += '<attributes>' + new_attributes + '</attributes>';
       }
       html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
-      var ts = GetTimeStamp();
-      if(ts.length==20) html_str += '<date>' + ts + '</date>';
+      var ts = get_date(); // GetTimeStamp();
+      html_str += '<date>' + ts + '</date>';
       html_str += '<id>' + anno.anno_id + '</id>';
       if (bounding_box){
           html_str += '<type>'
@@ -310,8 +323,6 @@ function handler() {
 	html_str += '<ymin>' + scribble_canvas.object_corners[1] + '</ymin>';
 	html_str += '<xmax>' + scribble_canvas.object_corners[2] + '</xmax>'; 
 	html_str += '<ymax>' + scribble_canvas.object_corners[3] + '</ymax>';
-	html_str += '<timefirst>' + draw_anno.time_point[0] + '</timefirst>';
-	html_str += '<timesecond>' + draw_anno.time_point[1] + '</timesecond>';
 	html_str += '</box>';
 	
 	html_str += '<mask>'+ scribble_canvas.image_name +'</mask>';
@@ -337,7 +348,9 @@ function handler() {
 	  html_str += '<pt>';
 	  html_str += '<x>' + draw_x[jj] + '</x>';
 	  html_str += '<y>' + draw_y[jj] + '</y>';
+	  if (anno.time_point != null){
 	  html_str += '<time>' + anno.time_point[jj] + '</time>';
+	  }
 	  html_str += '</pt>';
 	}
 	html_str += '<closed_date>' + anno.closing_time + '</closed_date>';
