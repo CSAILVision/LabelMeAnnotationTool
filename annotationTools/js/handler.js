@@ -231,6 +231,78 @@ function handler() {
         if(IsNearPolygon(x,y,pp)) selectObject(pp);
         else unselectObjects();
     };
+
+    // Save the predictions to XML file. 
+    this.saveAnnotations = function (predictions) {
+      predictions.forEach(prediction => {
+        this.genAnnoXML(prediction);
+      });
+
+      // Write XML to server.
+      console.log("SubmitXmlUrl: " + SubmitXmlUrl);
+      WriteXML(SubmitXmlUrl,LM_xml,function(){return;});
+    }
+
+    // Change bbox to coordinate.
+    function bboxToCoor(bbox, coordinateX, coordinateY) {
+      let x      = bbox[0];
+      let y      = bbox[1];
+      let width  = bbox[2];
+      let height = bbox[3];
+
+      coordinateX.push(x);
+      coordinateX.push(x+width);
+      coordinateX.push(x+width);
+      coordinateX.push(x);
+
+      coordinateY.push(y);
+      coordinateY.push(y);
+      coordinateY.push(y+height);
+      coordinateY.push(y+height);
+    }
+
+    // Get the XML file format. 
+    this.genAnnoXML = function (prediction) {
+      // the tag name
+      let new_name = prediction["class"];
+
+      // Insert data into XML:
+      var html_str = '<object>';
+      html_str += '<name>' + new_name + '</name>';
+      html_str += '<deleted>0</deleted>';
+      html_str += '<verified>0</verified>';
+      // if(use_attributes) {
+      //   html_str += '<occluded>' + new_occluded + '</occluded>';
+      //   html_str += '<attributes>' + new_attributes + '</attributes>';
+      // }
+      html_str += '<parts><hasparts></hasparts><ispartof></ispartof></parts>';
+      var ts = GetTimeStamp();
+      if(ts.length==20) html_str += '<date>' + ts + '</date>';
+      // html_str += '<id>' + anno.anno_id + '</id>';
+      html_str += '<id>' + '0' + '</id>';
+      
+      html_str += '<type>'
+      html_str += 'bounding_box';
+      html_str += '</type>'
+      
+      html_str += '<polygon>';
+      html_str += '<username>' + username + '</username>';
+
+      var bbox = prediction["bbox"];
+      var coordinateX = new Array();
+      var coordinateY = new Array();
+      bboxToCoor(bbox, coordinateX, coordinateY)
+
+      for(let jj=0; jj < coordinateX.length; jj++) {
+        html_str += '<pt>';
+        html_str += '<x>' + coordinateX[jj] + '</x>';
+        html_str += '<y>' + coordinateY[jj] + '</y>';
+        html_str += '</pt>';
+      }
+      html_str += '</polygon>';
+      html_str += '</object>';
+      $(LM_xml).children("annotation").append($(html_str));
+    }
     
     // Submits the object label in response to the "What is this object?"
     // popup bubble. THIS FUNCTION IS A MESS!!!!

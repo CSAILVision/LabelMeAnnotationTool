@@ -88,3 +88,6 @@ var mt_N = 'inf';
 var object_choices = '...';
 
 var loaded_once = false;
+
+// the image is first label
+var isFirstLabel = true;

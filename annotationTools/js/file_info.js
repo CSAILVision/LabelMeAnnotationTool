@@ -54,14 +54,15 @@ function file_info() {
 						if (bname == 'Netscape'){
 							$('#label_buttons_contrast').css('left', '545px');
 						}
-						else $('#label_buttons_contrast').css('left', '525px');
+						else $('#label_buttons_contrast').css('left', '560px');
 					}
 					else{
+                        // This stupid does not support "flex"!!!
 						$('#prevImage').show();
 						if (bname == 'Netscape'){
 							$('#label_buttons_contrast').css('left', '585px');
 						}
-						else $('#label_buttons_contrast').css('left', '565px');
+						else $('#label_buttons_contrast').css('left', '600px');
 
 					}
                     if(this.mode=='im' || this.mode=='mt') view_ObjList = false;
