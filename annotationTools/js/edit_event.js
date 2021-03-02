@@ -131,10 +131,6 @@ function StopEditEvent() {
     }
   }
 
-  // Render the object list:
-  if(view_ObjList) {
-    RenderObjectList();
-  }
   console.log('LabelMe: Stopped edit event.');
 }
 

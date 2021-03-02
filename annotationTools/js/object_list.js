@@ -8,6 +8,13 @@
 var IsHidingAllPolygons = false;
 var ListOffSet = 0;
 
+function UpdateObjectList(deleted, idx, new_name) {
+    if (deleted)
+        $('#anno_list #LinkAnchor' + idx).empty();
+    if (new_name != 'undefined')
+        $('#anno_list #LinkAnchor'+idx+ ' #Link'+ idx).text(new_name);
+}
+
 // This function creates and populates the list 
 function RenderObjectList() {
   // If object list has been rendered, then remove it:
