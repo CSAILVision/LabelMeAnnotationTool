@@ -105,6 +105,45 @@ function ShowNextImage() {
   }
 }
 
+// Auto label the image by tensorflow.js "coco-ssd" model.
+function AutoLabelImage() {
+  if (isFirstLabel) {
+    autoLabelByModel();
+  } else {
+    alert("The image has been automatically labeled!");
+  }
+}
+
+function showProgress() {
+  document.getElementById('waiting').style.visibility = 'visible';
+}
+
+function endProgress() {
+  document.getElementById('waiting').style.visibility = 'hidden';
+}
+
+function autoLabelByModel() {
+  console.log("AutoLabel start.");
+  // Wait to auto label ended.
+  showProgress();
+
+  // Start label by model.
+  cocoSsd.load("mobilenet_v2").then(model => {
+    // Detect objects in the image.
+    model.detect(main_media.image).then(predictions => {
+      // Save annotations to the XML file.
+      main_handler.saveAnnotations(predictions);
+      console.log("autoLabel end");
+      // Auto label ended.
+      endProgress();
+      // Draw rectangular frames
+      DrawAnnotations();
+    });
+  }).catch(()=> {
+    endProgress();
+  });
+}
+
 function InsertServerLogData(modifiedControlPoints) {
   var old_pri = LM_xml.getElementsByTagName("private");
   for(ii=0;ii<old_pri.length;ii++) {
