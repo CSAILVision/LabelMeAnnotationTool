@@ -79,6 +79,8 @@ function RenderObjectList() {
 	  'ondrop="drop(event, '+ii+')" '+
 	  'ondragenter="return dragEnter(event)" '+
 	  'ondragover="return dragOver(event)">';
+      } else {
+      	html_str += '>';
       }
       
       // change the icon for parts
